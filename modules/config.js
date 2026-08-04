@@ -9,7 +9,7 @@ function hexToRgb(hex) {
     return `${r}, ${g}, ${b}`;
 }
 
-function createColors(primary, secondary, background = '#000000') {
+export function createColors(primary, secondary, background = '#000000') {
     const primaryRGB = hexToRgb(primary);
     const secondaryRGB = hexToRgb(secondary);
     const backgroundRGB = hexToRgb(background);
@@ -125,12 +125,16 @@ let currentConfig = {
 };
 
 export function updateColors(newPrimary, newSecondary = '#ffffff', newBackground = '#000000') {
-    currentConfig.COLORS = createColors(newPrimary, newSecondary, newBackground);
+    const newColors = createColors(newPrimary, newSecondary, newBackground);
+    CONFIG.COLORS = newColors;
+    
+    // Disparar evento para que script.js actualice CSS
     const event = new CustomEvent('colorsUpdated', { 
-        detail: { colors: currentConfig.COLORS } 
+        detail: { colors: newColors } 
     });
     document.dispatchEvent(event);
-    return currentConfig.COLORS;
+    
+    return CONFIG.COLORS;
 }
 
 export function getCurrentColors() {

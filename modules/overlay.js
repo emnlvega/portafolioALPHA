@@ -14,7 +14,7 @@ const OVERLAY_CONFIG = {
     FOLDER: 'assets/overlays/',
     EXTENSION: 'jpg',
     BLEND_MODE: 'color-dodge',
-    OPACITY: 0.5,          // 50% de opacidad
+    OPACITY: 1,          // 50% de opacidad
     RANDOM_ORDER: true,    // true = aleatorio después del primero, false = secuencial
     IMAGE_COUNT: 17        // Número de imágenes (1.jpg a 15.jpg)
 };

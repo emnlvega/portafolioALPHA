@@ -42,80 +42,46 @@ export function importDesignFromJSON(jsonData, onComplete) {
     
     stopRandomAnimations();
     
-    // 🔥 PASO 1: RESTAURAR TODAS LAS CELDAS COMBINADAS A NORMAL
+    // ===== PASO 1: RESTAURAR TODAS LAS CELDAS A NORMAL =====
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
-        if (cell.dataset.combined === 'true' && cell.dataset.isSidebar !== 'true') {
-            const size = CONFIG.CELL_SIZE;
-            const origX = parseFloat(cell.dataset.originalX);
-            const origY = parseFloat(cell.dataset.originalY);
-            
-            if (!isNaN(origX) && !isNaN(origY)) {
-                cell.style.transition = 'all 0.3s ease';
-                cell.style.left = `${origX}px`;
-                cell.style.top = `${origY}px`;
-                cell.style.width = `${size}px`;
-                cell.style.height = `${size}px`;
-                cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
-                cell.style.borderColor = CONFIG.COLORS.primary;
-                cell.style.backgroundColor = CONFIG.COLORS.background;
-                cell.style.opacity = '1';
-                cell.style.transform = 'scale(1)';
-                cell.style.pointerEvents = 'auto';
-                cell.style.zIndex = '';
-                cell.style.boxShadow = 'none';
-                cell.dataset.state = 'normal';
-                cell.dataset.prevState = 'normal';
-                cell.dataset.combined = 'false';
-                cell.classList.remove('off');
-                delete cell.dataset.combinedId;
-                delete cell.dataset.combinedLeft;
-                delete cell.dataset.combinedTop;
-                delete cell.dataset.combinedWidth;
-                delete cell.dataset.combinedHeight;
-                delete cell.dataset.originalCombinedOffsetX;
-                delete cell.dataset.originalCombinedOffsetY;
-            }
+        if (cell.dataset.isSidebar === 'true') return;
+        
+        const size = CONFIG.CELL_SIZE;
+        const origX = parseFloat(cell.dataset.originalX);
+        const origY = parseFloat(cell.dataset.originalY);
+        
+        if (!isNaN(origX) && !isNaN(origY)) {
+            cell.style.transition = 'all 0.3s ease';
+            cell.style.left = `${origX}px`;
+            cell.style.top = `${origY}px`;
+            cell.style.width = `${size}px`;
+            cell.style.height = `${size}px`;
+            cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+            cell.style.borderColor = CONFIG.COLORS.primary;
+            cell.style.backgroundColor = CONFIG.COLORS.background;
+            cell.style.opacity = '1';
+            cell.style.transform = 'scale(1)';
+            cell.style.pointerEvents = 'auto';
+            cell.style.zIndex = '';
+            cell.style.boxShadow = 'none';
+            cell.dataset.state = 'normal';
+            cell.dataset.prevState = 'normal';
+            cell.dataset.combined = 'false';
+            cell.classList.remove('off');
+            delete cell.dataset.combinedId;
+            delete cell.dataset.combinedLeft;
+            delete cell.dataset.combinedTop;
+            delete cell.dataset.combinedWidth;
+            delete cell.dataset.combinedHeight;
+            delete cell.dataset.originalCombinedOffsetX;
+            delete cell.dataset.originalCombinedOffsetY;
         }
     });
     
-    // 🔥 PASO 2: RESTAURAR CELDAS OCULTAS (state=hidden)
-    allCells.forEach(cell => {
-        if (cell.dataset.state === 'hidden') {
-            const size = CONFIG.CELL_SIZE;
-            const origX = parseFloat(cell.dataset.originalX);
-            const origY = parseFloat(cell.dataset.originalY);
-            
-            if (!isNaN(origX) && !isNaN(origY)) {
-                cell.style.transition = 'all 0.3s ease';
-                cell.style.left = `${origX}px`;
-                cell.style.top = `${origY}px`;
-                cell.style.width = `${size}px`;
-                cell.style.height = `${size}px`;
-                cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
-                cell.style.borderColor = CONFIG.COLORS.primary;
-                cell.style.backgroundColor = CONFIG.COLORS.background;
-                cell.style.opacity = '1';
-                cell.style.transform = 'scale(1)';
-                cell.style.pointerEvents = 'auto';
-                cell.style.zIndex = '';
-                cell.style.boxShadow = 'none';
-                cell.dataset.state = 'normal';
-                cell.dataset.prevState = 'normal';
-                cell.dataset.combined = 'false';
-                cell.classList.remove('off');
-                delete cell.dataset.combinedId;
-                delete cell.dataset.combinedLeft;
-                delete cell.dataset.combinedTop;
-                delete cell.dataset.combinedWidth;
-                delete cell.dataset.combinedHeight;
-            }
-        }
-    });
-    
-    // 🔥 PASO 3: ESPERAR A QUE LAS RESTAURACIONES TERMINEN
+    // ===== PASO 2: ESPERAR A QUE LAS RESTAURACIONES TERMINEN =====
     setTimeout(() => {
-        // Ahora procesar el nuevo diseño...
+        // ===== PASO 3: PROCESAR EL NUEVO DISEÑO =====
         const outlineItems = [];
         const redItems = [];
         const combinedItems = [];
@@ -140,7 +106,6 @@ export function importDesignFromJSON(jsonData, onComplete) {
             
             // Asegurar que la celda esté en estado normal antes de procesarla
             if (cell.dataset.combined === 'true') {
-                // Si está combinada pero no debería, restaurarla primero
                 const size = CONFIG.CELL_SIZE;
                 const origX = parseFloat(cell.dataset.originalX);
                 const origY = parseFloat(cell.dataset.originalY);
@@ -185,17 +150,21 @@ export function importDesignFromJSON(jsonData, onComplete) {
             }
         });
         
-        // Aplicar estados simples
+        // ===== PASO 4: APLICAR ESTADOS SIMPLES =====
         const shuffledOutline = shuffleArray([...outlineItems]);
         shuffledOutline.forEach((item, index) => {
             setTimeout(() => {
                 const { cell } = item;
+                cell.style.transition = 'all 0.3s ease';
                 cell.style.border = 'none';
                 cell.style.borderColor = 'transparent';
                 cell.style.backgroundColor = CONFIG.COLORS.background;
                 cell.style.boxShadow = `inset 0 0 0 4px ${CONFIG.COLORS.secondary}`;
                 cell.dataset.state = 'logo';
                 cell.dataset.prevState = 'logo';
+                cell.style.opacity = '1';
+                cell.style.transform = 'scale(1)';
+                cell.style.pointerEvents = 'auto';
             }, index * 50);
         });
         
@@ -204,15 +173,20 @@ export function importDesignFromJSON(jsonData, onComplete) {
         shuffledRed.forEach((item, index) => {
             setTimeout(() => {
                 const { cell } = item;
+                cell.style.transition = 'all 0.3s ease';
                 cell.style.backgroundColor = CONFIG.COLORS.primary;
                 cell.style.borderColor = CONFIG.COLORS.primary;
                 cell.style.boxShadow = 'none';
                 cell.dataset.state = 'red';
                 cell.dataset.prevState = 'red';
+                cell.style.opacity = '1';
+                cell.style.transform = 'scale(1)';
+                cell.style.pointerEvents = 'auto';
             }, outlineDelay + index * 50);
         });
         
         offItems.forEach(({ cell }) => {
+            cell.style.transition = 'all 0.3s ease';
             cell.style.border = 'none';
             cell.style.borderColor = 'transparent';
             cell.style.backgroundColor = CONFIG.COLORS.background;
@@ -224,7 +198,7 @@ export function importDesignFromJSON(jsonData, onComplete) {
             cell.dataset.prevState = 'normal';
         });
         
-        // Crear combinaciones
+        // ===== PASO 5: CREAR COMBINACIONES =====
         const combinedDelay = outlineDelay + redItems.length * 50 + CONFIG.LOGO_DELAY_COMBINED;
         setTimeout(() => {
             const animDuration = CONFIG.ANIMATION_DURATION_LOGO;
@@ -257,9 +231,8 @@ export function importDesignFromJSON(jsonData, onComplete) {
                     const newWidth = combinedCols * (cellSize + gap) - gap;
                     const newHeight = combinedRows * (cellSize + gap) - gap;
                     
-                    // Verificar si la celda sigue existiendo y está en estado normal
+                    // Verificar si la celda sigue existiendo
                     if (!cell || cell.dataset.combined === 'true') {
-                        // Buscar la celda por coordenadas
                         const existingCell = designCells.find(c => 
                             parseInt(c.dataset.designRow) === row && 
                             parseInt(c.dataset.designCol) === col
@@ -267,7 +240,7 @@ export function importDesignFromJSON(jsonData, onComplete) {
                         if (existingCell) {
                             cell = existingCell;
                         } else {
-                            return; // No se encontró la celda
+                            return;
                         }
                     }
                     

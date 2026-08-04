@@ -1,4 +1,4 @@
-import { CONFIG, LOGO_DESIGN, updateColors, getCurrentColors } from './modules/config.js';
+import { CONFIG, LOGO_DESIGN, updateColors, getCurrentColors, createColors } from './modules/config.js';
 import { createGrid, repositionGrid, repositionSidebarOverlay, repositionSidebarTexts, repositionCombinedCells } from './modules/grid.js';
 import { resetGrid, exportDesignToJSON, designCells, setupCellEvents, toggleCellOff } from './modules/interactions.js';
 import { importDesignFromJSON } from './modules/logo.js';
@@ -12,9 +12,10 @@ import { showDialog, showImportDialog } from './modules/dialogs.js';
 let gridData = null;
 
 function injectCSSVariables() {
+    // Ya no leer localStorage aquí - solo aplicar CONFIG.COLORS
     const { COLORS } = CONFIG;
     const root = document.documentElement;
-    
+
     root.style.setProperty('--color-primary', COLORS.primary);
     root.style.setProperty('--color-primary-rgb', COLORS.primaryRGB);
     root.style.setProperty('--color-secondary', COLORS.secondary);
@@ -176,6 +177,8 @@ function regenerateEverything() {
 document.addEventListener('colorsUpdated', function(e) {
     const { colors } = e.detail;
     CONFIG.COLORS = colors;
+    
+    // 🔥 LLAMAR A injectCSSVariables PARA ACTUALIZAR TODOS LOS ESTILOS
     injectCSSVariables();
     
     // Actualizar sidebar cells
@@ -437,8 +440,13 @@ document.addEventListener('keydown', (e) => {
 });
 
 function init() {
+    // 1. Primero cargar settings (esto carga el color guardado y llama a updateColors)
+    initSettings();
+    
+    // 2. Ahora injectCSSVariables aplica los estilos con el color ya cargado
     injectCSSVariables();
     
+    // 3. Crear el grid
     gridData = createGrid();
     
     designCells.forEach(cell => {
@@ -472,7 +480,6 @@ function init() {
     }, CONFIG.LOGO_DELAY + 500);
     
     initOverlays();
-    initSettings();
 }
 
 window.addEventListener('beforeunload', () => {

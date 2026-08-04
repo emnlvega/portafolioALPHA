@@ -1,6 +1,6 @@
 // modules/settings.js
 
-import { CONFIG, updateColors } from './config.js';
+import { CONFIG, updateColors, createColors } from './config.js';
 import { restartRandomAnimations, stopRandomAnimations } from './animations.js';
 
 // ===== ESTADO DE CONFIGURACIÓN =====
@@ -30,13 +30,32 @@ const ELEMENTS = {
     overlay: 'overlay-container'
 };
 
-// ===== CARGAR CONFIGURACIÓN DESDE LOCALSTORAGE =====
 export function loadSettings() {
     try {
         const saved = localStorage.getItem('edesign_settings');
         if (saved) {
             const parsed = JSON.parse(saved);
             currentSettings = { ...DEFAULT_SETTINGS, ...parsed };
+            
+            // 🔥 APLICAR COLOR GUARDADO
+            if (parsed.primaryColor) {
+                // Actualizar CONFIG.COLORS pero NO llamar a injectCSSVariables directamente
+                // updateColors dispara colorsUpdated, que llama a injectCSSVariables
+                const newColors = createColors(parsed.primaryColor, '#ffffff', '#000000');
+                CONFIG.COLORS = newColors;
+                
+                // Disparar evento manualmente
+                const event = new CustomEvent('colorsUpdated', { 
+                    detail: { colors: newColors } 
+                });
+                document.dispatchEvent(event);
+                
+                // Actualizar el color picker del sidebar si existe
+                const sidebarPicker = document.getElementById('colorPicker');
+                if (sidebarPicker) sidebarPicker.value = parsed.primaryColor;
+                const sidebarHex = document.getElementById('colorHexLabel');
+                if (sidebarHex) sidebarHex.textContent = parsed.primaryColor.toUpperCase();
+            }
         } else {
             currentSettings = { ...DEFAULT_SETTINGS };
         }
@@ -46,10 +65,12 @@ export function loadSettings() {
     return currentSettings;
 }
 
-// ===== GUARDAR CONFIGURACIÓN EN LOCALSTORAGE =====
 export function saveSettings(settings) {
     try {
-        localStorage.setItem('edesign_settings', JSON.stringify(settings));
+        // Asegurar que el color actual se guarde
+        const dataToSave = { ...settings };
+        dataToSave.primaryColor = CONFIG.COLORS.primary;
+        localStorage.setItem('edesign_settings', JSON.stringify(dataToSave));
         currentSettings = { ...settings };
     } catch (e) {
         console.warn('No se pudo guardar la configuración:', e);
@@ -170,7 +191,7 @@ function updateAllSwitches(value) {
             let knob = null;
             
             for (let child of children) {
-                if (child.tagName === 'DIV' && child.style.borderRadius === '13px') {
+                if (child.tagName === 'DIV' && child.style.borderRadius === '12px') {
                     slider = child;
                 }
                 if (child.tagName === 'DIV' && child.style.borderRadius === '50%') {
@@ -181,10 +202,12 @@ function updateAllSwitches(value) {
             if (slider && knob) {
                 if (value) {
                     slider.style.background = `rgba(var(--color-primary-rgb), 0.4)`;
-                    knob.style.transform = 'translateX(22px)';
+                    knob.style.transform = 'translateX(20px)';
+                    knob.style.top = '4px';  // ← Asegurar centrado
                 } else {
                     slider.style.background = `rgba(var(--color-primary-rgb), 0.15)`;
                     knob.style.transform = 'translateX(0)';
+                    knob.style.top = '4px';  // ← Asegurar centrado
                 }
             }
         }
@@ -332,11 +355,26 @@ function createSettingsDialog() {
     });
     
     applyColorBtn.addEventListener('click', function() {
+        // 🔥 Usar updateColors de config.js (esto ya dispara colorsUpdated)
         updateColors(tempColor);
+        
+        // Actualizar elementos del sidebar
         const sidebarPicker = document.getElementById('colorPicker');
         if (sidebarPicker) sidebarPicker.value = tempColor;
         const sidebarHex = document.getElementById('colorHexLabel');
         if (sidebarHex) sidebarHex.textContent = tempColor.toUpperCase();
+        
+        // Guardar el color en localStorage
+        const dataToSave = { ...currentSettings };
+        dataToSave.primaryColor = tempColor;
+        try {
+            localStorage.setItem('edesign_settings', JSON.stringify(dataToSave));
+        } catch (e) {
+            console.warn('No se pudo guardar el color:', e);
+        }
+        
+        // Actualizar currentSettings
+        currentSettings.primaryColor = tempColor;
         saveSettings(currentSettings);
     });
     
@@ -584,10 +622,23 @@ function createSettingsDialog() {
     
     resetBtn.addEventListener('click', () => {
         currentSettings = { ...DEFAULT_SETTINGS };
+        
+        // Restaurar color a #00ff91
+        updateColors('#00ff91');
+        
+        // Guardar en localStorage
+        const dataToSave = { ...currentSettings };
+        dataToSave.primaryColor = '#00ff91';
+        try {
+            localStorage.setItem('edesign_settings', JSON.stringify(dataToSave));
+        } catch (e) {
+            console.warn('No se pudo guardar la configuración:', e);
+        }
+        
         applySettings(currentSettings);
         saveSettings(currentSettings);
         
-        updateColors('#00ff91');
+        // Actualizar elementos visuales del color
         const colorPicker = document.getElementById('colorPicker');
         if (colorPicker) colorPicker.value = '#00ff91';
         const hexLabel = document.getElementById('colorHexLabel');
@@ -599,6 +650,7 @@ function createSettingsDialog() {
             colorInputEl.dispatchEvent(new Event('input'));
         }
         
+        // Actualizar switches
         const switchKeys = ['grain', 'gaussianBlur', 'bloom', 'burnBlur', 'textura', 'animations', 'scanlines', 'vignette', 'flicker', 'glow'];
         switchKeys.forEach(key => {
             const id = `setting-${key}`;
@@ -625,9 +677,11 @@ function createSettingsDialog() {
                     if (checked) {
                         slider.style.background = `rgba(var(--color-primary-rgb), 0.4)`;
                         knob.style.transform = 'translateX(20px)';
+                        knob.style.top = '4px';
                     } else {
                         slider.style.background = `rgba(var(--color-primary-rgb), 0.15)`;
                         knob.style.transform = 'translateX(0)';
+                        knob.style.top = '4px';
                     }
                 }
                 
@@ -795,7 +849,6 @@ function createSettingsDialog() {
     return settingsDialog;
 }
 
-// ===== ABRIR CONFIGURACIÓN =====
 export function openSettings() {
     if (!settingsDialog) createSettingsDialog();
     
@@ -822,9 +875,11 @@ export function openSettings() {
                 if (el.checked) {
                     slider.style.background = `rgba(var(--color-primary-rgb), 0.4)`;
                     knob.style.transform = 'translateX(20px)';
+                    knob.style.top = '4px';
                 } else {
                     slider.style.background = `rgba(var(--color-primary-rgb), 0.15)`;
                     knob.style.transform = 'translateX(0)';
+                    knob.style.top = '4px';
                 }
             }
         }
@@ -851,8 +906,16 @@ export function toggleSettings() {
 // ===== INICIALIZAR CONFIGURACIÓN =====
 export function initSettings() {
     if (isInitialized) return;
+    
+    // 🔥 Cargar settings ANTES de crear el diálogo
+    // Esto asegura que currentSettings tenga los valores guardados
     loadSettings();
+    
+    // Aplicar settings (esto también aplicará el color si está guardado)
     applySettings(currentSettings);
+    
+    // Crear el diálogo después de aplicar los settings
     createSettingsDialog();
+    
     isInitialized = true;
 }
