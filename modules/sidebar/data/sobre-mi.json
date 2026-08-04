@@ -1,0 +1,64 @@
+{
+  "title": "SOBRE MI",
+  "design": {
+    "1,1": {
+      "type": "combined_logo",
+      "left": 252,
+      "top": 76,
+      "width": 197,
+      "height": 210,
+      "combined": true
+    },
+    "1,6": {
+      "type": "combined_normal",
+      "left": 517,
+      "top": 76,
+      "width": 1050,
+      "height": 210,
+      "combined": true
+    },
+    "6,1": {
+      "type": "combined_logo",
+      "left": 252,
+      "top": 301,
+      "width": 1315,
+      "height": 195,
+      "combined": true
+    },
+    "10,1": {
+      "type": "combined_logo",
+      "left": 252,
+      "top": 511,
+      "width": 1315,
+      "height": 164,
+      "combined": true
+    }
+  },
+  "content": {
+    "photo": "◈",
+    "bio": "Disenador grafico y desarrollador de software con mas de 10 anos de experiencia. Especializado en diseno retro-futurista, experiencias interactivas y sistemas de identidad visual. Apasionado por la convergencia entre el arte, la tecnologia y la experiencia humana.",
+    "skills": [
+      "DISEÑO GRAFICO",
+      "DESARROLLO WEB",
+      "UI/UX",
+      "MOTION DESIGN",
+      "3D",
+      "BRANDING",
+      "FRONTEND",
+      "BACKEND",
+      "ILUSTRACION",
+      "FOTOGRAFIA"
+    ],
+    "experience": [
+      "DIRECTOR CREATIVO - STUDIO E (2022-2025)",
+      "SENIOR DESIGNER - AGENCIA FUTURA (2019-2022)",
+      "DESARROLLADOR UI/UX - TECH LAB (2016-2019)",
+      "DISENADOR JR - CREATIVE HUB (2014-2016)"
+    ],
+    "education": [
+      "MAESTRIA EN DISEÑO INTERACTIVO - UNAM (2020)",
+      "LIC. DISEÑO GRAFICO - UAM (2014)",
+      "CERTIFICACION EN DESARROLLO WEB - ITESM (2018)"
+    ]
+  }
+}

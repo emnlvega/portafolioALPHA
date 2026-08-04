@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>emnlvega</title>
+
+    <link rel="icon" type="image/svg+xml" href="assets/svg/logo-hover.svg" />
+    <link rel="shortcut icon" href="assets/svg/logo-hover.svg" />
+    <style>
+        html, body { background: #000 !important; margin: 0; padding: 0; min-height: 100vh; }
+    </style>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div id="grain-overlay"></div>
+    <div id="gaussian-blur"></div>
+    <div id="bloom-overlay"></div>
+    <div id="bloom-overlay"></div>
+    <div id="burn-blur"></div>
+
+    <div id="grid-container"></div>
+
+    <div id="custom-dialog">
+        <div id="dialog-content">
+            <h2 id="dialog-title"></h2>
+            <p id="dialog-message"></p>
+            <button id="dialog-close">[ CERRAR ]</button>
+        </div>
+    </div>
+    
+    <!-- Los módulos se cargan en este orden -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>

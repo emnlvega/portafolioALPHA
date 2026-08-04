@@ -1,0 +1,426 @@
+{
+  "title": "PROYECTOS",
+  "design": {
+    "0,0": {
+      "type": "combined_normal",
+      "left": 199,
+      "top": 23,
+      "width": 1681,
+      "height": 144,
+      "combined": true
+    },
+    "3,0": {
+      "type": "combined_normal",
+      "left": 199,
+      "top": 182,
+      "width": 91,
+      "height": 727,
+      "combined": true
+    },
+    "3,2": {
+      "type": "combined_normal",
+      "left": 305,
+      "top": 182,
+      "width": 197,
+      "height": 144,
+      "combined": true
+    },
+    "3,6": {
+      "type": "combined_normal",
+      "left": 517,
+      "top": 182,
+      "width": 197,
+      "height": 144,
+      "combined": true
+    },
+    "3,10": {
+      "type": "combined_normal",
+      "left": 729,
+      "top": 182,
+      "width": 197,
+      "height": 144,
+      "combined": true
+    },
+    "3,14": {
+      "type": "combined_normal",
+      "left": 941,
+      "top": 182,
+      "width": 197,
+      "height": 144,
+      "combined": true
+    },
+    "3,18": {
+      "type": "combined_normal",
+      "left": 1153,
+      "top": 182,
+      "width": 197,
+      "height": 144,
+      "combined": true
+    },
+    "3,22": {
+      "type": "combined_normal",
+      "left": 1365,
+      "top": 182,
+      "width": 197,
+      "height": 144,
+      "combined": true
+    },
+    "3,26": {
+      "type": "combined_normal",
+      "left": 1577,
+      "top": 182,
+      "width": 197,
+      "height": 144,
+      "combined": true
+    },
+    "3,30": {
+      "type": "combined_normal",
+      "left": 1789,
+      "top": 182,
+      "width": 91,
+      "height": 727,
+      "combined": true
+    },
+    "6,2": {
+      "type": "combined_normal",
+      "left": 305,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,4": {
+      "type": "combined_normal",
+      "left": 411,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,6": {
+      "type": "combined_normal",
+      "left": 517,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,8": {
+      "type": "combined_normal",
+      "left": 623,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,10": {
+      "type": "combined_normal",
+      "left": 729,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,12": {
+      "type": "combined_normal",
+      "left": 835,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,14": {
+      "type": "combined_normal",
+      "left": 941,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,16": {
+      "type": "combined_normal",
+      "left": 1047,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,18": {
+      "type": "combined_normal",
+      "left": 1153,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,20": {
+      "type": "combined_normal",
+      "left": 1259,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,22": {
+      "type": "combined_normal",
+      "left": 1365,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,24": {
+      "type": "combined_normal",
+      "left": 1471,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,26": {
+      "type": "combined_normal",
+      "left": 1577,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "6,28": {
+      "type": "combined_normal",
+      "left": 1683,
+      "top": 341,
+      "width": 91,
+      "height": 91,
+      "combined": true
+    },
+    "8,2": {
+      "type": "combined_normal",
+      "left": 305,
+      "top": 447,
+      "width": 1469,
+      "height": 462,
+      "combined": true
+    }
+  },
+  "categories": [
+    "DISEÑO GRAFICO",
+    "DISENO WEB",
+    "FRONTEND",
+    "BACKEND",
+    "LOGOS",
+    "BRANDING",
+    "ARTE"
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "name": "REBRAND ID",
+      "icon": "◆",
+      "category": "BRANDING",
+      "type": "TRABAJO",
+      "year": "2025",
+      "description": "Identidad corporativa completa para una empresa de tecnologia.",
+      "details": "Investigacion profunda de la marca, definicion de valores y creacion de un sistema visual coherente."
+    },
+    {
+      "id": 2,
+      "name": "E-COMMERCE UX",
+      "icon": "◈",
+      "category": "DISENO WEB",
+      "type": "PERSONAL",
+      "year": "2025",
+      "description": "Rediseno completo de experiencia de usuario para e-commerce.",
+      "details": "Pruebas de usabilidad, mapas de calor y prototipado interactivo."
+    },
+    {
+      "id": 3,
+      "name": "DASHBOARD PRO",
+      "icon": "◉",
+      "category": "FRONTEND",
+      "type": "ESCOLAR",
+      "year": "2024",
+      "description": "Panel de control interactivo para visualizacion de datos.",
+      "details": "Desarrollado con React y D3.js, graficos dinamicos y filtros avanzados."
+    },
+    {
+      "id": 4,
+      "name": "API GATEWAY",
+      "icon": "◊",
+      "category": "BACKEND",
+      "type": "TRABAJO",
+      "year": "2025",
+      "description": "Sistema de integracion de APIs con autenticacion OAuth2.",
+      "details": "Implementado con Node.js, Express y Redis, 10,000+ peticiones por segundo."
+    },
+    {
+      "id": 5,
+      "name": "LOGOTIPO MARCA",
+      "icon": "◇",
+      "category": "LOGOS",
+      "type": "PERSONAL",
+      "year": "2024",
+      "description": "Logotipo minimalista para startup de IA.",
+      "details": "Basado en geometria y el concepto de conexion humano-maquina."
+    },
+    {
+      "id": 6,
+      "name": "PACKAGING LUXE",
+      "icon": "○",
+      "category": "BRANDING",
+      "type": "TRABAJO",
+      "year": "2025",
+      "description": "Empaque premium para linea de productos organicos.",
+      "details": "Materiales sustentables y sistema de colores tierra."
+    },
+    {
+      "id": 7,
+      "name": "GALERIA ARTE",
+      "icon": "□",
+      "category": "ARTE",
+      "type": "ESCOLAR",
+      "year": "2024",
+      "description": "Exposicion virtual interactiva de arte digital.",
+      "details": "Realidad aumentada, exploracion 3D e informacion detallada."
+    },
+    {
+      "id": 8,
+      "name": "LANDING PAGE",
+      "icon": "△",
+      "category": "DISENO WEB",
+      "type": "TRABAJO",
+      "year": "2025",
+      "description": "Landing page de alta conversion para producto tecnologico.",
+      "details": "Microinteracciones y copy persuasivo."
+    },
+    {
+      "id": 9,
+      "name": "APP FITNESS",
+      "icon": "▽",
+      "category": "FRONTEND",
+      "type": "PERSONAL",
+      "year": "2024",
+      "description": "App movil para seguimiento de rutinas de ejercicio.",
+      "details": "React Native, seguimiento de progreso y desafios semanales."
+    },
+    {
+      "id": 10,
+      "name": "SISTEMA ERP",
+      "icon": "◍",
+      "category": "BACKEND",
+      "type": "TRABAJO",
+      "year": "2025",
+      "description": "Sistema de planificacion de recursos empresariales.",
+      "details": "Modulos de inventario, facturacion, RRHH y reportes en tiempo real."
+    },
+    {
+      "id": 11,
+      "name": "IDENTIDAD MUSEO",
+      "icon": "◆",
+      "category": "BRANDING",
+      "type": "ESCOLAR",
+      "year": "2024",
+      "description": "Identidad visual para museo de arte contemporaneo.",
+      "details": "Logotipo, señaletica, material promocional y presencia digital."
+    },
+    {
+      "id": 12,
+      "name": "TIENDA ONLINE",
+      "icon": "◈",
+      "category": "DISENO WEB",
+      "type": "PERSONAL",
+      "year": "2025",
+      "description": "Tienda online con experiencia de compra fluida.",
+      "details": "Pasarelas de pago, sistema de recomendaciones y seguimiento de envios."
+    },
+    {
+      "id": 13,
+      "name": "STUDIO IDENTITY",
+      "icon": "◇",
+      "category": "DISEÑO GRAFICO",
+      "type": "TRABAJO",
+      "year": "2025",
+      "description": "Identidad completa para estudio de arquitectura.",
+      "details": "Sistema modular basado en la geometria y la luz."
+    },
+    {
+      "id": 14,
+      "name": "ECOMMERCE APP",
+      "icon": "○",
+      "category": "FRONTEND",
+      "type": "TRABAJO",
+      "year": "2025",
+      "description": "App de compras con experiencia personalizada.",
+      "details": "React Native, sincronizacion en tiempo real y notificaciones."
+    },
+    {
+      "id": 15,
+      "name": "MICROSERVICIOS",
+      "icon": "◊",
+      "category": "BACKEND",
+      "type": "ESCOLAR",
+      "year": "2024",
+      "description": "Arquitectura de microservicios para sistema distribuido.",
+      "details": "Docker, Kubernetes, Kafka y monitoreo con Prometheus."
+    },
+    {
+      "id": 16,
+      "name": "CAMPAÑA BRANDING",
+      "icon": "△",
+      "category": "BRANDING",
+      "type": "TRABAJO",
+      "year": "2025",
+      "description": "Campana de lanzamiento para marca de moda sostenible.",
+      "details": "Estrategia 360, contenido digital y activaciones en tienda."
+    },
+    {
+      "id": 17,
+      "name": "WEB PORTFOLIO",
+      "icon": "□",
+      "category": "DISENO WEB",
+      "type": "PERSONAL",
+      "year": "2024",
+      "description": "Portafolio interactivo para disenador creativo.",
+      "details": "Animaciones fluidas, navegacion intuitiva y galeria de proyectos."
+    },
+    {
+      "id": 18,
+      "name": "GAME UI",
+      "icon": "◉",
+      "category": "ARTE",
+      "type": "ESCOLAR",
+      "year": "2024",
+      "description": "Interfaz de usuario para juego de estrategia.",
+      "details": "Diseño de menus, HUD y elementos interactivos."
+    },
+    {
+      "id": 19,
+      "name": "REST API",
+      "icon": "▽",
+      "category": "BACKEND",
+      "type": "TRABAJO",
+      "year": "2025",
+      "description": "API RESTful para plataforma de servicios.",
+      "details": "Documentacion OpenAPI, autenticacion JWT y caching."
+    },
+    {
+      "id": 20,
+      "name": "PACKAGING ECO",
+      "icon": "◆",
+      "category": "DISEÑO GRAFICO",
+      "type": "PERSONAL",
+      "year": "2024",
+      "description": "Empaque ecologico para linea de cosmeticos.",
+      "details": "Materiales reciclados, diseno minimalista y sistema de colores naturales."
+    },
+    {
+      "id": 21,
+      "name": "DASHBOARD FINANCE",
+      "icon": "◍",
+      "category": "FRONTEND",
+      "type": "TRABAJO",
+      "year": "2025",
+      "description": "Dashboard financiero para startups.",
+      "details": "Visualizacion de metricas clave, graficos interactivos y exportacion de datos."
+    }
+  ]
+}

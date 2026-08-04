@@ -1,0 +1,50 @@
+{
+  "title": "CONTACTO",
+  "design": {
+    "2,2": {
+      "type": "combined_logo",
+      "left": 305,
+      "top": 129,
+      "width": 400,
+      "height": 180,
+      "combined": true
+    },
+    "2,10": {
+      "type": "combined_normal",
+      "left": 720,
+      "top": 129,
+      "width": 847,
+      "height": 180,
+      "combined": true
+    },
+    "6,2": {
+      "type": "combined_logo",
+      "left": 305,
+      "top": 324,
+      "width": 1262,
+      "height": 185,
+      "combined": true
+    },
+    "10,2": {
+      "type": "combined_logo",
+      "left": 305,
+      "top": 524,
+      "width": 1262,
+      "height": 164,
+      "combined": true
+    }
+  },
+  "content": {
+    "email": "hola@estudiodesign.com",
+    "phone": "+52 55 1234 5678",
+    "social": {
+      "twitter": "@estudio_design",
+      "instagram": "@estudio.design",
+      "github": "@estudio-dev",
+      "linkedin": "estudio-design",
+      "behance": "estudio-design"
+    },
+    "location": "CDMX, Mexico",
+    "availability": "DISPONIBLE PARA PROYECTOS"
+  }
+}
