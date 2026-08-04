@@ -9,7 +9,7 @@ let shuffleOrder = [];
 
 // 🔥 CONFIGURACIÓN ÚNICA
 const OVERLAY_CONFIG = {
-    INTERVAL: 10000,       // 10 segundos entre cambios
+    INTERVAL: 30000,       // 10 segundos entre cambios
     FADE_DURATION: 0,      // 0 = cambio instantáneo
     FOLDER: 'assets/overlays/',
     EXTENSION: 'jpg',
@@ -48,13 +48,12 @@ export function initOverlays() {
         const shuffledRest = shuffleArray(rest);
         shuffleOrder = shuffleOrder.concat(shuffledRest);
         
-        console.log('📷 Orden de overlays (1 siempre primero, luego aleatorio):', shuffleOrder.map(i => i + 1));
     } else {
         // Orden secuencial: 0, 1, 2, 3, ... (1.jpg, 2.jpg, 3.jpg, ...)
         for (let i = 0; i < imageCount; i++) {
             shuffleOrder.push(i);
         }
-        console.log('📷 Orden de overlays (secuencial):', shuffleOrder.map(i => i + 1));
+
     }
     
     // Crear el elemento overlay
