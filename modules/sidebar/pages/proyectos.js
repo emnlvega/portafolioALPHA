@@ -21,6 +21,7 @@ let detailCellRef = null;
 let renderTimeout = null;
 let textureWasVisibleBeforeExpand = true;
 
+const LIGHT_TEXT_SHADOW = `0 0 7px rgba(var(--color-primary-rgb), 1)`;
 // ===== DISEÑO EXPANDIDO =====
 const EXPANDED_DESIGN = {
     "0,0": {
@@ -210,29 +211,35 @@ function addExpandButton(cell) {
         cursor: pointer;
         pointer-events: auto;
         color: ${CONFIG.COLORS.primary};
-        font-size: 18px;
+        font-size: 50px;
         transition: all 0.3s ease;
-        opacity: 0.6;
+        opacity: 0.8;
         user-select: none;
         font-family: 'Courier New', monospace;
         line-height: 1;
-        text-shadow: 0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 0.2);
+        text-shadow: 0 0 15px rgba(${CONFIG.COLORS.primaryRGB}, 1),
+                     0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.6),
+                     0 0 60px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
     `;
     
     btn.textContent = isDetailExpanded ? '−' : '+';
     
     btn.addEventListener('mouseenter', () => {
         btn.style.opacity = '1';
+        btn.style.transform = 'scale(1.15)';
         btn.style.color = CONFIG.COLORS.secondary;
-        btn.style.textShadow = `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.4)`;
-        btn.style.transform = 'scale(1.1)';
+        btn.style.textShadow = `0 0 15px rgba(${CONFIG.COLORS.secondaryRGB}, 1),
+                                0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.6),
+                                0 0 60px rgba(${CONFIG.COLORS.secondaryRGB}, 0.3)`;
     });
     
     btn.addEventListener('mouseleave', () => {
-        btn.style.opacity = '0.6';
-        btn.style.color = CONFIG.COLORS.primary;
-        btn.style.textShadow = `0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`;
+        btn.style.opacity = '0.8';
         btn.style.transform = 'scale(1)';
+        btn.style.color = CONFIG.COLORS.primary;
+        btn.style.textShadow = `0 0 15px rgba(${CONFIG.COLORS.primaryRGB}, 1),
+                                0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.6),
+                                0 0 60px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
     });
     
     btn.addEventListener('click', (e) => {
@@ -342,12 +349,18 @@ export async function renderProyectosContent() {
             font-size: 32px;
             letter-spacing: 12px;
             text-transform: uppercase;
-            text-shadow: 0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+            text-shadow: ${LIGHT_TEXT_SHADOW};
             pointer-events: none;
             z-index: 20;
             user-select: none;
         `;
-        title.textContent = data.title + (currentCategory !== 'TODOS' ? ` - ${currentCategory}` : '');
+        
+        if (selectedProjectId && selectedProjectData) {
+            title.textContent = selectedProjectData.name;
+        } else {
+            title.textContent = data.title + (currentCategory !== 'TODOS' ? ` - ${currentCategory}` : '');
+        }
+        
         titleCell.appendChild(title);
     }
     
@@ -395,7 +408,7 @@ export async function renderProyectosContent() {
             const iconSpan = document.createElement('span');
             iconSpan.textContent = catIcon;
             iconSpan.style.cssText = `
-                font-size: 18px;
+                font-size: 50px;
                 color: ${isActive ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary};
                 transition: all 0.3s ease;
             `;
@@ -403,7 +416,7 @@ export async function renderProyectosContent() {
             const nameSpan = document.createElement('span');
             nameSpan.textContent = catName;
             nameSpan.style.cssText = `
-                font-size: 9px;
+                font-size: 15px;
                 letter-spacing: 1px;
                 opacity: 0.8;
             `;
@@ -491,32 +504,23 @@ export async function renderProyectosContent() {
                 font-size: 24px;
                 margin-bottom: 4px;
                 color: ${isSelected ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary};
-                text-shadow: ${isSelected ? `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)` : `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`};
+                text-shadow: ${isSelected ? `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 1)` : `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 1)`};
                 transition: all 0.3s ease;
             `;
             
             const name = document.createElement('span');
             name.textContent = project.name;
             name.style.cssText = `
-                font-size: 9px;
+                font-size: 10px;
                 letter-spacing: 1px;
-                opacity: ${isSelected ? '1' : '0.8'};
+                opacity: ${isSelected ? '1' : '1'};
             `;
             
-            const catTag = document.createElement('span');
-            catTag.textContent = project.category;
-            catTag.style.cssText = `
-                font-size: 7px;
-                letter-spacing: 1px;
-                opacity: ${isSelected ? '0.6' : '0.4'};
-                margin-top: 2px;
-                text-transform: uppercase;
-                color: ${isSelected ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary};
-            `;
+
             
             item.appendChild(icon);
             item.appendChild(name);
-            item.appendChild(catTag);
+
             
             item.addEventListener('mouseenter', () => {
                 if (!isSelected) {
@@ -837,81 +841,60 @@ function showProjectDetail(project, detailCell) {
         padding: ${isExpanded ? '30px 40px' : '20px 30px'};
         color: ${CONFIG.COLORS.primary};
         font-family: 'Courier New', monospace;
-        pointer-events: none;
+        pointer-events: auto;  /* 🔥 CAMBIADO: antes era 'none' */
         z-index: 20;
         overflow-y: auto;
-        display: grid;
-        grid-template-columns: ${isExpanded ? '220px' : '180px'} 1fr;
-        gap: ${isExpanded ? '30px' : '20px'};
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         background: transparent;
         user-select: text;
+        scroll-behavior: smooth;
     `;
     
-    const styleScroll = document.createElement('style');
-    styleScroll.textContent = `
-        .proyectos-detail::-webkit-scrollbar {
-            width: ${isExpanded ? '6px' : '4px'};
-        }
-        .proyectos-detail::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .proyectos-detail::-webkit-scrollbar-thumb {
-            background: rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
-            border-radius: 2px;
-        }
-        .proyectos-detail::-webkit-scrollbar-thumb:hover {
-            background: rgba(${CONFIG.COLORS.primaryRGB}, 0.6);
-        }
-    `;
-    document.head.appendChild(styleScroll);
-    
-    const leftCol = document.createElement('div');
-    leftCol.style.cssText = `
+    // 🔥 Contenedor interno con padding adicional para evitar cortes
+    const contentWrapper = document.createElement('div');
+    contentWrapper.style.cssText = `
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        gap: 10px;
-        text-align: center;
-        padding-top: 10px;
-        pointer-events: none;
+        max-width: 95%;
+        width: 100%;
+        gap: 8px;
+        padding: ${isExpanded ? '20px 0' : '10px 0'};
+        flex-shrink: 0;
+        margin: auto;
+        pointer-events: none;  /* 🔥 Los clics pasan al contenedor padre */
     `;
     
+    // Icono
     const icon = document.createElement('div');
     icon.textContent = project.icon;
     icon.style.cssText = `
-        font-size: ${isExpanded ? '64px' : '48px'};
+        font-size: ${isExpanded ? '48px' : '36px'};
         color: ${CONFIG.COLORS.primary};
         text-shadow: 0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+        text-align: center;
+        flex-shrink: 0;
     `;
+    contentWrapper.appendChild(icon);
     
+    // Meta
     const meta = document.createElement('div');
     meta.style.cssText = `
         font-size: ${isExpanded ? '12px' : '10px'};
-        letter-spacing: 1px;
-        opacity: 0.6;
+        letter-spacing: 2px;
+        opacity: 0.5;
+        text-align: center;
         line-height: 1.8;
+        flex-shrink: 0;
     `;
-    meta.innerHTML = `
-        ${project.category}<br>
-        ${project.type}<br>
-        ${project.year}
-    `;
+    meta.textContent = `${project.category}  ·  ${project.type}  ·  ${project.year}`;
+    contentWrapper.appendChild(meta);
     
-    leftCol.appendChild(icon);
-    leftCol.appendChild(meta);
-    
-    const rightCol = document.createElement('div');
-    rightCol.style.cssText = `
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        gap: 8px;
-        overflow-y: auto;
-        padding-right: ${isExpanded ? '12px' : '8px'};
-        pointer-events: auto;
-    `;
-    
+    // Nombre
     const name = document.createElement('div');
     name.textContent = project.name;
     name.style.cssText = `
@@ -920,9 +903,12 @@ function showProjectDetail(project, detailCell) {
         font-weight: bold;
         text-shadow: 0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.2);
         color: ${CONFIG.COLORS.secondary};
-        pointer-events: none;
+        text-align: center;
+        flex-shrink: 0;
     `;
+    contentWrapper.appendChild(name);
     
+    // Descripción
     const desc = document.createElement('div');
     desc.textContent = project.description;
     desc.style.cssText = `
@@ -930,11 +916,22 @@ function showProjectDetail(project, detailCell) {
         letter-spacing: 1px;
         line-height: 1.6;
         opacity: 0.8;
-        pointer-events: none;
+        text-align: center;
+        max-width: 90%;
+        flex-shrink: 0;
     `;
+    contentWrapper.appendChild(desc);
     
-    rightCol.appendChild(name);
-    rightCol.appendChild(desc);
+    // Separador
+    const separator = document.createElement('div');
+    separator.style.cssText = `
+        width: 30%;
+        height: 1px;
+        background: rgba(${CONFIG.COLORS.secondaryRGB}, 0.2);
+        margin: 4px 0;
+        flex-shrink: 0;
+    `;
+    contentWrapper.appendChild(separator);
     
     if (hasPages && currentPageData) {
         const pageTitle = document.createElement('div');
@@ -944,19 +941,21 @@ function showProjectDetail(project, detailCell) {
             letter-spacing: 2px;
             font-weight: bold;
             color: ${CONFIG.COLORS.secondary};
-            margin-top: 10px;
-            border-bottom: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.2);
-            padding-bottom: 6px;
-            pointer-events: none;
+            text-align: center;
+            flex-shrink: 0;
         `;
-        rightCol.appendChild(pageTitle);
+        contentWrapper.appendChild(pageTitle);
         
         const contentContainer = document.createElement('div');
         contentContainer.style.cssText = `
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            padding-top: 6px;
+            gap: 10px;
+            padding-top: 4px;
+            width: 100%;
+            max-width: 90%;
+            align-items: center;
+            flex-shrink: 0;
         `;
         
         if (Array.isArray(currentPageData.content)) {
@@ -974,23 +973,24 @@ function showProjectDetail(project, detailCell) {
                 letter-spacing: 0.5px;
                 line-height: 1.6;
                 opacity: 0.8;
+                text-align: center;
             `;
             contentContainer.appendChild(textEl);
         }
         
-        rightCol.appendChild(contentContainer);
+        contentWrapper.appendChild(contentContainer);
         
         const pageIndicator = document.createElement('div');
-        pageIndicator.textContent = `PAGINA ${detailPage + 1} DE ${project.pages.length}`;
+        pageIndicator.textContent = `PÁGINA ${detailPage + 1} DE ${project.pages.length}`;
         pageIndicator.style.cssText = `
             font-size: ${isExpanded ? '11px' : '9px'};
             letter-spacing: 2px;
-            opacity: 0.4;
-            margin-top: 8px;
+            opacity: 0.3;
+            margin-top: 6px;
             text-transform: uppercase;
-            pointer-events: none;
+            flex-shrink: 0;
         `;
-        rightCol.appendChild(pageIndicator);
+        contentWrapper.appendChild(pageIndicator);
     } else {
         const details = document.createElement('div');
         details.textContent = project.details;
@@ -999,16 +999,20 @@ function showProjectDetail(project, detailCell) {
             letter-spacing: 0.5px;
             line-height: 1.5;
             opacity: 0.6;
-            padding-top: 8px;
-            border-top: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.1);
-            pointer-events: none;
+            text-align: center;
+            max-width: 90%;
+            flex-shrink: 0;
         `;
-        rightCol.appendChild(details);
+        contentWrapper.appendChild(details);
     }
     
-    detail.appendChild(leftCol);
-    detail.appendChild(rightCol);
+    detail.appendChild(contentWrapper);
     detailCell.appendChild(detail);
+    
+    // 🔥 Forzar scroll al principio después de renderizar
+    setTimeout(() => {
+        detail.scrollTop = 0;
+    }, 50);
 }
 
 function renderContentItem(item, isExpanded) {

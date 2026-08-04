@@ -7,9 +7,10 @@ import { importDesignFromJSON } from '../logo.js';
 import { toggleSettings } from '../settings.js';
 import { showDialog } from '../dialogs.js';
 import { getSobreMiDesign, renderSobreMiContent, clearSobreMiState } from './pages/sobre-mi.js';
-import { getContactoDesign, renderContactoContent } from './pages/contacto.js';
+import { getContactoDesign, renderContactoContent, clearContactoState } from './pages/contacto.js';
 import { getProyectosDesign, renderProyectosContent, clearProjectSelection, clearProyectosTextureState } from './pages/proyectos.js';
 import { setHashLoad } from '../logo.js';
+
 
 
 // ===== ESTADO =====
@@ -533,6 +534,8 @@ export function returnToMainLogo() {
         clearProyectosTextureState();
     } else if (currentPage === 'sobre-mi') {
         clearSobreMiState();
+    } else if (currentPage === 'contacto') {
+        clearContactoState();
     }
 
     clearProjectSelection();

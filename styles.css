@@ -965,3 +965,20 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
 #import-content::-webkit-scrollbar-thumb:hover {
     background: rgba(var(--color-primary-rgb), 0.5);
 }
+
+/* styles.css - Agregar al final */
+
+/* Estilos ligeros para sobre-mi (sin glow pesado) */
+.sobre-mi-content {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.sobre-mi-content .text-shadow-light {
+    text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.sobre-mi-content .text-shadow-light-active {
+    text-shadow: 0 0 15px rgba(var(--color-secondary-rgb), 0.2);
+}
+

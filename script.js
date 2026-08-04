@@ -10,6 +10,10 @@ import { initSettings, toggleSettings, closeSettings } from './modules/settings.
 import { showDialog, showImportDialog } from './modules/dialogs.js';
 import { handleURLOnLoad, updateURL } from './modules/sidebar/index.js';
 import { setHashLoad } from './modules/logo.js';
+import { loadSobreMiData } from './modules/sidebar/pages/sobre-mi.js';
+import { loadContactoData } from './modules/sidebar/pages/contacto.js';
+
+
 let gridData = null;
 
 function injectCSSVariables() {
@@ -455,6 +459,14 @@ function init() {
     
     // 2. Ahora injectCSSVariables aplica los estilos con el color ya cargado
     injectCSSVariables();
+
+    Promise.all([
+        loadSobreMiData().catch(() => {}),
+        loadContactoData().catch(() => {}),
+
+    ]).then(() => {
+        // Los datos están precargados
+    });
     
     // 3. Crear el grid
     gridData = createGrid();

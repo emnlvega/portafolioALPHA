@@ -1,50 +1,91 @@
 {
   "title": "CONTACTO",
   "design": {
-    "2,2": {
-      "type": "combined_logo",
-      "left": 305,
-      "top": 129,
-      "width": 400,
-      "height": 180,
-      "combined": true
-    },
-    "2,10": {
+    "0,0": {
       "type": "combined_normal",
-      "left": 720,
+      "left": 199,
+      "top": 23,
+      "width": 1681,
+      "height": 91,
+      "combined": true
+    },
+    "2,1": {
+      "type": "combined_normal",
+      "left": 252,
       "top": 129,
-      "width": 847,
-      "height": 180,
+      "width": 250,
+      "height": 250,
       "combined": true
     },
-    "6,2": {
-      "type": "combined_logo",
-      "left": 305,
-      "top": 324,
-      "width": 1262,
-      "height": 185,
+    "2,6": {
+      "type": "combined_normal",
+      "left": 517,
+      "top": 129,
+      "width": 250,
+      "height": 250,
       "combined": true
     },
-    "10,2": {
-      "type": "combined_logo",
-      "left": 305,
-      "top": 524,
-      "width": 1262,
-      "height": 164,
+    "2,11": {
+      "type": "combined_normal",
+      "left": 782,
+      "top": 129,
+      "width": 250,
+      "height": 250,
+      "combined": true
+    },
+    "2,16": {
+      "type": "combined_normal",
+      "left": 1047,
+      "top": 129,
+      "width": 250,
+      "height": 250,
+      "combined": true
+    },
+    "2,21": {
+      "type": "combined_normal",
+      "left": 1312,
+      "top": 129,
+      "width": 250,
+      "height": 250,
+      "combined": true
+    },
+    "2,26": {
+      "type": "combined_normal",
+      "left": 1577,
+      "top": 129,
+      "width": 250,
+      "height": 250,
+      "combined": true
+    },
+    "7,1": {
+      "type": "combined_normal",
+      "left": 252,
+      "top": 394,
+      "width": 1575,
+      "height": 197,
+      "combined": true
+    },
+    "11,1": {
+      "type": "combined_normal",
+      "left": 252,
+      "top": 606,
+      "width": 1575,
+      "height": 250,
       "combined": true
     }
   },
   "content": {
-    "email": "emnlvega@gmail.com",
-    "phone": "+664 204 4771",
-    "social": {
-      "twitter": "@emnlvega2",
-      "instagram": "@emnlvega",
-      "github": "@emnlvega",
-      "facebook": "Emanuel Vega",
-      "steam": "emnlvega"
-    },
-    "location": "Tijuana, Baja California, México",
-    "availability": "DISPONIBLE PARA PROYECTOS"
+    "social": [
+      { "id": "gmail", "name": "GMAIL", "value": "emnlvega@gmail.com", "link": "mailto:emnlvega@gmail.com" },
+      { "id": "phone", "name": "TELÉFONO", "value": "+52 664 204 4771", "link": "tel:+526642044771" },
+      { "id": "github", "name": "GITHUB", "value": "emnlvega", "link": "https://github.com/emnlvega" },
+      { "id": "facebook", "name": "FACEBOOK", "value": "Emanuel Vega", "link": "https://www.facebook.com/emnlvega" },
+      { "id": "instagram", "name": "INSTAGRAM", "value": "@emnlvega", "link": "https://www.instagram.com/emnlvega/" },
+      { "id": "steam", "name": "STEAM", "value": "emnlvega", "link": "https://steamcommunity.com/id/emnlvega/" }
+    ],
+    "availability": "DISPONIBLE PARA PROYECTOS REMOTOS",
+    "availabilitySub": "EN CUALQUIER HORARIO, ME ADAPTO AL QUE NECESITE",
+    "quote": "TIJUANA, BAJA CALIFORNIA, MÉXICO",
+    "location": "RESPONDO MÁS RÁPIDO POR GMAIL Y WHATSAPP" 
   }
 }
