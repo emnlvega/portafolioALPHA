@@ -8,7 +8,6 @@ let resizeTimeout = null;
 export function toggleArchitectMode() {
     // Verificar si está habilitado en la configuración
     if (!CONFIG.ARCHITECT_MODE.ENABLED) {
-        console.log('Modo Arquitecto deshabilitado en CONFIG');
         return false;
     }
     
@@ -169,7 +168,6 @@ function showArchitectOverlay() {
     });
     
     // Mostrar información en consola
-    console.log(`🔲 Modo Arquitecto: ${coordinateLabels.length} coordenadas mostradas`);
 }
 
 function hideArchitectOverlay() {

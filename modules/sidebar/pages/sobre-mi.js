@@ -52,7 +52,6 @@ export async function renderSobreMiContent() {
     if (!photoCell || !bioCell || !skillsCell || !expCell) {
         if (retryCountSobreMi < MAX_RETRIES) {
             retryCountSobreMi++;
-            console.warn(`Sobre Mi: celdas no encontradas (intento ${retryCountSobreMi}), reintentando...`);
             setTimeout(() => renderSobreMiContent(), 300);
         } else {
             console.error('Sobre Mi: no se pudieron encontrar las celdas combinadas después de varios intentos.');

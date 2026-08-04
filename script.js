@@ -2,7 +2,7 @@ import { CONFIG, LOGO_DESIGN, updateColors, getCurrentColors, createColors } fro
 import { createGrid, repositionGrid, repositionSidebarOverlay, repositionSidebarTexts, repositionCombinedCells } from './modules/grid.js';
 import { resetGrid, exportDesignToJSON, designCells, setupCellEvents, toggleCellOff } from './modules/interactions.js';
 import { importDesignFromJSON } from './modules/logo.js';
-import { animateSidebar, returnToMainLogo, isSpecialPageActiveCheck, handleSidebarAction } from './modules/sidebar/index.js';
+import { animateSidebar, returnToMainLogo, isSpecialPageActiveCheck, handleSidebarAction, isTransitioningCheck } from './modules/sidebar/index.js';
 import { startRandomAnimations, stopRandomAnimations, restartRandomAnimations } from './modules/animations.js';
 import { toggleArchitectMode, updateArchitectOverlay, isArchitectModeActive } from './modules/architect.js';
 import { initOverlays, pauseOverlays, resumeOverlays, setOverlayOpacity, setOverlayBlendMode, destroyOverlays, setOverlayRandomOrder } from './modules/overlay.js';
@@ -327,6 +327,12 @@ document.addEventListener('contextmenu', function(e) {
 
 // ===== KEYBOARD SHORTCUTS =====
 document.addEventListener('keydown', (e) => {
+    x
+     if (isTransitioningCheck()) {
+        e.preventDefault();
+        return;
+    }
+
     // Si el foco está en un input/textarea, ignorar atajos
     const target = e.target;
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
@@ -386,7 +392,6 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'i' || e.key === 'I') {
         if (CONFIG.ENABLE_IMPORT) {
             e.preventDefault();
-            console.log('🔽 Abriendo diálogo de importación...');
             showImportDialog();
         }
         return;
@@ -434,7 +439,6 @@ document.addEventListener('keydown', (e) => {
         if (active) {
             updateArchitectOverlay();
         }
-        console.log(`Modo Arquitecto: ${active ? 'ACTIVADO' : 'DESACTIVADO'}`);
         return;
     }
 });

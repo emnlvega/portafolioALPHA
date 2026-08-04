@@ -81,7 +81,6 @@ export function showProjects() {
 export function showImportDialog() {
     // 🔥 SI estamos en página especial, NO abrir el diálogo
     if (isSpecialPageActiveCheck()) {
-        console.log('📌 Importación manual deshabilitada en páginas especiales');
         return;
     }
     

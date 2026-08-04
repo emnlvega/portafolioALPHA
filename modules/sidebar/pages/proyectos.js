@@ -4,6 +4,7 @@ import { CONFIG } from '../../config.js';
 import { showDialog } from '../../dialogs.js';
 import { importDesignFromJSON } from '../../logo.js';
 import { resetGrid } from '../../interactions.js';
+import { isTransitioningCheck } from '../index.js';
 
 let proyectosData = null;
 let currentPage = 0;
@@ -18,6 +19,8 @@ let isDetailExpanded = false;
 let isExpanding = false;
 let detailCellRef = null;
 let renderTimeout = null;
+let textureWasVisibleBeforeExpand = true;
+let textureStateFromSettings = true;
 
 // ===== DISEÑO EXPANDIDO =====
 const EXPANDED_DESIGN = {
@@ -72,6 +75,17 @@ function toggleTextureOverlay(show) {
     }
 }
 
+function getTextureVisibilityFromSettings() {
+    try {
+        const saved = localStorage.getItem('edesign_settings');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            return parsed.textura !== undefined ? parsed.textura : true;
+        }
+    } catch (e) {}
+    return true;
+}
+
 async function loadProyectosData() {
     if (proyectosData) return proyectosData;
     const response = await fetch(new URL('../data/proyectos.json', import.meta.url));
@@ -97,34 +111,31 @@ export function clearProjectSelection() {
 }
 
 function toggleDetailExpand() {
+    if (isTransitioningCheck()) {
+        return;
+    }
+    
     if (isExpanding) return;
+    if (!selectedProjectId || !selectedProjectData) return;
+    
     isExpanding = true;
 
-    // 🔥 Guardar el estado actual de la textura ANTES de expandir
-    const overlay = document.getElementById('overlay-container');
-    const wasTextureVisible = overlay ? overlay.style.display !== 'none' : true;
+    textureStateFromSettings = getTextureVisibilityFromSettings();
 
     loadProyectosData().then(data => {
-        // Guardar el estado actual
         const savedProjectId = selectedProjectId;
         const savedProjectData = selectedProjectData;
         const savedDetailPage = detailPage;
 
-        // Alternar estado
         const newExpandedState = !isDetailExpanded;
-        
-        // Elegir el diseño a importar
         const designToImport = newExpandedState ? EXPANDED_DESIGN : data.design;
 
-        // 🔥 Si estamos expandiendo, ocultar la textura
         if (newExpandedState) {
             toggleTextureOverlay(false);
         } else {
-            // Si estamos minimizando, restaurar la textura al estado anterior
-            toggleTextureOverlay(wasTextureVisible);
+            toggleTextureOverlay(textureStateFromSettings);
         }
 
-        // 🔥 PRIMERO: Limpiar todos los elementos de contenido ANTES de importar
         document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn').forEach(el => el.remove());
         
         const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
@@ -133,24 +144,19 @@ function toggleDetailExpand() {
             children.forEach(child => child.remove());
         });
 
-        // Usar reset = false para mantener las celdas existentes y solo reposicionar
         const shouldReset = false;
 
-        // Importar el diseño
         importDesignFromJSON(designToImport, () => {
-            // Actualizar el estado ANTES de renderizar
             isDetailExpanded = newExpandedState;
             selectedProjectId = savedProjectId;
             selectedProjectData = savedProjectData;
             detailPage = savedDetailPage;
 
-            // Limpiar timeout anterior
             if (renderTimeout) {
                 clearTimeout(renderTimeout);
                 renderTimeout = null;
             }
 
-            // Renderizar después de que las celdas se hayan reposicionado
             renderTimeout = setTimeout(() => {
                 renderProyectosContent();
                 isExpanding = false;
@@ -163,7 +169,11 @@ function toggleDetailExpand() {
 function updateExpandButton(cell) {
     const oldBtn = cell.querySelector('.expand-btn');
     if (oldBtn) oldBtn.remove();
-    addExpandButton(cell);
+    
+    // Solo mostrar el botón si hay un proyecto seleccionado
+    if (selectedProjectId && selectedProjectData) {
+        addExpandButton(cell);
+    }
 }
 
 function addExpandButton(cell) {
@@ -218,15 +228,12 @@ export async function renderProyectosContent() {
     const container = document.getElementById('grid-container');
     if (!container) return;
     
-    // 🔥 Si estamos en modo normal, asegurar que la textura esté visible
+    // Restaurar textura según settings si estamos en modo normal
     if (!isDetailExpanded) {
-        const overlay = document.getElementById('overlay-container');
-        if (overlay) {
-            overlay.style.display = 'block';
-        }
+        const textureEnabled = getTextureVisibilityFromSettings();
+        toggleTextureOverlay(textureEnabled);
     }
     
-    // 🔥 LIMPIEZA COMPLETA DE ELEMENTOS DE CONTENIDO
     document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn').forEach(el => el.remove());
     
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
@@ -237,7 +244,6 @@ export async function renderProyectosContent() {
     
     const cells = container.querySelectorAll('.grid-cell, .logo-cell');
     
-    // Variables para almacenar las celdas
     let titleCell = null;
     let categoryLeftArrow = null;
     let categoryRightArrow = null;
@@ -250,69 +256,55 @@ export async function renderProyectosContent() {
     const categoryCols = [2, 6, 10, 14, 18, 22, 26];
     const projectCols = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28];
     
-    // Identificar celdas según el modo
     cells.forEach(cell => {
         if (cell.dataset.combined === 'true') {
             const row = parseInt(cell.dataset.designRow);
             const col = parseInt(cell.dataset.designCol);
             const key = `${row},${col}`;
             
-            // Título siempre en 0,0
             if (key === '0,0') {
                 titleCell = cell;
             }
-            // SOLO EN MODO NORMAL: Categorías (fila 2, columnas específicas)
             else if (!isDetailExpanded && row === 2 && categoryCols.includes(col)) {
                 categoryCells.push(cell);
             }
-            // SOLO EN MODO NORMAL: Proyectos (fila 5)
             else if (!isDetailExpanded && row === 5 && projectCols.includes(col)) {
                 projectCells.push(cell);
             }
-            // SOLO EN MODO NORMAL: Flechas de categoría (fila 2, col 0 y 30)
             else if (!isDetailExpanded && row === 2 && col === 0) {
                 categoryLeftArrow = cell;
             }
             else if (!isDetailExpanded && row === 2 && col === 30) {
                 categoryRightArrow = cell;
             }
-            // EN MODO EXPANDIDO: 2,0 es flecha izquierda de detalle
             else if (isDetailExpanded && row === 2 && col === 0) {
                 detailLeftArrow = cell;
             }
-            // EN MODO EXPANDIDO: 2,2 es detalle
             else if (isDetailExpanded && row === 2 && col === 2) {
                 detailCell = cell;
                 detailCellRef = cell;
             }
-            // EN MODO EXPANDIDO: 2,30 es flecha derecha de detalle
             else if (isDetailExpanded && row === 2 && col === 30) {
                 detailRightArrow = cell;
             }
-            // EN MODO NORMAL: 7,0 es flecha izquierda de detalle
             else if (!isDetailExpanded && row === 7 && col === 0) {
                 detailLeftArrow = cell;
             }
-            // EN MODO NORMAL: 7,2 es detalle
             else if (!isDetailExpanded && row === 7 && col === 2) {
                 detailCell = cell;
                 detailCellRef = cell;
             }
-            // EN MODO NORMAL: 7,30 es flecha derecha de detalle
             else if (!isDetailExpanded && row === 7 && col === 30) {
                 detailRightArrow = cell;
             }
         }
     });
 
-    // Si no hay celda de detalle, esperar
     if (!detailCell) {
-        console.log('Esperando a que la celda de detalle se cree...');
         setTimeout(() => renderProyectosContent(), 150);
         return;
     }
     
-    // ===== TÍTULO =====
     if (titleCell) {
         const title = document.createElement('div');
         title.className = 'proyectos-content';
@@ -339,7 +331,6 @@ export async function renderProyectosContent() {
         titleCell.appendChild(title);
     }
     
-    // ===== CATEGORÍAS (SOLO EN MODO NORMAL) =====
     if (!isDetailExpanded) {
         const categories = ['TODOS', ...data.categories];
         categoryCells.forEach((cell, index) => {
@@ -428,7 +419,6 @@ export async function renderProyectosContent() {
         });
     }
     
-    // ===== PROYECTOS (SOLO EN MODO NORMAL) =====
     if (!isDetailExpanded) {
         const allProjects = data.projects;
         const filteredProjects = currentCategory === 'TODOS' 
@@ -547,12 +537,10 @@ export async function renderProyectosContent() {
         });
     }
     
-    // ===== DETALLE =====
     if (detailCell) {
         if (selectedProjectId && selectedProjectData) {
             showProjectDetail(selectedProjectData, detailCell);
         } else if (!isDetailExpanded) {
-            // Solo mostrar mensaje en modo normal
             const message = document.createElement('div');
             message.className = 'proyectos-select-message';
             message.style.cssText = `
@@ -609,10 +597,9 @@ export async function renderProyectosContent() {
             }
         }
         
-        addExpandButton(detailCell);
+        updateExpandButton(detailCell);
     }
     
-    // ===== FLECHAS DE CATEGORÍA (SOLO EN MODO NORMAL) =====
     if (!isDetailExpanded) {
         const allProjects = data.projects;
         const filteredProjects = currentCategory === 'TODOS' 
@@ -710,7 +697,6 @@ export async function renderProyectosContent() {
         });
     }
     
-    // ===== FLECHAS DE DETALLE (SIEMPRE) =====
     const detailArrows = [
         {
             cell: detailLeftArrow,
@@ -806,7 +792,6 @@ export async function renderProyectosContent() {
 
 function showProjectDetail(project, detailCell) {
     if (!detailCell) {
-        console.warn('detailCell no encontrado');
         return;
     }
     

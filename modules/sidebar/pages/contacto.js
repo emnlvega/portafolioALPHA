@@ -53,7 +53,6 @@ export async function renderContactoContent() {
     if (!emailCell || !socialCell || !infoCell || !footerCell) {
         if (retryCountContacto < MAX_RETRIES_CONTACTO) {
             retryCountContacto++;
-            console.warn(`Contacto: celdas no encontradas (intento ${retryCountContacto}), reintentando...`);
             setTimeout(() => renderContactoContent(), 300);
             return;
         } else {
@@ -189,7 +188,7 @@ export async function renderContactoContent() {
             display: flex; align-items: center; justify-content: center;
             color: ${CONFIG.COLORS.primary}; font-family: 'Courier New', monospace;
             font-size: 18px; letter-spacing: 8px; text-transform: uppercase;
-            text-shadow: var(--text-shadow-normal); opacity: 0.3;
+            text-shadow: var(--text-shadow-normal); opacity: 1;
             pointer-events: none; z-index: 20;
         `;
         footer.textContent = data.content.availability;

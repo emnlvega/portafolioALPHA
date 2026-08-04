@@ -11,10 +11,12 @@ import { getSobreMiDesign, renderSobreMiContent } from './pages/sobre-mi.js';
 import { getContactoDesign, renderContactoContent } from './pages/contacto.js';
 import { clearProjectSelection } from './pages/proyectos.js';
 
+
 // ===== ESTADO =====
 let isSpecialPageActive = false;
 let currentPage = null;
 let isProgrammaticLoad = false;
+let isTransitioning = false;
 
 // ===== MAPA DE PÁGINAS =====
 const PAGE_HANDLERS = {
@@ -385,6 +387,11 @@ function createLogo(container, x, y) {
 
 // ===== HANDLE SIDEBAR ACTION =====
 export function handleSidebarAction(action) {
+    // 🔥 Si hay una transición en curso, ignorar
+    if (isTransitioning) {
+        return;
+    }
+    
     if (action === 'inicio') {
         returnToMainLogo();
         document.querySelectorAll('.sidebar-text').forEach(el => {
@@ -419,11 +426,20 @@ export function handleSidebarAction(action) {
 
 // ===== LOAD SIDEBAR PAGE =====
 function loadSidebarPage(pageKey) {
+    // 🔥 Si hay una transición en curso, ignorar
+    if (isTransitioning) {
+        return;
+    }
+    
     if (pageKey !== 'proyectos') {
         clearProjectSelection();
     }
+    
     const handler = PAGE_HANDLERS[pageKey];
     if (!handler) return;
+    
+    // 🔥 Establecer bloqueo
+    isTransitioning = true;
     
     document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content').forEach(el => el.remove());
     
@@ -449,6 +465,8 @@ function loadSidebarPage(pageKey) {
                     handler.render();
                     setTimeout(() => {
                         restartRandomAnimations();
+                        // 🔥 Liberar bloqueo después de que todo termine
+                        isTransitioning = false;
                     }, 500);
                 }, 300);
             });
@@ -456,13 +474,21 @@ function loadSidebarPage(pageKey) {
             console.error('Error loading page:', error);
             isProgrammaticLoad = false;
             setGridInteractionsEnabled(true);
+            // 🔥 Liberar bloqueo en caso de error
+            isTransitioning = false;
         }
     }, 200);
 }
 
 // ===== RETURN TO MAIN =====
 export function returnToMainLogo() {
+    if (isTransitioning) {
+        return;
+    }
+    
     if (!isSpecialPageActive) return;
+
+    isTransitioning = true;
 
     clearProjectSelection();
     
@@ -476,7 +502,10 @@ export function returnToMainLogo() {
     
     setGridInteractionsEnabled(false);
     stopRandomAnimations();
-    resetGrid(false);
+    
+    // 🔥 RESET COMPLETO (reset = true) para limpiar TODAS las celdas combinadas y elementos residuales
+    resetGrid(true);
+    
     isProgrammaticLoad = true;
     
     setTimeout(() => {
@@ -487,10 +516,14 @@ export function returnToMainLogo() {
             setGridInteractionsEnabled(true);
             window.proyectosCurrentPage = 0;
             window.proyectosCurrentCategory = 'TODOS';
+
+            
             setTimeout(() => {
                 restartRandomAnimations();
+                // 🔥 Liberar bloqueo después de que todo termine
+                isTransitioning = false;
             }, 500);
-        });
+        }, true);
     }, 200);
 }
 
@@ -524,7 +557,9 @@ function preventSpecialKeys(e) {
     if (e.code === 'KeyI' && e.ctrlKey) e.preventDefault();
 }
 
+
 // ===== EXPORT =====
 export function isSpecialPageActiveCheck() { return isSpecialPageActive; }
 export function isProgrammaticLoadCheck() { return isProgrammaticLoad; }
 export function getCurrentPage() { return currentPage; }
+export function isTransitioningCheck() { return isTransitioning; }

@@ -630,6 +630,8 @@ export function setupCellEvents(cell) {
     cell.addEventListener('dragstart', (e) => e.preventDefault());
 }
 
+// modules/interactions.js
+
 export function resetGrid(keepCombined = false) {
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell');
     
@@ -671,6 +673,8 @@ export function resetGrid(keepCombined = false) {
         delete cell.dataset.combinedHeight;
         delete cell.dataset.combinedRows;
         delete cell.dataset.combinedCols;
+        delete cell.dataset.originalCombinedOffsetX;
+        delete cell.dataset.originalCombinedOffsetY;
     });
 
     selectedCells = [];
@@ -679,6 +683,9 @@ export function resetGrid(keepCombined = false) {
     isResizingCombined = false;
     resizeStartCell = null;
     isClickOnCombined = false;
+    
+    // Eliminar cualquier botón expand residual
+    document.querySelectorAll('.expand-btn').forEach(el => el.remove());
     
     setTimeout(() => {
         refreshAnimationCount();
@@ -732,9 +739,8 @@ export function exportDesignToJSON() {
     });
 
     const json = JSON.stringify(result, null, 2);
-    console.log('=== DISEÑO JSON EXPORTADO ===');
     console.log(json);
-    console.log('============================');
+
 
     navigator.clipboard.writeText(json).then(() => {
         showDialog('DISEÑO EXPORTADO', 'El diseño ha sido copiado al portapapeles como JSON.');
