@@ -152,40 +152,187 @@ export const CONFIG = new Proxy(currentConfig, {
 });
 
 export const LOGO_DESIGN = {
-    "7,4": "logo",
-    "7,5": "h_red",
-    "7,7": "logo",
-    "7,8": "v_red",
-    "7,9": "logo",
-    "7,10": "logo",
-    "7,12": "v_red",
-    "7,13": "v_red",
-    "7,16": "v_red",
-    "7,18": "logo",
-    "7,19": "logo",
-    "7,20": "h_red",
-    "7,22": "logo",
-    "7,23": "h_red",
-    "7,25": "hh_red",
-    "8,4": "h_red",
-    "8,7": "v_red",
-    "8,9": "v_red",
-    "8,10": "v_red",
-    "8,11": "logo",
-    "8,18": "logo",
-    "8,19": "h_red",
-    "8,22": "v_red",
-    "8,24": "logo",
-    "8,25": "v_red",
-    "8,26": "logo",
-    "8,27": "v_red",
-    "9,4": "logo",
-    "9,5": "h_red",
-    "9,12": "logo",
-    "9,13": "logo",
-    "9,14": "h_red",
-    "9,16": "h_red",
-    "9,19": "logo",
-    "9,20": "h_red",
-    "9,23": "h_red"
+  "7,4": "logo",
+  "7,5": {
+    "type": "combined_red",
+    "left": 464,
+    "top": 394,
+    "width": 91,
+    "height": 38,
+    "combined": true
+  },
+  "7,7": "logo",
+  "7,8": {
+    "type": "combined_red",
+    "left": 623,
+    "top": 394,
+    "width": 38,
+    "height": 91,
+    "combined": true
+  },
+  "7,9": "logo",
+  "7,10": "logo",
+  "7,12": {
+    "type": "combined_red",
+    "left": 835,
+    "top": 394,
+    "width": 38,
+    "height": 91,
+    "combined": true
+  },
+  "7,13": {
+    "type": "combined_red",
+    "left": 888,
+    "top": 394,
+    "width": 38,
+    "height": 91,
+    "combined": true
+  },
+  "7,16": {
+    "type": "combined_red",
+    "left": 1047,
+    "top": 394,
+    "width": 38,
+    "height": 91,
+    "combined": true
+  },
+  "7,18": "logo",
+  "7,19": "logo",
+  "7,20": {
+    "type": "combined_red",
+    "left": 1259,
+    "top": 394,
+    "width": 91,
+    "height": 38,
+    "combined": true
+  },
+  "7,22": "logo",
+  "7,23": {
+    "type": "combined_red",
+    "left": 1418,
+    "top": 394,
+    "width": 91,
+    "height": 38,
+    "combined": true
+  },
+  "7,25": {
+    "type": "combined_red",
+    "left": 1524,
+    "top": 394,
+    "width": 144,
+    "height": 38,
+    "combined": true
+  },
+  "8,4": {
+    "type": "combined_red",
+    "left": 411,
+    "top": 447,
+    "width": 91,
+    "height": 38,
+    "combined": true
+  },
+  "8,7": {
+    "type": "combined_red",
+    "left": 570,
+    "top": 447,
+    "width": 38,
+    "height": 91,
+    "combined": true
+  },
+  "8,9": {
+    "type": "combined_red",
+    "left": 676,
+    "top": 447,
+    "width": 38,
+    "height": 91,
+    "combined": true
+  },
+  "8,10": {
+    "type": "combined_red",
+    "left": 729,
+    "top": 447,
+    "width": 38,
+    "height": 91,
+    "combined": true
+  },
+  "8,11": "logo",
+  "8,18": "logo",
+  "8,19": {
+    "type": "combined_red",
+    "left": 1206,
+    "top": 447,
+    "width": 91,
+    "height": 38,
+    "combined": true
+  },
+  "8,22": {
+    "type": "combined_red",
+    "left": 1365,
+    "top": 447,
+    "width": 38,
+    "height": 91,
+    "combined": true
+  },
+  "8,24": "logo",
+  "8,25": {
+    "type": "combined_red",
+    "left": 1524,
+    "top": 447,
+    "width": 38,
+    "height": 91,
+    "combined": true
+  },
+  "8,26": "logo",
+  "8,27": {
+    "type": "combined_red",
+    "left": 1630,
+    "top": 447,
+    "width": 38,
+    "height": 91,
+    "combined": true
+  },
+  "9,4": "logo",
+  "9,5": {
+    "type": "combined_red",
+    "left": 464,
+    "top": 500,
+    "width": 91,
+    "height": 38,
+    "combined": true
+  },
+  "9,12": "logo",
+  "9,13": "logo",
+  "9,14": {
+    "type": "combined_red",
+    "left": 941,
+    "top": 500,
+    "width": 91,
+    "height": 38,
+    "combined": true
+  },
+  "9,16": {
+    "type": "combined_red",
+    "left": 1047,
+    "top": 500,
+    "width": 91,
+    "height": 38,
+    "combined": true
+  },
+  "9,19": "logo",
+  "9,20": {
+    "type": "combined_red",
+    "left": 1259,
+    "top": 500,
+    "width": 91,
+    "height": 38,
+    "combined": true
+  },
+  "9,23": {
+    "type": "combined_red",
+    "left": 1418,
+    "top": 500,
+    "width": 91,
+    "height": 38,
+    "combined": true
+  }
 };

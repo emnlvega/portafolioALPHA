@@ -1,5 +1,5 @@
 import { CONFIG } from './config.js';
-
+import { isMobile } from './mobile.js';
 // Timeouts para cada animación
 let scaleTimeout = null;
 let colorTimeout = null;
@@ -17,6 +17,7 @@ const activeGlowAnimations = new Set();
 const activeRotateAnimations = new Set();
 const activeBorderShiftAnimations = new Set();
 const activeOpacityWaveAnimations = new Set();
+const IS_MOBILE = isMobile();
 
 // ===== FUNCIÓN PARA VERIFICAR SI UNA CELDA ES ELEGIBLE =====
 function isCellEligible(cell) {
@@ -512,6 +513,11 @@ function clearAllTimeouts() {
 // ===== EXPORTAR FUNCIONES PRINCIPALES =====
 
 export function startRandomAnimations() {
+    // 🔥 EN MÓVIL NO HACER NADA
+    if (IS_MOBILE) {
+        return;
+    }
+    
     if (isRunning) return;
     isRunning = true;
     
@@ -537,7 +543,12 @@ export function startRandomAnimations() {
 }
 
 export function stopRandomAnimations() {
-    clearAllTimeouts();
+    // En móvil simplemente limpiamos
+    if (IS_MOBILE) {
+        clearAllTimeouts();
+        isRunning = false;
+        return;
+    }
     isRunning = false;
     activeScaleAnimations.clear();
     activeColorAnimations.clear();
@@ -548,6 +559,11 @@ export function stopRandomAnimations() {
 }
 
 export function restartRandomAnimations() {
+    // En móvil no hacemos nada
+    if (IS_MOBILE) {
+        stopRandomAnimations();
+        return;
+    }
     stopRandomAnimations();
     // Limpiar completamente los sets
     activeScaleAnimations.clear();

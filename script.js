@@ -12,9 +12,234 @@ import { handleURLOnLoad, updateURL } from './modules/sidebar/index.js';
 import { setHashLoad } from './modules/logo.js';
 import { loadSobreMiData } from './modules/sidebar/pages/sobre-mi.js';
 import { loadContactoData } from './modules/sidebar/pages/contacto.js';
-
+import { isMobile, getDeviceType } from './modules/mobile.js';
+import { MOBILE_CONFIG } from './modules/mobile/mobile-config.js';
+import { renderMobileHome } from './modules/mobile/mobile-home.js';
+import { initMobileSimulator, toggleMobileSimulator, exportMobileDesign, isSimulatorActive } from './modules/mobile/mobile-simulator.js';
+import { navigateMobileTo } from './modules/mobile/mobile-nav.js';
+import { getCurrentMobilePage } from './modules/mobile/mobile-nav.js';
 
 let gridData = null;
+// Modificar CONFIG en móvil
+// script.js - Modificar applyMobileConfig
+
+// script.js - Modificar applyMobileConfig
+
+// script.js - Añadir/modificar funciones
+
+// ===== INICIALIZAR SIMULADOR MÓVIL (solo en PC) =====
+function initMobileSimulatorFeature() {
+    // Solo en PC (no en móvil real)
+    if (isMobile()) return;
+    
+    // Inicializar el simulador (crea el botón flotante)
+    initMobileSimulator();
+    
+    // 🔥 BOTÓN DE EXPORTAR (se muestra cuando el simulador está activo)
+    const exportBtn = document.createElement('button');
+    exportBtn.id = 'mobile-export-btn';
+    exportBtn.textContent = '💾 EXPORTAR MÓVIL';
+    exportBtn.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 99999;
+        background: rgba(0, 0, 0, 0.8);
+        border: 1px solid ${CONFIG.COLORS.primary};
+        color: ${CONFIG.COLORS.primary};
+        padding: 8px 16px;
+        font-family: 'Courier New', monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        display: none;
+    `;
+    
+    exportBtn.addEventListener('mouseenter', () => {
+        exportBtn.style.borderColor = CONFIG.COLORS.secondary;
+        exportBtn.style.color = CONFIG.COLORS.secondary;
+        exportBtn.style.boxShadow = `0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`;
+    });
+    exportBtn.addEventListener('mouseleave', () => {
+        exportBtn.style.borderColor = CONFIG.COLORS.primary;
+        exportBtn.style.color = CONFIG.COLORS.primary;
+        exportBtn.style.boxShadow = '0 0 30px rgba(0, 0, 0, 0.5)';
+    });
+    
+    exportBtn.addEventListener('click', () => {
+        if (isSimulatorActive()) {
+            exportMobileDesign();
+        } else {
+            // Si no está activo, activarlo primero
+            toggleMobileSimulator();
+            setTimeout(() => {
+                exportMobileDesign();
+            }, 300);
+        }
+    });
+    
+    document.body.appendChild(exportBtn);
+    
+    // Mostrar/ocultar el botón de exportar cuando el simulador cambie
+    const observer = new MutationObserver(() => {
+        const isActive = document.body.classList.contains('mobile-simulator');
+        exportBtn.style.display = isActive ? 'block' : 'none';
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+}
+
+// ===== TECLA X PARA ACTIVAR SIMULADOR =====
+document.addEventListener('keydown', (e) => {
+    // Solo en PC (no en móvil real)
+    if (isMobile()) return;
+    
+    // 🔥 TECLA X - Activar/Desactivar simulador móvil
+    if (e.key === 'x' || e.key === 'X') {
+        // No interferir con inputs
+        const target = e.target;
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+            return;
+        }
+        
+        e.preventDefault();
+        toggleMobileSimulator();
+        
+        // Si se activó el simulador, mostrar el botón de exportar
+        setTimeout(() => {
+            const exportBtn = document.getElementById('mobile-export-btn');
+            if (exportBtn) {
+                const isActive = document.body.classList.contains('mobile-simulator');
+                exportBtn.style.display = isActive ? 'block' : 'none';
+            }
+        }, 100);
+    }
+    
+    // 🔥 TECLA E (con simulador activo) - Exportar diseño móvil
+    if ((e.key === 'e' || e.key === 'E') && document.body.classList.contains('mobile-simulator')) {
+        const target = e.target;
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+            return;
+        }
+        e.preventDefault();
+        exportMobileDesign();
+    }
+});
+
+function applyMobileConfig() {
+    if (isMobile()) {
+        // Configuración del grid
+        CONFIG.CELL_SIZE = MOBILE_CONFIG.CELL_SIZE;
+        CONFIG.GAP = MOBILE_CONFIG.GAP;
+        CONFIG.COLS = MOBILE_CONFIG.COLS;
+        CONFIG.ROWS = MOBILE_CONFIG.ROWS;
+        CONFIG.SIDEBAR_WIDTH = MOBILE_CONFIG.SIDEBAR_WIDTH;
+        CONFIG.BORDER_RADIUS = MOBILE_CONFIG.BORDER_RADIUS;
+        
+        // 🔥 DESACTIVAR TODAS LAS ANIMACIONES
+        CONFIG.ANIMATIONS.SCALE.ENABLED = false;
+        CONFIG.ANIMATIONS.COLOR.ENABLED = false;
+        CONFIG.ANIMATIONS.GLOW.ENABLED = false;
+        CONFIG.ANIMATIONS.ROTATE.ENABLED = false;
+        CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = false;
+        CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = false;
+        
+        // 🔥 APLICAR VARIABLES CSS
+        document.documentElement.style.setProperty('--cell-size', `${MOBILE_CONFIG.CELL_SIZE}px`);
+        document.documentElement.style.setProperty('--cell-gap', `${MOBILE_CONFIG.GAP}px`);
+        document.documentElement.style.setProperty('--cell-radius', `${MOBILE_CONFIG.BORDER_RADIUS}px`);
+        
+        document.body.classList.add('mobile-device');
+        
+        // 🔥 CONTROLAR TODOS LOS OVERLAYS DESDE JS
+        applyMobileOverlays();
+    }
+}
+
+// script.js - Modificar applyMobileOverlays
+
+function applyMobileOverlays() {
+    const show = MOBILE_CONFIG.SHOW;
+    
+    // Grain
+    const grain = document.getElementById('grain-overlay');
+    if (grain) {
+        grain.style.display = show.grain ? 'block' : 'none';
+    }
+    
+    // Gaussian Blur
+    const gaussian = document.getElementById('gaussian-blur');
+    if (gaussian) {
+        gaussian.style.display = show.gaussianBlur ? 'block' : 'none';
+    }
+    
+    // Bloom
+    const bloom = document.getElementById('bloom-overlay');
+    if (bloom) {
+        bloom.style.display = show.bloom ? 'block' : 'none';
+    }
+    
+    // Burn Blur
+    const burnBlur = document.getElementById('burn-blur');
+    if (burnBlur) {
+        burnBlur.style.display = show.burnBlur ? 'block' : 'none';
+    }
+    
+    // 🔥 TEXTURA (overlay-container)
+    const texture = document.getElementById('overlay-container');
+    if (texture) {
+        texture.style.display = show.texture ? 'block' : 'none';
+    }
+    
+    // Scanlines
+    if (show.scanlines) {
+        document.body.classList.remove('no-scanlines');
+    } else {
+        document.body.classList.add('no-scanlines');
+    }
+    
+    // Vignette
+    if (show.vignette) {
+        document.body.classList.remove('no-vignette');
+    } else {
+        document.body.classList.add('no-vignette');
+    }
+    
+    // Flicker
+    const gridContainer = document.getElementById('grid-container');
+    if (gridContainer) {
+        if (show.flicker) {
+            gridContainer.classList.remove('no-flicker');
+        } else {
+            gridContainer.classList.add('no-flicker');
+        }
+    }
+    
+    // Glow
+    if (show.glow) {
+        document.body.classList.remove('no-glow');
+    } else {
+        document.body.classList.add('no-glow');
+    }
+    
+    // CRT Curvature
+    if (show.crtCurvature) {
+        gridContainer?.classList.remove('no-curvature');
+    } else {
+        gridContainer?.classList.add('no-curvature');
+    }
+    
+    // CRT Reflection
+    if (show.crtReflection) {
+        gridContainer?.classList.remove('no-reflection');
+    } else {
+        gridContainer?.classList.add('no-reflection');
+    }
+}
 
 function injectCSSVariables() {
     // Ya no leer localStorage aquí - solo aplicar CONFIG.COLORS
@@ -453,22 +678,26 @@ document.addEventListener('keydown', (e) => {
 
 // script.js - Función init() completa
 
-function init() {
-    // 1. Primero cargar settings (esto carga el color guardado y llama a updateColors)
-    initSettings();
-    
-    // 2. Ahora injectCSSVariables aplica los estilos con el color ya cargado
-    injectCSSVariables();
+// script.js - Parte del init() corregida
 
+function init() {
+    initSettings();
+    initMobileSimulatorFeature();
+    
+    // 🔥 DETECTAR MÓVIL Y APLICAR CONFIG
+    const mobile = isMobile();
+    if (mobile) {
+        applyMobileConfig();
+    }
+    
+    injectCSSVariables();
+    
     Promise.all([
         loadSobreMiData().catch(() => {}),
         loadContactoData().catch(() => {}),
-
-    ]).then(() => {
-        // Los datos están precargados
-    });
+    ]).then(() => {});
     
-    // 3. Crear el grid
+    // Crear grid con la configuración (móvil o escritorio)
     gridData = createGrid();
     
     designCells.forEach(cell => {
@@ -484,37 +713,37 @@ function init() {
         }
     });
     
-    // 🔥 Inicializar overlays siempre
     initOverlays();
     
-    // 🔥 Verificar si hay hash en la URL
     const hasHash = hasHashInURL();
     
     if (hasHash) {
-        // 🔥 CON HASH: NO importar el logo, NO animar sidebar
-        // Indicar que es carga con hash para que logo.js no haga animación
         setHashLoad(true);
-        
-        // Solo manejar la URL directamente
         setTimeout(() => {
             const result = handleURLOnLoad();
-            
             if (result === 'inicio') {
-                // Caso raro: hash vacío o inválido, cargar logo normal
                 setHashLoad(false);
-                importDesignFromJSON(LOGO_DESIGN);
-                animateSidebar(
-                    gridData.sidebarCells,
-                    gridData.rows,
-                    gridData.cellSize,
-                    gridData.offsetX,
-                    gridData.offsetY
-                );
-                setTimeout(() => {
-                    startRandomAnimations();
-                }, 500);
+                if (mobile) {
+                    // 🔥 RENDER MÓVIL - INICIO
+                    setTimeout(() => {
+                        import('./modules/mobile/mobile-home.js').then(module => {
+                            module.renderMobileHome();
+                        });
+                    }, 300);
+                } else {
+                    importDesignFromJSON(LOGO_DESIGN);
+                    animateSidebar(
+                        gridData.sidebarCells,
+                        gridData.rows,
+                        gridData.cellSize,
+                        gridData.offsetX,
+                        gridData.offsetY
+                    );
+                    setTimeout(() => {
+                        startRandomAnimations();
+                    }, 500);
+                }
             } else if (result.page === 'proyectos') {
-                // Cargar proyectos sin logo
                 handleSidebarAction('proyectos');
                 if (result.projectId) {
                     setTimeout(() => {
@@ -529,27 +758,33 @@ function init() {
                 handleSidebarAction('contacto');
             }
         }, 100);
-        
     } else {
-        // SIN HASH: cargar todo normalmente con animación del logo
         setHashLoad(false);
         
-        setTimeout(() => {
-            importDesignFromJSON(LOGO_DESIGN);
-        }, CONFIG.LOGO_DELAY || 500);
-        
-        setTimeout(() => {
-            animateSidebar(
-                gridData.sidebarCells,
-                gridData.rows,
-                gridData.cellSize,
-                gridData.offsetX,
-                gridData.offsetY
-            );
+        if (mobile) {
+            // 🔥 RENDER MÓVIL DIRECTAMENTE
             setTimeout(() => {
-                startRandomAnimations();
-            }, 500);
-        }, CONFIG.LOGO_DELAY + 500);
+                renderMobileHome();
+            }, 300);
+        } else {
+            // Escritorio: logo normal
+            setTimeout(() => {
+                importDesignFromJSON(LOGO_DESIGN);
+            }, CONFIG.LOGO_DELAY || 500);
+            
+            setTimeout(() => {
+                animateSidebar(
+                    gridData.sidebarCells,
+                    gridData.rows,
+                    gridData.cellSize,
+                    gridData.offsetX,
+                    gridData.offsetY
+                );
+                setTimeout(() => {
+                    startRandomAnimations();
+                }, 500);
+            }, CONFIG.LOGO_DELAY + 500);
+        }
     }
 }
 
@@ -611,5 +846,9 @@ window.addEventListener('popstate', () => {
         handleSidebarAction(result.page);
     }
 });
+window.navigateMobileTo = navigateMobileTo;
+window.handleMobileNav = navigateMobileTo;
+window.mobileNav = navigateMobileTo;
+window.getCurrentMobilePage = getCurrentMobilePage;
 
 document.addEventListener('DOMContentLoaded', init);

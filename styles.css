@@ -982,3 +982,237 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     text-shadow: 0 0 15px rgba(var(--color-secondary-rgb), 0.2);
 }
 
+/* styles.css - Reemplazar toda la sección móvil con esto */
+
+/* ========================================
+   MODO MÓVIL - ESTILOS LIGEROS CON GLOW
+   ======================================== */
+
+.mobile-device #grid-container {
+    border-radius: 12px !important;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.2) !important;
+    box-shadow: 
+        0 0 40px rgba(0, 0, 0, 0.6) inset,
+        0 0 20px rgba(var(--color-primary-rgb), 0.02),
+        inset 0 0 20px rgba(var(--color-primary-rgb), 0.02) !important;
+    background: var(--color-bg) !important;
+    animation: none !important;
+}
+
+
+/* ========================================
+   GLOW LIGERO PARA CELDAS EN MÓVIL
+   ======================================== */
+
+/* 🔥 GLOW PARA CELDAS ROJAS (fill primary) - LIGERO */
+.mobile-device .grid-cell[data-state="red"],
+.mobile-device .logo-cell[data-state="red"],
+.mobile-device .grid-cell[data-state="combined_red"],
+.mobile-device .logo-cell[data-state="combined_red"],
+.mobile-device .grid-cell[data-state="combined"],
+.mobile-device .logo-cell[data-state="combined"] {
+    box-shadow: 
+        0 0 6px rgba(var(--color-primary-rgb), 0.3),
+        0 0 20px rgba(var(--color-primary-rgb), 0.08) !important;
+}
+
+/* 🔥 GLOW PARA CELDAS NORMALES (outline) - LIGERO */
+.mobile-device .grid-cell:not([data-state]):not([data-state="off"]),
+.mobile-device .logo-cell:not([data-state]):not([data-state="off"]),
+.mobile-device .grid-cell[data-state="normal"],
+.mobile-device .logo-cell[data-state="normal"],
+.mobile-device .grid-cell[data-state="combined_normal"],
+.mobile-device .logo-cell[data-state="combined_normal"] {
+    box-shadow: 
+        0 0 8px rgba(var(--color-primary-rgb), 0.15),
+        0 0 20px rgba(var(--color-primary-rgb), 0.05) !important;
+}
+
+/* 🔥 GLOW PARA CELDAS LOGO (outline blanco) - LIGERO */
+.mobile-device .grid-cell[data-state="logo"],
+.mobile-device .logo-cell[data-state="logo"],
+.mobile-device .grid-cell[data-state="combined_logo"],
+.mobile-device .logo-cell[data-state="combined_logo"] {
+    border: none !important;
+    border-color: transparent !important;
+    box-shadow: 
+        inset 0 0 0 1px var(--color-secondary),
+        0 0 4px rgba(var(--color-secondary-rgb), 0.4),
+        0 0 15px rgba(var(--color-secondary-rgb), 0.05) !important;
+}
+
+/* ========================================
+   SCANLINES DENTRO DE CELDAS
+   ======================================== */
+
+.mobile-device .grid-cell[data-state="red"]::after,
+.mobile-device .logo-cell[data-state="red"]::after,
+.mobile-device .grid-cell[data-state="combined_red"]::after,
+.mobile-device .logo-cell[data-state="combined_red"]::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: var(--cell-radius) !important;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(var(--color-primary-rgb), 0.06) 3px
+    ) !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+    display: block !important;
+}
+
+.mobile-device .grid-cell[data-state="logo"]::after,
+.mobile-device .logo-cell[data-state="logo"]::after,
+.mobile-device .grid-cell[data-state="combined_logo"]::after,
+.mobile-device .logo-cell[data-state="combined_logo"]::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: var(--cell-radius) !important;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.04) 3px
+    ) !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+    display: block !important;
+}
+
+/* ========================================
+   BOTONES DEL SIDEBAR MÓVIL - BLOQUEADOS
+   ======================================== */
+
+/* 🔥 BOTONES - NO INTERACTUABLES CON EL GRID */
+.mobile-device .mobile-btn-overlay {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 30 !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 2px solid var(--color-primary) !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+}
+
+/* 🔥 BOTONES - HOVER */
+.mobile-device .mobile-btn-overlay:hover {
+    border-color: var(--color-secondary) !important;
+    background: rgba(var(--color-secondary-rgb), 0.08) !important;
+    box-shadow: 0 0 30px rgba(var(--color-secondary-rgb), 0.1) !important;
+}
+
+/* 🔥 BOTONES - TOUCH */
+.mobile-device .mobile-btn-overlay:active {
+    transform: scale(0.97) !important;
+    border-color: var(--color-secondary) !important;
+    background: rgba(var(--color-secondary-rgb), 0.12) !important;
+}
+
+/* 🔥 ICONOS DE BOTONES */
+.mobile-device .mobile-btn-overlay .btn-icon {
+    font-size: 28px !important;
+    color: var(--color-primary) !important;
+    text-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+.mobile-device .mobile-btn-overlay:hover .btn-icon {
+    color: var(--color-secondary) !important;
+    text-shadow: 0 0 30px rgba(var(--color-secondary-rgb), 0.3) !important;
+}
+
+/* 🔥 TEXTO DE BOTONES */
+.mobile-device .mobile-btn-overlay .btn-text {
+    font-size: 10px !important;
+    letter-spacing: 2px !important;
+    color: var(--color-primary) !important;
+    text-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.1) !important;
+    transition: all 0.3s ease !important;
+    font-weight: bold !important;
+}
+
+.mobile-device .mobile-btn-overlay:hover .btn-text {
+    color: var(--color-secondary) !important;
+    text-shadow: 0 0 30px rgba(var(--color-secondary-rgb), 0.2) !important;
+}
+
+/* 🔥 LÍNEA DECORATIVA DE BOTONES */
+.mobile-device .mobile-btn-overlay .btn-line {
+    width: 30% !important;
+    height: 1px !important;
+    background: var(--color-primary) !important;
+    opacity: 0.3 !important;
+    transition: all 0.3s ease !important;
+}
+
+.mobile-device .mobile-btn-overlay:hover .btn-line {
+    background: var(--color-secondary) !important;
+    opacity: 0.8 !important;
+}
+
+/* ========================================
+   CELDAS EN MÓVIL - TRANSICIONES SUAVES
+   ======================================== */
+
+.mobile-device .grid-cell,
+.mobile-device .logo-cell,
+.mobile-device .sidebar-cell {
+    border-radius: 1px !important;
+    transition: all 0.2s ease !important;
+    will-change: auto !important;
+    backface-visibility: hidden !important;
+}
+
+/* ========================================
+   RESPONSIVE GENERAL
+   ======================================== */
+
+@media (max-width: 480px) {
+    html, body {
+        overflow: hidden !important;
+        height: 100vh !important;
+        width: 100vw !important;
+        position: fixed !important;
+        touch-action: none !important;
+    }
+    
+    #grid-container {
+        border-radius: 8px !important;
+        touch-action: none !important;
+    }
+    
+    /* Scroll en móvil */
+    .mobile-device .proyectos-detail,
+    .mobile-device .sobre-mi-content,
+    .mobile-device .contacto-content {
+        -webkit-overflow-scrolling: touch !important;
+        overflow-y: auto !important;
+        padding: 8px 10px !important;
+        font-size: 9px !important;
+    }
+    
+    .mobile-device .proyectos-detail::-webkit-scrollbar {
+        width: 2px !important;
+    }
+}
+
+/* ========================================
+   ANIMACIONES
+   ======================================== */
+
+@keyframes scanMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 10%; }
+}

@@ -1,0 +1,26 @@
+{
+  "30,0": {
+    "type": "combined_normal",
+    "left": 772.5,
+    "top": 696.5,
+    "width": 109,
+    "height": 109,
+    "combined": true
+  },
+  "30,6": {
+    "type": "combined_normal",
+    "left": 886.5,
+    "top": 696.5,
+    "width": 147,
+    "height": 109,
+    "combined": true
+  },
+  "30,14": {
+    "type": "combined_normal",
+    "left": 1038.5,
+    "top": 696.5,
+    "width": 109,
+    "height": 109,
+    "combined": true
+  }
+}

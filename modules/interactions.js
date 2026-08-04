@@ -3,6 +3,8 @@ import { getCellPosition } from './grid.js';
 import { restartRandomAnimations, refreshAnimationCount } from './animations.js';
 import { showDialog } from './dialogs.js';
 import { isSpecialPageActiveCheck } from './sidebar/index.js';
+import { isMobile } from './mobile.js';
+import { getCurrentMobilePage } from './mobile/mobile-nav.js';
 
 export let designCells = [];
 export let selectedCells = [];
@@ -20,6 +22,13 @@ export let resizeDirection = null;
 export let resizeCombinedId = null;
 export let isClickOnCombined = false;
 
+function isMobileSpecialPage() {
+    if (!isMobile()) return false;
+    const page = getCurrentMobilePage ? getCurrentMobilePage() : 'inicio';
+    // 🔥 Incluir proyecto-detalle como página especial
+    return page === 'sobre-mi' || page === 'proyectos' || page === 'proyecto-detalle' || page === 'contacto';
+}
+
 export function setDesignCells(cells) {
     designCells = cells;
 }
@@ -27,6 +36,7 @@ export function setDesignCells(cells) {
 export function applyOffState(cell) {
     // Si estamos en página especial, no permitir
     if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     
     const cellSize = CONFIG.CELL_SIZE;
     const origX = parseFloat(cell.dataset.originalX) || parseFloat(cell.style.left);
@@ -52,6 +62,7 @@ export function applyOffState(cell) {
 export function toggleCellOff(cell) {
     // Si estamos en página especial, no permitir
     if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     
     if (cell.dataset.isSidebar) return;
 
@@ -117,6 +128,7 @@ export function toggleCellOff(cell) {
 export function restoreCell(cell) {
     // Si estamos en página especial, no permitir
     if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     
     const cellSize = CONFIG.CELL_SIZE;
     const origX = parseFloat(cell.dataset.originalX) || parseFloat(cell.style.left);
@@ -154,6 +166,7 @@ export function restoreCell(cell) {
 export function toggleCellStyle(cell) {
     // Si estamos en página especial, no permitir
     if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     
     const currentState = cell.dataset.state || 'normal';
 
@@ -184,6 +197,7 @@ export function toggleCellStyle(cell) {
 export function toggleCombinedStyle(cell) {
     // Si estamos en página especial, no permitir
     if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     
     const currentState = cell.dataset.state || 'combined_red';
     const combinedId = cell.dataset.combinedId;
@@ -240,6 +254,7 @@ function getCellAt(row, col) {
 
 export function combineCells(cells) {
     if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     if (cells.length < 2) return;
 
     let minRow = Infinity, minCol = Infinity;
@@ -320,6 +335,7 @@ export function combineCells(cells) {
 
 export function startResizeCombined(e, cell) {
     if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     if (cell.dataset.combined !== 'true') return;
     if (e.button !== 0) return;
     
@@ -520,6 +536,7 @@ function getCellsInArea(left, top, width, height) {
 export function handleMouseDown(e, cell) {
     // Si estamos en página especial, no permitir
     if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     
     if (cell.dataset.isSidebar) return;
 
@@ -542,6 +559,7 @@ export function handleMouseDown(e, cell) {
 
 export function handleMouseUp(e, cell) {
     if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     
     if (isResizingCombined) {
         handleResizeEnd(e);
@@ -567,6 +585,7 @@ export function handleMouseUp(e, cell) {
 export function handleMouseEnter(e, cell) {
     // Si estamos en página especial, no permitir
     if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     
     if (cell.dataset.isSidebar) return;
     if (cell.dataset.combined === 'true') {
@@ -699,6 +718,7 @@ export function resetGrid(keepCombined = false) {
 export function exportDesignToJSON() {
     // Si estamos en página especial, no permitir export
     //if (isSpecialPageActiveCheck()) return;
+    if (isMobileSpecialPage()) return;
     
     const result = {};
 

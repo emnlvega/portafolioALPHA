@@ -1,5 +1,4 @@
 // modules/sidebar/index.js
-
 import { CONFIG, LOGO_DESIGN, updateColors } from '../config.js';
 import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations, restartRandomAnimations } from '../animations.js';
@@ -10,8 +9,9 @@ import { getSobreMiDesign, renderSobreMiContent, clearSobreMiState } from './pag
 import { getContactoDesign, renderContactoContent, clearContactoState } from './pages/contacto.js';
 import { getProyectosDesign, renderProyectosContent, clearProjectSelection, clearProyectosTextureState } from './pages/proyectos.js';
 import { setHashLoad } from '../logo.js';
-
-
+import { isMobile } from '../mobile.js';
+import { renderMobileHome } from '../mobile/mobile-home.js';
+import { renderMobileSobreMi } from '../mobile/mobile-sobremi.js';
 
 // ===== ESTADO =====
 let isSpecialPageActive = false;
@@ -59,6 +59,23 @@ const SVG_HOVER = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
         </g>
     </g>
 </svg>`;
+
+// ===== FUNCIÓN PARA ACTUALIZAR LA URL =====
+function updateURL(page, projectId = null) {
+    let url = window.location.pathname;
+    if (url.includes('#')) {
+        url = url.split('#')[0];
+    }
+    if (page === 'inicio' || !page) {
+        window.history.pushState({}, '', url);
+    } else if (page === 'proyectos' && projectId) {
+        window.history.pushState({}, '', `${url}#${projectId}`);
+    } else if (page === 'proyectos') {
+        window.history.pushState({}, '', `${url}#proyectos`);
+    } else {
+        window.history.pushState({}, '', `${url}#${page}`);
+    }
+}
 
 // ===== ANIMATE SIDEBAR =====
 export function animateSidebar(sidebarCells, rows, cellSize, offsetX, offsetY) {
@@ -143,31 +160,7 @@ export function animateSidebar(sidebarCells, rows, cellSize, offsetX, offsetY) {
 }
 
 // ===== SETUP SIDEBAR TEXTS =====
-// modules/sidebar/index.js - setupSidebarTexts
-
-// ===== FUNCIÓN PARA ACTUALIZAR LA URL =====
-function updateURL(page, projectId = null) {
-    let url = window.location.pathname;
-    
-    // Quitar cualquier hash existente
-    if (url.includes('#')) {
-        url = url.split('#')[0];
-    }
-    
-    if (page === 'inicio' || !page) {
-        // Ir a la raíz
-        window.history.pushState({}, '', url);
-    } else if (page === 'proyectos' && projectId) {
-        window.history.pushState({}, '', `${url}#${projectId}`);
-    } else if (page === 'proyectos') {
-        window.history.pushState({}, '', `${url}#proyectos`);
-    } else {
-        window.history.pushState({}, '', `${url}#${page}`);
-    }
-}
-
 export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth, sidebarHeight, container) {
-    // Limpiar elementos anteriores
     document.querySelectorAll('.sidebar-text, .sidebar-logo-svg, .sidebar-logo-text, #settings-cog-btn, #color-picker-container').forEach(el => el.remove());
     
     const menuItems = [
@@ -179,7 +172,6 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         { text: 'MENÚ', action: 'configuracion' }
     ];
     
-    // Distribución automática
     const totalItems = menuItems.length + 1;
     const padding = 30;
     const availableHeight = sidebarHeight - (padding * 2);
@@ -188,13 +180,11 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
     const x = offsetX + sidebarWidth / 2;
     let currentY = offsetY + padding;
     
-    // ===== LOGO SVG =====
     const logoY = currentY + 15;
     const logoSVG = createLogo(container, x, logoY);
     container.appendChild(logoSVG);
     setTimeout(() => { logoSVG.style.opacity = '1'; }, 300);
     
-    // ===== MENU ITEMS =====
     menuItems.forEach((item, index) => {
         currentY += spacing;
         const div = document.createElement('div');
@@ -210,21 +200,15 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         
         const isLogoText = item.isLogo;
         
-        // 🔥 Determinar si está activo basado en la página actual
         let isActive = false;
-        
         if (isLogoText) {
-            // EMNLVEGA nunca está "activo" en el sentido de resaltado
             isActive = false;
         } else if (item.action === 'inicio') {
-            // INICIO está activo cuando NO estamos en una página especial
             isActive = !isSpecialPageActive;
         } else if (item.action !== 'configuracion') {
-            // Las páginas especiales están activas cuando coinciden con currentPage
             isActive = isSpecialPageActive && currentPage === item.action;
         }
         
-        // Color
         let textColor = CONFIG.COLORS.primary;
         let textShadow = 'var(--text-shadow-normal)';
         
@@ -265,7 +249,6 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
             div.classList.add('logo-text-item');
             div.dataset.isLogoText = 'true';
         }
-        
         if (isActive) {
             div.classList.add('active');
         }
@@ -307,8 +290,6 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         container.appendChild(div);
     });
 }
-
-
 
 // ===== CREAR LOGO =====
 function createLogo(container, x, y) {
@@ -416,53 +397,169 @@ function createLogo(container, x, y) {
     return wrapper;
 }
 
-// ===== HANDLE SIDEBAR ACTION =====
+// ===== FUNCIÓN PARA ACTUALIZAR ESTADO ACTIVO DEL SIDEBAR EN MÓVIL =====
+function updateSidebarActiveStateMobile(activeAction) {
+    const buttons = document.querySelectorAll('.mobile-btn-overlay');
+    buttons.forEach(btn => {
+        const action = btn.dataset.action;
+        const isActive = action === activeAction;
+        
+        const borderColor = isActive ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary;
+        const textColor = isActive ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary;
+        const bgColor = isActive ? `rgba(${CONFIG.COLORS.secondaryRGB}, 0.08)` : 'rgba(0, 0, 0, 0.4)';
+        const shadow = isActive ? `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.15)` : 'none';
+        
+        btn.style.borderColor = borderColor;
+        btn.style.background = bgColor;
+        btn.style.boxShadow = shadow;
+        
+        const icon = btn.querySelector('.btn-icon');
+        if (icon) {
+            icon.style.color = textColor;
+            icon.style.textShadow = `0 0 20px rgba(${isActive ? CONFIG.COLORS.secondaryRGB : CONFIG.COLORS.primaryRGB}, ${isActive ? '0.4' : '0.2'})`;
+        }
+        
+        const text = btn.querySelector('.btn-text');
+        if (text) {
+            text.style.color = textColor;
+            text.style.textShadow = `0 0 20px rgba(${isActive ? CONFIG.COLORS.secondaryRGB : CONFIG.COLORS.primaryRGB}, ${isActive ? '0.3' : '0.1'})`;
+            text.style.fontWeight = isActive ? 'bold' : 'normal';
+        }
+        
+        const line = btn.querySelector('.btn-line');
+        if (line) {
+            line.style.background = textColor;
+            line.style.opacity = isActive ? '0.8' : '0.3';
+        }
+    });
+}
+
+// ===== HANDLE SIDEBAR ACTION (COMPLETO) =====
 export function handleSidebarAction(action) {
-    if (isTransitioning) {
+    if (isTransitioning) return;
+    
+    const mobile = isMobile();
+    
+    // 🔥 SI ES MÓVIL, USAR NAVEGACIÓN MÓVIL
+    if (mobile) {
+        import('../mobile/mobile-nav.js').then(module => {
+            module.navigateMobileTo(action);
+        });
         return;
     }
     
+    // 🔥 INICIO
     if (action === 'inicio') {
-        returnToMainLogo();
-        document.querySelectorAll('.sidebar-text').forEach(el => {
-            el.classList.remove('active');
-            el.style.color = CONFIG.COLORS.primary;
-            el.style.textShadow = 'var(--text-shadow-normal)';
-        });
-        const inicioText = document.querySelector('.sidebar-text[data-action="inicio"]');
-        if (inicioText) {
-            inicioText.classList.add('active');
-            inicioText.style.color = CONFIG.COLORS.secondary;
-            inicioText.style.textShadow = 'var(--text-shadow-active)';
+        if (mobile) {
+            renderMobileHome();
+            // Actualizar estado activo de los botones móviles
+            setTimeout(() => {
+                updateSidebarActiveStateMobile('inicio');
+            }, 100);
+        } else {
+            returnToMainLogo();
+            document.querySelectorAll('.sidebar-text').forEach(el => {
+                el.classList.remove('active');
+                el.style.color = CONFIG.COLORS.primary;
+                el.style.textShadow = 'var(--text-shadow-normal)';
+            });
+            const inicioText = document.querySelector('.sidebar-text[data-action="inicio"]');
+            if (inicioText) {
+                inicioText.classList.add('active');
+                inicioText.style.color = CONFIG.COLORS.secondary;
+                inicioText.style.textShadow = 'var(--text-shadow-active)';
+            }
+            updateURL('inicio');
         }
-        // 🔥 Actualizar URL
-        updateURL('inicio');
         return;
     }
     
-    if (action === 'proyectos' || action === 'sobre-mi' || action === 'contacto') {
-        document.querySelectorAll('.sidebar-text').forEach(el => {
-            el.classList.remove('active');
-            el.style.color = CONFIG.COLORS.primary;
-            el.style.textShadow = 'var(--text-shadow-normal)';
-        });
-        const currentText = document.querySelector(`.sidebar-text[data-action="${action}"]`);
-        if (currentText) {
-            currentText.classList.add('active');
-            currentText.style.color = CONFIG.COLORS.secondary;
-            currentText.style.textShadow = 'var(--text-shadow-active)';
+    // 🔥 PROYECTOS
+    if (action === 'proyectos') {
+        if (mobile) {
+            import('../mobile/mobile-nav.js').then(module => {
+                module.navigateMobileTo('proyectos');
+            });
+        } else {
+            // PC: Cargar página de proyectos
+            document.querySelectorAll('.sidebar-text').forEach(el => {
+                el.classList.remove('active');
+                el.style.color = CONFIG.COLORS.primary;
+                el.style.textShadow = 'var(--text-shadow-normal)';
+            });
+            const currentText = document.querySelector(`.sidebar-text[data-action="${action}"]`);
+            if (currentText) {
+                currentText.classList.add('active');
+                currentText.style.color = CONFIG.COLORS.secondary;
+                currentText.style.textShadow = 'var(--text-shadow-active)';
+            }
+            updateURL(action);
+            loadSidebarPage(action);
         }
-        // 🔥 Actualizar URL (sin proyecto)
-        updateURL(action);
-        loadSidebarPage(action);
+        return;
+    }
+    
+    // 🔥 SOBRE MI
+    if (action === 'sobre-mi') {
+        if (mobile) {
+            console.log('🔵 Móvil: Cargando Sobre Mi...');
+            renderMobileSobreMi();
+            setTimeout(() => {
+                updateSidebarActiveStateMobile('sobre-mi');
+            }, 100);
+        } else {
+            document.querySelectorAll('.sidebar-text').forEach(el => {
+                el.classList.remove('active');
+                el.style.color = CONFIG.COLORS.primary;
+                el.style.textShadow = 'var(--text-shadow-normal)';
+            });
+            const currentText = document.querySelector(`.sidebar-text[data-action="${action}"]`);
+            if (currentText) {
+                currentText.classList.add('active');
+                currentText.style.color = CONFIG.COLORS.secondary;
+                currentText.style.textShadow = 'var(--text-shadow-active)';
+            }
+            updateURL(action);
+            loadSidebarPage(action);
+        }
+        return;
+    }
+    
+    // 🔥 CONTACTO
+    if (action === 'contacto') {
+        if (mobile) {
+            import('../mobile/mobile-nav.js').then(module => {
+                module.navigateMobileTo('contacto');
+            });
+        } else {
+            // PC: Cargar página de contacto
+            document.querySelectorAll('.sidebar-text').forEach(el => {
+                el.classList.remove('active');
+                el.style.color = CONFIG.COLORS.primary;
+                el.style.textShadow = 'var(--text-shadow-normal)';
+            });
+            const currentText = document.querySelector(`.sidebar-text[data-action="${action}"]`);
+            if (currentText) {
+                currentText.classList.add('active');
+                currentText.style.color = CONFIG.COLORS.secondary;
+                currentText.style.textShadow = 'var(--text-shadow-active)';
+            }
+            updateURL(action);
+            loadSidebarPage(action);
+        }
+        return;
+    }
+    
+    // 🔥 CONFIGURACIÓN
+    if (action === 'configuracion') {
+        toggleSettings();
+        return;
     }
 }
 
-// ===== LOAD SIDEBAR PAGE =====
+// ===== LOAD SIDEBAR PAGE (PC) =====
 function loadSidebarPage(pageKey) {
-    if (isTransitioning) {
-        return;
-    }
+    if (isTransitioning) return;
     
     if (pageKey !== 'proyectos') {
         clearProjectSelection();
@@ -472,8 +569,6 @@ function loadSidebarPage(pageKey) {
     if (!handler) return;
     
     isTransitioning = true;
-    
-    // 🔥 Desactivar hashLoad para que las importaciones normales funcionen
     setHashLoad(false);
     
     document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content').forEach(el => el.remove());
@@ -496,8 +591,6 @@ function loadSidebarPage(pageKey) {
                 isSpecialPageActive = true;
                 currentPage = pageKey;
                 isProgrammaticLoad = false;
-                
-                // 🔥 Actualizar el estado activo del sidebar después de cargar
                 updateSidebarActiveState();
                 
                 setTimeout(() => {
@@ -519,13 +612,9 @@ function loadSidebarPage(pageKey) {
     }, 200);
 }
 
-
-// ===== RETURN TO MAIN =====
+// ===== RETURN TO MAIN (PC) =====
 export function returnToMainLogo() {
-    if (isTransitioning) {
-        return;
-    }
-    
+    if (isTransitioning) return;
     if (!isSpecialPageActive) return;
 
     isTransitioning = true;
@@ -550,9 +639,7 @@ export function returnToMainLogo() {
     
     setGridInteractionsEnabled(false);
     stopRandomAnimations();
-    
     resetGrid(true);
-    
     isProgrammaticLoad = true;
     
     setTimeout(() => {
@@ -563,10 +650,7 @@ export function returnToMainLogo() {
             setGridInteractionsEnabled(true);
             window.proyectosCurrentPage = 0;
             window.proyectosCurrentCategory = 'TODOS';
-            
-            // 🔥 Actualizar estado activo del sidebar
             updateSidebarActiveState();
-            
             updateURL('inicio');
             
             setTimeout(() => {
@@ -577,19 +661,17 @@ export function returnToMainLogo() {
     }, 200);
 }
 
-// ===== FUNCIÓN PARA LEER LA URL AL CARGAR =====
+// ===== HANDLE URL ON LOAD =====
 export function handleURLOnLoad() {
     const hash = window.location.hash;
     if (!hash || hash === '' || hash === '#') return 'inicio';
     
     const page = hash.replace('#', '');
     
-    // Verificar si es un ID de proyecto (número)
     if (/^\d+$/.test(page)) {
         return { page: 'proyectos', projectId: parseInt(page) };
     }
     
-    // Verificar páginas válidas
     if (['proyectos', 'sobre-mi', 'contacto'].includes(page)) {
         return { page: page };
     }
@@ -650,7 +732,6 @@ export function updateSidebarActiveState() {
         }
     });
 }
-
 
 // ===== EXPORT =====
 export function isSpecialPageActiveCheck() { return isSpecialPageActive; }
