@@ -408,8 +408,10 @@ function createSobreMiContent() {
     }
     
     // ===== INFO COMPLETA (con scroll) - AHORA EN 17,0 =====
-    if (infoCell) {
+    // modules/mobile/mobile-sobremi.js - En createSobreMiContent, dentro de la sección de infoCell
 
+    // ===== INFO COMPLETA (con scroll) - AHORA EN 17,0 =====
+    if (infoCell) {
         const infoWrapper = document.createElement('div');
         infoWrapper.className = 'mobile-sobremi-content';
         infoWrapper.style.cssText = `
@@ -431,7 +433,7 @@ function createSobreMiContent() {
         infoContent.style.cssText = `
             color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            font-size: 13px;
+            font-size: 10px;
             line-height: 1.6;
             letter-spacing: 0.5px;
             text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
@@ -446,7 +448,7 @@ function createSobreMiContent() {
         habilidadesTitle.textContent = '◆ HABILIDADES';
         habilidadesTitle.style.cssText = `
             color: ${secondaryColor};
-            font-size: 13px;
+            font-size: 11px;
             letter-spacing: 4px;
             font-weight: bold;
             text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
@@ -455,21 +457,21 @@ function createSobreMiContent() {
             padding-bottom: 4px;
         `;
         infoContent.appendChild(habilidadesTitle);
-
+        
         const habilidadesGrid = document.createElement('div');
         habilidadesGrid.style.cssText = `
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 4px 6px;
+            gap: 3px 6px;
             margin-bottom: 4px;
         `;
-
+        
         SOBRE_MI_DATA.habilidades.forEach(h => {
             const item = document.createElement('div');
             item.style.cssText = `
-                font-size: 11px;
+                font-size: 8px;
                 letter-spacing: 1px;
-                padding: 4px 2px;
+                padding: 3px 2px;
                 color: ${primaryColor};
                 text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
                 border: 1px solid rgba(${primaryRGB}, 0.15);
@@ -479,9 +481,7 @@ function createSobreMiContent() {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                min-height: 24px;
-                word-break: break-word;
-                line-height: 1.2;
+                min-height: 20px;
             `;
             item.textContent = h;
             habilidadesGrid.appendChild(item);
@@ -493,7 +493,7 @@ function createSobreMiContent() {
         herramientasTitle.textContent = '◆ HERRAMIENTAS Y TECNOLOGIAS';
         herramientasTitle.style.cssText = `
             color: ${secondaryColor};
-            font-size: 13px;
+            font-size: 11px;
             letter-spacing: 4px;
             font-weight: bold;
             text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
@@ -506,7 +506,7 @@ function createSobreMiContent() {
         
         const herramientasText = document.createElement('div');
         herramientasText.style.cssText = `
-            font-size: 12px;
+            font-size: 9px;
             letter-spacing: 0.5px;
             text-align: center;
             padding: 4px 0;
@@ -516,6 +516,68 @@ function createSobreMiContent() {
         `;
         herramientasText.textContent = SOBRE_MI_DATA.herramientas;
         infoContent.appendChild(herramientasText);
+        
+        // 🔥 LO QUE ME DEFINE
+        const defineTitle = document.createElement('div');
+        defineTitle.textContent = '◆ LO QUE ME DEFINE';
+        defineTitle.style.cssText = `
+            color: ${secondaryColor};
+            font-size: 11px;
+            letter-spacing: 4px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
+            text-align: center;
+            border-bottom: 1px solid rgba(${secondaryRGB}, 0.15);
+            padding-bottom: 4px;
+            margin-top: 4px;
+        `;
+        infoContent.appendChild(defineTitle);
+        
+        const defineItems = [
+            '◆ Autodidacta desde los 6 años',
+            '◆ Creativo por naturaleza',
+            '◆ Resuelvo problemas que otros evitan',
+            '◆ Aprendo cualquier cosa en poco tiempo',
+            '◆ Humilde pero consciente de mi valor',
+            '◆ Siempre en busca de mejorar',
+            '◆ Si algo es posible, lo conseguiré',
+            '◆ Mi necesidad de proveer momentos buenos al mundo',
+            '◆ Mi genial gusto musical'
+        ];
+        
+        const defineGrid = document.createElement('div');
+        defineGrid.style.cssText = `
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px 8px;
+            padding: 4px 0;
+        `;
+        
+        defineItems.forEach(item => {
+            const el = document.createElement('div');
+            el.style.cssText = `
+                font-size: 8px;
+                letter-spacing: 0.5px;
+                padding: 2px 0;
+                color: ${primaryColor};
+                text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
+                display: flex;
+                align-items: center;
+            `;
+            
+            if (item.includes('gusto musical')) {
+                // 🔥 OCUPA TODO EL ANCHO (grid-column: 1 / -1)
+                el.style.gridColumn = '1 / -1';
+                el.style.justifyContent = 'center';
+                el.style.textAlign = 'center';
+                el.innerHTML = `◆ Mi genial gusto musical, <a href="https://open.spotify.com/playlist/6rjGBL7CWlpC2FXOZhTAQE?si=151b3d02bb00400e" target="_blank" style="color:${primaryColor}; text-shadow:0 0 10px rgba(${primaryRGB},0.1); text-decoration:underline; text-underline-offset:2px; transition:all 0.3s ease; cursor:pointer; pointer-events:auto;" onmouseenter="this.style.color='${secondaryColor}'; this.style.textShadow='0 0 20px rgba(${secondaryRGB},0.3)';" onmouseleave="this.style.color='${primaryColor}'; this.style.textShadow='0 0 10px rgba(${primaryRGB},0.1)';">checa mi playlist</a>`;
+            } else {
+                el.textContent = item;
+            }
+            
+            defineGrid.appendChild(el);
+        });
+        infoContent.appendChild(defineGrid);
         
         // FRASE
         const fraseDiv = document.createElement('div');
