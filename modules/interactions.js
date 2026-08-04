@@ -319,16 +319,14 @@ export function combineCells(cells) {
 }
 
 export function startResizeCombined(e, cell) {
-    // Si estamos en página especial, no permitir
     if (isSpecialPageActiveCheck()) return;
-    
     if (cell.dataset.combined !== 'true') return;
     if (e.button !== 0) return;
     
     const rect = cell.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-    const threshold = 15;
+    const threshold = 10; // ← Reducido de 15 a 10
     
     const width = parseFloat(cell.style.width);
     const height = parseFloat(cell.style.height);
@@ -543,7 +541,6 @@ export function handleMouseDown(e, cell) {
 }
 
 export function handleMouseUp(e, cell) {
-    // Si estamos en página especial, no permitir
     if (isSpecialPageActiveCheck()) return;
     
     if (isResizingCombined) {
@@ -551,17 +548,20 @@ export function handleMouseUp(e, cell) {
         return;
     }
     
+    // Si es un clic en combinada (no resize)
     if (isClickOnCombined && cell && cell.dataset.combined === 'true') {
         toggleCombinedStyle(cell);
         isClickOnCombined = false;
         return;
     }
     
+    // Si es un clic normal (no combinada)
     if (isDragging && selectedCells.length > 1) {
         combineCells(selectedCells);
     }
     isDragging = false;
     dragStartCell = null;
+    isClickOnCombined = false; // ← Asegurar reset
 }
 
 export function handleMouseEnter(e, cell) {
