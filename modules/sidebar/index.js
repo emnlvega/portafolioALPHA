@@ -9,6 +9,7 @@ import { showDialog } from '../dialogs.js';
 import { getProyectosDesign, renderProyectosContent } from './pages/proyectos.js';
 import { getSobreMiDesign, renderSobreMiContent } from './pages/sobre-mi.js';
 import { getContactoDesign, renderContactoContent } from './pages/contacto.js';
+import { clearProjectSelection } from './pages/proyectos.js';
 
 // ===== ESTADO =====
 let isSpecialPageActive = false;
@@ -418,6 +419,9 @@ export function handleSidebarAction(action) {
 
 // ===== LOAD SIDEBAR PAGE =====
 function loadSidebarPage(pageKey) {
+    if (pageKey !== 'proyectos') {
+        clearProjectSelection();
+    }
     const handler = PAGE_HANDLERS[pageKey];
     if (!handler) return;
     
@@ -459,6 +463,8 @@ function loadSidebarPage(pageKey) {
 // ===== RETURN TO MAIN =====
 export function returnToMainLogo() {
     if (!isSpecialPageActive) return;
+
+    clearProjectSelection();
     
     document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content').forEach(el => el.remove());
     

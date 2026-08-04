@@ -6,6 +6,10 @@ let currentPage = 0;
 let currentCategory = 'TODOS';
 const PROJECTS_PER_PAGE = 14;
 let projectsCache = null;
+let selectedProjectId = null;
+let selectedProjectData = null;
+let detailPage = 0;
+let totalDetailPages = 0;
 
 const CATEGORY_ICONS = {
     'DISEÑO GRAFICO': '◆',
@@ -28,15 +32,19 @@ export function getProyectosDesign() {
     return loadProyectosData().then(data => data.design);
 }
 
+export function clearProjectSelection() {
+    selectedProjectId = null;
+    selectedProjectData = null;
+    detailPage = 0;
+}
+
 export async function renderProyectosContent() {
     const data = await loadProyectosData();
     const container = document.getElementById('grid-container');
     if (!container) return;
     
-    // 🔥 LIMPIEZA COMPLETA
     document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message').forEach(el => el.remove());
     
-    // Limpiar dentro de todas las celdas
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
         const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message');
@@ -45,23 +53,16 @@ export async function renderProyectosContent() {
     
     const cells = container.querySelectorAll('.grid-cell, .logo-cell');
     
-    // BUSCAR las celdas combinadas por posición (NO CREAR NUEVAS)
     let titleCell = null;
     let leftArrowCell = null;
     let rightArrowCell = null;
+    let detailLeftArrowCell = null;
+    let detailRightArrowCell = null;
     let categoryCells = [];
     let projectCells = [];
     let detailCell = null;
 
-    const cellMap = {
-        '0,0': 'title',
-        '3,0': 'leftArrow',
-        '3,30': 'rightArrow',
-        '8,2': 'detail'
-    };
-    // Las categorías están en fila 3, columnas 2,6,10,14,18,22,26 (índices 0-based)
     const categoryCols = [2, 6, 10, 14, 18, 22, 26];
-    // Los proyectos están en fila 6, columnas 2,4,6,8,10,12,14,16,18,20,22,24,26,28
     const projectCols = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28];
     
     cells.forEach(cell => {
@@ -70,26 +71,32 @@ export async function renderProyectosContent() {
             const col = parseInt(cell.dataset.designCol);
             const key = `${row},${col}`;
             
-            if (key === '0,0') titleCell = cell;
-            else if (key === '3,0') leftArrowCell = cell;
-            else if (key === '3,30') rightArrowCell = cell;
-            else if (key === '8,2') detailCell = cell;
-            else if (row === 3 && categoryCols.includes(col)) {
+            if (key === '0,0') {
+                titleCell = cell;
+            } else if (key === '2,0') {
+                leftArrowCell = cell;
+            } else if (key === '2,30') {
+                rightArrowCell = cell;
+            } else if (key === '7,0') {
+                detailLeftArrowCell = cell;
+            } else if (key === '7,30') {
+                detailRightArrowCell = cell;
+            } else if (key === '7,2') {
+                detailCell = cell;
+            } else if (row === 2 && categoryCols.includes(col)) {
                 categoryCells.push(cell);
-            } else if (row === 6 && projectCols.includes(col)) {
+            } else if (row === 5 && projectCols.includes(col)) {
                 projectCells.push(cell);
             }
         }
     });
     
-    // Si no hay celdas combinadas, esperar a que importDesignFromJSON las cree
     if (categoryCells.length === 0 && projectCells.length === 0) {
         console.log('Esperando a que las celdas combinadas se creen...');
         setTimeout(() => renderProyectosContent(), 100);
         return;
     }
     
-    // ===== TÍTULO =====
     if (titleCell) {
         const title = document.createElement('div');
         title.className = 'proyectos-content';
@@ -110,12 +117,12 @@ export async function renderProyectosContent() {
             text-shadow: 0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
             pointer-events: none;
             z-index: 20;
+            user-select: none;
         `;
         title.textContent = data.title + (currentCategory !== 'TODOS' ? ` - ${currentCategory}` : '');
         titleCell.appendChild(title);
     }
     
-    // ===== CATEGORÍAS (FILTROS) =====
     const categories = ['TODOS', ...data.categories];
     categoryCells.forEach((cell, index) => {
         if (index >= categories.length) return;
@@ -202,23 +209,24 @@ export async function renderProyectosContent() {
         cell.appendChild(cat);
     });
     
-    // ===== PROYECTOS =====
     const allProjects = data.projects;
     const filteredProjects = currentCategory === 'TODOS' 
         ? allProjects 
         : allProjects.filter(p => p.category === currentCategory);
-    
+
     const totalPages = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
     const startIndex = currentPage * PROJECTS_PER_PAGE;
     const endIndex = Math.min(startIndex + PROJECTS_PER_PAGE, filteredProjects.length);
     const pageProjects = filteredProjects.slice(startIndex, endIndex);
-    
+
     projectsCache = { filteredProjects, totalPages, startIndex, endIndex };
-    
+
     projectCells.forEach((cell, index) => {
         if (index >= pageProjects.length) return;
         
         const project = pageProjects[index];
+        const isSelected = selectedProjectId === project.id;
+        
         const item = document.createElement('div');
         item.className = 'proyectos-item';
         item.dataset.projectId = project.id;
@@ -232,17 +240,18 @@ export async function renderProyectosContent() {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: ${CONFIG.COLORS.primary};
+            color: ${isSelected ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary};
             font-family: 'Courier New', monospace;
             cursor: pointer;
             pointer-events: auto;
             z-index: 20;
             padding: 8px;
             text-align: center;
-            border: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.1);
+            border: 1px solid ${isSelected ? CONFIG.COLORS.secondary : `rgba(${CONFIG.COLORS.primaryRGB}, 0.1)`};
             border-radius: 4px;
             transition: all 0.3s ease;
             background: transparent;
+            text-shadow: ${isSelected ? 'var(--text-shadow-active)' : 'var(--text-shadow-normal)'};
         `;
         
         const icon = document.createElement('span');
@@ -250,8 +259,8 @@ export async function renderProyectosContent() {
         icon.style.cssText = `
             font-size: 24px;
             margin-bottom: 4px;
-            color: ${CONFIG.COLORS.primary};
-            text-shadow: 0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.2);
+            color: ${isSelected ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary};
+            text-shadow: ${isSelected ? `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)` : `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`};
             transition: all 0.3s ease;
         `;
         
@@ -260,7 +269,7 @@ export async function renderProyectosContent() {
         name.style.cssText = `
             font-size: 9px;
             letter-spacing: 1px;
-            opacity: 0.8;
+            opacity: ${isSelected ? '1' : '0.8'};
         `;
         
         const catTag = document.createElement('span');
@@ -268,9 +277,10 @@ export async function renderProyectosContent() {
         catTag.style.cssText = `
             font-size: 7px;
             letter-spacing: 1px;
-            opacity: 0.4;
+            opacity: ${isSelected ? '0.6' : '0.4'};
             margin-top: 2px;
             text-transform: uppercase;
+            color: ${isSelected ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary};
         `;
         
         item.appendChild(icon);
@@ -278,36 +288,49 @@ export async function renderProyectosContent() {
         item.appendChild(catTag);
         
         item.addEventListener('mouseenter', () => {
-            item.style.borderColor = CONFIG.COLORS.secondary;
-            item.style.color = CONFIG.COLORS.secondary;
-            item.style.textShadow = 'var(--text-shadow-hover)';
-            icon.style.color = CONFIG.COLORS.secondary;
-            icon.style.textShadow = `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)`;
+            if (!isSelected) {
+                item.style.borderColor = CONFIG.COLORS.secondary;
+                item.style.color = CONFIG.COLORS.secondary;
+                item.style.textShadow = 'var(--text-shadow-hover)';
+                icon.style.color = CONFIG.COLORS.secondary;
+                icon.style.textShadow = `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)`;
+            }
         });
         
         item.addEventListener('mouseleave', () => {
-            item.style.borderColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.1)`;
-            item.style.color = CONFIG.COLORS.primary;
-            item.style.textShadow = 'var(--text-shadow-normal)';
-            icon.style.color = CONFIG.COLORS.primary;
-            icon.style.textShadow = `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`;
+            if (!isSelected) {
+                item.style.borderColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.1)`;
+                item.style.color = CONFIG.COLORS.primary;
+                item.style.textShadow = 'var(--text-shadow-normal)';
+                icon.style.color = CONFIG.COLORS.primary;
+                icon.style.textShadow = `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`;
+            }
         });
         
         item.addEventListener('click', () => {
-            showProjectDetail(project, detailCell);
+            if (selectedProjectId === project.id) {
+                selectedProjectId = null;
+                selectedProjectData = null;
+                detailPage = 0;
+                renderProyectosContent();
+                return;
+            }
+            
+            selectedProjectId = project.id;
+            selectedProjectData = project;
+            detailPage = 0;
+            renderProyectosContent();
         });
         
         cell.appendChild(item);
     });
     
-    // ===== MENSAJE DE SELECCIÓN =====
     if (detailCell) {
-        // Limpiar solo los mensajes y detalles anteriores
         detailCell.querySelectorAll('.proyectos-detail, .proyectos-select-message').forEach(el => el.remove());
         
-        const hasProjectSelected = detailCell.querySelector('.proyectos-detail');
-        
-        if (!hasProjectSelected && pageProjects.length > 0) {
+        if (selectedProjectId && selectedProjectData) {
+            showProjectDetail(selectedProjectData, detailCell);
+        } else if (pageProjects.length > 0) {
             const message = document.createElement('div');
             message.className = 'proyectos-select-message';
             message.style.cssText = `
@@ -365,11 +388,34 @@ export async function renderProyectosContent() {
         }
     }
     
-    // ===== FLECHAS =====
-    if (leftArrowCell) {
-        const leftArrow = document.createElement('div');
-        leftArrow.className = 'proyectos-nav';
-        leftArrow.style.cssText = `
+    // ===== FLECHAS DE CATEGORÍA (OUTLINE) =====
+    const categoryArrows = [
+        {
+            cell: leftArrowCell,
+            direction: '◀',
+            isActive: currentPage > 0,
+            onClick: () => { 
+                currentPage--; 
+                renderProyectosContent(); 
+            }
+        },
+        {
+            cell: rightArrowCell,
+            direction: '▶',
+            isActive: currentPage < totalPages - 1,
+            onClick: () => { 
+                currentPage++; 
+                renderProyectosContent(); 
+            }
+        }
+    ];
+
+    categoryArrows.forEach((arrow) => {
+        if (!arrow.cell) return;
+        
+        const el = document.createElement('div');
+        el.className = 'proyectos-nav category-arrow';
+        el.style.cssText = `
             position: absolute;
             top: 0;
             left: 0;
@@ -378,44 +424,92 @@ export async function renderProyectosContent() {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: ${CONFIG.COLORS.primary};
             font-family: 'Courier New', monospace;
             font-size: 28px;
-            cursor: pointer;
-            pointer-events: ${currentPage > 0 ? 'auto' : 'none'};
+            cursor: ${arrow.isActive ? 'pointer' : 'default'};
+            pointer-events: ${arrow.isActive ? 'auto' : 'none'};
             z-index: 20;
-            opacity: ${currentPage > 0 ? '1' : '0.3'};
-            transition: all 0.3s ease;
-            text-shadow: var(--text-shadow-normal);
+            opacity: ${arrow.isActive ? '1' : '0.2'};
+            transition: color 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
             background: transparent;
+            color: ${CONFIG.COLORS.background};
+            -webkit-text-stroke: 2px ${CONFIG.COLORS.primary};
+            text-stroke: 2px ${CONFIG.COLORS.primary};
         `;
-        leftArrow.textContent = '◀';
+        el.textContent = arrow.direction;
         
-        leftArrow.addEventListener('mouseenter', () => {
-            if (currentPage > 0) {
-                leftArrow.style.color = CONFIG.COLORS.secondary;
-                leftArrow.style.textShadow = 'var(--text-shadow-hover)';
-            }
-        });
-        leftArrow.addEventListener('mouseleave', () => {
-            leftArrow.style.color = CONFIG.COLORS.primary;
-            leftArrow.style.textShadow = 'var(--text-shadow-normal)';
-        });
+        if (arrow.isActive) {
+            el.style.textShadow = `
+                0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 1),
+                0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
+                0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
+                0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)
+            `;
+            el.style.animation = 'blinkArrow 1.2s ease-in-out infinite';
+        } else {
+            el.style.textShadow = 'var(--text-shadow-normal)';
+            el.style.opacity = '0.2';
+        }
         
-        leftArrow.addEventListener('click', () => {
-            if (currentPage > 0) {
-                currentPage--;
-                renderProyectosContent();
-            }
-        });
+        if (arrow.isActive) {
+            el.addEventListener('mouseenter', () => {
+                el.style.textShadow = `
+                    0 0 5px rgba(${CONFIG.COLORS.primaryRGB}, 1),
+                    0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
+                    0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
+                    0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2),
+                    0 0 120px rgba(${CONFIG.COLORS.primaryRGB}, 0.1)
+                `;
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.textShadow = `
+                    0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 1),
+                    0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
+                    0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
+                    0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)
+                `;
+            });
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                arrow.onClick();
+            });
+        }
         
-        leftArrowCell.appendChild(leftArrow);
-    }
+        arrow.cell.appendChild(el);
+    });
     
-    if (rightArrowCell) {
-        const rightArrow = document.createElement('div');
-        rightArrow.className = 'proyectos-nav';
-        rightArrow.style.cssText = `
+    // ===== FLECHAS DE DETALLE (FILL) =====
+    const detailArrows = [
+        {
+            cell: detailLeftArrowCell,
+            direction: '◀',
+            isActive: detailPage > 0,
+            onClick: () => { 
+                if (detailPage > 0) {
+                    detailPage--; 
+                    renderProyectosContent(); 
+                }
+            }
+        },
+        {
+            cell: detailRightArrowCell,
+            direction: '▶',
+            isActive: selectedProjectData && detailPage < (selectedProjectData.pages ? selectedProjectData.pages.length - 1 : 0),
+            onClick: () => { 
+                if (selectedProjectData && detailPage < (selectedProjectData.pages ? selectedProjectData.pages.length - 1 : 0)) {
+                    detailPage++; 
+                    renderProyectosContent(); 
+                }
+            }
+        }
+    ];
+
+    detailArrows.forEach((arrow) => {
+        if (!arrow.cell) return;
+        
+        const el = document.createElement('div');
+        el.className = 'proyectos-nav detail-arrow';
+        el.style.cssText = `
             position: absolute;
             top: 0;
             left: 0;
@@ -424,45 +518,71 @@ export async function renderProyectosContent() {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: ${CONFIG.COLORS.primary};
             font-family: 'Courier New', monospace;
             font-size: 28px;
-            cursor: pointer;
-            pointer-events: ${currentPage < totalPages - 1 ? 'auto' : 'none'};
+            cursor: ${arrow.isActive ? 'pointer' : 'default'};
+            pointer-events: ${arrow.isActive ? 'auto' : 'none'};
             z-index: 20;
-            opacity: ${currentPage < totalPages - 1 ? '1' : '0.3'};
-            transition: all 0.3s ease;
-            text-shadow: var(--text-shadow-normal);
+            opacity: ${arrow.isActive ? '1' : '0.2'};
+            transition: color 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
             background: transparent;
         `;
-        rightArrow.textContent = '▶';
+        el.textContent = arrow.direction;
         
-        rightArrow.addEventListener('mouseenter', () => {
-            if (currentPage < totalPages - 1) {
-                rightArrow.style.color = CONFIG.COLORS.secondary;
-                rightArrow.style.textShadow = 'var(--text-shadow-hover)';
-            }
-        });
-        rightArrow.addEventListener('mouseleave', () => {
-            rightArrow.style.color = CONFIG.COLORS.primary;
-            rightArrow.style.textShadow = 'var(--text-shadow-normal)';
-        });
+        if (arrow.isActive) {
+            el.style.color = CONFIG.COLORS.primary;
+            el.style.textShadow = `
+                0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 1),
+                0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
+                0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
+                0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)
+            `;
+            el.style.animation = 'blinkArrow 1.2s ease-in-out infinite';
+        } else {
+            el.style.color = CONFIG.COLORS.primary;
+            el.style.textShadow = 'var(--text-shadow-normal)';
+            el.style.opacity = '0.2';
+        }
         
-        rightArrow.addEventListener('click', () => {
-            if (currentPage < totalPages - 1) {
-                currentPage++;
-                renderProyectosContent();
-            }
-        });
+        if (arrow.isActive) {
+            el.addEventListener('mouseenter', () => {
+                el.style.textShadow = `
+                    0 0 5px rgba(${CONFIG.COLORS.primaryRGB}, 1),
+                    0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
+                    0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
+                    0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2),
+                    0 0 120px rgba(${CONFIG.COLORS.primaryRGB}, 0.1)
+                `;
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.textShadow = `
+                    0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 1),
+                    0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
+                    0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
+                    0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)
+                `;
+            });
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                arrow.onClick();
+            });
+        }
         
-        rightArrowCell.appendChild(rightArrow);
-    }
+        arrow.cell.appendChild(el);
+    });
 }
 
 function showProjectDetail(project, detailCell) {
-    if (!detailCell) return;
+    if (!detailCell) {
+        console.warn('detailCell no encontrado');
+        return;
+    }
     
     detailCell.querySelectorAll('.proyectos-detail, .proyectos-select-message').forEach(el => el.remove());
+    
+    const hasPages = project.pages && project.pages.length > 0;
+    const currentPageData = hasPages ? project.pages[detailPage] : null;
+    totalDetailPages = hasPages ? project.pages.length : 0;
     
     const detail = document.createElement('div');
     detail.className = 'proyectos-detail';
@@ -477,23 +597,43 @@ function showProjectDetail(project, detailCell) {
         font-family: 'Courier New', monospace;
         pointer-events: none;
         z-index: 20;
-        overflow: hidden;
+        overflow-y: auto;
         display: grid;
         grid-template-columns: 180px 1fr;
         gap: 20px;
-        opacity: 0;
-        transition: opacity 0.5s ease;
         background: transparent;
+        user-select: text;
     `;
+    
+    // Scrollbar personalizada para el detalle
+    const styleScroll = document.createElement('style');
+    styleScroll.textContent = `
+        .proyectos-detail::-webkit-scrollbar {
+            width: 4px;
+        }
+        .proyectos-detail::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .proyectos-detail::-webkit-scrollbar-thumb {
+            background: rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+            border-radius: 2px;
+        }
+        .proyectos-detail::-webkit-scrollbar-thumb:hover {
+            background: rgba(${CONFIG.COLORS.primaryRGB}, 0.6);
+        }
+    `;
+    document.head.appendChild(styleScroll);
     
     const leftCol = document.createElement('div');
     leftCol.style.cssText = `
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         gap: 10px;
         text-align: center;
+        padding-top: 10px;
+        pointer-events: none;
     `;
     
     const icon = document.createElement('div');
@@ -524,9 +664,11 @@ function showProjectDetail(project, detailCell) {
     rightCol.style.cssText = `
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         gap: 8px;
-        overflow: hidden;
+        overflow-y: auto;
+        padding-right: 8px;
+        pointer-events: auto;
     `;
     
     const name = document.createElement('div');
@@ -536,6 +678,8 @@ function showProjectDetail(project, detailCell) {
         letter-spacing: 4px;
         font-weight: bold;
         text-shadow: 0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.2);
+        color: ${CONFIG.COLORS.secondary};
+        pointer-events: none;
     `;
     
     const desc = document.createElement('div');
@@ -545,28 +689,308 @@ function showProjectDetail(project, detailCell) {
         letter-spacing: 1px;
         line-height: 1.6;
         opacity: 0.8;
-    `;
-    
-    const details = document.createElement('div');
-    details.textContent = project.details;
-    details.style.cssText = `
-        font-size: 11px;
-        letter-spacing: 0.5px;
-        line-height: 1.5;
-        opacity: 0.6;
-        padding-top: 8px;
-        border-top: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.1);
+        pointer-events: none;
     `;
     
     rightCol.appendChild(name);
     rightCol.appendChild(desc);
-    rightCol.appendChild(details);
+    
+    if (hasPages && currentPageData) {
+        const pageTitle = document.createElement('div');
+        pageTitle.textContent = currentPageData.title;
+        pageTitle.style.cssText = `
+            font-size: 13px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: ${CONFIG.COLORS.secondary};
+            margin-top: 10px;
+            border-bottom: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.2);
+            padding-bottom: 6px;
+            pointer-events: none;
+        `;
+        rightCol.appendChild(pageTitle);
+        
+        // Renderizar contenido personalizable
+        const contentContainer = document.createElement('div');
+        contentContainer.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-top: 6px;
+        `;
+        
+        if (Array.isArray(currentPageData.content)) {
+            currentPageData.content.forEach(item => {
+                const element = renderContentItem(item);
+                if (element) {
+                    contentContainer.appendChild(element);
+                }
+            });
+        } else if (typeof currentPageData.content === 'string') {
+            // Fallback: si es texto plano
+            const textEl = document.createElement('div');
+            textEl.textContent = currentPageData.content;
+            textEl.style.cssText = `
+                font-size: 11px;
+                letter-spacing: 0.5px;
+                line-height: 1.6;
+                opacity: 0.8;
+            `;
+            contentContainer.appendChild(textEl);
+        }
+        
+        rightCol.appendChild(contentContainer);
+        
+        const pageIndicator = document.createElement('div');
+        pageIndicator.textContent = `PAGINA ${detailPage + 1} DE ${project.pages.length}`;
+        pageIndicator.style.cssText = `
+            font-size: 9px;
+            letter-spacing: 2px;
+            opacity: 0.4;
+            margin-top: 8px;
+            text-transform: uppercase;
+            pointer-events: none;
+        `;
+        rightCol.appendChild(pageIndicator);
+    } else {
+        const details = document.createElement('div');
+        details.textContent = project.details;
+        details.style.cssText = `   
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+            opacity: 0.6;
+            padding-top: 8px;
+            border-top: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.1);
+            pointer-events: none;
+        `;
+        rightCol.appendChild(details);
+    }
     
     detail.appendChild(leftCol);
     detail.appendChild(rightCol);
     detailCell.appendChild(detail);
+}
+
+function renderContentItem(item) {
+    const container = document.createElement('div');
+    container.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+    `;
     
-    requestAnimationFrame(() => {
-        detail.style.opacity = '1';
+    switch (item.type) {
+        case 'text':
+            const textEl = document.createElement('div');
+            textEl.textContent = item.value;
+            textEl.style.cssText = `
+                font-size: 11px;
+                letter-spacing: 0.5px;
+                line-height: 1.8;
+                opacity: 0.85;
+            `;
+            container.appendChild(textEl);
+            break;
+            
+        case 'link':
+            const linkEl = document.createElement('a');
+            linkEl.href = item.value;
+            linkEl.textContent = item.label || item.value;
+            linkEl.target = '_blank';
+            linkEl.style.cssText = `
+                color: ${CONFIG.COLORS.primary};
+                font-size: 11px;
+                letter-spacing: 1px;
+                text-decoration: none;
+                border-bottom: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+                padding: 2px 0;
+                transition: all 0.3s ease;
+                display: inline-block;
+                width: fit-content;
+                cursor: pointer;
+                pointer-events: auto;
+            `;
+            linkEl.addEventListener('mouseenter', () => {
+                linkEl.style.borderBottomColor = CONFIG.COLORS.secondary;
+                linkEl.style.color = CONFIG.COLORS.secondary;
+            });
+            linkEl.addEventListener('mouseleave', () => {
+                linkEl.style.borderBottomColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
+                linkEl.style.color = CONFIG.COLORS.primary;
+            });
+            container.appendChild(linkEl);
+            break;
+            
+        case 'image':
+            const imgWrap = document.createElement('div');
+            imgWrap.style.cssText = `
+                width: 100%;
+                border-radius: 4px;
+                overflow: hidden;
+                border: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.1);
+            `;
+            
+            const imgEl = document.createElement('img');
+            imgEl.src = item.value;
+            imgEl.alt = item.caption || '';
+            imgEl.style.cssText = `
+                width: 100%;
+                height: auto;
+                display: block;
+            `;
+            imgWrap.appendChild(imgEl);
+            container.appendChild(imgWrap);
+            
+            if (item.caption) {
+                const captionEl = document.createElement('div');
+                captionEl.textContent = item.caption;
+                captionEl.style.cssText = `
+                    font-size: 9px;
+                    letter-spacing: 1px;
+                    opacity: 0.5;
+                    text-align: center;
+                    margin-top: 2px;
+                `;
+                container.appendChild(captionEl);
+            }
+            break;
+            
+        case 'gallery':
+            const galleryWrap = document.createElement('div');
+            galleryWrap.style.cssText = `
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 8px;
+                width: 100%;
+                margin-top: 4px;
+            `;
+            
+            if (Array.isArray(item.value)) {
+                item.value.forEach(imgSrc => {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.style.cssText = `
+                        border-radius: 4px;
+                        overflow: hidden;
+                        border: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.1);
+                        aspect-ratio: 1;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        pointer-events: auto;
+                    `;
+                    
+                    const thumb = document.createElement('img');
+                    thumb.src = imgSrc;
+                    thumb.style.cssText = `
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        display: block;
+                        transition: transform 0.3s ease;
+                    `;
+                    
+                    imgContainer.appendChild(thumb);
+                    
+                    imgContainer.addEventListener('mouseenter', () => {
+                        thumb.style.transform = 'scale(1.05)';
+                        imgContainer.style.borderColor = CONFIG.COLORS.secondary;
+                    });
+                    imgContainer.addEventListener('mouseleave', () => {
+                        thumb.style.transform = 'scale(1)';
+                        imgContainer.style.borderColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.1)`;
+                    });
+                    
+                    // Click para abrir imagen completa (lightbox simple)
+                    imgContainer.addEventListener('click', () => {
+                        showImageLightbox(imgSrc);
+                    });
+                    
+                    galleryWrap.appendChild(imgContainer);
+                });
+            }
+            container.appendChild(galleryWrap);
+            break;
+            
+        case 'video':
+            const videoWrap = document.createElement('div');
+            videoWrap.style.cssText = `
+                width: 100%;
+                border-radius: 4px;
+                overflow: hidden;
+                border: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.1);
+                background: #000;
+            `;
+            
+            const videoEl = document.createElement('video');
+            videoEl.src = item.value;
+            videoEl.controls = true;
+            videoEl.style.cssText = `
+                width: 100%;
+                display: block;
+            `;
+            videoWrap.appendChild(videoEl);
+            container.appendChild(videoWrap);
+            
+            if (item.caption) {
+                const captionEl = document.createElement('div');
+                captionEl.textContent = item.caption;
+                captionEl.style.cssText = `
+                    font-size: 9px;
+                    letter-spacing: 1px;
+                    opacity: 0.5;
+                    text-align: center;
+                    margin-top: 2px;
+                `;
+                container.appendChild(captionEl);
+            }
+            break;
+            
+        default:
+            return null;
+    }
+    
+    return container;
+}
+
+function showImageLightbox(src) {
+    // Eliminar lightbox anterior si existe
+    const oldLightbox = document.getElementById('lightbox-overlay');
+    if (oldLightbox) oldLightbox.remove();
+    
+    const lightbox = document.createElement('div');
+    lightbox.id = 'lightbox-overlay';
+    lightbox.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.92);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+    `;
+    
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.cssText = `
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        border-radius: 8px;
+        border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+        box-shadow: 0 0 60px rgba(var(--color-primary-rgb), 0.1);
+    `;
+    
+    lightbox.appendChild(img);
+    
+    lightbox.addEventListener('click', () => {
+        lightbox.remove();
     });
+    
+    document.body.appendChild(lightbox);
 }

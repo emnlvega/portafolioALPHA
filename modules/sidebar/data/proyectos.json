@@ -6,199 +6,215 @@
       "left": 199,
       "top": 23,
       "width": 1681,
-      "height": 144,
+      "height": 91,
       "combined": true
     },
-    "3,0": {
+    "2,0": {
       "type": "combined_normal",
       "left": 199,
-      "top": 182,
+      "top": 129,
       "width": 91,
-      "height": 727,
+      "height": 250,
       "combined": true
     },
-    "3,2": {
+    "2,2": {
       "type": "combined_normal",
       "left": 305,
-      "top": 182,
+      "top": 129,
       "width": 197,
       "height": 144,
       "combined": true
     },
-    "3,6": {
+    "2,6": {
       "type": "combined_normal",
       "left": 517,
-      "top": 182,
+      "top": 129,
       "width": 197,
       "height": 144,
       "combined": true
     },
-    "3,10": {
+    "2,10": {
       "type": "combined_normal",
       "left": 729,
-      "top": 182,
+      "top": 129,
       "width": 197,
       "height": 144,
       "combined": true
     },
-    "3,14": {
+    "2,14": {
       "type": "combined_normal",
       "left": 941,
-      "top": 182,
+      "top": 129,
       "width": 197,
       "height": 144,
       "combined": true
     },
-    "3,18": {
+    "2,18": {
       "type": "combined_normal",
       "left": 1153,
-      "top": 182,
+      "top": 129,
       "width": 197,
       "height": 144,
       "combined": true
     },
-    "3,22": {
+    "2,22": {
       "type": "combined_normal",
       "left": 1365,
-      "top": 182,
+      "top": 129,
       "width": 197,
       "height": 144,
       "combined": true
     },
-    "3,26": {
+    "2,26": {
       "type": "combined_normal",
       "left": 1577,
-      "top": 182,
+      "top": 129,
       "width": 197,
       "height": 144,
       "combined": true
     },
-    "3,30": {
+    "2,30": {
       "type": "combined_normal",
       "left": 1789,
-      "top": 182,
+      "top": 129,
       "width": 91,
-      "height": 727,
+      "height": 250,
       "combined": true
     },
-    "6,2": {
+    "5,2": {
       "type": "combined_normal",
       "left": 305,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,4": {
+    "5,4": {
       "type": "combined_normal",
       "left": 411,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,6": {
+    "5,6": {
       "type": "combined_normal",
       "left": 517,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,8": {
+    "5,8": {
       "type": "combined_normal",
       "left": 623,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,10": {
+    "5,10": {
       "type": "combined_normal",
       "left": 729,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,12": {
+    "5,12": {
       "type": "combined_normal",
       "left": 835,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,14": {
+    "5,14": {
       "type": "combined_normal",
       "left": 941,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,16": {
+    "5,16": {
       "type": "combined_normal",
       "left": 1047,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,18": {
+    "5,18": {
       "type": "combined_normal",
       "left": 1153,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,20": {
+    "5,20": {
       "type": "combined_normal",
       "left": 1259,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,22": {
+    "5,22": {
       "type": "combined_normal",
       "left": 1365,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,24": {
+    "5,24": {
       "type": "combined_normal",
       "left": 1471,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,26": {
+    "5,26": {
       "type": "combined_normal",
       "left": 1577,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "6,28": {
+    "5,28": {
       "type": "combined_normal",
       "left": 1683,
-      "top": 341,
+      "top": 288,
       "width": 91,
       "height": 91,
       "combined": true
     },
-    "8,2": {
+    "7,0": {
+      "type": "combined_normal",
+      "left": 199,
+      "top": 394,
+      "width": 91,
+      "height": 515,
+      "combined": true
+    },
+    "7,2": {
       "type": "combined_normal",
       "left": 305,
-      "top": 447,
+      "top": 394,
       "width": 1469,
-      "height": 462,
+      "height": 515,
+      "combined": true
+    },
+    "7,30": {
+      "type": "combined_normal",
+      "left": 1789,
+      "top": 394,
+      "width": 91,
+      "height": 515,
       "combined": true
     }
   },
@@ -215,12 +231,47 @@
     {
       "id": 1,
       "name": "REBRAND ID",
-      "icon": "◆",
+      "icon": "○",
       "category": "BRANDING",
       "type": "TRABAJO",
       "year": "2025",
       "description": "Identidad corporativa completa para una empresa de tecnologia.",
-      "details": "Investigacion profunda de la marca, definicion de valores y creacion de un sistema visual coherente."
+      "details": "Investigacion profunda de la marca, definicion de valores y creacion de un sistema visual coherente.",
+      "pages": [
+        {
+          "title": "INVESTIGACION",
+          "content": [
+            { "type": "text", "value": "Analisis de competencia, entrevistas con stakeholders, definicion de arquetipos de marca y mapa de posicionamiento." },
+            { "type": "image", "value": "assets/proyectos/rebrand/research.jpg", "caption": "Mapa de posicionamiento de marca" }
+          ]
+        },
+        {
+          "title": "CONCEPTUALIZACION",
+          "content": [
+            { "type": "text", "value": "Brainstorming, moodboards, exploracion de direcciones creativas y seleccion de concepto principal." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/rebrand/moodboard1.jpg",
+              "assets/proyectos/rebrand/moodboard2.jpg",
+              "assets/proyectos/rebrand/moodboard3.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "DESARROLLO",
+          "content": [
+            { "type": "text", "value": "Creacion de logotipo, tipografia corporativa, paleta de colores, sistema de iconografia." },
+            { "type": "image", "value": "assets/proyectos/rebrand/logo.jpg", "caption": "Logotipo final" },
+            { "type": "link", "value": "https://ejemplo.com/rebrand", "label": "Ver proyecto completo" }
+          ]
+        },
+        {
+          "title": "APLICACIONES",
+          "content": [
+            { "type": "text", "value": "Aplicacion en papelería, señaletica, empaques, merchandising y presencia digital." },
+            { "type": "video", "value": "assets/proyectos/rebrand/showreel.mp4", "caption": "Video presentacion del proyecto" }
+          ]
+        }
+      ]
     },
     {
       "id": 2,
@@ -230,7 +281,34 @@
       "type": "PERSONAL",
       "year": "2025",
       "description": "Rediseno completo de experiencia de usuario para e-commerce.",
-      "details": "Pruebas de usabilidad, mapas de calor y prototipado interactivo."
+      "details": "Pruebas de usabilidad, mapas de calor y prototipado interactivo.",
+      "pages": [
+        {
+          "title": "INVESTIGACION UX",
+          "content": [
+            { "type": "text", "value": "Analisis de usuarios, customer journey mapping, identificacion de puntos de friccion." },
+            { "type": "image", "value": "assets/proyectos/ecommerce/journey.jpg", "caption": "Customer journey map" }
+          ]
+        },
+        {
+          "title": "PROTOTIPADO",
+          "content": [
+            { "type": "text", "value": "Wireframes de baja y alta fidelidad, prototipo interactivo en Figma." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/ecommerce/wireframe1.jpg",
+              "assets/proyectos/ecommerce/wireframe2.jpg",
+              "assets/proyectos/ecommerce/prototype.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "IMPLEMENTACION",
+          "content": [
+            { "type": "text", "value": "Desarrollo front-end con React, integracion con backend, optimizacion de rendimiento." },
+            { "type": "link", "value": "https://ejemplo.com/ecommerce", "label": "Ver demo en vivo" }
+          ]
+        }
+      ]
     },
     {
       "id": 3,
@@ -240,7 +318,34 @@
       "type": "ESCOLAR",
       "year": "2024",
       "description": "Panel de control interactivo para visualizacion de datos.",
-      "details": "Desarrollado con React y D3.js, graficos dinamicos y filtros avanzados."
+      "details": "Desarrollado con React y D3.js, graficos dinamicos y filtros avanzados.",
+      "pages": [
+        {
+          "title": "ARQUITECTURA",
+          "content": [
+            { "type": "text", "value": "Diseño de la arquitectura de componentes, gestion de estado con Redux." },
+            { "type": "image", "value": "assets/proyectos/dashboard/architecture.jpg", "caption": "Diagrama de arquitectura" }
+          ]
+        },
+        {
+          "title": "VISUALIZACIONES",
+          "content": [
+            { "type": "text", "value": "Graficos de barras, lineas, areas y scatter plots con D3.js." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/dashboard/chart1.jpg",
+              "assets/proyectos/dashboard/chart2.jpg",
+              "assets/proyectos/dashboard/chart3.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "FILTROS Y ANALISIS",
+          "content": [
+            { "type": "text", "value": "Sistema de filtros avanzados, busqueda en tiempo real, exportacion de datos." },
+            { "type": "link", "value": "https://ejemplo.com/dashboard", "label": "Ver dashboard en vivo" }
+          ]
+        }
+      ]
     },
     {
       "id": 4,
@@ -250,7 +355,30 @@
       "type": "TRABAJO",
       "year": "2025",
       "description": "Sistema de integracion de APIs con autenticacion OAuth2.",
-      "details": "Implementado con Node.js, Express y Redis, 10,000+ peticiones por segundo."
+      "details": "Implementado con Node.js, Express y Redis, 10,000+ peticiones por segundo.",
+      "pages": [
+        {
+          "title": "ARQUITECTURA",
+          "content": [
+            { "type": "text", "value": "Diseño de microservicios, gateway de API, balanceo de carga y caching distribuido." },
+            { "type": "image", "value": "assets/proyectos/apigateway/architecture.jpg", "caption": "Arquitectura del sistema" }
+          ]
+        },
+        {
+          "title": "SEGURIDAD",
+          "content": [
+            { "type": "text", "value": "Implementacion de OAuth2, JWT, rate limiting, CORS policies." },
+            { "type": "image", "value": "assets/proyectos/apigateway/security.jpg", "caption": "Diagrama de autenticacion" }
+          ]
+        },
+        {
+          "title": "MONITOREO",
+          "content": [
+            { "type": "text", "value": "Logging centralizado, metricas con Prometheus, alertas en tiempo real." },
+            { "type": "link", "value": "https://ejemplo.com/apigateway", "label": "Documentacion completa" }
+          ]
+        }
+      ]
     },
     {
       "id": 5,
@@ -260,7 +388,38 @@
       "type": "PERSONAL",
       "year": "2024",
       "description": "Logotipo minimalista para startup de IA.",
-      "details": "Basado en geometria y el concepto de conexion humano-maquina."
+      "details": "Basado en geometria y el concepto de conexion humano-maquina.",
+      "pages": [
+        {
+          "title": "CONCEPTO",
+          "content": [
+            { "type": "text", "value": "Investigacion de formas geometricas, simbolismo de la IA, creacion de multiples versiones." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/logo/concept1.jpg",
+              "assets/proyectos/logo/concept2.jpg",
+              "assets/proyectos/logo/concept3.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "TIPOGRAFIA",
+          "content": [
+            { "type": "text", "value": "Seleccion de tipografia, ajustes de kerning y tracking, logotipo tipografico personalizado." },
+            { "type": "image", "value": "assets/proyectos/logo/typography.jpg", "caption": "Estudio tipografico" }
+          ]
+        },
+        {
+          "title": "VARIACIONES",
+          "content": [
+            { "type": "text", "value": "Versiones horizontal, vertical, monocromatica, sobre fondos claros y oscuros." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/logo/variation1.jpg",
+              "assets/proyectos/logo/variation2.jpg",
+              "assets/proyectos/logo/variation3.jpg"
+            ]}
+          ]
+        }
+      ]
     },
     {
       "id": 6,
@@ -270,7 +429,33 @@
       "type": "TRABAJO",
       "year": "2025",
       "description": "Empaque premium para linea de productos organicos.",
-      "details": "Materiales sustentables y sistema de colores tierra."
+      "details": "Materiales sustentables y sistema de colores tierra.",
+      "pages": [
+        {
+          "title": "ESTRUCTURA",
+          "content": [
+            { "type": "text", "value": "Diseño de packaging estructural, seleccion de materiales sustentables." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/packaging/structure1.jpg",
+              "assets/proyectos/packaging/structure2.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "GRAFICA",
+          "content": [
+            { "type": "text", "value": "Diseño de ilustraciones, tipografia, sistema de colores y jerarquia de informacion." },
+            { "type": "image", "value": "assets/proyectos/packaging/design.jpg", "caption": "Propuesta grafica final" }
+          ]
+        },
+        {
+          "title": "PRODUCCION",
+          "content": [
+            { "type": "text", "value": "Preparacion de archivos para impresion, seleccion de acabados, control de calidad." },
+            { "type": "video", "value": "assets/proyectos/packaging/production.mp4", "caption": "Proceso de produccion" }
+          ]
+        }
+      ]
     },
     {
       "id": 7,
@@ -280,47 +465,179 @@
       "type": "ESCOLAR",
       "year": "2024",
       "description": "Exposicion virtual interactiva de arte digital.",
-      "details": "Realidad aumentada, exploracion 3D e informacion detallada."
+      "details": "Realidad aumentada, exploracion 3D e informacion detallada.",
+      "pages": [
+        {
+          "title": "CONCEPTO",
+          "content": [
+            { "type": "text", "value": "Definicion de la experiencia, curaduria de obras, diseño de la narrativa." },
+            { "type": "image", "value": "assets/proyectos/galeria/concept.jpg", "caption": "Concepto de la exposicion" }
+          ]
+        },
+        {
+          "title": "TECNOLOGIA",
+          "content": [
+            { "type": "text", "value": "Implementacion con Three.js, WebXR para realidad aumentada." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/galeria/tech1.jpg",
+              "assets/proyectos/galeria/tech2.jpg",
+              "assets/proyectos/galeria/tech3.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "EXPERIENCIA",
+          "content": [
+            { "type": "text", "value": "Diseño de interfaz, navegacion 3D, interacciones con las obras." },
+            { "type": "link", "value": "https://ejemplo.com/galeria", "label": "Visitar exposicion virtual" }
+          ]
+        }
+      ]
     },
     {
       "id": 8,
       "name": "LANDING PAGE",
-      "icon": "△",
+      "icon": "◈",
       "category": "DISENO WEB",
       "type": "TRABAJO",
       "year": "2025",
       "description": "Landing page de alta conversion para producto tecnologico.",
-      "details": "Microinteracciones y copy persuasivo."
+      "details": "Microinteracciones y copy persuasivo. A/B testing.",
+      "pages": [
+        {
+          "title": "ESTRATEGIA",
+          "content": [
+            { "type": "text", "value": "Definicion de publico objetivo, propuesta de valor, copywriting persuasivo." },
+            { "type": "image", "value": "assets/proyectos/landing/strategy.jpg", "caption": "Estrategia de contenido" }
+          ]
+        },
+        {
+          "title": "DISEÑO",
+          "content": [
+            { "type": "text", "value": "Wireframes, prototipo visual, sistema de componentes, animaciones." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/landing/wireframe.jpg",
+              "assets/proyectos/landing/prototype.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "OPTIMIZACION",
+          "content": [
+            { "type": "text", "value": "A/B testing, analisis de comportamiento, optimizacion de carga." },
+            { "type": "link", "value": "https://ejemplo.com/landing", "label": "Ver landing page" }
+          ]
+        }
+      ]
     },
     {
       "id": 9,
       "name": "APP FITNESS",
-      "icon": "▽",
+      "icon": "◉",
       "category": "FRONTEND",
       "type": "PERSONAL",
       "year": "2024",
       "description": "App movil para seguimiento de rutinas de ejercicio.",
-      "details": "React Native, seguimiento de progreso y desafios semanales."
+      "details": "React Native, seguimiento de progreso y desafios semanales.",
+      "pages": [
+        {
+          "title": "UX/UI",
+          "content": [
+            { "type": "text", "value": "Diseño de experiencia de usuario, arquitectura de informacion." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/fitness/ui1.jpg",
+              "assets/proyectos/fitness/ui2.jpg",
+              "assets/proyectos/fitness/ui3.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "DESARROLLO",
+          "content": [
+            { "type": "text", "value": "Implementacion con React Native, gestion de estado, componentes nativos." },
+            { "type": "image", "value": "assets/proyectos/fitness/code.jpg", "caption": "Estructura del codigo" }
+          ]
+        },
+        {
+          "title": "INTEGRACIONES",
+          "content": [
+            { "type": "text", "value": "Conexion con HealthKit, notificaciones push, sincronizacion en tiempo real." },
+            { "type": "link", "value": "https://ejemplo.com/fitness", "label": "Descargar app" }
+          ]
+        }
+      ]
     },
     {
       "id": 10,
       "name": "SISTEMA ERP",
-      "icon": "◍",
+      "icon": "◊",
       "category": "BACKEND",
       "type": "TRABAJO",
       "year": "2025",
       "description": "Sistema de planificacion de recursos empresariales.",
-      "details": "Modulos de inventario, facturacion, RRHH y reportes en tiempo real."
+      "details": "Modulos de inventario, facturacion, RRHH y reportes en tiempo real.",
+      "pages": [
+        {
+          "title": "ARQUITECTURA",
+          "content": [
+            { "type": "text", "value": "Diseño de microservicios, bases de datos distribuidas." },
+            { "type": "image", "value": "assets/proyectos/erp/architecture.jpg", "caption": "Arquitectura del sistema" }
+          ]
+        },
+        {
+          "title": "MODULOS",
+          "content": [
+            { "type": "text", "value": "Implementacion de modulos de inventario, facturacion, RRHH, compras y ventas." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/erp/module1.jpg",
+              "assets/proyectos/erp/module2.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "REPORTES",
+          "content": [
+            { "type": "text", "value": "Sistema de reportes personalizados, dashboards ejecutivos." },
+            { "type": "link", "value": "https://ejemplo.com/erp", "label": "Documentacion completa" }
+          ]
+        }
+      ]
     },
     {
       "id": 11,
       "name": "IDENTIDAD MUSEO",
-      "icon": "◆",
+      "icon": "○",
       "category": "BRANDING",
       "type": "ESCOLAR",
       "year": "2024",
       "description": "Identidad visual para museo de arte contemporaneo.",
-      "details": "Logotipo, señaletica, material promocional y presencia digital."
+      "details": "Logotipo, señaletica, material promocional y presencia digital.",
+      "pages": [
+        {
+          "title": "CONCEPTO",
+          "content": [
+            { "type": "text", "value": "Investigacion del museo, definicion de personalidad, sistema visual unico." },
+            { "type": "image", "value": "assets/proyectos/museo/concept.jpg", "caption": "Concepto creativo" }
+          ]
+        },
+        {
+          "title": "DESARROLLO",
+          "content": [
+            { "type": "text", "value": "Diseño de logotipo, tipografia, paleta de colores, sistema de graficos." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/museo/logo.jpg",
+              "assets/proyectos/museo/colors.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "APLICACIONES",
+          "content": [
+            { "type": "text", "value": "Señaletica, material promocional, sitio web, redes sociales." },
+            { "type": "video", "value": "assets/proyectos/museo/showreel.mp4", "caption": "Video de la identidad" }
+          ]
+        }
+      ]
     },
     {
       "id": 12,
@@ -330,27 +647,105 @@
       "type": "PERSONAL",
       "year": "2025",
       "description": "Tienda online con experiencia de compra fluida.",
-      "details": "Pasarelas de pago, sistema de recomendaciones y seguimiento de envios."
+      "details": "Pasarelas de pago, sistema de recomendaciones.",
+      "pages": [
+        {
+          "title": "ESTRATEGIA",
+          "content": [
+            { "type": "text", "value": "Definicion de modelo de negocio, catalogo de productos, estrategia de precios." },
+            { "type": "image", "value": "assets/proyectos/tienda/strategy.jpg", "caption": "Estrategia comercial" }
+          ]
+        },
+        {
+          "title": "DESARROLLO",
+          "content": [
+            { "type": "text", "value": "Implementacion de frontend y backend, pasarelas de pago." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/tienda/screenshot1.jpg",
+              "assets/proyectos/tienda/screenshot2.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "EXPERIENCIA",
+          "content": [
+            { "type": "text", "value": "Sistema de recomendaciones, seguimiento de envios, notificaciones." },
+            { "type": "link", "value": "https://ejemplo.com/tienda", "label": "Visitar tienda" }
+          ]
+        }
+      ]
     },
     {
       "id": 13,
       "name": "STUDIO IDENTITY",
-      "icon": "◇",
+      "icon": "◆",
       "category": "DISEÑO GRAFICO",
       "type": "TRABAJO",
       "year": "2025",
       "description": "Identidad completa para estudio de arquitectura.",
-      "details": "Sistema modular basado en la geometria y la luz."
+      "details": "Sistema modular basado en la geometria y la luz.",
+      "pages": [
+        {
+          "title": "CONCEPTO",
+          "content": [
+            { "type": "text", "value": "Investigacion de la arquitectura, definicion de identidad, sistema modular." },
+            { "type": "image", "value": "assets/proyectos/studio/concept.jpg", "caption": "Concepto modular" }
+          ]
+        },
+        {
+          "title": "DESARROLLO",
+          "content": [
+            { "type": "text", "value": "Diseño de logotipo, tipografia, sistema de colores, patrones." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/studio/logo.jpg",
+              "assets/proyectos/studio/patterns.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "APLICACIONES",
+          "content": [
+            { "type": "text", "value": "Papelería, señaletica, presentaciones, sitio web." },
+            { "type": "link", "value": "https://ejemplo.com/studio", "label": "Ver proyecto completo" }
+          ]
+        }
+      ]
     },
     {
       "id": 14,
       "name": "ECOMMERCE APP",
-      "icon": "○",
+      "icon": "◉",
       "category": "FRONTEND",
       "type": "TRABAJO",
       "year": "2025",
       "description": "App de compras con experiencia personalizada.",
-      "details": "React Native, sincronizacion en tiempo real y notificaciones."
+      "details": "React Native, sincronizacion en tiempo real.",
+      "pages": [
+        {
+          "title": "UX/UI",
+          "content": [
+            { "type": "text", "value": "Diseño centrado en el usuario, experiencia de compra personalizada." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/ecommerceapp/ui1.jpg",
+              "assets/proyectos/ecommerceapp/ui2.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "DESARROLLO",
+          "content": [
+            { "type": "text", "value": "React Native, gestion de estado, navegacion, integracion con APIs." },
+            { "type": "image", "value": "assets/proyectos/ecommerceapp/code.jpg", "caption": "Estructura del proyecto" }
+          ]
+        },
+        {
+          "title": "NOTIFICACIONES",
+          "content": [
+            { "type": "text", "value": "Sistema de notificaciones push, seguimiento de pedidos." },
+            { "type": "link", "value": "https://ejemplo.com/ecommerceapp", "label": "Descargar app" }
+          ]
+        }
+      ]
     },
     {
       "id": 15,
@@ -360,47 +755,177 @@
       "type": "ESCOLAR",
       "year": "2024",
       "description": "Arquitectura de microservicios para sistema distribuido.",
-      "details": "Docker, Kubernetes, Kafka y monitoreo con Prometheus."
+      "details": "Docker, Kubernetes, Kafka y monitoreo con Prometheus.",
+      "pages": [
+        {
+          "title": "ARQUITECTURA",
+          "content": [
+            { "type": "text", "value": "Diseño de microservicios, comunicacion asincrona con Kafka." },
+            { "type": "image", "value": "assets/proyectos/microservices/architecture.jpg", "caption": "Diagrama de arquitectura" }
+          ]
+        },
+        {
+          "title": "IMPLEMENTACION",
+          "content": [
+            { "type": "text", "value": "Dockerizacion de servicios, despliegue en Kubernetes." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/microservices/docker.jpg",
+              "assets/proyectos/microservices/kubernetes.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "MONITOREO",
+          "content": [
+            { "type": "text", "value": "Metricas con Prometheus, logs centralizados, dashboards." },
+            { "type": "link", "value": "https://ejemplo.com/microservices", "label": "Documentacion tecnica" }
+          ]
+        }
+      ]
     },
     {
       "id": 16,
       "name": "CAMPAÑA BRANDING",
-      "icon": "△",
+      "icon": "○",
       "category": "BRANDING",
       "type": "TRABAJO",
       "year": "2025",
       "description": "Campana de lanzamiento para marca de moda sostenible.",
-      "details": "Estrategia 360, contenido digital y activaciones en tienda."
+      "details": "Estrategia 360, contenido digital y activaciones.",
+      "pages": [
+        {
+          "title": "ESTRATEGIA",
+          "content": [
+            { "type": "text", "value": "Definicion de audiencia, mensajes clave, canales de comunicacion." },
+            { "type": "image", "value": "assets/proyectos/campana/strategy.jpg", "caption": "Estrategia de comunicacion" }
+          ]
+        },
+        {
+          "title": "CREATIVIDAD",
+          "content": [
+            { "type": "text", "value": "Concepto creativo, piezas de comunicacion, contenido digital." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/campana/piece1.jpg",
+              "assets/proyectos/campana/piece2.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "EJECUCION",
+          "content": [
+            { "type": "text", "value": "Produccion de contenido, gestion de redes sociales, eventos." },
+            { "type": "video", "value": "assets/proyectos/campana/campaign.mp4", "caption": "Resumen de la campana" }
+          ]
+        }
+      ]
     },
     {
       "id": 17,
       "name": "WEB PORTFOLIO",
-      "icon": "□",
+      "icon": "◈",
       "category": "DISENO WEB",
       "type": "PERSONAL",
       "year": "2024",
       "description": "Portafolio interactivo para disenador creativo.",
-      "details": "Animaciones fluidas, navegacion intuitiva y galeria de proyectos."
+      "details": "Animaciones fluidas, navegacion intuitiva y galeria.",
+      "pages": [
+        {
+          "title": "CONCEPTO",
+          "content": [
+            { "type": "text", "value": "Definicion de identidad, estructura de navegacion, storytelling." },
+            { "type": "image", "value": "assets/proyectos/portfolio/concept.jpg", "caption": "Concepto de diseño" }
+          ]
+        },
+        {
+          "title": "DESARROLLO",
+          "content": [
+            { "type": "text", "value": "Frontend con animaciones fluidas, sistema de navegacion." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/portfolio/screenshot1.jpg",
+              "assets/proyectos/portfolio/screenshot2.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "CONTENIDO",
+          "content": [
+            { "type": "text", "value": "Curaduria de proyectos, redaccion de casos de estudio." },
+            { "type": "link", "value": "https://ejemplo.com/portfolio", "label": "Ver portafolio" }
+          ]
+        }
+      ]
     },
     {
       "id": 18,
       "name": "GAME UI",
-      "icon": "◉",
+      "icon": "□",
       "category": "ARTE",
       "type": "ESCOLAR",
       "year": "2024",
       "description": "Interfaz de usuario para juego de estrategia.",
-      "details": "Diseño de menus, HUD y elementos interactivos."
+      "details": "Diseño de menus, HUD y elementos interactivos.",
+      "pages": [
+        {
+          "title": "CONCEPTOS",
+          "content": [
+            { "type": "text", "value": "Diseño de interfaz, identidad visual del juego, sistema de navegacion." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/gameui/concept1.jpg",
+              "assets/proyectos/gameui/concept2.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "HUD Y MENUS",
+          "content": [
+            { "type": "text", "value": "Diseño de HUD, menus principales, pantallas de juego." },
+            { "type": "image", "value": "assets/proyectos/gameui/hud.jpg", "caption": "HUD del juego" }
+          ]
+        },
+        {
+          "title": "INTERACCIONES",
+          "content": [
+            { "type": "text", "value": "Animaciones de interfaz, transiciones, microinteracciones." },
+            { "type": "video", "value": "assets/proyectos/gameui/interactions.mp4", "caption": "Interacciones de UI" }
+          ]
+        }
+      ]
     },
     {
       "id": 19,
       "name": "REST API",
-      "icon": "▽",
+      "icon": "◊",
       "category": "BACKEND",
       "type": "TRABAJO",
       "year": "2025",
       "description": "API RESTful para plataforma de servicios.",
-      "details": "Documentacion OpenAPI, autenticacion JWT y caching."
+      "details": "Documentacion OpenAPI, autenticacion JWT y caching.",
+      "pages": [
+        {
+          "title": "DISEÑO",
+          "content": [
+            { "type": "text", "value": "Diseño de endpoints, modelos de datos, documentacion OpenAPI." },
+            { "type": "image", "value": "assets/proyectos/restapi/openapi.jpg", "caption": "Documentacion OpenAPI" }
+          ]
+        },
+        {
+          "title": "IMPLEMENTACION",
+          "content": [
+            { "type": "text", "value": "Desarrollo con Node.js/Express, integracion con base de datos." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/restapi/code1.jpg",
+              "assets/proyectos/restapi/code2.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "TESTING",
+          "content": [
+            { "type": "text", "value": "Pruebas unitarias, integracion y de estres." },
+            { "type": "link", "value": "https://ejemplo.com/restapi", "label": "Documentacion completa" }
+          ]
+        }
+      ]
     },
     {
       "id": 20,
@@ -410,17 +935,69 @@
       "type": "PERSONAL",
       "year": "2024",
       "description": "Empaque ecologico para linea de cosmeticos.",
-      "details": "Materiales reciclados, diseno minimalista y sistema de colores naturales."
+      "details": "Materiales reciclados, diseno minimalista.",
+      "pages": [
+        {
+          "title": "CONCEPTO",
+          "content": [
+            { "type": "text", "value": "Investigacion de materiales sustentables, diseño de estructura." },
+            { "type": "image", "value": "assets/proyectos/packagingeco/concept.jpg", "caption": "Concepto de materiales" }
+          ]
+        },
+        {
+          "title": "GRAFICA",
+          "content": [
+            { "type": "text", "value": "Diseño de ilustraciones, tipografia, sistema de colores naturales." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/packagingeco/design1.jpg",
+              "assets/proyectos/packagingeco/design2.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "PRODUCCION",
+          "content": [
+            { "type": "text", "value": "Preparacion para impresion, seleccion de acabados, prototipado." },
+            { "type": "video", "value": "assets/proyectos/packagingeco/production.mp4", "caption": "Proceso de produccion" }
+          ]
+        }
+      ]
     },
     {
       "id": 21,
       "name": "DASHBOARD FINANCE",
-      "icon": "◍",
+      "icon": "◉",
       "category": "FRONTEND",
       "type": "TRABAJO",
       "year": "2025",
       "description": "Dashboard financiero para startups.",
-      "details": "Visualizacion de metricas clave, graficos interactivos y exportacion de datos."
+      "details": "Visualizacion de metricas clave, graficos interactivos.",
+      "pages": [
+        {
+          "title": "METRICAS",
+          "content": [
+            { "type": "text", "value": "Definicion de KPI financieros, fuentes de datos, visualizaciones." },
+            { "type": "image", "value": "assets/proyectos/dashboardfinance/metrics.jpg", "caption": "Definicion de metricas" }
+          ]
+        },
+        {
+          "title": "VISUALIZACIONES",
+          "content": [
+            { "type": "text", "value": "Graficos de barras, lineas, areas, tablas dinamicas." },
+            { "type": "gallery", "value": [
+              "assets/proyectos/dashboardfinance/chart1.jpg",
+              "assets/proyectos/dashboardfinance/chart2.jpg"
+            ]}
+          ]
+        },
+        {
+          "title": "INTERACCION",
+          "content": [
+            { "type": "text", "value": "Filtros en tiempo real, drill-down, dashboards personalizables." },
+            { "type": "link", "value": "https://ejemplo.com/dashboardfinance", "label": "Ver dashboard" }
+          ]
+        }
+      ]
     }
   ]
 }

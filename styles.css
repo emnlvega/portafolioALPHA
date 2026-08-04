@@ -26,6 +26,25 @@ body::before {
     pointer-events: none;
     z-index: 9995;
 }
+/* styles.css - Agregar al inicio o en la sección de variables */
+
+:root {
+    /* ... tus variables existentes ... */
+    
+    /* 🔥 GLOW BLANCO PARA FLECHAS ACTIVAS */
+    --text-shadow-white-active: 
+        0 0 10px rgba(255, 255, 255, 1),
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(255, 255, 255, 0.4),
+        0 0 80px rgba(255, 255, 255, 0.2);
+    
+    --text-shadow-white-hover: 
+        0 0 5px rgba(255, 255, 255, 1),
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(255, 255, 255, 0.4),
+        0 0 80px rgba(255, 255, 255, 0.2),
+        0 0 120px rgba(255, 255, 255, 0.1);
+}
 
 body::after {
     content: '';
@@ -860,4 +879,89 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
 }
 #import-dialog.active {
     display: flex !important;
+}
+
+
+/* ===== SCROLLBARS ESTILIZADAS (GLOBAL) ===== */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(var(--color-primary-rgb), 0.3);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--color-primary-rgb), 0.6);
+}
+
+/* Scroll para firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--color-primary-rgb), 0.3) rgba(0, 0, 0, 0.3);
+}
+
+/* ===== SCROLLBAR PARA EL DETALLE DE PROYECTOS ===== */
+.proyectos-detail::-webkit-scrollbar {
+    width: 4px;
+}
+
+.proyectos-detail::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+
+.proyectos-detail::-webkit-scrollbar-thumb {
+    background: rgba(var(--color-primary-rgb), 0.25);
+    border-radius: 2px;
+}
+
+.proyectos-detail::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--color-primary-rgb), 0.5);
+}
+
+/* ===== SCROLLBAR PARA SETTINGS ===== */
+#settings-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+#settings-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+
+#settings-content::-webkit-scrollbar-thumb {
+    background: rgba(var(--color-primary-rgb), 0.25);
+    border-radius: 2px;
+}
+
+#settings-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--color-primary-rgb), 0.5);
+}
+
+/* ===== SCROLLBAR PARA IMPORT DIALOG ===== */
+#import-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+#import-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+
+#import-content::-webkit-scrollbar-thumb {
+    background: rgba(var(--color-primary-rgb), 0.25);
+    border-radius: 2px;
+}
+
+#import-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--color-primary-rgb), 0.5);
 }

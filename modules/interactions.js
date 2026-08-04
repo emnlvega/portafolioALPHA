@@ -691,7 +691,7 @@ export function resetGrid(keepCombined = false) {
 
 export function exportDesignToJSON() {
     // Si estamos en página especial, no permitir export
-    if (isSpecialPageActiveCheck()) return;
+    //if (isSpecialPageActiveCheck()) return;
     
     const result = {};
 
