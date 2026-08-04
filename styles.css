@@ -105,10 +105,14 @@ body::after {
     height: 100%;
     pointer-events: none;
     z-index: 9994;
-    /* Sin blur, solo el blend y el color */
     opacity: .25;
     background: hsl(0, 0%, 65%);
     mix-blend-mode: color-dodge;
+    /* FORZAR GPU */
+    will-change: transform;
+    transform: translateZ(0);
+    /* Reducir calidad de renderizado en movimiento */
+    image-rendering: auto;
 }
 
 /* ===== BLOOM (DEBAJO DEL GAUSSIAN) ===== */
@@ -120,20 +124,33 @@ body::after {
     height: 100%;
     pointer-events: none;
     z-index: 9993;
+    /* UN SOLO OVERLAY CON 3 CAPAS COMBINADAS */
     background: 
-        radial-gradient(ellipse at 50% 45%, 
-            rgba(var(--color-primary-rgb), 0.05) 0%, 
-            transparent 60%
-        ),
-        radial-gradient(ellipse at 50% 45%, 
-            rgba(var(--color-primary-rgb), 0.08) 0%, 
-            transparent 35%
-        ),
+        /* Capa 1: Base amplia y suave */
         radial-gradient(ellipse at 50% 45%, 
             rgba(var(--color-primary-rgb), 0.12) 0%, 
-            rgba(255, 200, 100, 0.02) 25%,
-            transparent 50%
+            rgba(var(--color-primary-rgb), 0.02) 40%,
+            transparent 65%
+        ),
+        /* Capa 2: Núcleo más intenso */
+        radial-gradient(ellipse at 50% 45%, 
+            rgba(var(--color-primary-rgb), 0.20) 0%, 
+            rgba(var(--color-primary-rgb), 0.05) 25%,
+            transparent 45%
+        ),
+        /* Capa 3: Toque cálido (el que antes era el segundo overlay) */
+        radial-gradient(ellipse at 50% 45%, 
+            rgba(255, 200, 100, 0.04) 0%,
+            rgba(var(--color-primary-rgb), 0.03) 30%,
+            transparent 55%
         );
+    /* FORZAR GPU */
+    will-change: transform;
+    transform: translateZ(0);
+    /* Evitar re-renderizados innecesarios */
+    backface-visibility: hidden;
+    /* Aislar para mejor rendimiento */
+    contain: layout style paint;
 }
 
 /* ===== COLOR DODGE (DEBAJO DEL BLOOM) ===== */
@@ -145,7 +162,7 @@ body::after {
     height: 100%;
     pointer-events: none;
     z-index: 9993;
-    backdrop-filter: contrast(1.2) saturate(1.1);
+    backdrop-filter: contrast(0.5) saturate(1.1);
     opacity: 1;
     background: transparent;
 }
