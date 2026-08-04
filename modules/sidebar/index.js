@@ -6,10 +6,10 @@ import { stopRandomAnimations, restartRandomAnimations } from '../animations.js'
 import { importDesignFromJSON } from '../logo.js';
 import { toggleSettings } from '../settings.js';
 import { showDialog } from '../dialogs.js';
-import { getProyectosDesign, renderProyectosContent } from './pages/proyectos.js';
-import { getSobreMiDesign, renderSobreMiContent } from './pages/sobre-mi.js';
+import { getSobreMiDesign, renderSobreMiContent, clearSobreMiState } from './pages/sobre-mi.js';
 import { getContactoDesign, renderContactoContent } from './pages/contacto.js';
-import { clearProjectSelection } from './pages/proyectos.js';
+import { getProyectosDesign, renderProyectosContent, clearProjectSelection, clearProyectosTextureState } from './pages/proyectos.js';
+
 
 
 // ===== ESTADO =====
@@ -144,6 +144,8 @@ export function animateSidebar(sidebarCells, rows, cellSize, offsetX, offsetY) {
 // ===== SETUP SIDEBAR TEXTS =====
 // modules/sidebar/index.js - setupSidebarTexts
 
+
+
 export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth, sidebarHeight, container) {
     // Limpiar elementos anteriores
     document.querySelectorAll('.sidebar-text, .sidebar-logo-svg, .sidebar-logo-text, #settings-cog-btn, #color-picker-container').forEach(el => el.remove());
@@ -172,6 +174,8 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
     container.appendChild(logoSVG);
     setTimeout(() => { logoSVG.style.opacity = '1'; }, 300);
     
+
+
     // ===== MENU ITEMS =====
     menuItems.forEach((item, index) => {
         currentY += spacing;
@@ -278,6 +282,8 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         container.appendChild(div);
     });
 }
+
+
 
 // ===== CREAR LOGO =====
 function createLogo(container, x, y) {
@@ -490,6 +496,13 @@ export function returnToMainLogo() {
 
     isTransitioning = true;
 
+    // 🔥 Si veníamos de Sobre Mi, restaurar textura SOLO si estaba habilitada en settings
+    if (currentPage === 'proyectos') {
+        clearProyectosTextureState();
+    } else if (currentPage === 'sobre-mi') {
+        clearSobreMiState();
+    }
+
     clearProjectSelection();
     
     document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content').forEach(el => el.remove());
@@ -503,7 +516,6 @@ export function returnToMainLogo() {
     setGridInteractionsEnabled(false);
     stopRandomAnimations();
     
-    // 🔥 RESET COMPLETO (reset = true) para limpiar TODAS las celdas combinadas y elementos residuales
     resetGrid(true);
     
     isProgrammaticLoad = true;
@@ -516,11 +528,9 @@ export function returnToMainLogo() {
             setGridInteractionsEnabled(true);
             window.proyectosCurrentPage = 0;
             window.proyectosCurrentCategory = 'TODOS';
-
             
             setTimeout(() => {
                 restartRandomAnimations();
-                // 🔥 Liberar bloqueo después de que todo termine
                 isTransitioning = false;
             }, 500);
         }, true);

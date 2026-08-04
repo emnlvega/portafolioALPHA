@@ -1,9 +1,60 @@
+// modules/architect.js
+
 import { CONFIG } from './config.js';
 
 let isArchitectMode = false;
 let architectOverlay = null;
 let coordinateLabels = [];
 let resizeTimeout = null;
+
+// ===== DETECTAR INTERACCIÓN DEL USUARIO PARA CERRAR =====
+function setupAutoCloseListeners() {
+    const closeArchitect = () => {
+        if (isArchitectMode) {
+            hideArchitectOverlay();
+            isArchitectMode = false;
+            removeAutoCloseListeners();
+        }
+    };
+
+    // Click en cualquier parte
+    document.addEventListener('click', closeArchitect, { once: false });
+    
+    // Teclas (cualquier tecla)
+    document.addEventListener('keydown', closeArchitect, { once: false });
+    
+    // Cambio de página (observar el estado de página especial)
+    const observer = new MutationObserver(() => {
+        // Si se activa una página especial, cerrar
+        if (document.querySelector('.proyectos-content, .sobre-mi-content, .contacto-content')) {
+            if (isArchitectMode) {
+                hideArchitectOverlay();
+                isArchitectMode = false;
+                removeAutoCloseListeners();
+                observer.disconnect();
+            }
+        }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // Guardar referencias para limpiar
+    window._architectCloseListeners = {
+        click: closeArchitect,
+        keydown: closeArchitect,
+        observer: observer
+    };
+}
+
+function removeAutoCloseListeners() {
+    if (window._architectCloseListeners) {
+        document.removeEventListener('click', window._architectCloseListeners.click);
+        document.removeEventListener('keydown', window._architectCloseListeners.keydown);
+        if (window._architectCloseListeners.observer) {
+            window._architectCloseListeners.observer.disconnect();
+        }
+        delete window._architectCloseListeners;
+    }
+}
 
 export function toggleArchitectMode() {
     // Verificar si está habilitado en la configuración
@@ -13,10 +64,13 @@ export function toggleArchitectMode() {
     
     if (isArchitectMode) {
         hideArchitectOverlay();
+        isArchitectMode = false;
+        removeAutoCloseListeners();
     } else {
         showArchitectOverlay();
+        isArchitectMode = true;
+        setupAutoCloseListeners();
     }
-    isArchitectMode = !isArchitectMode;
     return isArchitectMode;
 }
 
@@ -26,7 +80,6 @@ export function isArchitectModeActive() {
 
 export function updateArchitectOverlay() {
     if (isArchitectMode && CONFIG.ARCHITECT_MODE.ENABLED) {
-        // Limpiar y recrear para actualizar posiciones
         hideArchitectOverlay();
         showArchitectOverlay();
     }
@@ -37,6 +90,24 @@ export function getArchitectModeStatus() {
         active: isArchitectMode,
         enabled: CONFIG.ARCHITECT_MODE.ENABLED
     };
+}
+
+// ===== FUNCIÓN PARA CALCULAR TAMAÑO DE CELDA COMBINADA =====
+function getCombinedSize(cell) {
+    const cellSize = CONFIG.CELL_SIZE;
+    const gap = CONFIG.GAP;
+    const step = cellSize + gap;
+    
+    const width = parseFloat(cell.style.width);
+    const height = parseFloat(cell.style.height);
+    
+    if (isNaN(width) || isNaN(height)) return null;
+    
+    // Calcular cuántas celdas ocupa (redondeo)
+    const cols = Math.round((width + gap) / step);
+    const rows = Math.round((height + gap) / step);
+    
+    return { cols, rows };
 }
 
 function showArchitectOverlay() {
@@ -74,7 +145,6 @@ function showArchitectOverlay() {
         let row, col;
         
         if (isCombined) {
-            // Para celdas combinadas, usar la posición de la celda base
             row = parseInt(cell.dataset.designRow);
             col = parseInt(cell.dataset.designCol);
         } else {
@@ -92,7 +162,17 @@ function showArchitectOverlay() {
         // Crear etiqueta de coordenada
         const label = document.createElement('div');
         label.className = 'architect-label';
-        label.textContent = `(${row}, ${col})`;
+        
+        // ===== CONSTRUIR TEXTO =====
+        let labelText = `(${row}, ${col})`;
+        
+        if (isCombined) {
+            const size = getCombinedSize(cell);
+            if (size) {
+                labelText += `  ${size.cols}×${size.rows}`;
+            }
+        }
+        label.textContent = labelText;
         
         const fontSize = archConfig.FONT_SIZE || 11;
         const opacity = archConfig.OPACITY || 0.7;
@@ -147,6 +227,12 @@ function showArchitectOverlay() {
                 0 0 30px ${color},
                 0 0 60px rgba(0, 255, 145, 0.3)
             `;
+            
+            // Mostrar el tamaño en una segunda línea para mejor legibilidad
+            const size = getCombinedSize(cell);
+            if (size) {
+                // Ya lo incluimos en el texto principal
+            }
         }
 
         // Efecto sutil al pasar el mouse (aunque no sea interactivo)
@@ -166,8 +252,6 @@ function showArchitectOverlay() {
         architectOverlay.appendChild(label);
         coordinateLabels.push(label);
     });
-    
-    // Mostrar información en consola
 }
 
 function hideArchitectOverlay() {
@@ -182,6 +266,7 @@ function hideArchitectOverlay() {
 export function cleanupArchitectMode() {
     hideArchitectOverlay();
     isArchitectMode = false;
+    removeAutoCloseListeners();
     if (resizeTimeout) {
         clearTimeout(resizeTimeout);
         resizeTimeout = null;

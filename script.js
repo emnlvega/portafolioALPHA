@@ -327,7 +327,6 @@ document.addEventListener('contextmenu', function(e) {
 
 // ===== KEYBOARD SHORTCUTS =====
 document.addEventListener('keydown', (e) => {
-    x
      if (isTransitioningCheck()) {
         e.preventDefault();
         return;

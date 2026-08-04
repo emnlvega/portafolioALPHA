@@ -1,62 +1,57 @@
 {
   "title": "SOBRE MI",
   "design": {
-    "1,1": {
-      "type": "combined_logo",
-      "left": 252,
-      "top": 76,
-      "width": 197,
-      "height": 210,
-      "combined": true
-    },
-    "1,6": {
+    "0,0": {
       "type": "combined_normal",
-      "left": 517,
-      "top": 76,
-      "width": 1050,
-      "height": 210,
+      "left": 199,
+      "top": 23,
+      "width": 1681,
+      "height": 91,
       "combined": true
     },
-    "6,1": {
-      "type": "combined_logo",
-      "left": 252,
-      "top": 301,
-      "width": 1315,
-      "height": 195,
+    "2,0": {
+      "type": "combined_normal",
+      "left": 199,
+      "top": 129,
+      "width": 250,
+      "height": 409,
       "combined": true
     },
-    "10,1": {
-      "type": "combined_logo",
-      "left": 252,
-      "top": 511,
-      "width": 1315,
-      "height": 164,
+    "2,5": {
+      "type": "combined_normal",
+      "left": 464,
+      "top": 129,
+      "width": 1416,
+      "height": 409,
+      "combined": true
+    },
+    "10,0": {
+      "type": "combined_normal",
+      "left": 199,
+      "top": 553,
+      "width": 833,
+      "height": 197,
+      "combined": true
+    },
+    "10,16": {
+      "type": "combined_normal",
+      "left": 1047,
+      "top": 553,
+      "width": 833,
+      "height": 197,
+      "combined": true
+    },
+    "14,0": {
+      "type": "combined_normal",
+      "left": 199,
+      "top": 765,
+      "width": 1681,
+      "height": 144,
       "combined": true
     }
   },
   "content": {
-    "photo": "◈",
-    "bio": "Emanuel Vega, diseñador gráfico y desarrollador de software con mas de 10 años de experiencia. Random Access Memories.",
-    "skills": [
-      "DISEÑO GRAFICO",
-      "DESARROLLO WEB",
-      "UI/UX",
-      "BRANDING",
-      "FRONTEND",
-      "BACKEND",
-      "ILUSTRACION",
-      "FOTOGRAFIA"
-    ],
-    "experience": [
-      "DIRECTOR CREATIVO - STUDIO E (2022-2025)",
-      "SENIOR DESIGNER - AGENCIA FUTURA (2019-2022)",
-      "DESARROLLADOR UI/UX - TECH LAB (2016-2019)",
-      "DISENADOR JR - CREATIVE HUB (2014-2016)"
-    ],
-    "education": [
-      "MAESTRIA EN DISEÑO INTERACTIVO - UNAM (2020)",
-      "LIC. DISEÑO GRAFICO - UAM (2014)",
-      "CERTIFICACION EN DESARROLLO WEB - ITESM (2018)"
-    ]
+    "photo1": "assets/sobre-mi/emanuel-pixel.png",
+    "photo2": "assets/sobre-mi/emanuel-normal.png"
   }
 }

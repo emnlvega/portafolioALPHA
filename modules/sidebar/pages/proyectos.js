@@ -20,7 +20,6 @@ let isExpanding = false;
 let detailCellRef = null;
 let renderTimeout = null;
 let textureWasVisibleBeforeExpand = true;
-let textureStateFromSettings = true;
 
 // ===== DISEÑO EXPANDIDO =====
 const EXPANDED_DESIGN = {
@@ -86,6 +85,19 @@ function getTextureVisibilityFromSettings() {
     return true;
 }
 
+// 🔥 Función para limpiar el estado de textura al salir de Proyectos
+export function clearProyectosTextureState() {
+    // Leer el estado REAL de la textura desde settings (localStorage)
+    const textureEnabled = getTextureVisibilityFromSettings();
+    
+    // Solo restaurar si estaba habilitada en settings
+    if (textureEnabled) {
+        toggleTextureOverlay(true);
+    } else {
+        toggleTextureOverlay(false);
+    }
+}
+
 async function loadProyectosData() {
     if (proyectosData) return proyectosData;
     const response = await fetch(new URL('../data/proyectos.json', import.meta.url));
@@ -120,7 +132,8 @@ function toggleDetailExpand() {
     
     isExpanding = true;
 
-    textureStateFromSettings = getTextureVisibilityFromSettings();
+    // Guardar el estado REAL de la textura ANTES de expandir
+    textureWasVisibleBeforeExpand = getTextureVisibilityFromSettings();
 
     loadProyectosData().then(data => {
         const savedProjectId = selectedProjectId;
@@ -131,9 +144,11 @@ function toggleDetailExpand() {
         const designToImport = newExpandedState ? EXPANDED_DESIGN : data.design;
 
         if (newExpandedState) {
+            // Expandir: ocultar textura
             toggleTextureOverlay(false);
         } else {
-            toggleTextureOverlay(textureStateFromSettings);
+            // Minimizar: restaurar textura según settings
+            toggleTextureOverlay(textureWasVisibleBeforeExpand);
         }
 
         document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn').forEach(el => el.remove());

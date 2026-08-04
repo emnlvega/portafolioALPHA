@@ -29,7 +29,6 @@ export function initOverlays() {
     imageCount = config.IMAGE_COUNT;
     
     if (imageCount === 0) {
-        console.warn('⚠️ No se especificó cantidad de imágenes para overlays en OVERLAY_CONFIG.IMAGE_COUNT');
         return;
     }
     
