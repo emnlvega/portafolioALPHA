@@ -502,7 +502,7 @@ export function handleSidebarAction(action) {
     // 🔥 SOBRE MI
     if (action === 'sobre-mi') {
         if (mobile) {
-            console.log('🔵 Móvil: Cargando Sobre Mi...');
+
             renderMobileSobreMi();
             setTimeout(() => {
                 updateSidebarActiveStateMobile('sobre-mi');

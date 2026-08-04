@@ -5,10 +5,10 @@ import { stopRandomAnimations } from '../animations.js';
 import { createMobileNavButtons } from './mobile-nav.js';
 
 export function renderMobileHome() {
-    console.log('🔵🔵🔵 renderMobileHome() llamado 🔵🔵🔵');
+
     const container = document.getElementById('grid-container');
     if (!container) {
-        console.error('❌ Container no encontrado');
+        console.error('Container no encontrado');
         return;
     }
     
@@ -22,7 +22,6 @@ export function renderMobileHome() {
             return response.json();
         })
         .then(design => {
-            console.log('📐 Logo móvil cargado:', Object.keys(design).length, 'celdas');
             
             // Detener animaciones
             stopRandomAnimations();
@@ -31,13 +30,13 @@ export function renderMobileHome() {
             resetGrid(false);
             
             importDesignFromJSON(design, () => {
-                console.log('✅ Diseño home importado');
+
                 // 🔥 CREAR BOTONES DE NAVEGACIÓN MÓVIL
                 createMobileNavButtons('inicio');
             }, true);
         })
         .catch(err => {
-            console.error('❌ Error cargando logo-movil.json:', err);
+            console.error('Error cargando logo-movil.json:', err);
             // Fallback: diseño vacío
             stopRandomAnimations();
             resetGrid(false);

@@ -57,17 +57,17 @@ const SOBRE_MI_DATA = {
 };
 
 export function renderMobileSobreMi() {
-    console.log('🔵🔵🔵 renderMobileSobreMi() llamado 🔵🔵🔵');
+
     const container = document.getElementById('grid-container');
     if (!container) {
-        console.error('❌ Container no encontrado');
+        console.error('Container no encontrado');
         return;
     }
     
     // Limpiar contenido anterior
     document.querySelectorAll('.mobile-sobremi-content, .mobile-nav-btn, .mobile-btn-overlay').forEach(el => el.remove());
     
-    console.log('📐 Aplicando diseño SOBRE_MI_DESIGN...');
+
     
     // Detener animaciones
     stopRandomAnimations();
@@ -77,11 +77,11 @@ export function renderMobileSobreMi() {
     
     // 🔥 IMPORTAR CON reset = false (no resetear el grid)
     importDesignFromJSON(SOBRE_MI_DESIGN, () => {
-        console.log('✅ Diseño sobre mi importado');
+
         // Crear contenido de Sobre Mi
         createSobreMiContent();
         // 🔥 CREAR BOTONES DE NAVEGACIÓN MÓVIL
-        console.log('🔄 Creando botones de navegación con activePage="sobre-mi"');
+
         createMobileNavButtons('sobre-mi');
         
         // 🔥 DESACTIVAR INTERACCIONES EN SOBRE MI
@@ -106,11 +106,11 @@ function disableInteractions() {
         cell.oncontextmenu = null;
     });
     
-    console.log('🔒 Interacciones desactivadas en Sobre Mi');
+
 }
 
 function createSobreMiContent() {
-    console.log('🔧 createSobreMiContent() ejecutando...');
+
     const container = document.getElementById('grid-container');
     const primaryColor = CONFIG.COLORS.primary;
     const secondaryColor = CONFIG.COLORS.secondary;
@@ -118,7 +118,7 @@ function createSobreMiContent() {
     const secondaryRGB = CONFIG.COLORS.secondaryRGB;
     
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
-    console.log(`📊 Total celdas en grid: ${allCells.length}`);
+
     
     let titleCell = null;
     let photoCell = null;
@@ -136,13 +136,7 @@ function createSobreMiContent() {
         }
     });
     
-    console.log('🔍 Celdas encontradas:', { 
-        titleCell: !!titleCell, 
-        photoCell: !!photoCell, 
-        bioCell: !!bioCell, 
-        infoCell: !!infoCell 
-    });
-    
+
     // ===== TÍTULO =====
     if (titleCell) {
         const oldTitle = titleCell.querySelector('.mobile-sobremi-content');
@@ -177,7 +171,7 @@ function createSobreMiContent() {
     
     // ===== FOTO CON EFECTO DECOLOR (como en PC) =====
     if (photoCell) {
-        console.log('📷 Creando foto con efecto decolor y cambio de imagen...');
+
         const photoWrapper = document.createElement('div');
         photoWrapper.className = 'mobile-sobremi-content';
         photoWrapper.style.cssText = `
@@ -269,12 +263,12 @@ function createSobreMiContent() {
                 // Cambiar a yo.png
                 img1.src = 'assets/photo/yo.png';
                 isUsingYoEdit = false;
-                console.log('📷 Cambiando a yo.png');
+
             } else {
                 // Cambiar a yoedit.png
                 img1.src = SOBRE_MI_DATA.foto;
                 isUsingYoEdit = true;
-                console.log('📷 Cambiando a yoedit.png');
+
             }
             // Resetear estado para que la transición se vea
             img1.style.opacity = '1';
@@ -378,7 +372,7 @@ function createSobreMiContent() {
     
     // ===== BIOGRAFÍA (con scroll) =====
     if (bioCell) {
-        console.log('📝 Creando biografía...');
+
         const bioWrapper = document.createElement('div');
         bioWrapper.className = 'mobile-sobremi-content';
         bioWrapper.style.cssText = `
@@ -415,7 +409,7 @@ function createSobreMiContent() {
     
     // ===== INFO COMPLETA (con scroll) - AHORA EN 17,0 =====
     if (infoCell) {
-        console.log('📝 Creando info completa en 17,0...');
+
         const infoWrapper = document.createElement('div');
         infoWrapper.className = 'mobile-sobremi-content';
         infoWrapper.style.cssText = `
@@ -543,7 +537,7 @@ function createSobreMiContent() {
         infoCell.appendChild(infoWrapper);
     }
     
-    console.log('✅ createSobreMiContent() completado');
+
 }
 
 // 🔥 EXPONER PARA QUE PUEDA SER LLAMADO DESDE NAVEGACIÓN

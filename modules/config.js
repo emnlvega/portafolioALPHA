@@ -151,6 +151,15 @@ export const CONFIG = new Proxy(currentConfig, {
     }
 });
 
+export const MOBILE_SIMULATOR_CONFIG = {
+    ENABLED: true,           // Habilitar/deshabilitar completamente
+    TOGGLE_KEY: 'KeyX',      // Tecla X
+    SHOW_COORDINATES: true,  // Mostrar botón de coordenadas
+    SHOW_EXPORT: true,       // Mostrar botón de exportar
+    SHOW_IMPORT: true,       // Mostrar botón de importar
+    SHOW_NAV_TOGGLE: true    // Mostrar botón toggle nav
+};
+
 export const LOGO_DESIGN = {
   "7,4": "logo",
   "7,5": {

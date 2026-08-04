@@ -1,5 +1,5 @@
-// modules/mobile-simulator.js
-import { CONFIG } from '../config.js';
+// modules/mobile/mobile-simulator.js
+import { CONFIG, MOBILE_SIMULATOR_CONFIG } from '../config.js';
 import { MOBILE_CONFIG } from './mobile-config.js';
 import { createGrid, repositionGrid, repositionSidebarOverlay, repositionSidebarTexts, repositionCombinedCells } from '../grid.js';
 import { resetGrid, exportDesignToJSON, designCells, setDesignCells, setupCellEvents } from '../interactions.js';
@@ -8,57 +8,17 @@ import { stopRandomAnimations, restartRandomAnimations } from '../animations.js'
 
 let isMobileSimulatorActive = false;
 let originalConfig = null;
-let simulatorButton = null;
+let overlayButtons = [];
+let navButtonsVisible = true;
+let architectActive = false;
+let architectModule = null;
 
 export function isSimulatorActive() {
     return isMobileSimulatorActive;
 }
 
-export function initMobileSimulator() {
-    // Crear botón en la esquina superior derecha
-    if (document.getElementById('mobile-simulator-btn')) return;
-    
-    const btn = document.createElement('button');
-    btn.id = 'mobile-simulator-btn';
-    btn.textContent = '📱 MÓVIL [X]';
-    btn.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 99999;
-        background: rgba(0, 0, 0, 0.8);
-        border: 1px solid ${CONFIG.COLORS.primary};
-        color: ${CONFIG.COLORS.primary};
-        padding: 8px 16px;
-        font-family: 'Courier New', monospace;
-        font-size: 11px;
-        letter-spacing: 2px;
-        cursor: pointer;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    `;
-    
-    btn.addEventListener('mouseenter', () => {
-        btn.style.borderColor = CONFIG.COLORS.secondary;
-        btn.style.color = CONFIG.COLORS.secondary;
-        btn.style.boxShadow = `0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`;
-    });
-    btn.addEventListener('mouseleave', () => {
-        btn.style.borderColor = CONFIG.COLORS.primary;
-        btn.style.color = CONFIG.COLORS.primary;
-        btn.style.boxShadow = '0 0 30px rgba(0, 0, 0, 0.5)';
-    });
-    
-    btn.addEventListener('click', toggleMobileSimulator);
-    
-    document.body.appendChild(btn);
-    simulatorButton = btn;
-}
-
 export function toggleMobileSimulator() {
+    if (!MOBILE_SIMULATOR_CONFIG.ENABLED) return;
     if (isMobileSimulatorActive) {
         disableMobileSimulator();
     } else {
@@ -69,7 +29,9 @@ export function toggleMobileSimulator() {
 function enableMobileSimulator() {
     if (isMobileSimulatorActive) return;
     
-    // Guardar configuración original
+    const currentPage = document.body.dataset.mobilePage || 'inicio';
+    if (currentPage !== 'inicio') return;
+    
     originalConfig = {
         COLS: CONFIG.COLS,
         ROWS: CONFIG.ROWS,
@@ -79,7 +41,6 @@ function enableMobileSimulator() {
         BORDER_RADIUS: CONFIG.BORDER_RADIUS
     };
     
-    // Aplicar configuración móvil
     CONFIG.COLS = MOBILE_CONFIG.COLS;
     CONFIG.ROWS = MOBILE_CONFIG.ROWS;
     CONFIG.CELL_SIZE = MOBILE_CONFIG.CELL_SIZE;
@@ -87,73 +48,53 @@ function enableMobileSimulator() {
     CONFIG.SIDEBAR_WIDTH = MOBILE_CONFIG.SIDEBAR_WIDTH;
     CONFIG.BORDER_RADIUS = MOBILE_CONFIG.BORDER_RADIUS;
     
-    // Aplicar variables CSS
     document.documentElement.style.setProperty('--cell-size', `${MOBILE_CONFIG.CELL_SIZE}px`);
     document.documentElement.style.setProperty('--cell-gap', `${MOBILE_CONFIG.GAP}px`);
     document.documentElement.style.setProperty('--cell-radius', `${MOBILE_CONFIG.BORDER_RADIUS}px`);
     
-    // Marcar como activo
     isMobileSimulatorActive = true;
     document.body.classList.add('mobile-simulator');
-    if (simulatorButton) {
-        simulatorButton.textContent = '📱 SALIR [X]';
-        simulatorButton.style.borderColor = '#ff4444';
-        simulatorButton.style.color = '#ff4444';
-    }
+    document.body.dataset.mobilePage = 'inicio';
+    architectActive = false;
+    navButtonsVisible = true;
     
-    // Recrear el grid
     recreateGrid();
+    setTimeout(createOverlayButtons, 200);
 }
 
 function disableMobileSimulator() {
     if (!isMobileSimulatorActive) return;
     
-    // Restaurar configuración original
-    if (originalConfig) {
-        CONFIG.COLS = originalConfig.COLS;
-        CONFIG.ROWS = originalConfig.ROWS;
-        CONFIG.CELL_SIZE = originalConfig.CELL_SIZE;
-        CONFIG.GAP = originalConfig.GAP;
-        CONFIG.SIDEBAR_WIDTH = originalConfig.SIDEBAR_WIDTH;
-        CONFIG.BORDER_RADIUS = originalConfig.BORDER_RADIUS;
-        
-        document.documentElement.style.setProperty('--cell-size', `${originalConfig.CELL_SIZE}px`);
-        document.documentElement.style.setProperty('--cell-gap', `${originalConfig.GAP}px`);
-        document.documentElement.style.setProperty('--cell-radius', `${originalConfig.BORDER_RADIUS}px`);
+    // Desactivar modo arquitecto si está activo
+    if (architectActive && architectModule) {
+        architectModule.toggleArchitectMode();
+        architectActive = false;
+        architectModule = null;
     }
     
     isMobileSimulatorActive = false;
     document.body.classList.remove('mobile-simulator');
-    if (simulatorButton) {
-        simulatorButton.textContent = '📱 MÓVIL [X]';
-        simulatorButton.style.borderColor = CONFIG.COLORS.primary;
-        simulatorButton.style.color = CONFIG.COLORS.primary;
-    }
+    delete document.body.dataset.mobilePage;
     
-    // Recrear el grid
-    recreateGrid();
+    removeOverlayButtons();
+    
+    // 🔥 RECARGAR LA PÁGINA PARA VOLVER AL ESTADO ORIGINAL
+    window.location.reload();
 }
 
 function recreateGrid() {
-    // Detener animaciones
     stopRandomAnimations();
-    
-    // Resetear grid
     resetGrid(false);
     
-    // Remover celdas existentes
     const container = document.getElementById('grid-container');
     container.innerHTML = '';
     
-    // Crear nuevo grid
     const gridData = createGrid();
     
-    // Configurar eventos
     designCells.forEach(cell => {
         setupCellEvents(cell);
     });
     
-    // Reposicionar
     const rect = container.getBoundingClientRect();
     const cellSize = CONFIG.CELL_SIZE;
     const { COLS: cols, ROWS: rows, GAP } = CONFIG;
@@ -170,21 +111,258 @@ function recreateGrid() {
     repositionSidebarTexts(offsetX, offsetY);
     repositionCombinedCells(offsetX, offsetY);
     
-    // Reiniciar animaciones
     setTimeout(() => {
         restartRandomAnimations();
     }, 300);
 }
 
-export function exportMobileDesign() {
-    if (!isMobileSimulatorActive) {
-        // Si no está en modo móvil, activarlo primero
-        enableMobileSimulator();
-        setTimeout(() => {
-            exportDesignToJSON();
-        }, 500);
-        return;
+function createOverlayButtons() {
+    removeOverlayButtons();
+    
+    const container = document.getElementById('grid-container');
+    if (!container) return;
+    
+    const rect = container.getBoundingClientRect();
+    
+    const btnWidth = 100;
+    const btnHeight = 32;
+    const spacing = 6;
+    
+    const btnConfigs = [];
+    if (MOBILE_SIMULATOR_CONFIG.SHOW_COORDINATES) {
+        btnConfigs.push({ id: 'btn-coords', text: '◈ COORD', action: 'coords' });
+    }
+    if (MOBILE_SIMULATOR_CONFIG.SHOW_EXPORT) {
+        btnConfigs.push({ id: 'btn-export', text: '◆ EXPORT', action: 'export' });
+    }
+    if (MOBILE_SIMULATOR_CONFIG.SHOW_IMPORT) {
+        btnConfigs.push({ id: 'btn-import', text: '◊ IMPORT', action: 'import' });
+    }
+    if (MOBILE_SIMULATOR_CONFIG.SHOW_NAV_TOGGLE) {
+        btnConfigs.push({ id: 'btn-nav', text: '▣ NAV', action: 'nav' });
+    }
+    if (MOBILE_SIMULATOR_CONFIG.SHOW_EXIT) {
+        btnConfigs.push({ id: 'btn-exit', text: '✕ SALIR', action: 'exit' });
     }
     
-    exportDesignToJSON();
+    const totalBtns = btnConfigs.length;
+    if (totalBtns === 0) return;
+    
+    const totalWidth = totalBtns * (btnWidth + spacing) - spacing;
+    const startX = (rect.width - totalWidth) / 2;
+    const y = rect.height - btnHeight - 15;
+    
+    btnConfigs.forEach((cfg, index) => {
+        const btn = document.createElement('div');
+        btn.id = cfg.id;
+        btn.textContent = cfg.text;
+        btn.style.cssText = `
+            position: absolute;
+            left: ${startX + index * (btnWidth + spacing)}px;
+            top: ${y}px;
+            z-index: 99998;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid ${CONFIG.COLORS.primary};
+            color: ${CONFIG.COLORS.primary};
+            padding: 0;
+            width: ${btnWidth}px;
+            height: ${btnHeight}px;
+            font-family: 'Courier New', monospace;
+            font-size: 9px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+            pointer-events: auto;
+            user-select: none;
+            text-align: center;
+            line-height: ${btnHeight}px;
+            font-weight: bold;
+        `;
+        
+        btn.addEventListener('mouseenter', () => {
+            btn.style.borderColor = CONFIG.COLORS.secondary;
+            btn.style.color = CONFIG.COLORS.secondary;
+            btn.style.boxShadow = `0 2px 25px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`;
+            btn.style.transform = 'scale(1.05)';
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.borderColor = CONFIG.COLORS.primary;
+            btn.style.color = CONFIG.COLORS.primary;
+            btn.style.boxShadow = '0 2px 15px rgba(0, 0, 0, 0.6)';
+            btn.style.transform = 'scale(1)';
+        });
+        
+        btn.addEventListener('click', () => {
+            handleButtonAction(cfg.action, btn);
+        });
+        
+        container.appendChild(btn);
+        overlayButtons.push(btn);
+    });
+}
+
+function removeOverlayButtons() {
+    overlayButtons.forEach(btn => btn.remove());
+    overlayButtons = [];
+}
+
+async function handleButtonAction(action, btn) {
+    switch (action) {
+        case 'coords':
+            if (!architectModule) {
+                architectModule = await import('../architect.js');
+            }
+            architectActive = !architectActive;
+            if (architectActive) {
+                architectModule.toggleArchitectMode();
+                setTimeout(architectModule.updateArchitectOverlay, 100);
+                if (btn) {
+                    btn.textContent = '◈ COORD ON';
+                    btn.style.borderColor = '#ffaa00';
+                    btn.style.color = '#ffaa00';
+                }
+            } else {
+                architectModule.toggleArchitectMode();
+                if (btn) {
+                    btn.textContent = '◈ COORD';
+                    btn.style.borderColor = CONFIG.COLORS.primary;
+                    btn.style.color = CONFIG.COLORS.primary;
+                }
+            }
+            break;
+        case 'export':
+            exportDesignToJSON();
+            break;
+        case 'import':
+            const { showImportDialog } = await import('../dialogs.js');
+            showImportDialog();
+            break;
+        case 'nav':
+            toggleNav();
+            break;
+        case 'exit':
+            disableMobileSimulator();
+            break;
+    }
+}
+
+function toggleNav() {
+    const container = document.getElementById('grid-container');
+    const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
+    
+    let navCells = [];
+    allCells.forEach(cell => {
+        if (cell.dataset.combined === 'true') {
+            const row = parseInt(cell.dataset.designRow);
+            if (row === 30) {
+                navCells.push(cell);
+            }
+        }
+    });
+    
+    if (navButtonsVisible) {
+        // Quitar NAV - Exportar diseño actual sin las celdas de navegación
+        const currentDesign = {};
+        const allDesignCells = document.querySelectorAll('.grid-cell, .logo-cell');
+        allDesignCells.forEach(cell => {
+            if (cell.dataset.combined === 'true') {
+                const row = parseInt(cell.dataset.designRow);
+                const col = parseInt(cell.dataset.designCol);
+                if (row !== 30) {
+                    const key = `${row},${col}`;
+                    const state = cell.dataset.state || 'normal';
+                    const left = parseFloat(cell.style.left);
+                    const top = parseFloat(cell.style.top);
+                    const width = parseFloat(cell.style.width);
+                    const height = parseFloat(cell.style.height);
+                    currentDesign[key] = {
+                        type: state === 'normal' ? 'combined_normal' : 
+                              state === 'red' ? 'combined_red' : 
+                              state === 'logo' ? 'combined_logo' : 'combined_normal',
+                        left: left,
+                        top: top,
+                        width: width,
+                        height: height,
+                        combined: true
+                    };
+                }
+            }
+        });
+        
+        stopRandomAnimations();
+        resetGrid(false);
+        importDesignFromJSON(currentDesign, () => {
+            createOverlayButtons();
+            restartRandomAnimations();
+        }, true);
+        
+        navButtonsVisible = false;
+        const navBtn = document.getElementById('btn-nav');
+        if (navBtn) {
+            navBtn.textContent = '▣ NAV OFF';
+            navBtn.style.borderColor = '#ff4444';
+            navBtn.style.color = '#ff4444';
+        }
+    } else {
+        // Restaurar NAV
+        fetch('./modules/mobile/sidebar-movil.json')
+            .then(response => response.json())
+            .then(sidebarDesign => {
+                const currentDesign = {};
+                const allDesignCells = document.querySelectorAll('.grid-cell, .logo-cell');
+                allDesignCells.forEach(cell => {
+                    if (cell.dataset.combined === 'true') {
+                        const row = parseInt(cell.dataset.designRow);
+                        const col = parseInt(cell.dataset.designCol);
+                        if (row !== 30) {
+                            const key = `${row},${col}`;
+                            const state = cell.dataset.state || 'normal';
+                            const left = parseFloat(cell.style.left);
+                            const top = parseFloat(cell.style.top);
+                            const width = parseFloat(cell.style.width);
+                            const height = parseFloat(cell.style.height);
+                            currentDesign[key] = {
+                                type: state === 'normal' ? 'combined_normal' : 
+                                      state === 'red' ? 'combined_red' : 
+                                      state === 'logo' ? 'combined_logo' : 'combined_normal',
+                                left: left,
+                                top: top,
+                                width: width,
+                                height: height,
+                                combined: true
+                            };
+                        }
+                    }
+                });
+                
+                const finalDesign = { ...currentDesign, ...sidebarDesign };
+                
+                stopRandomAnimations();
+                resetGrid(false);
+                importDesignFromJSON(finalDesign, () => {
+                    createOverlayButtons();
+                    import('./mobile-nav.js').then(module => {
+                        module.createMobileNavButtons('inicio');
+                    });
+                    restartRandomAnimations();
+                }, true);
+                
+                navButtonsVisible = true;
+                const navBtn = document.getElementById('btn-nav');
+                if (navBtn) {
+                    navBtn.textContent = '▣ NAV';
+                    navBtn.style.borderColor = CONFIG.COLORS.primary;
+                    navBtn.style.color = CONFIG.COLORS.primary;
+                }
+            })
+            .catch(() => {
+                recreateGrid();
+                setTimeout(createOverlayButtons, 200);
+                navButtonsVisible = true;
+            });
+    }
 }

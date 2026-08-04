@@ -1,4 +1,4 @@
-import { CONFIG, LOGO_DESIGN, updateColors, getCurrentColors, createColors } from './modules/config.js';
+import { CONFIG, LOGO_DESIGN, updateColors, getCurrentColors, createColors, MOBILE_SIMULATOR_CONFIG } from './modules/config.js';
 import { createGrid, repositionGrid, repositionSidebarOverlay, repositionSidebarTexts, repositionCombinedCells } from './modules/grid.js';
 import { resetGrid, exportDesignToJSON, designCells, setupCellEvents, toggleCellOff } from './modules/interactions.js';
 import { importDesignFromJSON } from './modules/logo.js';
@@ -15,7 +15,7 @@ import { loadContactoData } from './modules/sidebar/pages/contacto.js';
 import { isMobile, getDeviceType } from './modules/mobile.js';
 import { MOBILE_CONFIG } from './modules/mobile/mobile-config.js';
 import { renderMobileHome } from './modules/mobile/mobile-home.js';
-import { initMobileSimulator, toggleMobileSimulator, exportMobileDesign, isSimulatorActive } from './modules/mobile/mobile-simulator.js';
+import { toggleMobileSimulator } from './modules/mobile/mobile-simulator.js';
 import { navigateMobileTo } from './modules/mobile/mobile-nav.js';
 import { getCurrentMobilePage } from './modules/mobile/mobile-nav.js';
 
@@ -33,7 +33,7 @@ function initMobileSimulatorFeature() {
     if (isMobile()) return;
     
     // Inicializar el simulador (crea el botón flotante)
-    initMobileSimulator();
+
     
     // 🔥 BOTÓN DE EXPORTAR (se muestra cuando el simulador está activo)
     const exportBtn = document.createElement('button');
@@ -100,23 +100,18 @@ document.addEventListener('keydown', (e) => {
     
     // 🔥 TECLA X - Activar/Desactivar simulador móvil
     if (e.key === 'x' || e.key === 'X') {
-        // No interferir con inputs
         const target = e.target;
         if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
             return;
         }
-        
         e.preventDefault();
-        toggleMobileSimulator();
         
-        // Si se activó el simulador, mostrar el botón de exportar
-        setTimeout(() => {
-            const exportBtn = document.getElementById('mobile-export-btn');
-            if (exportBtn) {
-                const isActive = document.body.classList.contains('mobile-simulator');
-                exportBtn.style.display = isActive ? 'block' : 'none';
-            }
-        }, 100);
+        if (MOBILE_SIMULATOR_CONFIG.ENABLED) {
+            import('./modules/mobile/mobile-simulator.js').then(module => {
+                module.toggleMobileSimulator();
+            });
+        }
+        return;
     }
     
     // 🔥 TECLA E (con simulador activo) - Exportar diseño móvil
@@ -682,7 +677,6 @@ document.addEventListener('keydown', (e) => {
 
 function init() {
     initSettings();
-    initMobileSimulatorFeature();
     
     // 🔥 DETECTAR MÓVIL Y APLICAR CONFIG
     const mobile = isMobile();
