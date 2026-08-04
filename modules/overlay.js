@@ -16,7 +16,7 @@ const OVERLAY_CONFIG = {
     BLEND_MODE: 'color-dodge',
     OPACITY: 0.5,          // 50% de opacidad
     RANDOM_ORDER: true,    // true = aleatorio después del primero, false = secuencial
-    IMAGE_COUNT: 30        // Número de imágenes (1.jpg a 15.jpg)
+    IMAGE_COUNT: 17        // Número de imágenes (1.jpg a 15.jpg)
 };
 
 /**
