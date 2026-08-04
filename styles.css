@@ -25,6 +25,7 @@ body::before {
     background: radial-gradient(ellipse at center, transparent 55%, var(--vignette-color) 100%);
     pointer-events: none;
     z-index: 9995;
+    image-rendering: auto;
 }
 /* styles.css - Agregar al inicio o en la sección de variables */
 
@@ -124,7 +125,7 @@ body::after {
     height: 100%;
     pointer-events: none;
     z-index: 9994;
-    opacity: .25;
+    opacity: .20;
     background: hsl(0, 0%, 65%);
     mix-blend-mode: color-dodge;
     /* FORZAR GPU */
