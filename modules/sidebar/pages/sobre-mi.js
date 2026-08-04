@@ -64,6 +64,7 @@ export function clearSobreMiState() {
     }
 }
 
+
 export async function renderSobreMiContent() {
     const data = await loadSobreMiData();
     const container = document.getElementById('grid-container');
@@ -172,6 +173,7 @@ export async function renderSobreMiContent() {
             height: 100%;
         `;
         
+        // Imagen 1 (pixel/glitch en blanco y negro)
         const img1 = document.createElement('img');
         img1.src = data.content.photo1;
         img1.style.cssText = `
@@ -183,8 +185,26 @@ export async function renderSobreMiContent() {
             object-fit: cover;
             transition: opacity 2s ease-in-out;
             opacity: 1;
+            /* 🔥 Convertir a blanco y negro */
+            filter: grayscale(1) brightness(1.1) contrast(1.1);
         `;
         
+        // 🔥 Overlay de color para la imagen 1 (solo visible mientras img1 está visible)
+        const colorOverlay = document.createElement('div');
+        colorOverlay.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: ${CONFIG.COLORS.primary};
+            mix-blend-mode: color;
+            pointer-events: none;
+            transition: opacity 2s ease-in-out;
+            opacity: 1;
+        `;
+        
+        // Imagen 2 (normal)
         const img2 = document.createElement('img');
         img2.src = data.content.photo2;
         img2.style.cssText = `
@@ -199,16 +219,20 @@ export async function renderSobreMiContent() {
         `;
         
         imgContainer.appendChild(img1);
+        imgContainer.appendChild(colorOverlay);
         imgContainer.appendChild(img2);
         photoWrapper.appendChild(imgContainer);
         photoCell.appendChild(photoWrapper);
         
         photoTimeout = setTimeout(() => {
             img1.style.opacity = '0';
+            colorOverlay.style.opacity = '0';
             img2.style.opacity = '1';
             photoTimeout = null;
-        }, 3000);
+        }, 5000);
     }
+
+
     
     // ===== BIOGRAFÍA =====
     if (bioCell) {
@@ -260,7 +284,7 @@ export async function renderSobreMiContent() {
         
         const bioText = document.createElement('div');
         bioText.style.cssText = `
-            font-size: 12px;
+            font-size: 15px;
             line-height: 1.8;
             letter-spacing: 0.5px;
             opacity: 0.85;
@@ -340,7 +364,7 @@ Hoy, después de años de aprendizaje autodidacta y una carrera en Ingeniería d
         skillsTitle.textContent = 'HABILIDADES';
         skillsTitle.style.cssText = `
             color: ${CONFIG.COLORS.secondary};
-            font-size: 13px;
+            font-size: 15px;
             letter-spacing: 5px;
             font-weight: bold;
             margin-bottom: 10px;
@@ -380,7 +404,7 @@ Hoy, después de años de aprendizaje autodidacta y una carrera en Ingeniería d
                 align-items: center;
                 justify-content: center;
                 gap: 6px;
-                font-size: 9px;
+                font-size: 12px;
                 letter-spacing: 1.5px;
                 padding: 4px 8px;
                 color: ${CONFIG.COLORS.primary};
@@ -437,7 +461,7 @@ Hoy, después de años de aprendizaje autodidacta y una carrera en Ingeniería d
         toolsTitle.textContent = 'HERRAMIENTAS Y TECNOLOGIAS';
         toolsTitle.style.cssText = `
             color: ${CONFIG.COLORS.secondary};
-            font-size: 13px;
+            font-size: 15px;
             letter-spacing: 5px;
             font-weight: bold;
             margin-bottom: 8px;
@@ -447,7 +471,7 @@ Hoy, después de años de aprendizaje autodidacta y una carrera en Ingeniería d
         
         const toolsContent = document.createElement('div');
         toolsContent.style.cssText = `
-            font-size: 10px;
+            font-size: 12px;
             line-height: 2;
             letter-spacing: 0.5px;
             opacity: 0.85;
@@ -466,8 +490,8 @@ Hoy, después de años de aprendizaje autodidacta y una carrera en Ingeniería d
             <div>
                 <span style="color:${CONFIG.COLORS.secondary};">OTROS:</span> Wix · Wix Velo · Visual Basic 6.0 · Git
             </div>
-            <div style="margin-top:4px; padding-top:6px; border-top:1px solid rgba(${CONFIG.COLORS.secondaryRGB},11); font-style:italic; font-size:9px; color:${CONFIG.COLORS.primary};">
-                Tengo excelente intuicion para aprender cualquier herramienta o tecnologia, incluso las mas complejas.
+            <div style="margin-top:4px; padding-top:6px; border-top:1px solid rgba(${CONFIG.COLORS.secondaryRGB},11); font-style:italic; font-size:12px; color:${CONFIG.COLORS.primary};">
+                Tengo excelente intuicion para aprender cualquier herramienta o tecnologia, incluso las mas complejas y avanzadas.
             </div>
             <div style="margin-top:2px; font-size:9px; letter-spacing:2px; color:${CONFIG.COLORS.secondary}; opacity:1;">
                 INGLES Y ESPAÑOL · HABLADO Y ESCRITO
@@ -533,7 +557,7 @@ Hoy, después de años de aprendizaje autodidacta y una carrera en Ingeniería d
             const el = document.createElement('div');
             el.textContent = item;
             el.style.cssText = `
-                font-size: 10px;
+                font-size: 12px;
                 letter-spacing: 0.5px;
                 opacity: 0.85;
                 padding: 1px 0;

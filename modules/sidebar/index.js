@@ -9,7 +9,7 @@ import { showDialog } from '../dialogs.js';
 import { getSobreMiDesign, renderSobreMiContent, clearSobreMiState } from './pages/sobre-mi.js';
 import { getContactoDesign, renderContactoContent } from './pages/contacto.js';
 import { getProyectosDesign, renderProyectosContent, clearProjectSelection, clearProyectosTextureState } from './pages/proyectos.js';
-
+import { setHashLoad } from '../logo.js';
 
 
 // ===== ESTADO =====
@@ -144,7 +144,26 @@ export function animateSidebar(sidebarCells, rows, cellSize, offsetX, offsetY) {
 // ===== SETUP SIDEBAR TEXTS =====
 // modules/sidebar/index.js - setupSidebarTexts
 
-
+// ===== FUNCIÓN PARA ACTUALIZAR LA URL =====
+function updateURL(page, projectId = null) {
+    let url = window.location.pathname;
+    
+    // Quitar cualquier hash existente
+    if (url.includes('#')) {
+        url = url.split('#')[0];
+    }
+    
+    if (page === 'inicio' || !page) {
+        // Ir a la raíz
+        window.history.pushState({}, '', url);
+    } else if (page === 'proyectos' && projectId) {
+        window.history.pushState({}, '', `${url}#${projectId}`);
+    } else if (page === 'proyectos') {
+        window.history.pushState({}, '', `${url}#proyectos`);
+    } else {
+        window.history.pushState({}, '', `${url}#${page}`);
+    }
+}
 
 export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth, sidebarHeight, container) {
     // Limpiar elementos anteriores
@@ -160,22 +179,20 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
     ];
     
     // Distribución automática
-    const totalItems = menuItems.length + 1; // +1 por el logo SVG
-    const padding = 30; // Más padding arriba para bajar el logo
+    const totalItems = menuItems.length + 1;
+    const padding = 30;
     const availableHeight = sidebarHeight - (padding * 2);
     const spacing = availableHeight / (totalItems + 1);
     
     const x = offsetX + sidebarWidth / 2;
     let currentY = offsetY + padding;
     
-    // ===== LOGO SVG (más abajo) =====
-    const logoY = currentY + 15; // Bajar el logo un poco
+    // ===== LOGO SVG =====
+    const logoY = currentY + 15;
     const logoSVG = createLogo(container, x, logoY);
     container.appendChild(logoSVG);
     setTimeout(() => { logoSVG.style.opacity = '1'; }, 300);
     
-
-
     // ===== MENU ITEMS =====
     menuItems.forEach((item, index) => {
         currentY += spacing;
@@ -190,19 +207,30 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         textSpan.textContent = item.text;
         div.appendChild(textSpan);
         
-        // EMNLVEGA siempre es "activo" (verde) pero no tiene estado active
         const isLogoText = item.isLogo;
-        const isActive = !isLogoText && item.action === 'inicio' && !isSpecialPageActive;
-        const isPageActive = item.action !== 'inicio' && item.action !== 'configuracion' && isSpecialPageActive && currentPage === item.action;
         
-        // Color: EMNLVEGA siempre primary, los demás según estado
+        // 🔥 Determinar si está activo basado en la página actual
+        let isActive = false;
+        
+        if (isLogoText) {
+            // EMNLVEGA nunca está "activo" en el sentido de resaltado
+            isActive = false;
+        } else if (item.action === 'inicio') {
+            // INICIO está activo cuando NO estamos en una página especial
+            isActive = !isSpecialPageActive;
+        } else if (item.action !== 'configuracion') {
+            // Las páginas especiales están activas cuando coinciden con currentPage
+            isActive = isSpecialPageActive && currentPage === item.action;
+        }
+        
+        // Color
         let textColor = CONFIG.COLORS.primary;
         let textShadow = 'var(--text-shadow-normal)';
         
         if (isLogoText) {
-            textColor = CONFIG.COLORS.primary; // Siempre verde
+            textColor = CONFIG.COLORS.primary;
             textShadow = 'var(--text-shadow-normal)';
-        } else if (isActive || isPageActive) {
+        } else if (isActive) {
             textColor = CONFIG.COLORS.secondary;
             textShadow = 'var(--text-shadow-active)';
         }
@@ -232,14 +260,12 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
             align-items: center;
         `;
         
-        // EMNLVEGA NO tiene blinking
         if (isLogoText) {
             div.classList.add('logo-text-item');
-            // Guardar referencia para actualizar en resize
             div.dataset.isLogoText = 'true';
         }
         
-        if (isActive || isPageActive) {
+        if (isActive) {
             div.classList.add('active');
         }
         
@@ -247,7 +273,6 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         
         div.addEventListener('mouseenter', () => {
             if (isLogoText) {
-                // EMNLVEGA solo cambia a secondary en hover
                 div.style.color = CONFIG.COLORS.secondary;
                 div.style.textShadow = 'var(--text-shadow-hover)';
             } else if (!div.classList.contains('active')) {
@@ -257,7 +282,6 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         });
         div.addEventListener('mouseleave', () => {
             if (isLogoText) {
-                // EMNLVEGA vuelve a primary
                 div.style.color = CONFIG.COLORS.primary;
                 div.style.textShadow = 'var(--text-shadow-normal)';
             } else if (!div.classList.contains('active')) {
@@ -393,7 +417,6 @@ function createLogo(container, x, y) {
 
 // ===== HANDLE SIDEBAR ACTION =====
 export function handleSidebarAction(action) {
-    // 🔥 Si hay una transición en curso, ignorar
     if (isTransitioning) {
         return;
     }
@@ -411,6 +434,8 @@ export function handleSidebarAction(action) {
             inicioText.style.color = CONFIG.COLORS.secondary;
             inicioText.style.textShadow = 'var(--text-shadow-active)';
         }
+        // 🔥 Actualizar URL
+        updateURL('inicio');
         return;
     }
     
@@ -426,13 +451,14 @@ export function handleSidebarAction(action) {
             currentText.style.color = CONFIG.COLORS.secondary;
             currentText.style.textShadow = 'var(--text-shadow-active)';
         }
+        // 🔥 Actualizar URL (sin proyecto)
+        updateURL(action);
         loadSidebarPage(action);
     }
 }
 
 // ===== LOAD SIDEBAR PAGE =====
 function loadSidebarPage(pageKey) {
-    // 🔥 Si hay una transición en curso, ignorar
     if (isTransitioning) {
         return;
     }
@@ -444,8 +470,10 @@ function loadSidebarPage(pageKey) {
     const handler = PAGE_HANDLERS[pageKey];
     if (!handler) return;
     
-    // 🔥 Establecer bloqueo
     isTransitioning = true;
+    
+    // 🔥 Desactivar hashLoad para que las importaciones normales funcionen
+    setHashLoad(false);
     
     document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content').forEach(el => el.remove());
     
@@ -467,24 +495,29 @@ function loadSidebarPage(pageKey) {
                 isSpecialPageActive = true;
                 currentPage = pageKey;
                 isProgrammaticLoad = false;
+                
+                // 🔥 Actualizar el estado activo del sidebar después de cargar
+                updateSidebarActiveState();
+                
                 setTimeout(() => {
                     handler.render();
+                    if (pageKey === 'proyectos' && window.selectedProjectId) {
+                        updateURL('proyectos', window.selectedProjectId);
+                    }
                     setTimeout(() => {
                         restartRandomAnimations();
-                        // 🔥 Liberar bloqueo después de que todo termine
                         isTransitioning = false;
                     }, 500);
                 }, 300);
-            });
+            }, false);
         } catch (error) {
-            console.error('Error loading page:', error);
             isProgrammaticLoad = false;
             setGridInteractionsEnabled(true);
-            // 🔥 Liberar bloqueo en caso de error
             isTransitioning = false;
         }
     }, 200);
 }
+
 
 // ===== RETURN TO MAIN =====
 export function returnToMainLogo() {
@@ -496,7 +529,6 @@ export function returnToMainLogo() {
 
     isTransitioning = true;
 
-    // 🔥 Si veníamos de Sobre Mi, restaurar textura SOLO si estaba habilitada en settings
     if (currentPage === 'proyectos') {
         clearProyectosTextureState();
     } else if (currentPage === 'sobre-mi') {
@@ -529,12 +561,37 @@ export function returnToMainLogo() {
             window.proyectosCurrentPage = 0;
             window.proyectosCurrentCategory = 'TODOS';
             
+            // 🔥 Actualizar estado activo del sidebar
+            updateSidebarActiveState();
+            
+            updateURL('inicio');
+            
             setTimeout(() => {
                 restartRandomAnimations();
                 isTransitioning = false;
             }, 500);
         }, true);
     }, 200);
+}
+
+// ===== FUNCIÓN PARA LEER LA URL AL CARGAR =====
+export function handleURLOnLoad() {
+    const hash = window.location.hash;
+    if (!hash || hash === '' || hash === '#') return 'inicio';
+    
+    const page = hash.replace('#', '');
+    
+    // Verificar si es un ID de proyecto (número)
+    if (/^\d+$/.test(page)) {
+        return { page: 'proyectos', projectId: parseInt(page) };
+    }
+    
+    // Verificar páginas válidas
+    if (['proyectos', 'sobre-mi', 'contacto'].includes(page)) {
+        return { page: page };
+    }
+    
+    return 'inicio';
 }
 
 // ===== GRID INTERACTIONS =====
@@ -567,9 +624,34 @@ function preventSpecialKeys(e) {
     if (e.code === 'KeyI' && e.ctrlKey) e.preventDefault();
 }
 
+export function updateSidebarActiveState() {
+    const items = document.querySelectorAll('.sidebar-text:not(.logo-text-item)');
+    items.forEach(el => {
+        const action = el.dataset.action;
+        let isActive = false;
+        
+        if (action === 'inicio') {
+            isActive = !isSpecialPageActive;
+        } else if (action !== 'configuracion') {
+            isActive = isSpecialPageActive && currentPage === action;
+        }
+        
+        el.classList.toggle('active', isActive);
+        
+        if (isActive) {
+            el.style.color = CONFIG.COLORS.secondary;
+            el.style.textShadow = 'var(--text-shadow-active)';
+        } else {
+            el.style.color = CONFIG.COLORS.primary;
+            el.style.textShadow = 'var(--text-shadow-normal)';
+        }
+    });
+}
+
 
 // ===== EXPORT =====
 export function isSpecialPageActiveCheck() { return isSpecialPageActive; }
 export function isProgrammaticLoadCheck() { return isProgrammaticLoad; }
 export function getCurrentPage() { return currentPage; }
 export function isTransitioningCheck() { return isTransitioning; }
+export { updateURL };

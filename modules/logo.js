@@ -4,6 +4,12 @@ import { stopRandomAnimations, restartRandomAnimations } from './animations.js';
 import { isSpecialPageActiveCheck, isProgrammaticLoadCheck } from './sidebar/index.js';
 import { getCellPosition } from './grid.js';
 
+let isHashLoad = false;
+
+export function setHashLoad(value) {
+    isHashLoad = value;
+}
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -37,9 +43,169 @@ function getCellsInArea(left, top, width, height) {
 
 // modules/logo.js
 
+// ===== FUNCIÓN PARA APLICAR DISEÑO DIRECTAMENTE (SIN ANIMACIÓN) =====
+function applyDesignDirectly(jsonData, onComplete) {
+    // Primero resetear todas las celdas
+    const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
+    allCells.forEach(cell => {
+        if (cell.dataset.isSidebar === 'true') return;
+        
+        const size = CONFIG.CELL_SIZE;
+        const origX = parseFloat(cell.dataset.originalX);
+        const origY = parseFloat(cell.dataset.originalY);
+        
+        if (!isNaN(origX) && !isNaN(origY)) {
+            cell.style.left = `${origX}px`;
+            cell.style.top = `${origY}px`;
+            cell.style.width = `${size}px`;
+            cell.style.height = `${size}px`;
+            cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+            cell.style.borderColor = CONFIG.COLORS.primary;
+            cell.style.backgroundColor = CONFIG.COLORS.background;
+            cell.style.opacity = '1';
+            cell.style.transform = 'scale(1)';
+            cell.style.pointerEvents = 'auto';
+            cell.style.zIndex = '';
+            cell.style.boxShadow = 'none';
+            cell.dataset.state = 'normal';
+            cell.dataset.prevState = 'normal';
+            cell.dataset.combined = 'false';
+            cell.classList.remove('off');
+            delete cell.dataset.combinedId;
+            delete cell.dataset.combinedLeft;
+            delete cell.dataset.combinedTop;
+            delete cell.dataset.combinedWidth;
+            delete cell.dataset.combinedHeight;
+            delete cell.dataset.originalCombinedOffsetX;
+            delete cell.dataset.originalCombinedOffsetY;
+        }
+    });
+    
+    // Ahora aplicar el diseño sin animación
+    const container = document.getElementById('grid-container');
+    const currentOffsetX = parseFloat(container.dataset.originalOffsetX) || 0;
+    const currentOffsetY = parseFloat(container.dataset.originalOffsetY) || 0;
+    const cellSize = CONFIG.CELL_SIZE;
+    const gap = CONFIG.GAP;
+    const sidebarWidth = CONFIG.SIDEBAR_WIDTH;
+    
+    Object.entries(jsonData).forEach(([key, value]) => {
+        if (value === 'normal') return;
+        
+        const [row, col] = key.split(',').map(Number);
+        const cell = designCells.find(c => 
+            parseInt(c.dataset.designRow) === row && 
+            parseInt(c.dataset.designCol) === col
+        );
+        if (!cell) return;
+        
+        // Si es un objeto combinado
+        if (typeof value === 'object' && value.combined) {
+            const { type, left, top, width, height } = value;
+            
+            const basePos = getCellPosition(col + sidebarWidth, row, cellSize, currentOffsetX, currentOffsetY);
+            
+            cell.style.left = `${basePos.x}px`;
+            cell.style.top = `${basePos.y}px`;
+            cell.style.width = `${width}px`;
+            cell.style.height = `${height}px`;
+            cell.style.zIndex = '10';
+            cell.style.pointerEvents = 'auto';
+            cell.style.opacity = '1';
+            cell.style.transform = 'scale(1)';
+            cell.dataset.combined = 'true';
+            cell.dataset.combinedId = 'direct_' + Date.now() + '_' + row + '_' + col;
+            cell.dataset.combinedLeft = basePos.x;
+            cell.dataset.combinedTop = basePos.y;
+            cell.dataset.combinedWidth = width;
+            cell.dataset.combinedHeight = height;
+            cell.dataset.originalCombinedOffsetX = currentOffsetX;
+            cell.dataset.originalCombinedOffsetY = currentOffsetY;
+            
+            // Aplicar estilo según tipo
+            const isRed = type === 'combined_red' || type === 'h_red' || type === 'v_red' || type === 'hh_red';
+            const isLogo = type === 'combined_logo' || type === 'h_logo' || type === 'v_logo' || type === 'hh_logo';
+            
+            if (isRed) {
+                cell.style.backgroundColor = CONFIG.COLORS.primary;
+                cell.style.borderColor = CONFIG.COLORS.primary;
+                cell.style.boxShadow = 'none';
+                cell.dataset.state = 'combined_red';
+            } else if (isLogo) {
+                cell.style.border = 'none';
+                cell.style.borderColor = 'transparent';
+                cell.style.backgroundColor = CONFIG.COLORS.background;
+                cell.style.boxShadow = `inset 0 0 0 4px ${CONFIG.COLORS.secondary}`;
+                cell.dataset.state = 'combined_logo';
+            } else {
+                cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+                cell.style.borderColor = CONFIG.COLORS.primary;
+                cell.style.backgroundColor = CONFIG.COLORS.background;
+                cell.style.boxShadow = 'none';
+                cell.dataset.state = 'combined_normal';
+            }
+            
+            // Ocultar celdas en el área
+            const cellsInArea = getCellsInArea(basePos.x, basePos.y, width, height);
+            cellsInArea.forEach(c => {
+                if (c !== cell) {
+                    c.style.opacity = '0';
+                    c.style.transform = 'scale(0)';
+                    c.style.pointerEvents = 'none';
+                    c.dataset.state = 'hidden';
+                    c.dataset.combined = 'true';
+                    c.dataset.combinedId = cell.dataset.combinedId;
+                }
+            });
+            
+        } else if (value === 'logo') {
+            cell.style.border = 'none';
+            cell.style.borderColor = 'transparent';
+            cell.style.backgroundColor = CONFIG.COLORS.background;
+            cell.style.boxShadow = `inset 0 0 0 4px ${CONFIG.COLORS.secondary}`;
+            cell.dataset.state = 'logo';
+            cell.style.opacity = '1';
+            cell.style.transform = 'scale(1)';
+            
+        } else if (value === 'red') {
+            cell.style.backgroundColor = CONFIG.COLORS.primary;
+            cell.style.borderColor = CONFIG.COLORS.primary;
+            cell.style.boxShadow = 'none';
+            cell.dataset.state = 'red';
+            cell.style.opacity = '1';
+            cell.style.transform = 'scale(1)';
+            
+        } else if (value === 'off') {
+            cell.style.border = 'none';
+            cell.style.borderColor = 'transparent';
+            cell.style.backgroundColor = CONFIG.COLORS.background;
+            cell.style.opacity = '0';
+            cell.style.transform = 'scale(0)';
+            cell.style.pointerEvents = 'none';
+            cell.style.boxShadow = 'none';
+            cell.dataset.state = 'off';
+        }
+    });
+    
+    // Restaurar animaciones
+    setTimeout(() => {
+        restartRandomAnimations();
+    }, 500);
+    
+    if (onComplete) {
+        setTimeout(onComplete, 300);
+    }
+}
+
 export function importDesignFromJSON(jsonData, onComplete, reset = true) {
     // Si estamos en página especial, NO mostrar diálogo pero SÍ importar
     // Solo prevenimos la interacción del usuario (como clicks) pero permitimos la importación programática
+
+    if (isHashLoad) {
+        // Aplicar el diseño directamente sin animación
+        applyDesignDirectly(jsonData, onComplete);
+        return;
+    }
     
     stopRandomAnimations();
     

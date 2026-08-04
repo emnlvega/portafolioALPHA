@@ -4,7 +4,7 @@ import { CONFIG } from '../../config.js';
 import { showDialog } from '../../dialogs.js';
 import { importDesignFromJSON } from '../../logo.js';
 import { resetGrid } from '../../interactions.js';
-import { isTransitioningCheck } from '../index.js';
+import { isTransitioningCheck, updateURL } from '../index.js';
 
 let proyectosData = null;
 let currentPage = 0;
@@ -116,9 +116,14 @@ export function clearProjectSelection() {
     isDetailExpanded = false;
     detailCellRef = null;
     isExpanding = false;
+    window.selectedProjectId = null;
     if (renderTimeout) {
         clearTimeout(renderTimeout);
         renderTimeout = null;
+    }
+    // 🔥 Actualizar URL a solo proyectos
+    if (window.location.hash.includes('proyectos')) {
+        updateURL('proyectos');
     }
 }
 
@@ -534,19 +539,24 @@ export async function renderProyectosContent() {
             });
             
             item.addEventListener('click', () => {
-                if (selectedProjectId === project.id) {
-                    selectedProjectId = null;
-                    selectedProjectData = null;
-                    detailPage = 0;
-                    renderProyectosContent();
-                    return;
-                }
-                
-                selectedProjectId = project.id;
-                selectedProjectData = project;
+            if (selectedProjectId === project.id) {
+                selectedProjectId = null;
+                selectedProjectData = null;
                 detailPage = 0;
+                // 🔥 Actualizar URL sin proyecto
+                updateURL('proyectos');
                 renderProyectosContent();
-            });
+                return;
+            }
+            
+            selectedProjectId = project.id;
+            selectedProjectData = project;
+            detailPage = 0;
+            window.selectedProjectId = project.id;
+            // 🔥 Actualizar URL con el ID del proyecto
+            updateURL('proyectos', project.id);
+            renderProyectosContent();
+        });
             
             cell.appendChild(item);
         });
@@ -1179,6 +1189,18 @@ function renderContentItem(item, isExpanded) {
     }
     
     return container;
+}
+
+export async function selectProjectById(projectId) {
+    const data = await loadProyectosData();
+    const project = data.projects.find(p => p.id === projectId);
+    if (project) {
+        selectedProjectId = project.id;
+        selectedProjectData = project;
+        detailPage = 0;
+        window.selectedProjectId = project.id;
+        renderProyectosContent();
+    }
 }
 
 function showImageLightbox(src) {

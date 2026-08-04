@@ -8,7 +8,8 @@ import { toggleArchitectMode, updateArchitectOverlay, isArchitectModeActive } fr
 import { initOverlays, pauseOverlays, resumeOverlays, setOverlayOpacity, setOverlayBlendMode, destroyOverlays, setOverlayRandomOrder } from './modules/overlay.js';
 import { initSettings, toggleSettings, closeSettings } from './modules/settings.js';
 import { showDialog, showImportDialog } from './modules/dialogs.js';
-
+import { handleURLOnLoad, updateURL } from './modules/sidebar/index.js';
+import { setHashLoad } from './modules/logo.js';
 let gridData = null;
 
 function injectCSSVariables() {
@@ -100,6 +101,10 @@ function injectCSSVariables() {
     root.style.setProperty('--crt-reflection-center', 'rgba(255, 255, 255, 0.04) 0%');
     root.style.setProperty('--crt-reflection-mid', 'rgba(255, 255, 255, 0.01) 25%');
     root.style.setProperty('--crt-reflection-edge', 'transparent 60%');
+}
+
+function hasHashInURL() {
+    return window.location.hash && window.location.hash.length > 0;
 }
 
 function regenerateEverything() {
@@ -442,6 +447,8 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// script.js - Función init() completa
+
 function init() {
     // 1. Primero cargar settings (esto carga el color guardado y llama a updateColors)
     initSettings();
@@ -465,24 +472,73 @@ function init() {
         }
     });
     
-    setTimeout(() => {
-        importDesignFromJSON(LOGO_DESIGN);
-    }, CONFIG.LOGO_DELAY || 500);
-    
-    setTimeout(() => {
-        animateSidebar(
-            gridData.sidebarCells,
-            gridData.rows,
-            gridData.cellSize,
-            gridData.offsetX,
-            gridData.offsetY
-        );
-        setTimeout(() => {
-            startRandomAnimations();
-        }, 500);
-    }, CONFIG.LOGO_DELAY + 500);
-    
+    // 🔥 Inicializar overlays siempre
     initOverlays();
+    
+    // 🔥 Verificar si hay hash en la URL
+    const hasHash = hasHashInURL();
+    
+    if (hasHash) {
+        // 🔥 CON HASH: NO importar el logo, NO animar sidebar
+        // Indicar que es carga con hash para que logo.js no haga animación
+        setHashLoad(true);
+        
+        // Solo manejar la URL directamente
+        setTimeout(() => {
+            const result = handleURLOnLoad();
+            
+            if (result === 'inicio') {
+                // Caso raro: hash vacío o inválido, cargar logo normal
+                setHashLoad(false);
+                importDesignFromJSON(LOGO_DESIGN);
+                animateSidebar(
+                    gridData.sidebarCells,
+                    gridData.rows,
+                    gridData.cellSize,
+                    gridData.offsetX,
+                    gridData.offsetY
+                );
+                setTimeout(() => {
+                    startRandomAnimations();
+                }, 500);
+            } else if (result.page === 'proyectos') {
+                // Cargar proyectos sin logo
+                handleSidebarAction('proyectos');
+                if (result.projectId) {
+                    setTimeout(() => {
+                        import('./modules/sidebar/pages/proyectos.js').then(module => {
+                            module.selectProjectById(result.projectId);
+                        });
+                    }, 800);
+                }
+            } else if (result.page === 'sobre-mi') {
+                handleSidebarAction('sobre-mi');
+            } else if (result.page === 'contacto') {
+                handleSidebarAction('contacto');
+            }
+        }, 100);
+        
+    } else {
+        // SIN HASH: cargar todo normalmente con animación del logo
+        setHashLoad(false);
+        
+        setTimeout(() => {
+            importDesignFromJSON(LOGO_DESIGN);
+        }, CONFIG.LOGO_DELAY || 500);
+        
+        setTimeout(() => {
+            animateSidebar(
+                gridData.sidebarCells,
+                gridData.rows,
+                gridData.cellSize,
+                gridData.offsetX,
+                gridData.offsetY
+            );
+            setTimeout(() => {
+                startRandomAnimations();
+            }, 500);
+        }, CONFIG.LOGO_DELAY + 500);
+    }
 }
 
 window.addEventListener('beforeunload', () => {
@@ -522,6 +578,26 @@ window.addEventListener('resize', () => {
         
         isResizing = false;
     }, 50);
+});
+
+window.addEventListener('popstate', () => {
+    const result = handleURLOnLoad();
+    if (result === 'inicio') {
+        if (isSpecialPageActiveCheck()) {
+            returnToMainLogo();
+        }
+    } else if (result.page === 'proyectos') {
+        handleSidebarAction('proyectos');
+        if (result.projectId) {
+            setTimeout(() => {
+                import('./modules/sidebar/pages/proyectos.js').then(module => {
+                    module.selectProjectById(result.projectId);
+                });
+            }, 800);
+        }
+    } else if (result.page === 'sobre-mi' || result.page === 'contacto') {
+        handleSidebarAction(result.page);
+    }
 });
 
 document.addEventListener('DOMContentLoaded', init);

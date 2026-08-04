@@ -14,9 +14,10 @@ const OVERLAY_CONFIG = {
     FOLDER: 'assets/overlays/',
     EXTENSION: 'jpg',
     BLEND_MODE: 'color-dodge',
-    OPACITY: 0.7,          // 50% de opacidad
+    OPACITY: 0.7,          // Opacidad base (para imágenes normales)
+    OPACITY_FIRST: 0.5,    // 🔥 Opacidad para la primera imagen (50%)
     RANDOM_ORDER: true,    // true = aleatorio después del primero, false = secuencial
-    IMAGE_COUNT: 17        // Número de imágenes (1.jpg a 15.jpg)
+    IMAGE_COUNT: 17        // Número de imágenes (1.jpg a 17.jpg)
 };
 
 /**
@@ -29,6 +30,7 @@ export function initOverlays() {
     imageCount = config.IMAGE_COUNT;
     
     if (imageCount === 0) {
+        console.warn('⚠️ No se especificó cantidad de imágenes para overlays en OVERLAY_CONFIG.IMAGE_COUNT');
         return;
     }
     
@@ -47,11 +49,13 @@ export function initOverlays() {
         const shuffledRest = shuffleArray(rest);
         shuffleOrder = shuffleOrder.concat(shuffledRest);
         
+        console.log('📷 Orden de overlays (1 siempre primero, luego aleatorio):', shuffleOrder.map(i => i + 1));
     } else {
         // Orden secuencial: 0, 1, 2, 3, ... (1.jpg, 2.jpg, 3.jpg, ...)
         for (let i = 0; i < imageCount; i++) {
             shuffleOrder.push(i);
         }
+        console.log('📷 Orden de overlays (secuencial):', shuffleOrder.map(i => i + 1));
     }
     
     // Crear el elemento overlay
@@ -78,7 +82,7 @@ export function initOverlays() {
     
     currentIndex = 0;
     
-    // 🔥 Cargar la primera imagen (SIEMPRE 1.jpg)
+    // 🔥 Cargar la primera imagen (SIEMPRE 1.jpg) con opacidad 50%
     loadOverlayImage(0);
     
     // Iniciar el ciclo
@@ -111,7 +115,13 @@ function loadOverlayImage(index) {
     
     overlayElement.style.transition = 'none';
     overlayElement.style.backgroundImage = `url(${imagePath})`;
-    overlayElement.style.opacity = OVERLAY_CONFIG.OPACITY;
+    
+    // 🔥 Si es la primera imagen (índice 0), usar opacidad 50%, sino 100%
+    if (index === 0) {
+        overlayElement.style.opacity = OVERLAY_CONFIG.OPACITY_FIRST;
+    } else {
+        overlayElement.style.opacity = OVERLAY_CONFIG.OPACITY;
+    }
     
     void overlayElement.offsetHeight;
 }
@@ -181,8 +191,11 @@ export function setOverlayImage(index) {
 export function setOverlayOpacity(opacity) {
     if (!overlayElement) return;
     OVERLAY_CONFIG.OPACITY = Math.max(0, Math.min(1, opacity));
-    overlayElement.style.transition = 'none';
-    overlayElement.style.opacity = OVERLAY_CONFIG.OPACITY;
+    // Solo aplicar si no es la primera imagen
+    if (currentIndex !== 0) {
+        overlayElement.style.transition = 'none';
+        overlayElement.style.opacity = OVERLAY_CONFIG.OPACITY;
+    }
 }
 
 /**
@@ -211,10 +224,12 @@ export function setOverlayRandomOrder(random) {
         }
         const shuffledRest = shuffleArray(rest);
         shuffleOrder = shuffleOrder.concat(shuffledRest);
+        console.log('📷 Nuevo orden (1 primero, luego aleatorio):', shuffleOrder.map(i => i + 1));
     } else {
         for (let i = 0; i < imageCount; i++) {
             shuffleOrder.push(i);
         }
+        console.log('📷 Nuevo orden (secuencial):', shuffleOrder.map(i => i + 1));
     }
     
     currentIndex = 0;
