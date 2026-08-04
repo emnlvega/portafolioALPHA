@@ -23,6 +23,8 @@ const OVERLAY_CONFIG = {
 /**
  * Inicializa el sistema de overlays
  */
+// modules/overlay.js - Modificar initOverlays
+
 export function initOverlays() {
     stopOverlays();
     
@@ -30,34 +32,36 @@ export function initOverlays() {
     imageCount = config.IMAGE_COUNT;
     
     if (imageCount === 0) {
-        console.warn('No se especificó cantidad de imágenes para overlays en OVERLAY_CONFIG.IMAGE_COUNT');
         return;
     }
     
-    // 🔥 CREAR ORDEN: El 1 (índice 0) SIEMPRE primero
-    shuffleOrder = [];
+    // 🔥 LEER CONFIGURACIÓN DE TEXTURA DESDE SETTINGS
+    let textureEnabled = true;
+    try {
+        const saved = localStorage.getItem('edesign_settings');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed.textura !== undefined) {
+                textureEnabled = parsed.textura;
+            }
+        }
+    } catch (e) {}
     
+    shuffleOrder = [];
     if (config.RANDOM_ORDER && imageCount > 1) {
-        // Primero el índice 0 (imagen 1.jpg)
         shuffleOrder.push(0);
-        
-        // Luego el resto (1, 2, 3, ... imageCount-1) mezclados aleatoriamente
         const rest = [];
         for (let i = 1; i < imageCount; i++) {
             rest.push(i);
         }
         const shuffledRest = shuffleArray(rest);
         shuffleOrder = shuffleOrder.concat(shuffledRest);
-
     } else {
-        // Orden secuencial: 0, 1, 2, 3, ... (1.jpg, 2.jpg, 3.jpg, ...)
         for (let i = 0; i < imageCount; i++) {
             shuffleOrder.push(i);
         }
-
     }
     
-    // Crear el elemento overlay
     if (!overlayElement) {
         overlayElement = document.createElement('div');
         overlayElement.id = 'overlay-container';
@@ -80,11 +84,13 @@ export function initOverlays() {
     }
     
     currentIndex = 0;
-    
-    // 🔥 Cargar la primera imagen (SIEMPRE 1.jpg) con opacidad 50%
     loadOverlayImage(0);
     
-    // Iniciar el ciclo
+    // 🔥 APLICAR ESTADO DE TEXTURA SEGÚN CONFIGURACIÓN
+    if (overlayElement) {
+        overlayElement.style.display = textureEnabled ? 'block' : 'none';
+    }
+    
     startOverlays(config.INTERVAL);
 }
 

@@ -104,6 +104,8 @@ function resetAllAndRefresh() {
 }
 
 // ===== APLICAR CONFIGURACIÓN A LOS ELEMENTOS =====
+// modules/settings.js - Modificar la función applySettings
+
 export function applySettings(settings) {
     const grain = document.getElementById(ELEMENTS.grain);
     if (grain) grain.style.display = settings.grain ? 'block' : 'none';
@@ -117,8 +119,11 @@ export function applySettings(settings) {
     const burnBlur = document.getElementById(ELEMENTS.burnBlur);
     if (burnBlur) burnBlur.style.display = settings.burnBlur ? 'block' : 'none';
     
+    // 🔥 TEXTURA - Asegurar que se aplique correctamente
     const overlay = document.getElementById(ELEMENTS.overlay);
-    if (overlay) overlay.style.display = settings.textura ? 'block' : 'none';
+    if (overlay) {
+        overlay.style.display = settings.textura ? 'block' : 'none';
+    }
     
     if (settings.scanlines) {
         document.body.classList.remove('no-scanlines');
