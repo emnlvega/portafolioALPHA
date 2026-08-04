@@ -453,7 +453,7 @@ function createSobreMiContent() {
             font-weight: bold;
             text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
             text-align: center;
-            border-bottom: 1px solid rgba(${secondaryRGB}, 0.15);
+            border-bottom: 1px solid rgba(${secondaryRGB}, 1);
             padding-bottom: 4px;
         `;
         infoContent.appendChild(habilidadesTitle);
@@ -469,7 +469,7 @@ function createSobreMiContent() {
         SOBRE_MI_DATA.habilidades.forEach(h => {
             const item = document.createElement('div');
             item.style.cssText = `
-                font-size: 8px;
+                font-size: 10px;
                 letter-spacing: 1px;
                 padding: 3px 2px;
                 color: ${primaryColor};
@@ -498,7 +498,7 @@ function createSobreMiContent() {
             font-weight: bold;
             text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
             text-align: center;
-            border-bottom: 1px solid rgba(${secondaryRGB}, 0.15);
+            border-bottom: 1px solid rgba(${secondaryRGB}, 1);
             padding-bottom: 4px;
             margin-top: 4px;
         `;
@@ -506,7 +506,7 @@ function createSobreMiContent() {
         
         const herramientasText = document.createElement('div');
         herramientasText.style.cssText = `
-            font-size: 9px;
+            font-size: 12px;
             letter-spacing: 0.5px;
             text-align: center;
             padding: 4px 0;
@@ -527,7 +527,7 @@ function createSobreMiContent() {
             font-weight: bold;
             text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
             text-align: center;
-            border-bottom: 1px solid rgba(${secondaryRGB}, 0.15);
+            border-bottom: 1px solid rgba(${secondaryRGB}, 1);
             padding-bottom: 4px;
             margin-top: 4px;
         `;
@@ -556,7 +556,7 @@ function createSobreMiContent() {
         defineItems.forEach(item => {
             const el = document.createElement('div');
             el.style.cssText = `
-                font-size: 8px;
+                font-size: 12px;
                 letter-spacing: 0.5px;
                 padding: 2px 0;
                 color: ${primaryColor};
@@ -579,7 +579,6 @@ function createSobreMiContent() {
         });
         infoContent.appendChild(defineGrid);
         
-        // FRASE
         const fraseDiv = document.createElement('div');
         fraseDiv.style.cssText = `
             color: ${secondaryColor};
@@ -588,11 +587,13 @@ function createSobreMiContent() {
             font-weight: bold;
             text-align: center;
             text-shadow: 0 0 30px rgba(${secondaryRGB}, 0.15);
-            border-top: 1px solid rgba(${secondaryRGB}, 0.15);
+            border-top: 1px solid rgba(${secondaryRGB}, 1);
             padding-top: 6px;
             margin-top: 4px;
+            line-height: 1.6;
         `;
-        fraseDiv.textContent = SOBRE_MI_DATA.frase;
+        // 🔥 CAMBIAR A DOS LÍNEAS
+        fraseDiv.innerHTML = `IF LOVE IS THE ANSWER<br>YOU'RE HOME`;
         infoContent.appendChild(fraseDiv);
         
         infoWrapper.appendChild(infoContent);

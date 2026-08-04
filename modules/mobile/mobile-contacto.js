@@ -402,7 +402,7 @@ function createContactoContent() {
             height: 1px;
             background: ${secondaryColor};
             margin: 4px 0;
-            opacity: 0.5;
+            opacity: 1;
         `;
         availability.appendChild(sep);
         
