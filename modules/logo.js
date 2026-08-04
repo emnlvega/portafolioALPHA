@@ -35,49 +35,53 @@ function getCellsInArea(left, top, width, height) {
 
 // modules/logo.js - Reemplazar la función importDesignFromJSON
 
-export function importDesignFromJSON(jsonData, onComplete) {
-    if (isSpecialPageActiveCheck() && !isProgrammaticLoadCheck()) {
-        return;
-    }
+// modules/logo.js
+
+export function importDesignFromJSON(jsonData, onComplete, reset = true) {
+    // Si estamos en página especial, NO mostrar diálogo pero SÍ importar
+    // Solo prevenimos la interacción del usuario (como clicks) pero permitimos la importación programática
     
     stopRandomAnimations();
     
-    // ===== PASO 1: RESTAURAR TODAS LAS CELDAS A NORMAL =====
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
-    allCells.forEach(cell => {
-        if (cell.dataset.isSidebar === 'true') return;
-        
-        const size = CONFIG.CELL_SIZE;
-        const origX = parseFloat(cell.dataset.originalX);
-        const origY = parseFloat(cell.dataset.originalY);
-        
-        if (!isNaN(origX) && !isNaN(origY)) {
-            cell.style.transition = 'all 0.3s ease';
-            cell.style.left = `${origX}px`;
-            cell.style.top = `${origY}px`;
-            cell.style.width = `${size}px`;
-            cell.style.height = `${size}px`;
-            cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
-            cell.style.borderColor = CONFIG.COLORS.primary;
-            cell.style.backgroundColor = CONFIG.COLORS.background;
-            cell.style.opacity = '1';
-            cell.style.transform = 'scale(1)';
-            cell.style.pointerEvents = 'auto';
-            cell.style.zIndex = '';
-            cell.style.boxShadow = 'none';
-            cell.dataset.state = 'normal';
-            cell.dataset.prevState = 'normal';
-            cell.dataset.combined = 'false';
-            cell.classList.remove('off');
-            delete cell.dataset.combinedId;
-            delete cell.dataset.combinedLeft;
-            delete cell.dataset.combinedTop;
-            delete cell.dataset.combinedWidth;
-            delete cell.dataset.combinedHeight;
-            delete cell.dataset.originalCombinedOffsetX;
-            delete cell.dataset.originalCombinedOffsetY;
-        }
-    });
+    
+    // ===== RESETEAR SOLO SI reset = true =====
+    if (reset) {
+        allCells.forEach(cell => {
+            if (cell.dataset.isSidebar === 'true') return;
+            
+            const size = CONFIG.CELL_SIZE;
+            const origX = parseFloat(cell.dataset.originalX);
+            const origY = parseFloat(cell.dataset.originalY);
+            
+            if (!isNaN(origX) && !isNaN(origY)) {
+                cell.style.transition = 'all 0.3s ease';
+                cell.style.left = `${origX}px`;
+                cell.style.top = `${origY}px`;
+                cell.style.width = `${size}px`;
+                cell.style.height = `${size}px`;
+                cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+                cell.style.borderColor = CONFIG.COLORS.primary;
+                cell.style.backgroundColor = CONFIG.COLORS.background;
+                cell.style.opacity = '1';
+                cell.style.transform = 'scale(1)';
+                cell.style.pointerEvents = 'auto';
+                cell.style.zIndex = '';
+                cell.style.boxShadow = 'none';
+                cell.dataset.state = 'normal';
+                cell.dataset.prevState = 'normal';
+                cell.dataset.combined = 'false';
+                cell.classList.remove('off');
+                delete cell.dataset.combinedId;
+                delete cell.dataset.combinedLeft;
+                delete cell.dataset.combinedTop;
+                delete cell.dataset.combinedWidth;
+                delete cell.dataset.combinedHeight;
+                delete cell.dataset.originalCombinedOffsetX;
+                delete cell.dataset.originalCombinedOffsetY;
+            }
+        });
+    }
     
     // ===== PASO 2: ESPERAR A QUE LAS RESTAURACIONES TERMINEN =====
     setTimeout(() => {

@@ -2,6 +2,7 @@
 
 import { CONFIG } from './config.js';
 import { importDesignFromJSON } from './logo.js';
+import { isSpecialPageActiveCheck } from './sidebar/index.js';
 
 // ===== DIÁLOGO GENÉRICO (custom-dialog) =====
 export function showDialog(title, message) {
@@ -78,6 +79,12 @@ export function showProjects() {
 
 // ===== DIÁLOGO DE IMPORTACIÓN =====
 export function showImportDialog() {
+    // 🔥 SI estamos en página especial, NO abrir el diálogo
+    if (isSpecialPageActiveCheck()) {
+        console.log('📌 Importación manual deshabilitada en páginas especiales');
+        return;
+    }
+    
     let dialog = document.getElementById('import-dialog');
     
     if (!dialog) {
@@ -147,7 +154,7 @@ export function showImportDialog() {
         textarea.placeholder = 'Pega aquí el JSON...';
         textarea.style.cssText = `
             width: 100%;
-            height: 200px;
+            height: 180px;
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(var(--color-primary-rgb), 0.3);
             border-radius: 10px;
@@ -158,7 +165,7 @@ export function showImportDialog() {
             resize: vertical;
             outline: none;
             transition: border-color 0.3s ease;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             line-height: 1.5;
         `;
         textarea.addEventListener('focus', () => {
@@ -168,6 +175,52 @@ export function showImportDialog() {
             textarea.style.borderColor = `rgba(var(--color-primary-rgb), 0.3)`;
         });
         content.appendChild(textarea);
+        
+        // ===== CHECKBOX: "NO resetear" =====
+        const checkboxRow = document.createElement('div');
+        checkboxRow.style.cssText = `
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 8px;
+            border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.1);
+        `;
+        
+        const checkboxLabel = document.createElement('label');
+        checkboxLabel.htmlFor = 'import-noreset-checkbox';
+        checkboxLabel.textContent = 'NO resetear grid';
+        checkboxLabel.style.cssText = `
+            color: var(--color-primary);
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-transform: uppercase;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        `;
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = 'import-noreset-checkbox';
+        checkbox.checked = false;
+        checkbox.style.cssText = `
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--color-primary);
+            flex-shrink: 0;
+        `;
+        
+        checkbox.addEventListener('change', () => {
+            checkboxLabel.style.opacity = checkbox.checked ? '1' : '0.7';
+        });
+        
+        checkboxRow.appendChild(checkbox);
+        checkboxRow.appendChild(checkboxLabel);
+        content.appendChild(checkboxRow);
         
         // Botones
         const btnContainer = document.createElement('div');
@@ -205,22 +258,6 @@ export function showImportDialog() {
             importBtn.style.color = 'var(--color-primary)';
             importBtn.style.boxShadow = 'none';
             importBtn.style.textShadow = '0 0 10px rgba(var(--color-primary-rgb), 0.2)';
-        });
-        
-        importBtn.addEventListener('click', () => {
-            const jsonText = textarea.value.trim();
-            if (!jsonText) {
-                showDialog('ERROR', 'El campo está vacío. Pega un JSON válido.');
-                return;
-            }
-            try {
-                const json = JSON.parse(jsonText);
-                importDesignFromJSON(json);
-                dialog.classList.remove('active');
-                // ← Eliminado showDialog de éxito
-            } catch (err) {
-                showDialog('ERROR', 'JSON inválido. Verifica el formato.\n\n' + err.message);
-            }
         });
         
         const closeBtn = document.createElement('button');
@@ -271,13 +308,76 @@ export function showImportDialog() {
                 dialog.classList.remove('active');
             }
         });
+        
+        // ===== FUNCIÓN DE IMPORTACIÓN =====
+        function performImport() {
+            const jsonText = textarea.value.trim();
+            if (!jsonText) {
+                showDialog('ERROR', 'El campo está vacío. Pega un JSON válido.');
+                return;
+            }
+            try {
+                const json = JSON.parse(jsonText);
+                const skipReset = checkbox.checked;
+                const shouldReset = !skipReset;
+                
+                dialog.classList.remove('active');
+                
+                setTimeout(() => {
+                    importDesignFromJSON(json, () => {}, shouldReset);
+                }, 150);
+            } catch (err) {
+                showDialog('ERROR', 'JSON inválido. Verifica el formato.\n\n' + err.message);
+            }
+        }
+        
+        importBtn.addEventListener('click', performImport);
+        
+        textarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                performImport();
+            }
+        });
     }
     
-    // Limpiar textarea y mostrar
     const textarea = document.getElementById('import-textarea');
-    if (textarea) textarea.value = '';
+    if (textarea) {
+        textarea.value = '';
+        textarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                const jsonText = textarea.value.trim();
+                if (!jsonText) {
+                    showDialog('ERROR', 'El campo está vacío. Pega un JSON válido.');
+                    return;
+                }
+                try {
+                    const json = JSON.parse(jsonText);
+                    const checkbox = document.getElementById('import-noreset-checkbox');
+                    const skipReset = checkbox ? checkbox.checked : false;
+                    const shouldReset = !skipReset;
+                    
+                    document.getElementById('import-dialog').classList.remove('active');
+                    
+                    setTimeout(() => {
+                        importDesignFromJSON(json, () => {}, shouldReset);
+                    }, 150);
+                } catch (err) {
+                    showDialog('ERROR', 'JSON inválido. Verifica el formato.\n\n' + err.message);
+                }
+            }
+        });
+    }
+    
+    const checkbox = document.getElementById('import-noreset-checkbox');
+    if (checkbox) {
+        checkbox.checked = false;
+        const label = checkbox.parentElement.querySelector('label');
+        if (label) label.style.opacity = '0.7';
+    }
+    
     dialog.classList.add('active');
-    // Enfocar el textarea
     setTimeout(() => {
         if (textarea) textarea.focus();
     }, 100);

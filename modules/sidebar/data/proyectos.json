@@ -242,7 +242,7 @@
           "title": "INVESTIGACION",
           "content": [
             { "type": "text", "value": "Analisis de competencia, entrevistas con stakeholders, definicion de arquetipos de marca y mapa de posicionamiento." },
-            { "type": "image", "value": "assets/proyectos/rebrand/research.jpg", "caption": "Mapa de posicionamiento de marca" }
+            { "type": "image", "value": "https://picsum.photos/seed/branding1/800/400", "caption": "Mapa de posicionamiento de marca" }
           ]
         },
         {
@@ -250,9 +250,9 @@
           "content": [
             { "type": "text", "value": "Brainstorming, moodboards, exploracion de direcciones creativas y seleccion de concepto principal." },
             { "type": "gallery", "value": [
-              "assets/proyectos/rebrand/moodboard1.jpg",
-              "assets/proyectos/rebrand/moodboard2.jpg",
-              "assets/proyectos/rebrand/moodboard3.jpg"
+              "https://picsum.photos/seed/mood1/600/400",
+              "https://picsum.photos/seed/mood2/600/400",
+              "https://picsum.photos/seed/mood3/600/400"
             ]}
           ]
         },
@@ -260,7 +260,7 @@
           "title": "DESARROLLO",
           "content": [
             { "type": "text", "value": "Creacion de logotipo, tipografia corporativa, paleta de colores, sistema de iconografia." },
-            { "type": "image", "value": "assets/proyectos/rebrand/logo.jpg", "caption": "Logotipo final" },
+            { "type": "image", "value": "https://picsum.photos/seed/logo1/800/400", "caption": "Logotipo final" },
             { "type": "link", "value": "https://ejemplo.com/rebrand", "label": "Ver proyecto completo" }
           ]
         },
@@ -268,7 +268,7 @@
           "title": "APLICACIONES",
           "content": [
             { "type": "text", "value": "Aplicacion en papelería, señaletica, empaques, merchandising y presencia digital." },
-            { "type": "video", "value": "assets/proyectos/rebrand/showreel.mp4", "caption": "Video presentacion del proyecto" }
+            { "type": "video", "value": "https://www.w3schools.com/html/mov_bbb.mp4", "caption": "Video presentacion del proyecto" }
           ]
         }
       ]
@@ -287,7 +287,7 @@
           "title": "INVESTIGACION UX",
           "content": [
             { "type": "text", "value": "Analisis de usuarios, customer journey mapping, identificacion de puntos de friccion." },
-            { "type": "image", "value": "assets/proyectos/ecommerce/journey.jpg", "caption": "Customer journey map" }
+            { "type": "image", "value": "https://picsum.photos/seed/ux1/800/400", "caption": "Customer journey map" }
           ]
         },
         {
@@ -295,9 +295,9 @@
           "content": [
             { "type": "text", "value": "Wireframes de baja y alta fidelidad, prototipo interactivo en Figma." },
             { "type": "gallery", "value": [
-              "assets/proyectos/ecommerce/wireframe1.jpg",
-              "assets/proyectos/ecommerce/wireframe2.jpg",
-              "assets/proyectos/ecommerce/prototype.jpg"
+              "https://picsum.photos/seed/wire1/600/400",
+              "https://picsum.photos/seed/wire2/600/400",
+              "https://picsum.photos/seed/proto1/600/400"
             ]}
           ]
         },
@@ -324,7 +324,7 @@
           "title": "ARQUITECTURA",
           "content": [
             { "type": "text", "value": "Diseño de la arquitectura de componentes, gestion de estado con Redux." },
-            { "type": "image", "value": "assets/proyectos/dashboard/architecture.jpg", "caption": "Diagrama de arquitectura" }
+            { "type": "image", "value": "https://picsum.photos/seed/arch1/800/400", "caption": "Diagrama de arquitectura" }
           ]
         },
         {
@@ -332,9 +332,9 @@
           "content": [
             { "type": "text", "value": "Graficos de barras, lineas, areas y scatter plots con D3.js." },
             { "type": "gallery", "value": [
-              "assets/proyectos/dashboard/chart1.jpg",
-              "assets/proyectos/dashboard/chart2.jpg",
-              "assets/proyectos/dashboard/chart3.jpg"
+              "https://picsum.photos/seed/chart1/600/400",
+              "https://picsum.photos/seed/chart2/600/400",
+              "https://picsum.photos/seed/chart3/600/400"
             ]}
           ]
         },
@@ -361,14 +361,14 @@
           "title": "ARQUITECTURA",
           "content": [
             { "type": "text", "value": "Diseño de microservicios, gateway de API, balanceo de carga y caching distribuido." },
-            { "type": "image", "value": "assets/proyectos/apigateway/architecture.jpg", "caption": "Arquitectura del sistema" }
+            { "type": "image", "value": "https://picsum.photos/seed/apiarch/800/400", "caption": "Arquitectura del sistema" }
           ]
         },
         {
           "title": "SEGURIDAD",
           "content": [
             { "type": "text", "value": "Implementacion de OAuth2, JWT, rate limiting, CORS policies." },
-            { "type": "image", "value": "assets/proyectos/apigateway/security.jpg", "caption": "Diagrama de autenticacion" }
+            { "type": "image", "value": "https://picsum.photos/seed/security1/800/400", "caption": "Diagrama de autenticacion" }
           ]
         },
         {
@@ -395,9 +395,9 @@
           "content": [
             { "type": "text", "value": "Investigacion de formas geometricas, simbolismo de la IA, creacion de multiples versiones." },
             { "type": "gallery", "value": [
-              "assets/proyectos/logo/concept1.jpg",
-              "assets/proyectos/logo/concept2.jpg",
-              "assets/proyectos/logo/concept3.jpg"
+              "https://picsum.photos/seed/logo2/600/400",
+              "https://picsum.photos/seed/logo3/600/400",
+              "https://picsum.photos/seed/logo4/600/400"
             ]}
           ]
         },
@@ -405,7 +405,7 @@
           "title": "TIPOGRAFIA",
           "content": [
             { "type": "text", "value": "Seleccion de tipografia, ajustes de kerning y tracking, logotipo tipografico personalizado." },
-            { "type": "image", "value": "assets/proyectos/logo/typography.jpg", "caption": "Estudio tipografico" }
+            { "type": "image", "value": "https://picsum.photos/seed/typo1/800/400", "caption": "Estudio tipografico" }
           ]
         },
         {
@@ -413,9 +413,9 @@
           "content": [
             { "type": "text", "value": "Versiones horizontal, vertical, monocromatica, sobre fondos claros y oscuros." },
             { "type": "gallery", "value": [
-              "assets/proyectos/logo/variation1.jpg",
-              "assets/proyectos/logo/variation2.jpg",
-              "assets/proyectos/logo/variation3.jpg"
+              "https://picsum.photos/seed/var1/600/400",
+              "https://picsum.photos/seed/var2/600/400",
+              "https://picsum.photos/seed/var3/600/400"
             ]}
           ]
         }
@@ -436,8 +436,8 @@
           "content": [
             { "type": "text", "value": "Diseño de packaging estructural, seleccion de materiales sustentables." },
             { "type": "gallery", "value": [
-              "assets/proyectos/packaging/structure1.jpg",
-              "assets/proyectos/packaging/structure2.jpg"
+              "https://picsum.photos/seed/pack1/600/400",
+              "https://picsum.photos/seed/pack2/600/400"
             ]}
           ]
         },
@@ -445,14 +445,14 @@
           "title": "GRAFICA",
           "content": [
             { "type": "text", "value": "Diseño de ilustraciones, tipografia, sistema de colores y jerarquia de informacion." },
-            { "type": "image", "value": "assets/proyectos/packaging/design.jpg", "caption": "Propuesta grafica final" }
+            { "type": "image", "value": "https://picsum.photos/seed/pack3/800/400", "caption": "Propuesta grafica final" }
           ]
         },
         {
           "title": "PRODUCCION",
           "content": [
             { "type": "text", "value": "Preparacion de archivos para impresion, seleccion de acabados, control de calidad." },
-            { "type": "video", "value": "assets/proyectos/packaging/production.mp4", "caption": "Proceso de produccion" }
+            { "type": "video", "value": "https://www.w3schools.com/html/mov_bbb.mp4", "caption": "Proceso de produccion" }
           ]
         }
       ]
@@ -471,7 +471,7 @@
           "title": "CONCEPTO",
           "content": [
             { "type": "text", "value": "Definicion de la experiencia, curaduria de obras, diseño de la narrativa." },
-            { "type": "image", "value": "assets/proyectos/galeria/concept.jpg", "caption": "Concepto de la exposicion" }
+            { "type": "image", "value": "https://picsum.photos/seed/art1/800/400", "caption": "Concepto de la exposicion" }
           ]
         },
         {
@@ -479,9 +479,9 @@
           "content": [
             { "type": "text", "value": "Implementacion con Three.js, WebXR para realidad aumentada." },
             { "type": "gallery", "value": [
-              "assets/proyectos/galeria/tech1.jpg",
-              "assets/proyectos/galeria/tech2.jpg",
-              "assets/proyectos/galeria/tech3.jpg"
+              "https://picsum.photos/seed/tech1/600/400",
+              "https://picsum.photos/seed/tech2/600/400",
+              "https://picsum.photos/seed/tech3/600/400"
             ]}
           ]
         },
@@ -508,7 +508,7 @@
           "title": "ESTRATEGIA",
           "content": [
             { "type": "text", "value": "Definicion de publico objetivo, propuesta de valor, copywriting persuasivo." },
-            { "type": "image", "value": "assets/proyectos/landing/strategy.jpg", "caption": "Estrategia de contenido" }
+            { "type": "image", "value": "https://picsum.photos/seed/land1/800/400", "caption": "Estrategia de contenido" }
           ]
         },
         {
@@ -516,8 +516,8 @@
           "content": [
             { "type": "text", "value": "Wireframes, prototipo visual, sistema de componentes, animaciones." },
             { "type": "gallery", "value": [
-              "assets/proyectos/landing/wireframe.jpg",
-              "assets/proyectos/landing/prototype.jpg"
+              "https://picsum.photos/seed/land2/600/400",
+              "https://picsum.photos/seed/land3/600/400"
             ]}
           ]
         },
@@ -545,9 +545,9 @@
           "content": [
             { "type": "text", "value": "Diseño de experiencia de usuario, arquitectura de informacion." },
             { "type": "gallery", "value": [
-              "assets/proyectos/fitness/ui1.jpg",
-              "assets/proyectos/fitness/ui2.jpg",
-              "assets/proyectos/fitness/ui3.jpg"
+              "https://picsum.photos/seed/fit1/600/400",
+              "https://picsum.photos/seed/fit2/600/400",
+              "https://picsum.photos/seed/fit3/600/400"
             ]}
           ]
         },
@@ -555,7 +555,7 @@
           "title": "DESARROLLO",
           "content": [
             { "type": "text", "value": "Implementacion con React Native, gestion de estado, componentes nativos." },
-            { "type": "image", "value": "assets/proyectos/fitness/code.jpg", "caption": "Estructura del codigo" }
+            { "type": "image", "value": "https://picsum.photos/seed/fit4/800/400", "caption": "Estructura del codigo" }
           ]
         },
         {
@@ -581,7 +581,7 @@
           "title": "ARQUITECTURA",
           "content": [
             { "type": "text", "value": "Diseño de microservicios, bases de datos distribuidas." },
-            { "type": "image", "value": "assets/proyectos/erp/architecture.jpg", "caption": "Arquitectura del sistema" }
+            { "type": "image", "value": "https://picsum.photos/seed/erp1/800/400", "caption": "Arquitectura del sistema" }
           ]
         },
         {
@@ -589,8 +589,8 @@
           "content": [
             { "type": "text", "value": "Implementacion de modulos de inventario, facturacion, RRHH, compras y ventas." },
             { "type": "gallery", "value": [
-              "assets/proyectos/erp/module1.jpg",
-              "assets/proyectos/erp/module2.jpg"
+              "https://picsum.photos/seed/erp2/600/400",
+              "https://picsum.photos/seed/erp3/600/400"
             ]}
           ]
         },
@@ -617,7 +617,7 @@
           "title": "CONCEPTO",
           "content": [
             { "type": "text", "value": "Investigacion del museo, definicion de personalidad, sistema visual unico." },
-            { "type": "image", "value": "assets/proyectos/museo/concept.jpg", "caption": "Concepto creativo" }
+            { "type": "image", "value": "https://picsum.photos/seed/museum1/800/400", "caption": "Concepto creativo" }
           ]
         },
         {
@@ -625,8 +625,8 @@
           "content": [
             { "type": "text", "value": "Diseño de logotipo, tipografia, paleta de colores, sistema de graficos." },
             { "type": "gallery", "value": [
-              "assets/proyectos/museo/logo.jpg",
-              "assets/proyectos/museo/colors.jpg"
+              "https://picsum.photos/seed/museum2/600/400",
+              "https://picsum.photos/seed/museum3/600/400"
             ]}
           ]
         },
@@ -634,7 +634,7 @@
           "title": "APLICACIONES",
           "content": [
             { "type": "text", "value": "Señaletica, material promocional, sitio web, redes sociales." },
-            { "type": "video", "value": "assets/proyectos/museo/showreel.mp4", "caption": "Video de la identidad" }
+            { "type": "video", "value": "https://www.w3schools.com/html/mov_bbb.mp4", "caption": "Video de la identidad" }
           ]
         }
       ]
@@ -653,7 +653,7 @@
           "title": "ESTRATEGIA",
           "content": [
             { "type": "text", "value": "Definicion de modelo de negocio, catalogo de productos, estrategia de precios." },
-            { "type": "image", "value": "assets/proyectos/tienda/strategy.jpg", "caption": "Estrategia comercial" }
+            { "type": "image", "value": "https://picsum.photos/seed/shop1/800/400", "caption": "Estrategia comercial" }
           ]
         },
         {
@@ -661,8 +661,8 @@
           "content": [
             { "type": "text", "value": "Implementacion de frontend y backend, pasarelas de pago." },
             { "type": "gallery", "value": [
-              "assets/proyectos/tienda/screenshot1.jpg",
-              "assets/proyectos/tienda/screenshot2.jpg"
+              "https://picsum.photos/seed/shop2/600/400",
+              "https://picsum.photos/seed/shop3/600/400"
             ]}
           ]
         },
@@ -689,7 +689,7 @@
           "title": "CONCEPTO",
           "content": [
             { "type": "text", "value": "Investigacion de la arquitectura, definicion de identidad, sistema modular." },
-            { "type": "image", "value": "assets/proyectos/studio/concept.jpg", "caption": "Concepto modular" }
+            { "type": "image", "value": "https://picsum.photos/seed/studio1/800/400", "caption": "Concepto modular" }
           ]
         },
         {
@@ -697,8 +697,8 @@
           "content": [
             { "type": "text", "value": "Diseño de logotipo, tipografia, sistema de colores, patrones." },
             { "type": "gallery", "value": [
-              "assets/proyectos/studio/logo.jpg",
-              "assets/proyectos/studio/patterns.jpg"
+              "https://picsum.photos/seed/studio2/600/400",
+              "https://picsum.photos/seed/studio3/600/400"
             ]}
           ]
         },
@@ -726,8 +726,8 @@
           "content": [
             { "type": "text", "value": "Diseño centrado en el usuario, experiencia de compra personalizada." },
             { "type": "gallery", "value": [
-              "assets/proyectos/ecommerceapp/ui1.jpg",
-              "assets/proyectos/ecommerceapp/ui2.jpg"
+              "https://picsum.photos/seed/ecom1/600/400",
+              "https://picsum.photos/seed/ecom2/600/400"
             ]}
           ]
         },
@@ -735,7 +735,7 @@
           "title": "DESARROLLO",
           "content": [
             { "type": "text", "value": "React Native, gestion de estado, navegacion, integracion con APIs." },
-            { "type": "image", "value": "assets/proyectos/ecommerceapp/code.jpg", "caption": "Estructura del proyecto" }
+            { "type": "image", "value": "https://picsum.photos/seed/ecom3/800/400", "caption": "Estructura del proyecto" }
           ]
         },
         {
@@ -761,7 +761,7 @@
           "title": "ARQUITECTURA",
           "content": [
             { "type": "text", "value": "Diseño de microservicios, comunicacion asincrona con Kafka." },
-            { "type": "image", "value": "assets/proyectos/microservices/architecture.jpg", "caption": "Diagrama de arquitectura" }
+            { "type": "image", "value": "https://picsum.photos/seed/micro1/800/400", "caption": "Diagrama de arquitectura" }
           ]
         },
         {
@@ -769,8 +769,8 @@
           "content": [
             { "type": "text", "value": "Dockerizacion de servicios, despliegue en Kubernetes." },
             { "type": "gallery", "value": [
-              "assets/proyectos/microservices/docker.jpg",
-              "assets/proyectos/microservices/kubernetes.jpg"
+              "https://picsum.photos/seed/micro2/600/400",
+              "https://picsum.photos/seed/micro3/600/400"
             ]}
           ]
         },
@@ -797,7 +797,7 @@
           "title": "ESTRATEGIA",
           "content": [
             { "type": "text", "value": "Definicion de audiencia, mensajes clave, canales de comunicacion." },
-            { "type": "image", "value": "assets/proyectos/campana/strategy.jpg", "caption": "Estrategia de comunicacion" }
+            { "type": "image", "value": "https://picsum.photos/seed/camp1/800/400", "caption": "Estrategia de comunicacion" }
           ]
         },
         {
@@ -805,8 +805,8 @@
           "content": [
             { "type": "text", "value": "Concepto creativo, piezas de comunicacion, contenido digital." },
             { "type": "gallery", "value": [
-              "assets/proyectos/campana/piece1.jpg",
-              "assets/proyectos/campana/piece2.jpg"
+              "https://picsum.photos/seed/camp2/600/400",
+              "https://picsum.photos/seed/camp3/600/400"
             ]}
           ]
         },
@@ -814,7 +814,7 @@
           "title": "EJECUCION",
           "content": [
             { "type": "text", "value": "Produccion de contenido, gestion de redes sociales, eventos." },
-            { "type": "video", "value": "assets/proyectos/campana/campaign.mp4", "caption": "Resumen de la campana" }
+            { "type": "video", "value": "https://www.w3schools.com/html/mov_bbb.mp4", "caption": "Resumen de la campana" }
           ]
         }
       ]
@@ -833,7 +833,7 @@
           "title": "CONCEPTO",
           "content": [
             { "type": "text", "value": "Definicion de identidad, estructura de navegacion, storytelling." },
-            { "type": "image", "value": "assets/proyectos/portfolio/concept.jpg", "caption": "Concepto de diseño" }
+            { "type": "image", "value": "https://picsum.photos/seed/port1/800/400", "caption": "Concepto de diseño" }
           ]
         },
         {
@@ -841,8 +841,8 @@
           "content": [
             { "type": "text", "value": "Frontend con animaciones fluidas, sistema de navegacion." },
             { "type": "gallery", "value": [
-              "assets/proyectos/portfolio/screenshot1.jpg",
-              "assets/proyectos/portfolio/screenshot2.jpg"
+              "https://picsum.photos/seed/port2/600/400",
+              "https://picsum.photos/seed/port3/600/400"
             ]}
           ]
         },
@@ -870,8 +870,8 @@
           "content": [
             { "type": "text", "value": "Diseño de interfaz, identidad visual del juego, sistema de navegacion." },
             { "type": "gallery", "value": [
-              "assets/proyectos/gameui/concept1.jpg",
-              "assets/proyectos/gameui/concept2.jpg"
+              "https://picsum.photos/seed/game1/600/400",
+              "https://picsum.photos/seed/game2/600/400"
             ]}
           ]
         },
@@ -879,14 +879,14 @@
           "title": "HUD Y MENUS",
           "content": [
             { "type": "text", "value": "Diseño de HUD, menus principales, pantallas de juego." },
-            { "type": "image", "value": "assets/proyectos/gameui/hud.jpg", "caption": "HUD del juego" }
+            { "type": "image", "value": "https://picsum.photos/seed/game3/800/400", "caption": "HUD del juego" }
           ]
         },
         {
           "title": "INTERACCIONES",
           "content": [
             { "type": "text", "value": "Animaciones de interfaz, transiciones, microinteracciones." },
-            { "type": "video", "value": "assets/proyectos/gameui/interactions.mp4", "caption": "Interacciones de UI" }
+            { "type": "video", "value": "https://www.w3schools.com/html/mov_bbb.mp4", "caption": "Interacciones de UI" }
           ]
         }
       ]
@@ -905,7 +905,7 @@
           "title": "DISEÑO",
           "content": [
             { "type": "text", "value": "Diseño de endpoints, modelos de datos, documentacion OpenAPI." },
-            { "type": "image", "value": "assets/proyectos/restapi/openapi.jpg", "caption": "Documentacion OpenAPI" }
+            { "type": "image", "value": "https://picsum.photos/seed/rest1/800/400", "caption": "Documentacion OpenAPI" }
           ]
         },
         {
@@ -913,8 +913,8 @@
           "content": [
             { "type": "text", "value": "Desarrollo con Node.js/Express, integracion con base de datos." },
             { "type": "gallery", "value": [
-              "assets/proyectos/restapi/code1.jpg",
-              "assets/proyectos/restapi/code2.jpg"
+              "https://picsum.photos/seed/rest2/600/400",
+              "https://picsum.photos/seed/rest3/600/400"
             ]}
           ]
         },
@@ -941,7 +941,7 @@
           "title": "CONCEPTO",
           "content": [
             { "type": "text", "value": "Investigacion de materiales sustentables, diseño de estructura." },
-            { "type": "image", "value": "assets/proyectos/packagingeco/concept.jpg", "caption": "Concepto de materiales" }
+            { "type": "image", "value": "https://picsum.photos/seed/eco1/800/400", "caption": "Concepto de materiales" }
           ]
         },
         {
@@ -949,8 +949,8 @@
           "content": [
             { "type": "text", "value": "Diseño de ilustraciones, tipografia, sistema de colores naturales." },
             { "type": "gallery", "value": [
-              "assets/proyectos/packagingeco/design1.jpg",
-              "assets/proyectos/packagingeco/design2.jpg"
+              "https://picsum.photos/seed/eco2/600/400",
+              "https://picsum.photos/seed/eco3/600/400"
             ]}
           ]
         },
@@ -958,7 +958,7 @@
           "title": "PRODUCCION",
           "content": [
             { "type": "text", "value": "Preparacion para impresion, seleccion de acabados, prototipado." },
-            { "type": "video", "value": "assets/proyectos/packagingeco/production.mp4", "caption": "Proceso de produccion" }
+            { "type": "video", "value": "https://www.w3schools.com/html/mov_bbb.mp4", "caption": "Proceso de produccion" }
           ]
         }
       ]
@@ -977,7 +977,7 @@
           "title": "METRICAS",
           "content": [
             { "type": "text", "value": "Definicion de KPI financieros, fuentes de datos, visualizaciones." },
-            { "type": "image", "value": "assets/proyectos/dashboardfinance/metrics.jpg", "caption": "Definicion de metricas" }
+            { "type": "image", "value": "https://picsum.photos/seed/fin1/800/400", "caption": "Definicion de metricas" }
           ]
         },
         {
@@ -985,8 +985,8 @@
           "content": [
             { "type": "text", "value": "Graficos de barras, lineas, areas, tablas dinamicas." },
             { "type": "gallery", "value": [
-              "assets/proyectos/dashboardfinance/chart1.jpg",
-              "assets/proyectos/dashboardfinance/chart2.jpg"
+              "https://picsum.photos/seed/fin2/600/400",
+              "https://picsum.photos/seed/fin3/600/400"
             ]}
           ]
         },
