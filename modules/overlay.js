@@ -1,4 +1,4 @@
-// modules/overlay.js
+
 
 let overlayInterval = null;
 let currentIndex = 0;
@@ -7,7 +7,7 @@ let isRunning = false;
 let overlayElement = null;
 let shuffleOrder = [];
 
-// 🔥 CONFIGURACIÓN ÚNICA
+
 const OVERLAY_CONFIG = {
     INTERVAL: 30000,       // 10 segundos entre cambios
     FADE_DURATION: 0,      // 0 = cambio instantáneo
@@ -23,7 +23,7 @@ const OVERLAY_CONFIG = {
 /**
  * Inicializa el sistema de overlays
  */
-// modules/overlay.js - Modificar initOverlays
+
 
 export function initOverlays() {
     stopOverlays();
@@ -35,7 +35,7 @@ export function initOverlays() {
         return;
     }
     
-    // 🔥 LEER CONFIGURACIÓN DE TEXTURA DESDE SETTINGS
+
     let textureEnabled = true;
     try {
         const saved = localStorage.getItem('edesign_settings');
@@ -86,7 +86,7 @@ export function initOverlays() {
     currentIndex = 0;
     loadOverlayImage(0);
     
-    // 🔥 APLICAR ESTADO DE TEXTURA SEGÚN CONFIGURACIÓN
+
     if (overlayElement) {
         overlayElement.style.display = textureEnabled ? 'block' : 'none';
     }
@@ -112,7 +112,7 @@ function shuffleArray(array) {
 function loadOverlayImage(index) {
     if (!overlayElement || imageCount === 0) return;
     
-    // Obtener el índice real usando el orden
+
     const realIndex = shuffleOrder[index % shuffleOrder.length];
     const imageNumber = realIndex + 1; // +1 porque las imágenes empiezan en 1
     
@@ -121,7 +121,7 @@ function loadOverlayImage(index) {
     overlayElement.style.transition = 'none';
     overlayElement.style.backgroundImage = `url(${imagePath})`;
     
-    // 🔥 Si es la primera imagen (índice 0), usar opacidad 50%, sino 100%
+
     if (index === 0) {
         overlayElement.style.opacity = OVERLAY_CONFIG.OPACITY_FIRST;
     } else {
@@ -196,7 +196,7 @@ export function setOverlayImage(index) {
 export function setOverlayOpacity(opacity) {
     if (!overlayElement) return;
     OVERLAY_CONFIG.OPACITY = Math.max(0, Math.min(1, opacity));
-    // Solo aplicar si no es la primera imagen
+
     if (currentIndex !== 0) {
         overlayElement.style.transition = 'none';
         overlayElement.style.opacity = OVERLAY_CONFIG.OPACITY;
@@ -221,7 +221,7 @@ export function setOverlayRandomOrder(random) {
     shuffleOrder = [];
     
     if (random && imageCount > 1) {
-        // 🔥 SIEMPRE 1 primero
+
         shuffleOrder.push(0);
         const rest = [];
         for (let i = 1; i < imageCount; i++) {

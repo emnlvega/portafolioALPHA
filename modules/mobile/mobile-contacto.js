@@ -1,4 +1,4 @@
-// modules/mobile/mobile-contacto.js
+
 import { CONFIG } from '../config.js';
 import { importDesignFromJSON } from '../logo.js';
 import { resetGrid } from '../interactions.js';
@@ -223,7 +223,7 @@ function createContactoContent() {
     
     socialCells.sort((a, b) => a.index - b.index);
     
-    // ===== TÍTULO - VERDE CON BRILLO =====
+
     if (titleCell) {
         const oldTitle = titleCell.querySelector('.mobile-contacto-content');
         if (oldTitle) oldTitle.remove();
@@ -255,7 +255,7 @@ function createContactoContent() {
         titleCell.appendChild(title);
     }
     
-    // ===== REDES SOCIALES =====
+
     const socialData = contactoData?.content?.social || [];
     
     socialCells.forEach(({ cell }, index) => {
@@ -349,7 +349,7 @@ function createContactoContent() {
         cell.appendChild(wrapper);
     });
     
-    // ===== DISPONIBILIDAD =====
+
     if (availabilityCell) {
         const availability = document.createElement('div');
         availability.className = 'mobile-contacto-info';
@@ -419,7 +419,7 @@ function createContactoContent() {
         availabilityCell.appendChild(availability);
     }
     
-    // ===== INFO (LOCATION + QUOTE) =====
+
     if (infoCell) {
         const info = document.createElement('div');
         info.className = 'mobile-contacto-info';

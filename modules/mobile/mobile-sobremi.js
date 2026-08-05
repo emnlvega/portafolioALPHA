@@ -1,11 +1,11 @@
-// modules/mobile-sobremi.js
+
 import { CONFIG } from '../config.js';
 import { importDesignFromJSON } from '../logo.js';
 import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations } from '../animations.js';
 import { createMobileNavButtons } from './mobile-nav.js';
 
-// 🔥 DISEÑO PARA SOBRE MI EN MÓVIL - ACTUALIZADO
+
 const SOBRE_MI_DESIGN = {
   "0,0": {
     "type": "combined_normal",
@@ -41,7 +41,7 @@ const SOBRE_MI_DESIGN = {
   }
 };
 
-// Datos de Sobre Mi
+
 const SOBRE_MI_DATA = {
     foto: "assets/photo/yoedit.png",
     bio: "Desde los 6 años, cuando tuve mi primera computadora, supe que la tecnología sería lo mío, la usaba, la desarmaba, la entendía, la personalizaba, mis padres me bloqueaban la computadora y yo encontraba la forma de desbloquearla.\n\nA los 12 años me harté de los fondos de pantalla genéricos, así que descargué Photoshop e Illustrator y empecé a crear los míos, Daft Punk y TRON: El Legado fueron mis mayores inspiraciones.\n\nEn la preparatoria, mientras otros hacían calculadoras en Visual Basic 6.0, yo recreé Space Invaders, sin IA, sin tutoriales, puro escribir mi lógica y con mi obsesión por entender cómo funcionan las cosas.",
@@ -60,47 +60,46 @@ export function renderMobileSobreMi() {
 
     const container = document.getElementById('grid-container');
     if (!container) {
-        console.error('Container no encontrado');
         return;
     }
     
-    // Limpiar contenido anterior
+
     document.querySelectorAll('.mobile-sobremi-content, .mobile-nav-btn, .mobile-btn-overlay').forEach(el => el.remove());
     
 
     
-    // Detener animaciones
+
     stopRandomAnimations();
     
-    // Resetear grid SIN mantener combinadas
+
     resetGrid(false);
     
-    // 🔥 IMPORTAR CON reset = false (no resetear el grid)
+
     importDesignFromJSON(SOBRE_MI_DESIGN, () => {
 
-        // Crear contenido de Sobre Mi
+
         createSobreMiContent();
-        // 🔥 CREAR BOTONES DE NAVEGACIÓN MÓVIL
+
 
         createMobileNavButtons('sobre-mi');
         
-        // 🔥 DESACTIVAR INTERACCIONES EN SOBRE MI
+
         disableInteractions();
     }, true); // 🔥 reset = false
 }
 
-// 🔥 DESACTIVAR INTERACCIONES (no se pueden modificar celdas)
+
 function disableInteractions() {
     const container = document.getElementById('grid-container');
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell');
     
     allCells.forEach(cell => {
-        // Bloquear todas las celdas
+
         cell.style.pointerEvents = 'none';
         cell.style.cursor = 'default';
         cell.dataset.locked = 'true';
         
-        // Remover cualquier evento de click/mousedown que pueda haber
+
         cell.onclick = null;
         cell.onmousedown = null;
         cell.oncontextmenu = null;
@@ -137,7 +136,7 @@ function createSobreMiContent() {
     });
     
 
-    // ===== TÍTULO =====
+
     if (titleCell) {
         const oldTitle = titleCell.querySelector('.mobile-sobremi-content');
         if (oldTitle) oldTitle.remove();
@@ -169,7 +168,7 @@ function createSobreMiContent() {
         titleCell.appendChild(title);
     }
     
-    // ===== FOTO CON EFECTO DECOLOR (como en PC) =====
+
     if (photoCell) {
 
         const photoWrapper = document.createElement('div');
@@ -191,7 +190,7 @@ function createSobreMiContent() {
             border: 1px solid rgba(${primaryRGB}, 0.1);
         `;
         
-        // Contenedor de la imagen
+
         const imgContainer = document.createElement('div');
         imgContainer.style.cssText = `
             position: relative;
@@ -199,7 +198,7 @@ function createSobreMiContent() {
             height: 100%;
         `;
         
-        // Imagen 1 (base - decolorada - yoedit.png)
+
         const img1 = document.createElement('img');
         img1.src = SOBRE_MI_DATA.foto;
         img1.alt = 'Emanuel Vega';
@@ -216,7 +215,7 @@ function createSobreMiContent() {
         `;
         imgContainer.appendChild(img1);
         
-        // Overlay de color (efecto decolor como en PC)
+
         const colorOverlay = document.createElement('div');
         colorOverlay.style.cssText = `
             position: absolute;
@@ -232,7 +231,7 @@ function createSobreMiContent() {
         `;
         imgContainer.appendChild(colorOverlay);
         
-        // Imagen 2 (color - yo.png)
+
         const img2 = document.createElement('img');
         img2.src = 'assets/photo/yo.png';
         img2.alt = 'Emanuel Vega Color';
@@ -251,32 +250,32 @@ function createSobreMiContent() {
         photoWrapper.appendChild(imgContainer);
         photoCell.appendChild(photoWrapper);
         
-        // 🔥 EFECTO GLITCH CON CAMBIO DE IMAGEN
+
         let glitchTimeout = null;
         let isFirstTransitionDone = false;
         let isUsingYoEdit = true;
         let imageSwitchTimeout = null;
         
-        // Función para cambiar la imagen base (yoedit.png <-> yo.png)
+
         function switchBaseImage() {
             if (isUsingYoEdit) {
-                // Cambiar a yo.png
+
                 img1.src = 'assets/photo/yo.png';
                 isUsingYoEdit = false;
 
             } else {
-                // Cambiar a yoedit.png
+
                 img1.src = SOBRE_MI_DATA.foto;
                 isUsingYoEdit = true;
 
             }
-            // Resetear estado para que la transición se vea
+
             img1.style.opacity = '1';
             colorOverlay.style.opacity = '1';
             img2.style.opacity = '0';
             isFirstTransitionDone = false;
             
-            // Después de 1 segundo, hacer la transición a la imagen color
+
             setTimeout(() => {
                 doInitialGlitchTransition();
             }, 1000);
@@ -341,17 +340,17 @@ function createSobreMiContent() {
             }, delay);
         }
         
-        // Iniciar el efecto después de 2 segundos
+
         setTimeout(() => {
             doInitialGlitchTransition();
         }, 10000);
         
-        // 🔥 CAMBIAR LA IMAGEN BASE DESPUÉS DE 10 SEGUNDOS
+
         imageSwitchTimeout = setTimeout(() => {
             switchBaseImage();
         }, 10000);
         
-        // 🔥 Y LUEGO CADA 20-40 SEGUNDOS CAMBIAR DE NUEVO
+
         function scheduleImageSwitch() {
             if (imageSwitchTimeout) {
                 clearTimeout(imageSwitchTimeout);
@@ -364,13 +363,13 @@ function createSobreMiContent() {
             }, delay);
         }
         
-        // Programar el siguiente cambio después del primero
+
         setTimeout(() => {
             scheduleImageSwitch();
         }, 12000);
     }
     
-    // ===== BIOGRAFÍA (con scroll) =====
+
     if (bioCell) {
 
         const bioWrapper = document.createElement('div');
@@ -407,10 +406,10 @@ function createSobreMiContent() {
         bioCell.appendChild(bioWrapper);
     }
     
-    // ===== INFO COMPLETA (con scroll) - AHORA EN 17,0 =====
-    // modules/mobile/mobile-sobremi.js - En createSobreMiContent, dentro de la sección de infoCell
 
-    // ===== INFO COMPLETA (con scroll) - AHORA EN 17,0 =====
+
+
+
     if (infoCell) {
         const infoWrapper = document.createElement('div');
         infoWrapper.className = 'mobile-sobremi-content';
@@ -443,7 +442,7 @@ function createSobreMiContent() {
             gap: 8px;
         `;
         
-        // HABILIDADES
+
         const habilidadesTitle = document.createElement('div');
         habilidadesTitle.textContent = '◆ HABILIDADES';
         habilidadesTitle.style.cssText = `
@@ -488,7 +487,7 @@ function createSobreMiContent() {
         });
         infoContent.appendChild(habilidadesGrid);
         
-        // HERRAMIENTAS
+
         const herramientasTitle = document.createElement('div');
         herramientasTitle.textContent = '◆ HERRAMIENTAS Y TECNOLOGIAS';
         herramientasTitle.style.cssText = `
@@ -517,7 +516,7 @@ function createSobreMiContent() {
         herramientasText.textContent = SOBRE_MI_DATA.herramientas;
         infoContent.appendChild(herramientasText);
         
-        // 🔥 LO QUE ME DEFINE
+
         const defineTitle = document.createElement('div');
         defineTitle.textContent = '◆ LO QUE ME DEFINE';
         defineTitle.style.cssText = `
@@ -566,7 +565,7 @@ function createSobreMiContent() {
             `;
             
             if (item.includes('gusto musical')) {
-                // 🔥 OCUPA TODO EL ANCHO (grid-column: 1 / -1)
+
                 el.style.gridColumn = '1 / -1';
                 el.style.justifyContent = 'center';
                 el.style.textAlign = 'center';
@@ -592,7 +591,7 @@ function createSobreMiContent() {
             margin-top: 4px;
             line-height: 1.6;
         `;
-        // 🔥 CAMBIAR A DOS LÍNEAS
+
         fraseDiv.innerHTML = `IF LOVE IS THE ANSWER<br>YOU'RE HOME`;
         infoContent.appendChild(fraseDiv);
         
@@ -603,7 +602,7 @@ function createSobreMiContent() {
 
 }
 
-// 🔥 EXPONER PARA QUE PUEDA SER LLAMADO DESDE NAVEGACIÓN
+
 export function getMobileSobreMiDesign() {
     return SOBRE_MI_DESIGN;
 }

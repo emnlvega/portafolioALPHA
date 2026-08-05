@@ -1,4 +1,4 @@
-// modules/sidebar/pages/proyectos.js
+
 
 import { CONFIG } from '../../config.js';
 import { showDialog } from '../../dialogs.js';
@@ -22,7 +22,7 @@ let renderTimeout = null;
 let textureWasVisibleBeforeExpand = true;
 
 const LIGHT_TEXT_SHADOW = `0 0 7px rgba(var(--color-primary-rgb), 1)`;
-// ===== DISEÑO EXPANDIDO =====
+
 const EXPANDED_DESIGN = {
     "0,0": {
         "type": "combined_normal",
@@ -86,12 +86,12 @@ function getTextureVisibilityFromSettings() {
     return true;
 }
 
-// 🔥 Función para limpiar el estado de textura al salir de Proyectos
+
 export function clearProyectosTextureState() {
-    // Leer el estado REAL de la textura desde settings (localStorage)
+
     const textureEnabled = getTextureVisibilityFromSettings();
     
-    // Solo restaurar si estaba habilitada en settings
+
     if (textureEnabled) {
         toggleTextureOverlay(true);
     } else {
@@ -122,7 +122,7 @@ export function clearProjectSelection() {
         clearTimeout(renderTimeout);
         renderTimeout = null;
     }
-    // 🔥 Actualizar URL a solo proyectos
+
     if (window.location.hash.includes('proyectos')) {
         updateURL('proyectos');
     }
@@ -138,7 +138,7 @@ function toggleDetailExpand() {
     
     isExpanding = true;
 
-    // Guardar el estado REAL de la textura ANTES de expandir
+
     textureWasVisibleBeforeExpand = getTextureVisibilityFromSettings();
 
     loadProyectosData().then(data => {
@@ -150,10 +150,10 @@ function toggleDetailExpand() {
         const designToImport = newExpandedState ? EXPANDED_DESIGN : data.design;
 
         if (newExpandedState) {
-            // Expandir: ocultar textura
+
             toggleTextureOverlay(false);
         } else {
-            // Minimizar: restaurar textura según settings
+
             toggleTextureOverlay(textureWasVisibleBeforeExpand);
         }
 
@@ -191,7 +191,7 @@ function updateExpandButton(cell) {
     const oldBtn = cell.querySelector('.expand-btn');
     if (oldBtn) oldBtn.remove();
     
-    // Solo mostrar el botón si hay un proyecto seleccionado
+
     if (selectedProjectId && selectedProjectData) {
         addExpandButton(cell);
     }
@@ -255,7 +255,7 @@ export async function renderProyectosContent() {
     const container = document.getElementById('grid-container');
     if (!container) return;
     
-    // Restaurar textura según settings si estamos en modo normal
+
     if (!isDetailExpanded) {
         const textureEnabled = getTextureVisibilityFromSettings();
         toggleTextureOverlay(textureEnabled);
@@ -547,7 +547,7 @@ export async function renderProyectosContent() {
                 selectedProjectId = null;
                 selectedProjectData = null;
                 detailPage = 0;
-                // 🔥 Actualizar URL sin proyecto
+
                 updateURL('proyectos');
                 renderProyectosContent();
                 return;
@@ -557,7 +557,7 @@ export async function renderProyectosContent() {
             selectedProjectData = project;
             detailPage = 0;
             window.selectedProjectId = project.id;
-            // 🔥 Actualizar URL con el ID del proyecto
+
             updateURL('proyectos', project.id);
             renderProyectosContent();
         });
@@ -853,7 +853,7 @@ function showProjectDetail(project, detailCell) {
         scroll-behavior: smooth;
     `;
     
-    // 🔥 Contenedor interno con padding adicional para evitar cortes
+
     const contentWrapper = document.createElement('div');
     contentWrapper.style.cssText = `
         display: flex;
@@ -869,7 +869,7 @@ function showProjectDetail(project, detailCell) {
         pointer-events: none;  /* 🔥 Los clics pasan al contenedor padre */
     `;
     
-    // Icono
+
     const icon = document.createElement('div');
     icon.textContent = project.icon;
     icon.style.cssText = `
@@ -881,7 +881,7 @@ function showProjectDetail(project, detailCell) {
     `;
     contentWrapper.appendChild(icon);
     
-    // Meta
+
     const meta = document.createElement('div');
     meta.style.cssText = `
         font-size: ${isExpanded ? '12px' : '10px'};
@@ -894,7 +894,7 @@ function showProjectDetail(project, detailCell) {
     meta.textContent = `${project.category}  ·  ${project.type}  ·  ${project.year}`;
     contentWrapper.appendChild(meta);
     
-    // Nombre
+
     const name = document.createElement('div');
     name.textContent = project.name;
     name.style.cssText = `
@@ -908,7 +908,7 @@ function showProjectDetail(project, detailCell) {
     `;
     contentWrapper.appendChild(name);
     
-    // Descripción
+
     const desc = document.createElement('div');
     desc.textContent = project.description;
     desc.style.cssText = `
@@ -922,7 +922,7 @@ function showProjectDetail(project, detailCell) {
     `;
     contentWrapper.appendChild(desc);
     
-    // Separador
+
     const separator = document.createElement('div');
     separator.style.cssText = `
         width: 30%;
@@ -1009,7 +1009,7 @@ function showProjectDetail(project, detailCell) {
     detail.appendChild(contentWrapper);
     detailCell.appendChild(detail);
     
-    // 🔥 Forzar scroll al principio después de renderizar
+
     setTimeout(() => {
         detail.scrollTop = 0;
     }, 50);

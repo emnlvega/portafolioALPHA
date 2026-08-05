@@ -1,4 +1,4 @@
-// modules/sidebar/index.js
+
 import { CONFIG, LOGO_DESIGN, updateColors } from '../config.js';
 import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations, restartRandomAnimations } from '../animations.js';
@@ -13,20 +13,20 @@ import { isMobile } from '../mobile.js';
 import { renderMobileHome } from '../mobile/mobile-home.js';
 import { renderMobileSobreMi } from '../mobile/mobile-sobremi.js';
 
-// ===== ESTADO =====
+
 let isSpecialPageActive = false;
 let currentPage = null;
 let isProgrammaticLoad = false;
 let isTransitioning = false;
 
-// ===== MAPA DE PÁGINAS =====
+
 const PAGE_HANDLERS = {
     'proyectos': { getDesign: getProyectosDesign, render: renderProyectosContent },
     'sobre-mi': { getDesign: getSobreMiDesign, render: renderSobreMiContent },
     'contacto': { getDesign: getContactoDesign, render: renderContactoContent }
 };
 
-// ===== SVG HARDCODEADOS =====
+
 const SVG_OUTLINE = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="100%" height="100%" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
@@ -60,7 +60,7 @@ const SVG_HOVER = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
     </g>
 </svg>`;
 
-// ===== FUNCIÓN PARA ACTUALIZAR LA URL =====
+
 function updateURL(page, projectId = null) {
     let url = window.location.pathname;
     if (url.includes('#')) {
@@ -77,7 +77,7 @@ function updateURL(page, projectId = null) {
     }
 }
 
-// ===== ANIMATE SIDEBAR =====
+
 export function animateSidebar(sidebarCells, rows, cellSize, offsetX, offsetY) {
     if (!sidebarCells?.length) return;
     
@@ -159,7 +159,7 @@ export function animateSidebar(sidebarCells, rows, cellSize, offsetX, offsetY) {
     }, CONFIG.ANIMATION_DURATION + 100);
 }
 
-// ===== SETUP SIDEBAR TEXTS =====
+
 export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth, sidebarHeight, container) {
     document.querySelectorAll('.sidebar-text, .sidebar-logo-svg, .sidebar-logo-text, #settings-cog-btn, #color-picker-container').forEach(el => el.remove());
     
@@ -291,7 +291,7 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
     });
 }
 
-// ===== CREAR LOGO =====
+
 function createLogo(container, x, y) {
     const wrapper = document.createElement('div');
     wrapper.className = 'sidebar-logo-svg';
@@ -397,7 +397,7 @@ function createLogo(container, x, y) {
     return wrapper;
 }
 
-// ===== FUNCIÓN PARA ACTUALIZAR ESTADO ACTIVO DEL SIDEBAR EN MÓVIL =====
+
 function updateSidebarActiveStateMobile(activeAction) {
     const buttons = document.querySelectorAll('.mobile-btn-overlay');
     buttons.forEach(btn => {
@@ -434,13 +434,13 @@ function updateSidebarActiveStateMobile(activeAction) {
     });
 }
 
-// ===== HANDLE SIDEBAR ACTION (COMPLETO) =====
+
 export function handleSidebarAction(action) {
     if (isTransitioning) return;
     
     const mobile = isMobile();
     
-    // 🔥 SI ES MÓVIL, USAR NAVEGACIÓN MÓVIL
+
     if (mobile) {
         import('../mobile/mobile-nav.js').then(module => {
             module.navigateMobileTo(action);
@@ -448,11 +448,11 @@ export function handleSidebarAction(action) {
         return;
     }
     
-    // 🔥 INICIO
+
     if (action === 'inicio') {
         if (mobile) {
             renderMobileHome();
-            // Actualizar estado activo de los botones móviles
+
             setTimeout(() => {
                 updateSidebarActiveStateMobile('inicio');
             }, 100);
@@ -474,14 +474,14 @@ export function handleSidebarAction(action) {
         return;
     }
     
-    // 🔥 PROYECTOS
+
     if (action === 'proyectos') {
         if (mobile) {
             import('../mobile/mobile-nav.js').then(module => {
                 module.navigateMobileTo('proyectos');
             });
         } else {
-            // PC: Cargar página de proyectos
+
             document.querySelectorAll('.sidebar-text').forEach(el => {
                 el.classList.remove('active');
                 el.style.color = CONFIG.COLORS.primary;
@@ -499,7 +499,7 @@ export function handleSidebarAction(action) {
         return;
     }
     
-    // 🔥 SOBRE MI
+
     if (action === 'sobre-mi') {
         if (mobile) {
 
@@ -525,14 +525,14 @@ export function handleSidebarAction(action) {
         return;
     }
     
-    // 🔥 CONTACTO
+
     if (action === 'contacto') {
         if (mobile) {
             import('../mobile/mobile-nav.js').then(module => {
                 module.navigateMobileTo('contacto');
             });
         } else {
-            // PC: Cargar página de contacto
+
             document.querySelectorAll('.sidebar-text').forEach(el => {
                 el.classList.remove('active');
                 el.style.color = CONFIG.COLORS.primary;
@@ -550,14 +550,14 @@ export function handleSidebarAction(action) {
         return;
     }
     
-    // 🔥 CONFIGURACIÓN
+
     if (action === 'configuracion') {
         toggleSettings();
         return;
     }
 }
 
-// ===== LOAD SIDEBAR PAGE (PC) =====
+
 function loadSidebarPage(pageKey) {
     if (isTransitioning) return;
     
@@ -612,7 +612,7 @@ function loadSidebarPage(pageKey) {
     }, 200);
 }
 
-// ===== RETURN TO MAIN (PC) =====
+
 export function returnToMainLogo() {
     if (isTransitioning) return;
     if (!isSpecialPageActive) return;
@@ -661,7 +661,7 @@ export function returnToMainLogo() {
     }, 200);
 }
 
-// ===== HANDLE URL ON LOAD =====
+
 export function handleURLOnLoad() {
     const hash = window.location.hash;
     if (!hash || hash === '' || hash === '#') return 'inicio';
@@ -679,7 +679,7 @@ export function handleURLOnLoad() {
     return 'inicio';
 }
 
-// ===== GRID INTERACTIONS =====
+
 function setGridInteractionsEnabled(enabled) {
     const cells = document.querySelectorAll('.grid-cell, .logo-cell');
     cells.forEach(cell => {
@@ -733,7 +733,7 @@ export function updateSidebarActiveState() {
     });
 }
 
-// ===== EXPORT =====
+
 export function isSpecialPageActiveCheck() { return isSpecialPageActive; }
 export function isProgrammaticLoadCheck() { return isProgrammaticLoad; }
 export function getCurrentPage() { return currentPage; }

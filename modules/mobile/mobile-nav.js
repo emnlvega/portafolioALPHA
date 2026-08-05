@@ -1,4 +1,4 @@
-// modules/mobile/mobile-nav.js
+
 import { CONFIG } from '../config.js';
 import { importDesignFromJSON } from '../logo.js';
 import { resetGrid } from '../interactions.js';
@@ -9,7 +9,7 @@ import { renderMobileProyectos } from './mobile-proyectos.js';
 import { renderMobileProyectoDetalle } from './mobile-proyecto-detalle.js';
 import { renderMobileContacto } from './mobile-contacto.js';
 
-// 🔥 ESTADO DE NAVEGACIÓN MÓVIL
+
 let currentMobilePage = 'inicio';
 let navButtonsCreated = false;
 let currentProjectId = null;
@@ -179,7 +179,7 @@ function createButtonsFromCells(activePage) {
         targetCell.style.touchAction = 'none';
         
         const isActive = btnConfig.action === activePage;
-        // 🔥 Si está activo, mostrar "◀ INICIO"
+
         const displayText = isActive ? '◀ INICIO' : btnConfig.text;
         
         const borderColor = isActive ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary;
@@ -231,7 +231,7 @@ function createButtonsFromCells(activePage) {
         `;
         btn.appendChild(icon);
         
-        // 🔥 LÍNEA BLANCA - ENTRE ICONO Y TEXTO
+
         const line = document.createElement('div');
         line.className = 'btn-line';
         line.style.cssText = `

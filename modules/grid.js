@@ -29,7 +29,7 @@ export function createCell(className, x, y, size, dataset = {}) {
     return cell;
 }
 
-// ---------- INICIALIZACIÓN (SOLO UNA VEZ) ----------
+
 export function createGrid() {
     const container = document.getElementById('grid-container');
     container.innerHTML = '';
@@ -85,7 +85,7 @@ export function createGrid() {
     return { sidebarCells, allCells, rows, cols, cellSize, offsetX, offsetY };
 }
 
-// ---------- REPOSICIONAMIENTO DE CELDAS COMBINADAS (CRUCIAL) ----------
+
 export function repositionCombinedCells(offsetX, offsetY) {
     const { COLS: cols, ROWS: rows, GAP, SIDEBAR_WIDTH, CELL_SIZE: cellSize } = CONFIG;
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
@@ -94,15 +94,15 @@ export function repositionCombinedCells(offsetX, offsetY) {
         if (cell.dataset.combined !== 'true') return;
         if (cell.dataset.isSidebar === 'true') return;
         
-        // Intentar usar designRow/designCol para recalcular desde cero
+
         const designRow = parseInt(cell.dataset.designRow);
         const designCol = parseInt(cell.dataset.designCol);
         
         if (!isNaN(designRow) && !isNaN(designCol)) {
-            // Calcular posición base con el nuevo offset
+
             const basePos = getCellPosition(designCol + SIDEBAR_WIDTH, designRow, cellSize, offsetX, offsetY);
             
-            // Obtener dimensiones actuales (guardadas o del estilo)
+
             let width = parseFloat(cell.dataset.combinedWidth);
             let height = parseFloat(cell.dataset.combinedHeight);
             if (isNaN(width) || isNaN(height)) {
@@ -110,7 +110,7 @@ export function repositionCombinedCells(offsetX, offsetY) {
                 height = parseFloat(cell.style.height);
             }
             
-            // Calcular cuántas celdas ocupa (redondeo)
+
             const combinedCols = Math.round((width + GAP) / (cellSize + GAP));
             const combinedRows = Math.round((height + GAP) / (cellSize + GAP));
             const newWidth = combinedCols * (cellSize + GAP) - GAP;
@@ -121,14 +121,14 @@ export function repositionCombinedCells(offsetX, offsetY) {
             cell.style.width = `${newWidth}px`;
             cell.style.height = `${newHeight}px`;
             
-            // Actualizar datos guardados
+
             cell.dataset.combinedLeft = basePos.x;
             cell.dataset.combinedTop = basePos.y;
             cell.dataset.combinedWidth = newWidth;
             cell.dataset.combinedHeight = newHeight;
         } else {
-            // Fallback para celdas importadas que no tienen designRow/Col (raro)
-            // Usamos el offset original guardado en la celda
+
+
             const origOffX = parseFloat(cell.dataset.originalCombinedOffsetX) || 0;
             const origOffY = parseFloat(cell.dataset.originalCombinedOffsetY) || 0;
             const deltaX = offsetX - origOffX;
@@ -144,14 +144,14 @@ export function repositionCombinedCells(offsetX, offsetY) {
             cell.style.width = `${width}px`;
             cell.style.height = `${height}px`;
             
-            // Actualizar datos
+
             cell.dataset.combinedLeft = left + deltaX;
             cell.dataset.combinedTop = top + deltaY;
         }
     });
 }
 
-// ---------- REPOSICIONAMIENTO DE CELDAS NORMALES ----------
+
 export function repositionGrid(offsetX, offsetY) {
     const { COLS: cols, ROWS: rows, GAP, SIDEBAR_WIDTH, CELL_SIZE: cellSize } = CONFIG;
     const allCells = document.querySelectorAll('.grid-cell, .sidebar-cell, .logo-cell');
@@ -173,7 +173,7 @@ export function repositionGrid(offsetX, offsetY) {
     });
 }
 
-// ---------- SIDEBAR ----------
+
 export function repositionSidebarOverlay(offsetX, offsetY) {
     const { COLS: cols, ROWS: rows, GAP, SIDEBAR_WIDTH, CELL_SIZE: cellSize } = CONFIG;
     const overlay = document.querySelector('.sidebar-overlay');
@@ -196,7 +196,7 @@ export function repositionSidebarTexts(offsetX, offsetY) {
     const sidebarHeight = rows * (cellSize + GAP) - GAP;
     const x = offsetX + sidebarWidth / 2;
     
-    // Obtener todos los sidebar-text
+
     const items = document.querySelectorAll('.sidebar-text');
     const totalItems = items.length + 1; // +1 por el logo SVG
     const padding = 30;
@@ -206,10 +206,10 @@ export function repositionSidebarTexts(offsetX, offsetY) {
     let currentY = offsetY + padding + 15; // +15 por el logo (igual que en setup)
     
     items.forEach((el, index) => {
-        // El primer elemento (EMNLVEGA) va después del logo
-        // Los demás van después de EMNLVEGA
+
+
         if (index === 0) {
-            // EMNLVEGA
+
             currentY += spacing;
         } else {
             currentY += spacing;
@@ -218,7 +218,7 @@ export function repositionSidebarTexts(offsetX, offsetY) {
         el.style.top = `${currentY - 6}px`;
     });
     
-    // Reposicionar el logo SVG
+
     const logoSVG = document.querySelector('.sidebar-logo-svg');
     if (logoSVG) {
         const logoY = offsetY + padding + 15;
@@ -226,9 +226,9 @@ export function repositionSidebarTexts(offsetX, offsetY) {
         logoSVG.style.top = `${logoY}px`;
     }
     
-    // Reposicionar color picker (si existe en el sidebar, pero ahora está en settings)
+
     const picker = document.getElementById('color-picker-container');
     if (picker) {
-        // Ya no se usa, está dentro de settings
+
     }
 }

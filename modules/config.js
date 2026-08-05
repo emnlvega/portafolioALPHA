@@ -49,7 +49,7 @@ let currentConfig = {
     BG_MOUSE_SENSITIVITY: 0.02,
     COLORS: createColors('#00ff91', '#ffffff', '#000000'),
     
-    // ===== MODO ARQUITECTO =====
+
     ARCHITECT_MODE: {
         ENABLED: true,          // Habilitar/deshabilitar completamente
         TOGGLE_KEY: 'KeyA',     // Tecla para activar/desactivar
@@ -59,10 +59,10 @@ let currentConfig = {
         COLOR: '#00ff91'        // Color de las coordenadas
     },
     
-    // ===== CONFIGURACIÓN DE ANIMACIONES ALEATORIAS (REDUCIDAS 50%) =====
+
     ANIMATIONS: {
         TARGET_CELLS: 'all',
-        // Animación de escala (pulse)
+
         SCALE: {
             ENABLED: true,
             DURATION: 2000,
@@ -72,7 +72,7 @@ let currentConfig = {
             MAX_SIMULTANEOUS: 5,
         },
         
-        // Animación de color (fill primary)
+
         COLOR: {
             ENABLED: false,
             DURATION: 2000,
@@ -81,7 +81,7 @@ let currentConfig = {
             MAX_SIMULTANEOUS: 2,
         },
         
-        // Brillo sutil (glow pulse)
+
         GLOW: {
             ENABLED: true,
             DURATION: 3000,
@@ -91,7 +91,7 @@ let currentConfig = {
             INTENSITY: 10
         },
         
-        // Rotación sutil
+
         ROTATE: {
             ENABLED: false,
             DURATION: 4000,
@@ -101,7 +101,7 @@ let currentConfig = {
             ROTATION_ANGLE: 3
         },
         
-        // Desplazamiento de borde
+
         BORDER_SHIFT: {
             ENABLED: true,
             DURATION: 2500,
@@ -111,7 +111,7 @@ let currentConfig = {
             SHIFT_AMOUNT: 2
         },
         
-        // Oscilación de opacidad
+
         OPACITY_WAVE: {
             ENABLED: true,
             DURATION: 2000,
@@ -128,7 +128,7 @@ export function updateColors(newPrimary, newSecondary = '#ffffff', newBackground
     const newColors = createColors(newPrimary, newSecondary, newBackground);
     CONFIG.COLORS = newColors;
     
-    // Disparar evento para que script.js actualice CSS
+
     const event = new CustomEvent('colorsUpdated', { 
         detail: { colors: newColors } 
     });

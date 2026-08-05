@@ -1,4 +1,4 @@
-// modules/mobile/mobile-proyecto-detalle.js
+
 import { CONFIG } from '../config.js';
 import { importDesignFromJSON } from '../logo.js';
 import { resetGrid } from '../interactions.js';
@@ -78,10 +78,10 @@ export async function renderMobileProyectoDetalle(projectId) {
     const loaded = await loadProyectoData(projectId);
     if (!loaded || !proyectoActual) return;
     
-    // Limpiar TODO
+
     document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-sobremi-content, .mobile-home-content, .mobile-proyecto-detalle-content').forEach(el => el.remove());
     
-    // Limpiar celdas
+
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
         const children = cell.querySelectorAll('div:not(.grid-cell):not(.logo-cell):not(.sidebar-cell)');
@@ -100,7 +100,7 @@ export async function renderMobileProyectoDetalle(projectId) {
     importDesignFromJSON(PROYECTO_DETALLE_DESIGN, () => {
         gridReady = true;
         createDetalleContent();
-        // 🔥 CREAR BOTONES DE NAVEGACIÓN MÓVIL
+
         createMobileNavButtons('proyectos');
         disableInteractions();
     }, true);

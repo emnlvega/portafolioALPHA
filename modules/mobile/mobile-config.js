@@ -1,6 +1,6 @@
-// modules/mobile-config.js
+
 export const MOBILE_CONFIG = {
-    // Grid para móvil (coincide con tu diseño)
+
     COLS: 20,
     ROWS: 36,
     CELL_SIZE: 14,
@@ -8,7 +8,7 @@ export const MOBILE_CONFIG = {
     SIDEBAR_WIDTH: 0,
     BORDER_RADIUS: 1,
     
-    // Tamaños de fuente
+
     FONT_SIZES: {
         sidebar: 8,
         logo: 9,
@@ -20,7 +20,7 @@ export const MOBILE_CONFIG = {
     PADDING: 3,
     SPACING: 3,
     
-    // 🔥 EFECTOS VISUALES
+
     SHOW: {
         grain: true,
         scanlines: false,
@@ -35,7 +35,7 @@ export const MOBILE_CONFIG = {
         texture: true
     },
     
-    // 🔥 TODAS LAS ANIMACIONES DESACTIVADAS
+
     ANIMATIONS: {
         SCALE: { ENABLED: false },
         COLOR: { ENABLED: false },

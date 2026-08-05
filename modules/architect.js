@@ -1,4 +1,4 @@
-// modules/architect.js
+
 
 import { CONFIG } from './config.js';
 
@@ -7,7 +7,7 @@ let architectOverlay = null;
 let coordinateLabels = [];
 let resizeTimeout = null;
 
-// ===== DETECTAR INTERACCIÓN DEL USUARIO PARA CERRAR =====
+
 function setupAutoCloseListeners() {
     const closeArchitect = () => {
         if (isArchitectMode) {
@@ -17,15 +17,15 @@ function setupAutoCloseListeners() {
         }
     };
 
-    // Click en cualquier parte
+
     document.addEventListener('click', closeArchitect, { once: false });
     
-    // Teclas (cualquier tecla)
+
     document.addEventListener('keydown', closeArchitect, { once: false });
     
-    // Cambio de página (observar el estado de página especial)
+
     const observer = new MutationObserver(() => {
-        // Si se activa una página especial, cerrar
+
         if (document.querySelector('.proyectos-content, .sobre-mi-content, .contacto-content')) {
             if (isArchitectMode) {
                 hideArchitectOverlay();
@@ -37,7 +37,7 @@ function setupAutoCloseListeners() {
     });
     observer.observe(document.body, { childList: true, subtree: true });
     
-    // Guardar referencias para limpiar
+
     window._architectCloseListeners = {
         click: closeArchitect,
         keydown: closeArchitect,
@@ -57,7 +57,7 @@ function removeAutoCloseListeners() {
 }
 
 export function toggleArchitectMode() {
-    // Verificar si está habilitado en la configuración
+
     if (!CONFIG.ARCHITECT_MODE.ENABLED) {
         return false;
     }
@@ -92,7 +92,7 @@ export function getArchitectModeStatus() {
     };
 }
 
-// ===== FUNCIÓN PARA CALCULAR TAMAÑO DE CELDA COMBINADA =====
+
 function getCombinedSize(cell) {
     const cellSize = CONFIG.CELL_SIZE;
     const gap = CONFIG.GAP;
@@ -103,7 +103,7 @@ function getCombinedSize(cell) {
     
     if (isNaN(width) || isNaN(height)) return null;
     
-    // Calcular cuántas celdas ocupa (redondeo)
+
     const cols = Math.round((width + gap) / step);
     const rows = Math.round((height + gap) / step);
     
@@ -116,7 +116,7 @@ function showArchitectOverlay() {
     const container = document.getElementById('grid-container');
     if (!container) return;
 
-    // Crear overlay principal
+
     architectOverlay = document.createElement('div');
     architectOverlay.id = 'architect-overlay';
     architectOverlay.style.cssText = `
@@ -133,14 +133,14 @@ function showArchitectOverlay() {
     const archConfig = CONFIG.ARCHITECT_MODE;
     const containerRect = container.getBoundingClientRect();
 
-    // Obtener todas las celdas de diseño
+
     const cells = container.querySelectorAll('.grid-cell, .logo-cell');
     
     cells.forEach(cell => {
-        // Ignorar celdas de sidebar
+
         if (cell.dataset.isSidebar === 'true') return;
         
-        // Si es una celda combinada, mostrar la coordenada de la celda base
+
         const isCombined = cell.dataset.combined === 'true';
         let row, col;
         
@@ -156,14 +156,14 @@ function showArchitectOverlay() {
 
         const rect = cell.getBoundingClientRect();
         
-        // Verificar que la celda sea visible
+
         if (rect.width === 0 || rect.height === 0) return;
 
-        // Crear etiqueta de coordenada
+
         const label = document.createElement('div');
         label.className = 'architect-label';
         
-        // ===== CONSTRUIR TEXTO =====
+
         let labelText = `(${row}, ${col})`;
         
         if (isCombined) {
@@ -179,7 +179,7 @@ function showArchitectOverlay() {
         const color = archConfig.COLOR || '#00ff91';
         const showGrid = archConfig.SHOW_GRID !== undefined ? archConfig.SHOW_GRID : true;
         
-        // Ajustar tamaño de fuente según el tamaño de la celda
+
         let finalFontSize = fontSize;
         if (rect.width < 50) {
             finalFontSize = Math.max(8, fontSize * 0.7);
@@ -215,7 +215,7 @@ function showArchitectOverlay() {
             transition: all 0.3s ease;
         `;
         
-        // Si la celda está combinada, dar un estilo especial
+
         if (isCombined) {
             label.style.borderColor = 'rgba(255, 255, 255, 0.4)';
             label.style.background = 'rgba(0, 0, 0, 0.8)';
@@ -228,14 +228,14 @@ function showArchitectOverlay() {
                 0 0 60px rgba(0, 255, 145, 0.3)
             `;
             
-            // Mostrar el tamaño en una segunda línea para mejor legibilidad
+
             const size = getCombinedSize(cell);
             if (size) {
-                // Ya lo incluimos en el texto principal
+
             }
         }
 
-        // Efecto sutil al pasar el mouse (aunque no sea interactivo)
+
         label.addEventListener('mouseenter', () => {
             label.style.transform = 'scale(1.1)';
             label.style.borderColor = 'rgba(0, 255, 145, 0.8)';
@@ -262,7 +262,7 @@ function hideArchitectOverlay() {
     coordinateLabels = [];
 }
 
-// Función para limpiar recursos (llamar en beforeunload)
+
 export function cleanupArchitectMode() {
     hideArchitectOverlay();
     isArchitectMode = false;

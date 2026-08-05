@@ -39,13 +39,13 @@ function getCellsInArea(left, top, width, height) {
     return cells;
 }
 
-// modules/logo.js - Reemplazar la función importDesignFromJSON
 
-// modules/logo.js
 
-// ===== FUNCIÓN PARA APLICAR DISEÑO DIRECTAMENTE (SIN ANIMACIÓN) =====
+
+
+
 function applyDesignDirectly(jsonData, onComplete) {
-    // Primero resetear todas las celdas
+
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
         if (cell.dataset.isSidebar === 'true') return;
@@ -81,7 +81,7 @@ function applyDesignDirectly(jsonData, onComplete) {
         }
     });
     
-    // Ahora aplicar el diseño sin animación
+
     const container = document.getElementById('grid-container');
     const currentOffsetX = parseFloat(container.dataset.originalOffsetX) || 0;
     const currentOffsetY = parseFloat(container.dataset.originalOffsetY) || 0;
@@ -99,7 +99,7 @@ function applyDesignDirectly(jsonData, onComplete) {
         );
         if (!cell) return;
         
-        // Si es un objeto combinado
+
         if (typeof value === 'object' && value.combined) {
             const { type, left, top, width, height } = value;
             
@@ -122,7 +122,7 @@ function applyDesignDirectly(jsonData, onComplete) {
             cell.dataset.originalCombinedOffsetX = currentOffsetX;
             cell.dataset.originalCombinedOffsetY = currentOffsetY;
             
-            // Aplicar estilo según tipo
+
             const isRed = type === 'combined_red' || type === 'h_red' || type === 'v_red' || type === 'hh_red';
             const isLogo = type === 'combined_logo' || type === 'h_logo' || type === 'v_logo' || type === 'hh_logo';
             
@@ -145,7 +145,7 @@ function applyDesignDirectly(jsonData, onComplete) {
                 cell.dataset.state = 'combined_normal';
             }
             
-            // Ocultar celdas en el área
+
             const cellsInArea = getCellsInArea(basePos.x, basePos.y, width, height);
             cellsInArea.forEach(c => {
                 if (c !== cell) {
@@ -187,7 +187,7 @@ function applyDesignDirectly(jsonData, onComplete) {
         }
     });
     
-    // Restaurar animaciones
+
     setTimeout(() => {
         restartRandomAnimations();
     }, 500);
@@ -198,11 +198,11 @@ function applyDesignDirectly(jsonData, onComplete) {
 }
 
 export function importDesignFromJSON(jsonData, onComplete, reset = true) {
-    // Si estamos en página especial, NO mostrar diálogo pero SÍ importar
-    // Solo prevenimos la interacción del usuario (como clicks) pero permitimos la importación programática
+
+
 
     if (isHashLoad) {
-        // Aplicar el diseño directamente sin animación
+
         applyDesignDirectly(jsonData, onComplete);
         return;
     }
@@ -211,7 +211,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
     
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
     
-    // ===== RESETEAR SOLO SI reset = true =====
+
     if (reset) {
         allCells.forEach(cell => {
             if (cell.dataset.isSidebar === 'true') return;
@@ -249,9 +249,9 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
         });
     }
     
-    // ===== PASO 2: ESPERAR A QUE LAS RESTAURACIONES TERMINEN =====
+
     setTimeout(() => {
-        // ===== PASO 3: PROCESAR EL NUEVO DISEÑO =====
+
         const outlineItems = [];
         const redItems = [];
         const combinedItems = [];
@@ -274,7 +274,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
             );
             if (!cell) return;
             
-            // Asegurar que la celda esté en estado normal antes de procesarla
+
             if (cell.dataset.combined === 'true') {
                 const size = CONFIG.CELL_SIZE;
                 const origX = parseFloat(cell.dataset.originalX);
@@ -320,7 +320,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
             }
         });
         
-        // ===== PASO 4: APLICAR ESTADOS SIMPLES =====
+
         const shuffledOutline = shuffleArray([...outlineItems]);
         shuffledOutline.forEach((item, index) => {
             setTimeout(() => {
@@ -368,7 +368,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
             cell.dataset.prevState = 'normal';
         });
         
-        // ===== PASO 5: CREAR COMBINACIONES =====
+
         const combinedDelay = outlineDelay + redItems.length * 50 + CONFIG.LOGO_DELAY_COMBINED;
         setTimeout(() => {
             const animDuration = CONFIG.ANIMATION_DURATION_LOGO;
@@ -401,7 +401,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                     const newWidth = combinedCols * (cellSize + gap) - gap;
                     const newHeight = combinedRows * (cellSize + gap) - gap;
                     
-                    // Verificar si la celda sigue existiendo
+
                     if (!cell || cell.dataset.combined === 'true') {
                         const existingCell = designCells.find(c => 
                             parseInt(c.dataset.designRow) === row && 
@@ -414,7 +414,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                         }
                     }
                     
-                    // Asegurar que la celda esté en estado normal
+
                     if (cell.dataset.combined === 'true') {
                         const size = CONFIG.CELL_SIZE;
                         const origX = parseFloat(cell.dataset.originalX);
@@ -444,7 +444,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                     const combinedId = 'import_' + Date.now() + '_' + row + '_' + col;
                     const cellsInArea = getCellsInArea(newLeft, newTop, newWidth, newHeight);
                     
-                    // Configurar la celda base
+
                     cell.style.transition = `all ${animDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
                     cell.style.left = `${newLeft}px`;
                     cell.style.top = `${newTop}px`;
@@ -486,7 +486,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                     }
                     cell.dataset.prevState = cell.dataset.state;
                     
-                    // Ocultar celdas en el área
+
                     cellsInArea.forEach(c => {
                         if (c !== cell) {
                             c.style.transition = `all ${animDuration * 0.3}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;

@@ -1,4 +1,4 @@
-// modules/mobile/mobile-proyectos.js
+
 import { CONFIG } from '../config.js';
 import { importDesignFromJSON } from '../logo.js';
 import { resetGrid } from '../interactions.js';
@@ -241,7 +241,7 @@ export async function renderMobileProyectos() {
     importDesignFromJSON(PROYECTOS_DESIGN, () => {
         gridReady = true;
         createProyectosContent();
-        // 🔥 SIEMPRE CREAR LOS BOTONES DE NAVEGACIÓN
+
         createMobileNavButtons('proyectos');
         disableInteractions();
     }, true);
@@ -250,7 +250,7 @@ export async function renderMobileProyectos() {
 function updateProyectosContent() {
     document.querySelectorAll('.mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator, .mobile-proyectos-content').forEach(el => el.remove());
     createProyectosContent();
-    // 🔥 ACTUALIZAR BOTONES TAMBIÉN (para cambiar el texto a "◀ INICIO")
+
     createMobileNavButtons('proyectos');
 }
 
@@ -305,7 +305,7 @@ function createProyectosContent() {
     
     catCells.sort((a, b) => a.index - b.index);
     
-    // ===== TÍTULO =====
+
     if (titleCell) {
         const oldTitle = titleCell.querySelector('.mobile-proyectos-content');
         if (oldTitle) oldTitle.remove();
@@ -337,8 +337,8 @@ function createProyectosContent() {
         titleCell.appendChild(title);
     }
     
-    // ===== CATEGORÍAS =====
-    // 🔥 startCat ya está actualizado globalmente
+
+
     const categoriasVisibles = 4;
     
     catCells.forEach(({ cell }, index) => {
@@ -378,7 +378,7 @@ function createProyectosContent() {
             if (catIndex !== categoriaActual) {
                 categoriaActual = catIndex;
                 paginaProyectos = 0;
-                // Ajustar startCat para que la categoría seleccionada sea visible
+
                 const categoriasVisibles = 4;
                 if (categoriaActual < startCat || categoriaActual >= startCat + categoriasVisibles) {
                     startCat = Math.max(0, Math.min(categoriaActual, categorias.length - categoriasVisibles));
@@ -401,7 +401,7 @@ function createProyectosContent() {
         cell.appendChild(catItem);
     });
     
-    // ===== FLECHAS CATEGORÍAS =====
+
     createArrow(catLeftArrow, '◀', startCat > 0, () => {
         if (startCat > 0) {
             startCat = Math.max(0, startCat - 4);
@@ -418,7 +418,7 @@ function createProyectosContent() {
         }
     });
     
-    // ===== PROYECTOS =====
+
     const proyectos = getProyectosPagina();
     const totalPaginas = getTotalPaginas();
     
@@ -529,7 +529,7 @@ function createProyectosContent() {
         cell.appendChild(projItem);
     });
     
-    // ===== FLECHAS PROYECTOS =====
+
     createArrow(projLeftArrow, '◀', paginaProyectos > 0, () => {
         if (paginaProyectos > 0) {
             paginaProyectos--;

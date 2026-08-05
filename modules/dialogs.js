@@ -1,10 +1,10 @@
-// modules/dialogs.js
+
 
 import { CONFIG } from './config.js';
 import { importDesignFromJSON } from './logo.js';
 import { isSpecialPageActiveCheck } from './sidebar/index.js';
 
-// ===== DIÁLOGO GENÉRICO (custom-dialog) =====
+
 export function showDialog(title, message) {
     const dialog = document.getElementById('custom-dialog');
     document.getElementById('dialog-title').textContent = title;
@@ -12,17 +12,17 @@ export function showDialog(title, message) {
     dialog.classList.add('active');
 }
 
-// Cerrar con botón
+
 document.getElementById('dialog-close')?.addEventListener('click', () => {
     document.getElementById('custom-dialog').classList.remove('active');
 });
 
-// Cerrar click fuera
+
 document.getElementById('custom-dialog')?.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) e.currentTarget.classList.remove('active');
 });
 
-// ===== DIÁLOGO DE PROYECTOS =====
+
 export function showProjects() {
     let dialog = document.getElementById('projects-dialog');
     
@@ -77,9 +77,9 @@ export function showProjects() {
     dialog.classList.add('active');
 }
 
-// ===== DIÁLOGO DE IMPORTACIÓN =====
+
 export function showImportDialog() {
-    // 🔥 SI estamos en página especial, NO abrir el diálogo
+
     if (isSpecialPageActiveCheck()) {
         return;
     }
@@ -118,7 +118,7 @@ export function showImportDialog() {
             position: relative;
         `;
         
-        // Título
+
         const title = document.createElement('h2');
         title.textContent = '◆ IMPORTAR DISEÑO';
         title.style.cssText = `
@@ -134,7 +134,7 @@ export function showImportDialog() {
         `;
         content.appendChild(title);
         
-        // Descripción
+
         const desc = document.createElement('p');
         desc.textContent = 'Pega el JSON del diseño en el área de abajo:';
         desc.style.cssText = `
@@ -147,7 +147,7 @@ export function showImportDialog() {
         `;
         content.appendChild(desc);
         
-        // Textarea
+
         const textarea = document.createElement('textarea');
         textarea.id = 'import-textarea';
         textarea.placeholder = 'Pega aquí el JSON...';
@@ -175,7 +175,7 @@ export function showImportDialog() {
         });
         content.appendChild(textarea);
         
-        // ===== CHECKBOX: "NO resetear" =====
+
         const checkboxRow = document.createElement('div');
         checkboxRow.style.cssText = `
             display: flex;
@@ -221,7 +221,7 @@ export function showImportDialog() {
         checkboxRow.appendChild(checkboxLabel);
         content.appendChild(checkboxRow);
         
-        // Botones
+
         const btnContainer = document.createElement('div');
         btnContainer.style.cssText = `
             display: flex;
@@ -294,21 +294,21 @@ export function showImportDialog() {
         dialog.appendChild(content);
         document.body.appendChild(dialog);
         
-        // Cerrar al hacer click fuera
+
         dialog.addEventListener('click', (e) => {
             if (e.target === dialog) {
                 dialog.classList.remove('active');
             }
         });
         
-        // Cerrar con Escape
+
         dialog.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 dialog.classList.remove('active');
             }
         });
         
-        // ===== FUNCIÓN DE IMPORTACIÓN =====
+
         function performImport() {
             const jsonText = textarea.value.trim();
             if (!jsonText) {

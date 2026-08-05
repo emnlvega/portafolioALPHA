@@ -1,9 +1,9 @@
-// modules/settings.js
+
 
 import { CONFIG, updateColors, createColors } from './config.js';
 import { restartRandomAnimations, stopRandomAnimations } from './animations.js';
 
-// ===== ESTADO DE CONFIGURACIÓN =====
+
 const DEFAULT_SETTINGS = {
     grain: true,
     gaussianBlur: true,
@@ -21,7 +21,7 @@ let currentSettings = { ...DEFAULT_SETTINGS };
 let settingsDialog = null;
 let isInitialized = false;
 
-// ===== REFERENCIAS A ELEMENTOS =====
+
 const ELEMENTS = {
     grain: 'grain-overlay',
     gaussianBlur: 'gaussian-blur',
@@ -70,41 +70,41 @@ export function saveSettings(settings) {
 }
 
 function resetAllAndRefresh() {
-    // Guardar el color por defecto
+
     const defaultColor = '#00ff91';
     
-    // Actualizar el color
+
     updateColors(defaultColor);
     
-    // Guardar en localStorage
+
     const dataToSave = { ...currentSettings };
     dataToSave.primaryColor = defaultColor;
     try {
         localStorage.setItem('edesign_settings', JSON.stringify(dataToSave));
     } catch (e) {}
     
-    // Actualizar elementos visuales del color en settings
+
     const colorInputEl = settingsDialog?.querySelector('input[type="color"]');
     if (colorInputEl) {
         colorInputEl.value = defaultColor;
         colorInputEl.dispatchEvent(new Event('input'));
     }
     
-    // Actualizar color picker del sidebar
+
     const sidebarPicker = document.getElementById('colorPicker');
     if (sidebarPicker) sidebarPicker.value = defaultColor;
     const sidebarHex = document.getElementById('colorHexLabel');
     if (sidebarHex) sidebarHex.textContent = '#00FF91';
     
-    // Cerrar settings
+
     closeSettings();
     
-    // Recargar la página completa
+
     window.location.reload();
 }
 
-// ===== APLICAR CONFIGURACIÓN A LOS ELEMENTOS =====
-// modules/settings.js - Modificar la función applySettings
+
+
 
 export function applySettings(settings) {
     const grain = document.getElementById(ELEMENTS.grain);
@@ -119,7 +119,7 @@ export function applySettings(settings) {
     const burnBlur = document.getElementById(ELEMENTS.burnBlur);
     if (burnBlur) burnBlur.style.display = settings.burnBlur ? 'block' : 'none';
     
-    // 🔥 TEXTURA - Asegurar que se aplique correctamente
+
     const overlay = document.getElementById(ELEMENTS.overlay);
     if (overlay) {
         overlay.style.display = settings.textura ? 'block' : 'none';
@@ -171,7 +171,7 @@ export function applySettings(settings) {
     }
 }
 
-// ===== FUNCIÓN PARA ACTUALIZAR UN SWITCH VISUAL Y FUNCIONALMENTE =====
+
 function updateSwitchVisualAndFunction(id, checked) {
     const input = document.getElementById(id);
     if (!input) return;
@@ -206,7 +206,7 @@ function updateSwitchVisualAndFunction(id, checked) {
     currentSettings[key] = checked;
 }
 
-// ===== FUNCIÓN PARA ACTUALIZAR TODOS LOS SWITCHES =====
+
 function updateAllSwitches(value) {
     const switchKeys = ['grain', 'gaussianBlur', 'bloom', 'burnBlur', 'textura', 'animations', 'scanlines', 'vignette', 'flicker', 'glow'];
     
@@ -248,7 +248,7 @@ function updateAllSwitches(value) {
     saveSettings(currentSettings);
 }
 
-// ===== CREAR EL DIALOG DE CONFIGURACIÓN =====
+
 function createSettingsDialog() {
     if (settingsDialog) return settingsDialog;
     
@@ -272,7 +272,7 @@ function createSettingsDialog() {
         flex-wrap: wrap;
     `;
     
-    // ===== PANEL 1: CONFIGURACIÓN =====
+
     const configPanel = document.createElement('div');
     configPanel.style.cssText = `
         background: var(--color-bg);
@@ -304,7 +304,7 @@ function createSettingsDialog() {
     `;
     configPanel.appendChild(configTitle);
     
-    // ===== COLOR PICKER =====
+
     const colorRow = document.createElement('div');
     colorRow.style.cssText = `
         display: flex;
@@ -373,7 +373,7 @@ function createSettingsDialog() {
         text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
     `;
     
-    // 🔥 Botón para resetear color
+
     const resetColorBtn = document.createElement('button');
     resetColorBtn.textContent = '⟳';
     resetColorBtn.style.cssText = `
@@ -436,7 +436,7 @@ function createSettingsDialog() {
         currentSettings.primaryColor = tempColor;
         saveSettings(currentSettings);
         
-        // Cerrar settings y recargar
+
         closeSettings();
         window.location.reload();
     });
@@ -449,7 +449,7 @@ function createSettingsDialog() {
     colorRow.appendChild(colorWrap);
     configPanel.appendChild(colorRow);
     
-    // ===== BOTONES HABILITAR / DESHABILITAR TODO =====
+
     const btnRow = document.createElement('div');
     btnRow.style.cssText = `
         display: flex;
@@ -522,7 +522,7 @@ function createSettingsDialog() {
     btnRow.appendChild(disableAllBtn);
     configPanel.appendChild(btnRow);
     
-    // ===== SWITCHES =====
+
     const switches = [
         { id: 'setting-grain', label: 'GRANO', key: 'grain', icon: '◈' },
         { id: 'setting-bloom', label: 'BLOOM', key: 'bloom', icon: '◊' },
@@ -651,7 +651,7 @@ function createSettingsDialog() {
     });
     configPanel.appendChild(switchContainer);
     
-    // ===== PANEL 2: COMANDOS =====
+
     const commandsPanel = document.createElement('div');
     commandsPanel.style.cssText = `
         background: var(--color-bg);

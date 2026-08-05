@@ -10,18 +10,18 @@ let resizeStartLeft = 0;
 let resizeStartTop = 0;
 let resizeDirection = null;
 
-// Crear handles de redimensionado
+
 export function createResizeHandles(cell) {
     if (!CONFIG.RESIZE.ENABLED) return;
     if (cell.dataset.combined !== 'true') return;
     
-    // Eliminar handles existentes
+
     removeResizeHandles(cell);
     
     const handleSize = CONFIG.RESIZE.HANDLE_SIZE || 8;
     const handles = [];
     
-    // Posiciones de los handles
+
     const positions = [
         { dir: 'n', x: '50%', y: '0', cursor: 'n-resize' },
         { dir: 's', x: '50%', y: '100%', cursor: 's-resize' },
@@ -87,7 +87,7 @@ export function removeResizeHandles(cell) {
     }
 }
 
-// Iniciar redimensionado
+
 function startResize(e, cell, direction) {
     if (!CONFIG.RESIZE.ENABLED) return;
     
@@ -95,7 +95,7 @@ function startResize(e, cell, direction) {
     resizeTarget = cell;
     resizeDirection = direction;
     
-    // Guardar estado inicial
+
     resizeStartX = e.clientX;
     resizeStartY = e.clientY;
     resizeStartLeft = parseFloat(cell.style.left);
@@ -103,7 +103,7 @@ function startResize(e, cell, direction) {
     resizeStartWidth = parseFloat(cell.style.width);
     resizeStartHeight = parseFloat(cell.style.height);
     
-    // Crear overlay para capturar eventos
+
     const overlay = document.createElement('div');
     overlay.id = 'resize-overlay';
     overlay.style.cssText = `
@@ -130,7 +130,7 @@ function onResize(e) {
     const cellSize = CONFIG.CELL_SIZE;
     const gap = CONFIG.GAP;
     
-    // Calcular delta
+
     let dx = e.clientX - resizeStartX;
     let dy = e.clientY - resizeStartY;
     
@@ -170,7 +170,7 @@ function onResize(e) {
         }
     }
     
-    // Snap a la cuadrícula
+
     if (CONFIG.RESIZE.SNAP_TO_GRID) {
         const snapX = Math.round(newLeft / cellStep) * cellStep;
         const snapY = Math.round(newTop / cellStep) * cellStep;
@@ -178,7 +178,7 @@ function onResize(e) {
         newTop = snapY;
     }
     
-    // Aplicar
+
     cell.style.left = `${newLeft}px`;
     cell.style.top = `${newTop}px`;
     cell.style.width = `${newWidth}px`;

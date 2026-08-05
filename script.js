@@ -20,22 +20,22 @@ import { navigateMobileTo } from './modules/mobile/mobile-nav.js';
 import { getCurrentMobilePage } from './modules/mobile/mobile-nav.js';
 
 let gridData = null;
-// Modificar CONFIG en móvil
-// script.js - Modificar applyMobileConfig
 
-// script.js - Modificar applyMobileConfig
 
-// script.js - Añadir/modificar funciones
 
-// ===== INICIALIZAR SIMULADOR MÓVIL (solo en PC) =====
+
+
+
+
+
 function initMobileSimulatorFeature() {
-    // Solo en PC (no en móvil real)
+
     if (isMobile()) return;
     
-    // Inicializar el simulador (crea el botón flotante)
+
 
     
-    // 🔥 BOTÓN DE EXPORTAR (se muestra cuando el simulador está activo)
+
     const exportBtn = document.createElement('button');
     exportBtn.id = 'mobile-export-btn';
     exportBtn.textContent = '💾 EXPORTAR MÓVIL';
@@ -75,7 +75,7 @@ function initMobileSimulatorFeature() {
         if (isSimulatorActive()) {
             exportMobileDesign();
         } else {
-            // Si no está activo, activarlo primero
+
             toggleMobileSimulator();
             setTimeout(() => {
                 exportMobileDesign();
@@ -85,7 +85,7 @@ function initMobileSimulatorFeature() {
     
     document.body.appendChild(exportBtn);
     
-    // Mostrar/ocultar el botón de exportar cuando el simulador cambie
+
     const observer = new MutationObserver(() => {
         const isActive = document.body.classList.contains('mobile-simulator');
         exportBtn.style.display = isActive ? 'block' : 'none';
@@ -93,12 +93,12 @@ function initMobileSimulatorFeature() {
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 }
 
-// ===== TECLA X PARA ACTIVAR SIMULADOR =====
+
 document.addEventListener('keydown', (e) => {
-    // Solo en PC (no en móvil real)
+
     if (isMobile()) return;
     
-    // 🔥 TECLA X - Activar/Desactivar simulador móvil
+
     if (e.key === 'x' || e.key === 'X') {
         const target = e.target;
         if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
@@ -114,7 +114,7 @@ document.addEventListener('keydown', (e) => {
         return;
     }
     
-    // 🔥 TECLA E (con simulador activo) - Exportar diseño móvil
+
     if ((e.key === 'e' || e.key === 'E') && document.body.classList.contains('mobile-simulator')) {
         const target = e.target;
         if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
@@ -127,7 +127,7 @@ document.addEventListener('keydown', (e) => {
 
 function applyMobileConfig() {
     if (isMobile()) {
-        // Configuración del grid
+
         CONFIG.CELL_SIZE = MOBILE_CONFIG.CELL_SIZE;
         CONFIG.GAP = MOBILE_CONFIG.GAP;
         CONFIG.COLS = MOBILE_CONFIG.COLS;
@@ -135,7 +135,7 @@ function applyMobileConfig() {
         CONFIG.SIDEBAR_WIDTH = MOBILE_CONFIG.SIDEBAR_WIDTH;
         CONFIG.BORDER_RADIUS = MOBILE_CONFIG.BORDER_RADIUS;
         
-        // 🔥 DESACTIVAR TODAS LAS ANIMACIONES
+
         CONFIG.ANIMATIONS.SCALE.ENABLED = false;
         CONFIG.ANIMATIONS.COLOR.ENABLED = false;
         CONFIG.ANIMATIONS.GLOW.ENABLED = false;
@@ -143,68 +143,68 @@ function applyMobileConfig() {
         CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = false;
         CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = false;
         
-        // 🔥 APLICAR VARIABLES CSS
+
         document.documentElement.style.setProperty('--cell-size', `${MOBILE_CONFIG.CELL_SIZE}px`);
         document.documentElement.style.setProperty('--cell-gap', `${MOBILE_CONFIG.GAP}px`);
         document.documentElement.style.setProperty('--cell-radius', `${MOBILE_CONFIG.BORDER_RADIUS}px`);
         
         document.body.classList.add('mobile-device');
         
-        // 🔥 CONTROLAR TODOS LOS OVERLAYS DESDE JS
+
         applyMobileOverlays();
     }
 }
 
-// script.js - Modificar applyMobileOverlays
+
 
 function applyMobileOverlays() {
     const show = MOBILE_CONFIG.SHOW;
     
-    // Grain
+
     const grain = document.getElementById('grain-overlay');
     if (grain) {
         grain.style.display = show.grain ? 'block' : 'none';
     }
     
-    // Gaussian Blur
+
     const gaussian = document.getElementById('gaussian-blur');
     if (gaussian) {
         gaussian.style.display = show.gaussianBlur ? 'block' : 'none';
     }
     
-    // Bloom
+
     const bloom = document.getElementById('bloom-overlay');
     if (bloom) {
         bloom.style.display = show.bloom ? 'block' : 'none';
     }
     
-    // Burn Blur
+
     const burnBlur = document.getElementById('burn-blur');
     if (burnBlur) {
         burnBlur.style.display = show.burnBlur ? 'block' : 'none';
     }
     
-    // 🔥 TEXTURA (overlay-container)
+
     const texture = document.getElementById('overlay-container');
     if (texture) {
         texture.style.display = show.texture ? 'block' : 'none';
     }
     
-    // Scanlines
+
     if (show.scanlines) {
         document.body.classList.remove('no-scanlines');
     } else {
         document.body.classList.add('no-scanlines');
     }
     
-    // Vignette
+
     if (show.vignette) {
         document.body.classList.remove('no-vignette');
     } else {
         document.body.classList.add('no-vignette');
     }
     
-    // Flicker
+
     const gridContainer = document.getElementById('grid-container');
     if (gridContainer) {
         if (show.flicker) {
@@ -214,21 +214,21 @@ function applyMobileOverlays() {
         }
     }
     
-    // Glow
+
     if (show.glow) {
         document.body.classList.remove('no-glow');
     } else {
         document.body.classList.add('no-glow');
     }
     
-    // CRT Curvature
+
     if (show.crtCurvature) {
         gridContainer?.classList.remove('no-curvature');
     } else {
         gridContainer?.classList.add('no-curvature');
     }
     
-    // CRT Reflection
+
     if (show.crtReflection) {
         gridContainer?.classList.remove('no-reflection');
     } else {
@@ -237,7 +237,7 @@ function applyMobileOverlays() {
 }
 
 function injectCSSVariables() {
-    // Ya no leer localStorage aquí - solo aplicar CONFIG.COLORS
+
     const { COLORS } = CONFIG;
     const root = document.documentElement;
 
@@ -332,7 +332,7 @@ function hasHashInURL() {
 }
 
 function regenerateEverything() {
-    // Eliminar overlays y textos del sidebar (pero NO el grid)
+
     const oldOverlay = document.querySelector('.sidebar-overlay');
     const oldSidebarTexts = document.querySelectorAll('.sidebar-text');
     if (oldOverlay) oldOverlay.remove();
@@ -340,11 +340,11 @@ function regenerateEverything() {
     
     stopRandomAnimations();
     
-    // En lugar de createGrid(), simplemente actualizamos colores y reposicionamos
-    // Las celdas ya existen, solo hay que refrescar sus estilos
+
+
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell');
     allCells.forEach(cell => {
-        // Actualizar colores de borde y fondo según el nuevo CONFIG
+
         if (cell.dataset.isSidebar !== 'true') {
             const state = cell.dataset.state || 'normal';
             if (state === 'off') {
@@ -366,7 +366,7 @@ function regenerateEverything() {
         }
     });
     
-    // Reposicionar todo (usando el offset actual)
+
     const container = document.getElementById('grid-container');
     const rect = container.getBoundingClientRect();
     const cellSize = CONFIG.CELL_SIZE;
@@ -383,12 +383,12 @@ function regenerateEverything() {
     repositionSidebarTexts(offsetX, offsetY);
     repositionCombinedCells(offsetX, offsetY);
     
-    // Reimportar el diseño del logo (esto modificará las celdas combinadas)
+
     setTimeout(() => {
         importDesignFromJSON(LOGO_DESIGN);
     }, 100);
     
-    // Animar sidebar y reiniciar animaciones
+
     setTimeout(() => {
         animateSidebar(
             gridData.sidebarCells,
@@ -407,15 +407,15 @@ document.addEventListener('colorsUpdated', function(e) {
     const { colors } = e.detail;
     CONFIG.COLORS = colors;
     
-    // 🔥 LLAMAR A injectCSSVariables PARA ACTUALIZAR TODOS LOS ESTILOS
+
     injectCSSVariables();
     
-    // Actualizar sidebar cells
+
     document.querySelectorAll('.sidebar-cell').forEach(cell => {
         cell.style.borderColor = colors.primary;
         cell.style.backgroundColor = colors.background;
     });
-    // Actualizar overlay
+
     const overlay = document.querySelector('.sidebar-overlay');
     if (overlay) {
         overlay.style.borderColor = colors.primary;
@@ -554,27 +554,27 @@ document.addEventListener('contextmenu', function(e) {
     }
 });
 
-// ===== KEYBOARD SHORTCUTS =====
+
 document.addEventListener('keydown', (e) => {
      if (isTransitioningCheck()) {
         e.preventDefault();
         return;
     }
 
-    // Si el foco está en un input/textarea, ignorar atajos
+
     const target = e.target;
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
         return;
     }
 
-    // === ESC: Cerrar diálogo si está abierto, o volver al inicio ===
+
     if (e.key === 'Escape') {
         const dialogsOpen = document.querySelectorAll(
             '#custom-dialog.active, #projects-dialog.active, #import-dialog.active, #settings-dialog[style*="display: flex"]'
         );
         
         if (dialogsOpen.length > 0) {
-            // Cerrar el diálogo que esté abierto
+
             dialogsOpen.forEach(d => {
                 if (d.id === 'settings-dialog') {
                     closeSettings();
@@ -586,7 +586,7 @@ document.addEventListener('keydown', (e) => {
             return;
         }
         
-        // Si no hay diálogos abiertos, volver al inicio
+
         if (isSpecialPageActiveCheck()) {
             e.preventDefault();
             returnToMainLogo();
@@ -607,7 +607,7 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-    // === E: Exportar diseño ===
+
     if (e.key === 'e' || e.key === 'E') {
         if (CONFIG.ENABLE_EXPORT) {
             e.preventDefault();
@@ -616,7 +616,7 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-    // === I: Importar diseño ===
+
     if (e.key === 'i' || e.key === 'I') {
         if (CONFIG.ENABLE_IMPORT) {
             e.preventDefault();
@@ -625,42 +625,42 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-    // === P: Proyectos ===
+
     if (e.key === 'p' || e.key === 'P') {
         e.preventDefault();
         handleSidebarAction('proyectos');
         return;
     }
 
-    // === S: Sobre Mi ===
+
     if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
         handleSidebarAction('sobre-mi');
         return;
     }
 
-    // === C: Contacto ===
+
     if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
         handleSidebarAction('contacto');
         return;
     }
 
-    // === M: Menú (Configuración) ===
+
     if (e.key === 'm' || e.key === 'M') {
         e.preventDefault();
         toggleSettings();
         return;
     }
 
-    // === Espacio: Reset grid ===
+
     if (e.key === ' ') {
         e.preventDefault();
         resetGrid();
         return;
     }
 
-    // === A: Modo Arquitecto ===
+
     if (e.key === 'a' || e.key === 'A') {
         e.preventDefault();
         const active = toggleArchitectMode();
@@ -671,14 +671,14 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// script.js - Función init() completa
 
-// script.js - Parte del init() corregida
+
+
 
 function init() {
     initSettings();
     
-    // 🔥 DETECTAR MÓVIL Y APLICAR CONFIG
+
     const mobile = isMobile();
     if (mobile) {
         applyMobileConfig();
@@ -691,7 +691,7 @@ function init() {
         loadContactoData().catch(() => {}),
     ]).then(() => {});
     
-    // Crear grid con la configuración (móvil o escritorio)
+
     gridData = createGrid();
     
     designCells.forEach(cell => {
@@ -718,7 +718,7 @@ function init() {
             if (result === 'inicio') {
                 setHashLoad(false);
                 if (mobile) {
-                    // 🔥 RENDER MÓVIL - INICIO
+
                     setTimeout(() => {
                         import('./modules/mobile/mobile-home.js').then(module => {
                             module.renderMobileHome();
@@ -756,12 +756,12 @@ function init() {
         setHashLoad(false);
         
         if (mobile) {
-            // 🔥 RENDER MÓVIL DIRECTAMENTE
+
             setTimeout(() => {
                 renderMobileHome();
             }, 300);
         } else {
-            // Escritorio: logo normal
+
             setTimeout(() => {
                 importDesignFromJSON(LOGO_DESIGN);
             }, CONFIG.LOGO_DELAY || 500);

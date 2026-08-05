@@ -33,7 +33,7 @@ function applyCRTEffects(imageData) {
     const shift = CONFIG.CRT_CHROMATIC_SHIFT || 2;
     const bloomIntensity = CONFIG.CRT_BLOOM_INTENSITY || 20;
     
-    // Aberración cromática
+
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const idx = (y * width + x) * 4;
@@ -52,7 +52,7 @@ function applyCRTEffects(imageData) {
         }
     }
     
-    // Bloom
+
     for (let i = 0; i < data.length; i += 4) {
         const r = data[i];
         const g = data[i + 1];
@@ -110,7 +110,7 @@ export function render(gridContainer) {
     requestAnimationFrame(() => render(gridContainer));
 }
 
-// roundRect polyfill para navegadores que no lo soportan
+
 if (!CanvasRenderingContext2D.prototype.roundRect) {
     CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
         if (r > w/2) r = w/2;

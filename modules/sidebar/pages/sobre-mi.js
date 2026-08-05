@@ -1,4 +1,4 @@
-// modules/sidebar/pages/sobre-mi.js
+
 
 import { CONFIG } from '../../config.js';
 import { importDesignFromJSON } from '../../logo.js';
@@ -13,7 +13,7 @@ let photoTimeout = null;
 let textureWasVisibleBefore = true;
 let isRendering = false;
 
-// 🔥 ESTILOS LIGEROS (sin glow pesado)
+
 const LIGHT_TEXT_SHADOW = `0 0 7px rgba(var(--color-primary-rgb), 1)`;
 const LIGHT_TEXT_SHADOW_ACTIVE = `0 0 15px rgba(var(--color-secondary-rgb), 1)`;
 const LIGHT_TEXT_SHADOW_HOVER = `0 0 15px rgba(var(--color-secondary-rgb), 1)`;
@@ -66,7 +66,7 @@ export function clearSobreMiState() {
         toggleTextureOverlay(false);
     }
     
-    // 🔥 Limpiar timeouts de glitch
+
     const photoCell = document.querySelector('.sobre-mi-content')?.closest?.('.grid-cell, .logo-cell');
     if (photoCell && photoCell._cleanupGlitch) {
         photoCell._cleanupGlitch();
@@ -140,7 +140,7 @@ export async function renderSobreMiContent() {
         const primaryRGB = CONFIG.COLORS.primaryRGB;
         const secondaryRGB = CONFIG.COLORS.secondaryRGB;
         
-        // ===== TÍTULO =====
+
         if (titleCell) {
             const title = document.createElement('div');
             title.className = 'sobre-mi-content';
@@ -167,7 +167,7 @@ export async function renderSobreMiContent() {
             titleCell.appendChild(title);
         }
         
-        // ===== FOTO =====
+
         if (photoCell) {
             if (photoTimeout) {
                 clearTimeout(photoTimeout);
@@ -250,33 +250,33 @@ export async function renderSobreMiContent() {
             let isFirstTransitionDone = false;
             let initialGlitchIndex = 0;
             
-            // 🔥 Función para la transición inicial con efecto glitch
+
             function doInitialGlitchTransition() {
-                // Parpadeos rápidos entre las dos imágenes
+
                 const blinks = 5 + Math.floor(Math.random() * 8); // 5-13 parpadeos
                 let currentBlink = 0;
                 
                 function blink() {
                     if (currentBlink >= blinks) {
-                        // Terminar en la imagen normal
+
                         img1.style.opacity = '0';
                         colorOverlay.style.opacity = '0';
                         img2.style.opacity = '1';
                         isFirstTransitionDone = true;
                         initialGlitchTimeout = null;
-                        // Iniciar glitches aleatorios
+
                         scheduleNextGlitch();
                         return;
                     }
                     
-                    // Alternar entre glitch y normal
+
                     if (currentBlink % 2 === 0) {
-                        // Mostrar glitch
+
                         img1.style.opacity = '1';
                         colorOverlay.style.opacity = '1';
                         img2.style.opacity = '0';
                     } else {
-                        // Mostrar normal
+
                         img1.style.opacity = '0';
                         colorOverlay.style.opacity = '0';
                         img2.style.opacity = '1';
@@ -284,16 +284,16 @@ export async function renderSobreMiContent() {
                     
                     currentBlink++;
                     
-                    // Tiempo variable entre parpadeos (50-300ms)
+
                     const delay = 50 + Math.random() * 250;
                     initialGlitchTimeout = setTimeout(blink, delay);
                 }
                 
-                // Pequeña pausa antes de empezar el glitch
+
                 setTimeout(blink, 200);
             }
             
-            // Función para hacer el glitch aleatorio
+
             function doGlitch() {
                 if (isGlitching || !isFirstTransitionDone) return;
                 isGlitching = true;
@@ -326,7 +326,7 @@ export async function renderSobreMiContent() {
             
             let initialGlitchTimeout = null;
             
-            // 🔥 Iniciar transición con glitch después de 2 segundos
+
             photoTimeout = setTimeout(() => {
                 doInitialGlitchTransition();
                 photoTimeout = null;
@@ -346,7 +346,7 @@ export async function renderSobreMiContent() {
             photoCell._cleanupGlitch = cleanupGlitch;
         }
         
-        // ===== BIOGRAFÍA =====
+
         if (bioCell) {
             const bio = document.createElement('div');
             bio.className = 'sobre-mi-content';
@@ -441,7 +441,7 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
             bioCell.appendChild(bio);
         }
         
-        // ===== HABILIDADES =====
+
 if (skillsCell) {
     const skills = document.createElement('div');
     skills.className = 'sobre-mi-content';
@@ -550,7 +550,7 @@ if (skillsCell) {
     skillsCell.appendChild(skills);
 }
         
-        // ===== HERRAMIENTAS Y TECNOLOGIAS =====
+
         if (toolsCell) {
             const tools = document.createElement('div');
             tools.className = 'sobre-mi-content';
@@ -614,7 +614,7 @@ if (skillsCell) {
             toolsCell.appendChild(tools);
         }
         
-        // ===== LO QUE ME DEFINE =====
+
         if (defineCell) {
             const define = document.createElement('div');
             define.className = 'sobre-mi-content';

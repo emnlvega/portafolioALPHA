@@ -1,4 +1,4 @@
-// modules/sidebar/pages/contacto.js
+
 
 import { CONFIG } from '../../config.js';
 import { showDialog } from '../../dialogs.js';
@@ -12,7 +12,7 @@ let retryCountContacto = 0;
 const MAX_RETRIES_CONTACTO = 5;
 let textureWasVisibleBefore = true;
 
-// ===== SVG ICONS =====
+
 function getSocialSVG(id, color) {
     const svgs = {
         'gmail': `<svg viewBox="30 35 130 90" style="width:100px;height:100px;" xmlns="http://www.w3.org/2000/svg">
@@ -90,10 +90,10 @@ export async function renderContactoContent() {
     const container = document.getElementById('grid-container');
     if (!container) return;
     
-    // Guardar estado de textura ANTES de ocultarla
+
     textureWasVisibleBefore = getTextureVisibilityFromSettings();
     
-    // Ocultar textura SIEMPRE en Contacto
+
     toggleTextureOverlay(false);
     
     document.querySelectorAll('.contacto-content').forEach(el => el.remove());
@@ -111,17 +111,17 @@ export async function renderContactoContent() {
     let availabilityCell = null;
     let infoCell = null;
     
-    // 🔥 Buscar las coordenadas EXACTAS del JSON (sin restar el sidebar)
+
     cells.forEach(cell => {
         if (cell.dataset.combined === 'true') {
             const row = parseInt(cell.dataset.designRow);
             const col = parseInt(cell.dataset.designCol);
             
-            // Título: 0,0
+
             if (row === 0 && col === 0) {
                 titleCell = cell;
             }
-            // Redes sociales: fila 2, columnas 1, 6, 11, 16, 21, 26
+
             else if (row === 2 && col === 1) {
                 socialCells.push({ cell, index: 0 });
             }
@@ -140,18 +140,18 @@ export async function renderContactoContent() {
             else if (row === 2 && col === 26) {
                 socialCells.push({ cell, index: 5 });
             }
-            // Disponibilidad: 7,1
+
             else if (row === 7 && col === 1) {
                 availabilityCell = cell;
             }
-            // Info: 11,1
+
             else if (row === 11 && col === 1) {
                 infoCell = cell;
             }
         }
     });
     
-    // Ordenar por índice
+
     socialCells.sort((a, b) => a.index - b.index);
     
     if (!titleCell || socialCells.length === 0 || !availabilityCell || !infoCell) {
@@ -170,7 +170,7 @@ export async function renderContactoContent() {
     const primaryRGB = CONFIG.COLORS.primaryRGB;
     const secondaryRGB = CONFIG.COLORS.secondaryRGB;
     
-    // ===== TÍTULO =====
+
     if (titleCell) {
         const title = document.createElement('div');
         title.className = 'contacto-content';
@@ -197,7 +197,7 @@ export async function renderContactoContent() {
         titleCell.appendChild(title);
     }
     
-    // ===== REDES SOCIALES =====
+
     const socialData = data.content.social;
 
     socialCells.forEach(({ cell }, index) => {
@@ -229,7 +229,7 @@ export async function renderContactoContent() {
             gap: 4px;
         `;
         
-        // Nombre de la red (estilo sidebar - outline por defecto)
+
         const name = document.createElement('div');
         name.textContent = item.name;
         name.style.cssText = `
@@ -242,7 +242,7 @@ export async function renderContactoContent() {
         `;
         wrapper.appendChild(name);
         
-        // SVG Icon (estilo outline por defecto, como celdas combinadas)
+
         const iconContainer = document.createElement('div');
         iconContainer.style.cssText = `
             display: flex;
@@ -253,11 +253,11 @@ export async function renderContactoContent() {
             transition: all 0.3s ease;
             filter: drop-shadow(0 0 10px rgba(${primaryRGB}, 0.3));
         `;
-        // El SVG ya se renderiza con el color primary
+
         iconContainer.innerHTML = getSocialSVG(item.id, primaryColor);
         wrapper.appendChild(iconContainer);
         
-        // Valor/dato de la red (estilo sidebar - outline por defecto)
+
         const value = document.createElement('div');
         value.textContent = item.value;
         value.style.cssText = `
@@ -273,23 +273,23 @@ export async function renderContactoContent() {
         `;
         wrapper.appendChild(value);
         
-        // Hover effect
+
         wrapper.addEventListener('mouseenter', () => {
-            // Fondo y borde del wrapper
+
             wrapper.style.borderColor = secondaryColor;
             wrapper.style.background = `rgba(${secondaryRGB}, 0.05)`;
             wrapper.style.boxShadow = `0 0 40px rgba(${primaryRGB}, 0.1)`;
             
-            // Nombre cambia a estilo active (fill)
+
             name.style.color = secondaryColor;
             name.style.textShadow = 'var(--text-shadow-active)';
             
-            // Valor cambia a estilo active (fill)
+
             value.style.color = secondaryColor;
             value.style.textShadow = 'var(--text-shadow-active)';
             value.style.opacity = '1';
             
-            // SVG cambia a estilo fill (como celda red/combined)
+
             iconContainer.innerHTML = getSocialSVG(item.id, secondaryColor);
             iconContainer.style.filter = `drop-shadow(0 0 20px rgba(${secondaryRGB}, 0.4))`;
         });
@@ -299,21 +299,21 @@ export async function renderContactoContent() {
             wrapper.style.background = `rgba(${primaryRGB}, 0.02)`;
             wrapper.style.boxShadow = 'none';
             
-            // Nombre vuelve a outline
+
             name.style.color = primaryColor;
             name.style.textShadow = 'var(--text-shadow-normal)';
             
-            // Valor vuelve a outline
+
             value.style.color = primaryColor;
             value.style.textShadow = 'var(--text-shadow-normal)';
             value.style.opacity = '0.8';
             
-            // SVG vuelve a outline
+
             iconContainer.innerHTML = getSocialSVG(item.id, primaryColor);
             iconContainer.style.filter = `drop-shadow(0 0 10px rgba(${primaryRGB}, 0.3))`;
         });
         
-        // Click: abrir link o mostrar diálogo
+
         wrapper.addEventListener('click', (e) => {
             e.stopPropagation();
             if (item.link) {
@@ -332,7 +332,7 @@ export async function renderContactoContent() {
         cell.appendChild(wrapper);
     });
     
-    // ===== DISPONIBILIDAD (celda 7,1) =====
+
     if (availabilityCell) {
         const availability = document.createElement('div');
         availability.className = 'contacto-content';
@@ -357,7 +357,7 @@ export async function renderContactoContent() {
             background: rgba(${secondaryRGB}, 0.03);
         `;
         
-        // Icono grande
+
         const icon = document.createElement('div');
         icon.textContent = '◆';
         icon.style.cssText = `
@@ -368,7 +368,7 @@ export async function renderContactoContent() {
         `;
         availability.appendChild(icon);
         
-        // Texto principal
+
         const mainText = document.createElement('div');
         mainText.textContent = data.content.availability;
         mainText.style.cssText = `
@@ -390,7 +390,7 @@ export async function renderContactoContent() {
         `;
         availability.appendChild(sepa);
         
-        // Texto secundario
+
         const subText = document.createElement('div');
         subText.textContent = data.content.availabilitySub;
         subText.style.cssText = `
@@ -401,13 +401,13 @@ export async function renderContactoContent() {
         `;
         availability.appendChild(subText);
         
-        // Línea decorativa
+
         
         
         availabilityCell.appendChild(availability);
     }
     
-    // ===== INFORMACIÓN ADICIONAL (celda 11,1) =====
+
     if (infoCell) {
         const info = document.createElement('div');
         info.className = 'contacto-content';
@@ -429,7 +429,7 @@ export async function renderContactoContent() {
             gap: 6px;
         `;
         
-        // Frase principal
+
         const quote = document.createElement('div');
         quote.textContent = data.content.quote;
         quote.style.cssText = `
@@ -443,7 +443,7 @@ export async function renderContactoContent() {
         `;
         info.appendChild(quote);
         
-        // Separador
+
         const sep = document.createElement('div');
         sep.style.cssText = `
             width: 30%;
@@ -454,7 +454,7 @@ export async function renderContactoContent() {
         `;
         info.appendChild(sep);
         
-        // Ubicación
+
         const location = document.createElement('div');
         location.textContent = data.content.location;
         location.style.cssText = `

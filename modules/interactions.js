@@ -25,7 +25,7 @@ export let isClickOnCombined = false;
 function isMobileSpecialPage() {
     if (!isMobile()) return false;
     const page = getCurrentMobilePage ? getCurrentMobilePage() : 'inicio';
-    // 🔥 Incluir proyecto-detalle como página especial
+
     return page === 'sobre-mi' || page === 'proyectos' || page === 'proyecto-detalle' || page === 'contacto';
 }
 
@@ -34,7 +34,7 @@ export function setDesignCells(cells) {
 }
 
 export function applyOffState(cell) {
-    // Si estamos en página especial, no permitir
+
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
     
@@ -60,7 +60,7 @@ export function applyOffState(cell) {
 }
 
 export function toggleCellOff(cell) {
-    // Si estamos en página especial, no permitir
+
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
     
@@ -126,7 +126,7 @@ export function toggleCellOff(cell) {
 }
 
 export function restoreCell(cell) {
-    // Si estamos en página especial, no permitir
+
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
     
@@ -164,7 +164,7 @@ export function restoreCell(cell) {
 }
 
 export function toggleCellStyle(cell) {
-    // Si estamos en página especial, no permitir
+
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
     
@@ -195,7 +195,7 @@ export function toggleCellStyle(cell) {
 }
 
 export function toggleCombinedStyle(cell) {
-    // Si estamos en página especial, no permitir
+
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
     
@@ -534,7 +534,7 @@ function getCellsInArea(left, top, width, height) {
 }
 
 export function handleMouseDown(e, cell) {
-    // Si estamos en página especial, no permitir
+
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
     
@@ -566,14 +566,14 @@ export function handleMouseUp(e, cell) {
         return;
     }
     
-    // Si es un clic en combinada (no resize)
+
     if (isClickOnCombined && cell && cell.dataset.combined === 'true') {
         toggleCombinedStyle(cell);
         isClickOnCombined = false;
         return;
     }
     
-    // Si es un clic normal (no combinada)
+
     if (isDragging && selectedCells.length > 1) {
         combineCells(selectedCells);
     }
@@ -583,7 +583,7 @@ export function handleMouseUp(e, cell) {
 }
 
 export function handleMouseEnter(e, cell) {
-    // Si estamos en página especial, no permitir
+
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
     
@@ -649,7 +649,7 @@ export function setupCellEvents(cell) {
     cell.addEventListener('dragstart', (e) => e.preventDefault());
 }
 
-// modules/interactions.js
+
 
 export function resetGrid(keepCombined = false) {
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell');
@@ -657,7 +657,7 @@ export function resetGrid(keepCombined = false) {
     allCells.forEach(cell => {
         if (cell.dataset.isSidebar === 'true') return;
         
-        // Si keepCombined es true, NO restaurar celdas combinadas
+
         if (keepCombined && cell.dataset.combined === 'true') return;
         
         const size = CONFIG.CELL_SIZE;
@@ -703,7 +703,7 @@ export function resetGrid(keepCombined = false) {
     resizeStartCell = null;
     isClickOnCombined = false;
     
-    // Eliminar cualquier botón expand residual
+
     document.querySelectorAll('.expand-btn').forEach(el => el.remove());
     
     setTimeout(() => {
@@ -716,8 +716,8 @@ export function resetGrid(keepCombined = false) {
 }
 
 export function exportDesignToJSON() {
-    // Si estamos en página especial, no permitir export
-    //if (isSpecialPageActiveCheck()) return;
+
+
     if (isMobileSpecialPage()) return;
     
     const result = {};

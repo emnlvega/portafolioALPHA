@@ -1,6 +1,6 @@
 import { CONFIG } from './config.js';
 import { isMobile } from './mobile.js';
-// Timeouts para cada animación
+
 let scaleTimeout = null;
 let colorTimeout = null;
 let glowTimeout = null;
@@ -10,7 +10,7 @@ let opacityWaveTimeout = null;
 
 let isRunning = false;
 
-// Sets para cada tipo de animación
+
 const activeScaleAnimations = new Set();
 const activeColorAnimations = new Set();
 const activeGlowAnimations = new Set();
@@ -19,7 +19,7 @@ const activeBorderShiftAnimations = new Set();
 const activeOpacityWaveAnimations = new Set();
 const IS_MOBILE = isMobile();
 
-// ===== FUNCIÓN PARA VERIFICAR SI UNA CELDA ES ELEGIBLE =====
+
 function isCellEligible(cell) {
     if (cell.dataset.isSidebar === 'true') return false;
     
@@ -52,7 +52,7 @@ function isCellEligible(cell) {
     }
 }
 
-// ===== FUNCIÓN PARA OBTENER CELDAS POR TIPO =====
+
 function getCellsByType() {
     const container = document.getElementById('grid-container');
     if (!container) return [];
@@ -69,7 +69,7 @@ function getCellsByType() {
     return eligibleCells;
 }
 
-// ===== FUNCIÓN PARA CONTAR CELDAS VISIBLES =====
+
 function countVisibleCells() {
     const container = document.getElementById('grid-container');
     if (!container) return 0;
@@ -101,17 +101,17 @@ function countVisibleCells() {
     return count;
 }
 
-// ===== FUNCIÓN PARA CALCULAR CUÁNTAS CELDAS ANIMAR (40% menos) =====
+
 function calculateAnimationCount(availableCells, maxSimultaneous) {
     const totalVisible = countVisibleCells();
     const totalAvailable = availableCells.length;
     
     if (totalAvailable === 0 || totalVisible === 0) return 0;
     
-    // Reducir en 40%
+
     const reductionFactor = 0.6;
     
-    // Si hay muchas celdas visibles, animar un porcentaje pequeño
+
     if (totalVisible >= 50) {
         const percentage = (Math.random() * 0.025 + 0.005) * reductionFactor; // 0.3-1.8%
         let count = Math.max(1, Math.floor(totalAvailable * percentage));
@@ -120,7 +120,7 @@ function calculateAnimationCount(availableCells, maxSimultaneous) {
         return Math.max(1, count);
     }
     
-    // Si hay bastantes celdas (20-49)
+
     if (totalVisible >= 20) {
         const percentage = (Math.random() * 0.04 + 0.01) * reductionFactor; // 0.6-3%
         let count = Math.max(1, Math.floor(totalAvailable * percentage));
@@ -129,22 +129,22 @@ function calculateAnimationCount(availableCells, maxSimultaneous) {
         return Math.max(1, count);
     }
     
-    // Si hay pocas celdas (10-19)
+
     if (totalVisible >= 10) {
         let count = Math.min(1, Math.floor(totalAvailable / 4));
         return Math.max(1, count);
     }
     
-    // Si hay muy pocas celdas (3-9)
+
     if (totalVisible >= 3) {
         return 1;
     }
     
-    // Si hay 1-2 celdas
+
     return Math.min(1, totalAvailable);
 }
 
-// ===== OBTENER CELDAS DISPONIBLES PARA CADA ANIMACIÓN =====
+
 function getAvailableScaleCells() {
     const eligibleCells = getCellsByType();
     return eligibleCells.filter(cell => !activeScaleAnimations.has(cell));
@@ -175,7 +175,7 @@ function getAvailableOpacityWaveCells() {
     return eligibleCells.filter(cell => !activeOpacityWaveAnimations.has(cell));
 }
 
-// ===== ANIMACIÓN DE ESCALA (PULSE) =====
+
 function animateScale(cell) {
     if (!cell) return;
     if (activeScaleAnimations.has(cell)) return;
@@ -225,7 +225,7 @@ function scheduleNextScale() {
     }, interval);
 }
 
-// ===== ANIMACIÓN DE COLOR (FILL PRIMARY) =====
+
 function animateColor(cell) {
     if (!cell) return;
     if (activeColorAnimations.has(cell)) return;
@@ -281,7 +281,7 @@ function scheduleNextColor() {
     }, interval);
 }
 
-// ===== ANIMACIÓN DE BRILLO (GLOW PULSE) =====
+
 function animateGlow(cell) {
     if (!cell) return;
     if (activeGlowAnimations.has(cell)) return;
@@ -334,7 +334,7 @@ function scheduleNextGlow() {
     }, interval);
 }
 
-// ===== ANIMACIÓN DE ROTACIÓN =====
+
 function animateRotate(cell) {
     if (!cell) return;
     if (activeRotateAnimations.has(cell)) return;
@@ -386,7 +386,7 @@ function scheduleNextRotate() {
     }, interval);
 }
 
-// ===== ANIMACIÓN DE DESPLAZAMIENTO DE BORDE =====
+
 function animateBorderShift(cell) {
     if (!cell) return;
     if (activeBorderShiftAnimations.has(cell)) return;
@@ -449,7 +449,7 @@ function scheduleNextBorderShift() {
     }, interval);
 }
 
-// ===== ANIMACIÓN DE OSCILACIÓN DE OPACIDAD =====
+
 function animateOpacityWave(cell) {
     if (!cell) return;
     if (activeOpacityWaveAnimations.has(cell)) return;
@@ -500,7 +500,7 @@ function scheduleNextOpacityWave() {
     }, interval);
 }
 
-// ===== LIMPIAR TIMEOUTS =====
+
 function clearAllTimeouts() {
     if (scaleTimeout) { clearTimeout(scaleTimeout); scaleTimeout = null; }
     if (colorTimeout) { clearTimeout(colorTimeout); colorTimeout = null; }
@@ -510,10 +510,10 @@ function clearAllTimeouts() {
     if (opacityWaveTimeout) { clearTimeout(opacityWaveTimeout); opacityWaveTimeout = null; }
 }
 
-// ===== EXPORTAR FUNCIONES PRINCIPALES =====
+
 
 export function startRandomAnimations() {
-    // 🔥 EN MÓVIL NO HACER NADA
+
     if (IS_MOBILE) {
         return;
     }
@@ -543,7 +543,7 @@ export function startRandomAnimations() {
 }
 
 export function stopRandomAnimations() {
-    // En móvil simplemente limpiamos
+
     if (IS_MOBILE) {
         clearAllTimeouts();
         isRunning = false;
@@ -559,29 +559,29 @@ export function stopRandomAnimations() {
 }
 
 export function restartRandomAnimations() {
-    // En móvil no hacemos nada
+
     if (IS_MOBILE) {
         stopRandomAnimations();
         return;
     }
     stopRandomAnimations();
-    // Limpiar completamente los sets
+
     activeScaleAnimations.clear();
     activeColorAnimations.clear();
     activeGlowAnimations.clear();
     activeRotateAnimations.clear();
     activeBorderShiftAnimations.clear();
     activeOpacityWaveAnimations.clear();
-    // Esperar y reiniciar
+
     setTimeout(() => startRandomAnimations(), 200);
 }
 
 export function refreshAnimationCount() {
-    // Limpiar sets activos y reiniciar
+
     const wasRunning = isRunning;
     if (wasRunning) {
         stopRandomAnimations();
-        // Limpiar completamente
+
         activeScaleAnimations.clear();
         activeColorAnimations.clear();
         activeGlowAnimations.clear();

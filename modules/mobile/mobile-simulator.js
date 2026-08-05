@@ -1,4 +1,4 @@
-// modules/mobile/mobile-simulator.js
+
 import { CONFIG, MOBILE_SIMULATOR_CONFIG } from '../config.js';
 import { MOBILE_CONFIG } from './mobile-config.js';
 import { createGrid, repositionGrid, repositionSidebarOverlay, repositionSidebarTexts, repositionCombinedCells } from '../grid.js';
@@ -65,7 +65,7 @@ function enableMobileSimulator() {
 function disableMobileSimulator() {
     if (!isMobileSimulatorActive) return;
     
-    // Desactivar modo arquitecto si está activo
+
     if (architectActive && architectModule) {
         architectModule.toggleArchitectMode();
         architectActive = false;
@@ -78,7 +78,7 @@ function disableMobileSimulator() {
     
     removeOverlayButtons();
     
-    // 🔥 RECARGAR LA PÁGINA PARA VOLVER AL ESTADO ORIGINAL
+
     window.location.reload();
 }
 
@@ -265,7 +265,7 @@ function toggleNav() {
     });
     
     if (navButtonsVisible) {
-        // Quitar NAV - Exportar diseño actual sin las celdas de navegación
+
         const currentDesign = {};
         const allDesignCells = document.querySelectorAll('.grid-cell, .logo-cell');
         allDesignCells.forEach(cell => {
@@ -308,7 +308,7 @@ function toggleNav() {
             navBtn.style.color = '#ff4444';
         }
     } else {
-        // Restaurar NAV
+
         fetch('./modules/mobile/sidebar-movil.json')
             .then(response => response.json())
             .then(sidebarDesign => {
