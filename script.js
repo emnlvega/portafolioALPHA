@@ -363,11 +363,14 @@ function removeInicioContent() {
 
     isInicioContentClickable = false;
     
+
     document.querySelectorAll('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas').forEach(el => {
         el.remove();
     });
     
+
     document.querySelectorAll('.grid-cell, .logo-cell').forEach(cell => {
+
         const childNodes = Array.from(cell.childNodes);
         childNodes.forEach(node => {
             if (node.nodeType === 1) {
@@ -382,23 +385,29 @@ function removeInicioContent() {
             }
         });
         
+
         cell.style.pointerEvents = '';
         cell.style.cursor = '';
+        cell.style.boxShadow = 'none';
+        cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+        cell.style.backgroundColor = CONFIG.COLORS.background;
     });
 }
 
 window.removeInicioContent = removeInicioContent;
 
+window.removeInicioContent = removeInicioContent;
+
 function renderInicioContent() {
-    // Limpiar contenido anterior
+
     removeInicioContent();
     
-    // 🔥 Forzar un pequeño delay para asegurar que las celdas estén listas
+
     setTimeout(() => {
         renderBienvenido();
         renderProyectosInicio();
         
-        // Aplicar el estado actual de clicks
+
         if (isInicioContentClickable) {
             enableInicioClicks();
         } else {
@@ -477,19 +486,19 @@ function disableInicioClicks() {
 }
 
 function loadInicio(instant = false) {
-    // Limpiar todo antes de cargar
+
     removeInicioContent();
     stopLogoAnimation();
     setHashLoad(false);
     setOnInicio(true);
     
-    // Limpiar cualquier imagen de letras residual
+
     const existingImage = document.getElementById('letters-animation-image');
     if (existingImage) {
         existingImage.remove();
     }
     
-    // Si es instant (desde botón/logo), habilitar y usar modo instantáneo
+
     if (instant) {
         enableLogoAnimation();
         isLogoAnimationRunning = true;
@@ -501,7 +510,7 @@ function loadInicio(instant = false) {
             enableInicioClicks();
         }, true);
     } else {
-        // Primera carga: animación secuencial
+
         enableLogoAnimation();
         isLogoAnimationRunning = true;
         blockSidebarInteraction();
@@ -513,7 +522,7 @@ function loadInicio(instant = false) {
         }, false);
     }
     
-    // 🔥 Solo animar sidebar si no hay overlay (primera carga)
+
     if (gridData) {
         const existingOverlay = document.querySelector('.sidebar-overlay');
         if (!existingOverlay) {
@@ -527,7 +536,7 @@ function loadInicio(instant = false) {
         }
     }
     
-    // 🔥 Renderizar contenido de inicio con delay para asegurar que las celdas estén listas
+
     setTimeout(() => {
         renderInicioContent();
     }, 100);
@@ -538,11 +547,11 @@ function loadInicio(instant = false) {
 }
 
 document.addEventListener('loadInicioInstant', function() {
-    // Limpiar todo antes de cargar
+
     removeInicioContent();
     stopLogoAnimation();
     
-    // 🔥 NO resetear las celdas, solo limpiar contenido de páginas
+
     document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content').forEach(el => el.remove());
     
     document.querySelectorAll('.grid-cell, .logo-cell').forEach(cell => {
@@ -550,7 +559,7 @@ document.addEventListener('loadInicioInstant', function() {
         children.forEach(child => child.remove());
     });
     
-    // Cargar inicio en modo instantáneo
+
     loadInicio(true);
 });
 
@@ -649,12 +658,15 @@ document.addEventListener('keydown', (e) => {
 
 function applyMobileConfig() {
     if (isMobile()) {
-        CONFIG.CELL_SIZE = MOBILE_CONFIG.CELL_SIZE;
-        CONFIG.GAP = MOBILE_CONFIG.GAP;
-        CONFIG.COLS = MOBILE_CONFIG.COLS;
-        CONFIG.ROWS = MOBILE_CONFIG.ROWS;
-        CONFIG.SIDEBAR_WIDTH = MOBILE_CONFIG.SIDEBAR_WIDTH;
-        CONFIG.BORDER_RADIUS = MOBILE_CONFIG.BORDER_RADIUS;
+        const grid = MOBILE_CONFIG.GRID || MOBILE_CONFIG;
+        
+
+        CONFIG.CELL_SIZE = grid.CELL_SIZE;
+        CONFIG.GAP = grid.GAP;
+        CONFIG.COLS = grid.COLS;
+        CONFIG.ROWS = grid.ROWS;
+        CONFIG.SIDEBAR_WIDTH = grid.SIDEBAR_WIDTH;
+        CONFIG.BORDER_RADIUS = grid.BORDER_RADIUS;
         
         CONFIG.ANIMATIONS.SCALE.ENABLED = false;
         CONFIG.ANIMATIONS.COLOR.ENABLED = false;
@@ -663,87 +675,133 @@ function applyMobileConfig() {
         CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = false;
         CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = false;
         
-        document.documentElement.style.setProperty('--cell-size', `${MOBILE_CONFIG.CELL_SIZE}px`);
-        document.documentElement.style.setProperty('--cell-gap', `${MOBILE_CONFIG.GAP}px`);
-        document.documentElement.style.setProperty('--cell-radius', `${MOBILE_CONFIG.BORDER_RADIUS}px`);
+
+        document.documentElement.style.setProperty('--cell-size', `${grid.CELL_SIZE}px`);
+        document.documentElement.style.setProperty('--cell-gap', `${grid.GAP}px`);
+        document.documentElement.style.setProperty('--cell-radius', `${grid.BORDER_RADIUS}px`);
         
         document.body.classList.add('mobile-device');
+        
+
+        setTimeout(() => {
+            document.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell').forEach(cell => {
+                cell.style.borderRadius = `${grid.BORDER_RADIUS}px`;
+            });
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (overlay) {
+                overlay.style.borderRadius = `${grid.BORDER_RADIUS}px`;
+            }
+        }, 50);
         
         applyMobileOverlays();
     }
 }
 
 function applyMobileOverlays() {
-    const show = MOBILE_CONFIG.SHOW;
+    const show = MOBILE_CONFIG.SHOW || {};
     
     const grain = document.getElementById('grain-overlay');
     if (grain) {
-        grain.style.display = show.grain ? 'block' : 'none';
+        grain.style.display = show.grain !== undefined ? (show.grain ? 'block' : 'none') : 'block';
     }
     
     const gaussian = document.getElementById('gaussian-blur');
     if (gaussian) {
-        gaussian.style.display = show.gaussianBlur ? 'block' : 'none';
+        gaussian.style.display = show.gaussianBlur !== undefined ? (show.gaussianBlur ? 'block' : 'none') : 'none';
     }
     
     const bloom = document.getElementById('bloom-overlay');
     if (bloom) {
-        bloom.style.display = show.bloom ? 'block' : 'none';
+        bloom.style.display = show.bloom !== undefined ? (show.bloom ? 'block' : 'none') : 'block';
     }
     
     const burnBlur = document.getElementById('burn-blur');
     if (burnBlur) {
-        burnBlur.style.display = show.burnBlur ? 'block' : 'none';
+        burnBlur.style.display = show.burnBlur !== undefined ? (show.burnBlur ? 'block' : 'none') : 'block';
     }
     
     const texture = document.getElementById('overlay-container');
     if (texture) {
-        texture.style.display = show.texture ? 'block' : 'none';
+        texture.style.display = show.texture !== undefined ? (show.texture ? 'block' : 'none') : 'block';
     }
     
-    if (show.scanlines) {
-        document.body.classList.remove('no-scanlines');
+
+    if (show.scanlines !== undefined) {
+        if (show.scanlines) {
+            document.body.classList.remove('no-scanlines');
+        } else {
+            document.body.classList.add('no-scanlines');
+        }
     } else {
         document.body.classList.add('no-scanlines');
     }
     
-    if (show.vignette) {
-        document.body.classList.remove('no-vignette');
+
+    if (show.vignette !== undefined) {
+        if (show.vignette) {
+            document.body.classList.remove('no-vignette');
+        } else {
+            document.body.classList.add('no-vignette');
+        }
     } else {
-        document.body.classList.add('no-vignette');
+        document.body.classList.remove('no-vignette');
     }
     
     const gridContainer = document.getElementById('grid-container');
     if (gridContainer) {
-        if (show.flicker) {
-            gridContainer.classList.remove('no-flicker');
+        if (show.flicker !== undefined) {
+            if (show.flicker) {
+                gridContainer.classList.remove('no-flicker');
+            } else {
+                gridContainer.classList.add('no-flicker');
+            }
         } else {
-            gridContainer.classList.add('no-flicker');
+            gridContainer.classList.remove('no-flicker');
         }
     }
     
-    if (show.glow) {
+
+    if (show.glow !== undefined) {
+        if (show.glow) {
+            document.body.classList.remove('no-glow');
+        } else {
+            document.body.classList.add('no-glow');
+        }
+    } else {
         document.body.classList.remove('no-glow');
-    } else {
-        document.body.classList.add('no-glow');
     }
     
-    if (show.crtCurvature) {
-        gridContainer?.classList.remove('no-curvature');
-    } else {
-        gridContainer?.classList.add('no-curvature');
+
+    if (gridContainer) {
+        if (show.crtCurvature !== undefined) {
+            if (show.crtCurvature) {
+                gridContainer.classList.remove('no-curvature');
+            } else {
+                gridContainer.classList.add('no-curvature');
+            }
+        } else {
+            gridContainer.classList.remove('no-curvature');
+        }
     }
     
-    if (show.crtReflection) {
-        gridContainer?.classList.remove('no-reflection');
-    } else {
-        gridContainer?.classList.add('no-reflection');
+
+    if (gridContainer) {
+        if (show.crtReflection !== undefined) {
+            if (show.crtReflection) {
+                gridContainer.classList.remove('no-reflection');
+            } else {
+                gridContainer.classList.add('no-reflection');
+            }
+        } else {
+            gridContainer.classList.remove('no-reflection');
+        }
     }
 }
 
 function injectCSSVariables() {
     const { COLORS } = CONFIG;
     const root = document.documentElement;
+    const radius = getComputedStyle(root).getPropertyValue('--cell-radius').trim() || `${CONFIG.BORDER_RADIUS}px`;
 
     root.style.setProperty('--color-primary', COLORS.primary);
     root.style.setProperty('--color-primary-rgb', COLORS.primaryRGB);
@@ -760,7 +818,10 @@ function injectCSSVariables() {
     
     root.style.setProperty('--cell-size', `${CONFIG.CELL_SIZE}px`);
     root.style.setProperty('--cell-gap', `${CONFIG.GAP}px`);
-    root.style.setProperty('--cell-radius', `${CONFIG.BORDER_RADIUS}px`);
+
+    if (!getComputedStyle(root).getPropertyValue('--cell-radius').trim()) {
+        root.style.setProperty('--cell-radius', `${CONFIG.BORDER_RADIUS}px`);
+    }
     
     root.style.setProperty('--glow-primary-intense', `0 0 5px rgba(${COLORS.primaryRGB}, 1)`);
     root.style.setProperty('--glow-primary-medium', `0 0 40px rgba(${COLORS.primaryRGB}, 0.3)`);
@@ -1033,6 +1094,17 @@ document.addEventListener('contextmenu', function(e) {
     const gridContainer = document.getElementById('grid-container');
     if (gridContainer && gridContainer.contains(e.target)) {
         e.preventDefault();
+        
+        const cell = e.target.closest('.grid-cell, .logo-cell');
+        if (cell && !cell.dataset.isSidebar) {
+
+            const hasInicioContent = cell.querySelector('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas');
+            if (hasInicioContent) {
+
+                return false;
+            }
+            toggleCellOff(cell);
+        }
         return false;
     }
     if (e.target.closest('#color-picker-container')) {
@@ -1147,9 +1219,39 @@ document.addEventListener('keydown', (e) => {
 
     if (e.key === ' ') {
         e.preventDefault();
+        
+
         if (!isSpecialPageActiveCheck() && !isLogoAnimationRunning) {
+
+            removeInicioContent();
+            
+
+            const existingImage = document.getElementById('letters-animation-image');
+            if (existingImage) {
+                existingImage.remove();
+            }
+            
+
             stopLogoAnimation();
             resetGrid();
+            
+
+            if (!window.location.hash || window.location.hash === '#inicio' || window.location.hash === '#') {
+                setTimeout(() => {
+
+                    renderInicioContent();
+                    
+
+                    isInicioContentClickable = true;
+                    enableInicioClicks();
+                    
+
+
+                    
+
+
+                }, 300);
+            }
         }
         return;
     }
@@ -1168,8 +1270,10 @@ function init() {
     initSettings();
     
     const mobile = isMobile();
+    
+
     if (mobile) {
-        applyMobileConfig();
+        applyMobileConfig(); // Esto establece las variables CSS
     }
     
     injectCSSVariables();
@@ -1179,6 +1283,7 @@ function init() {
         loadContactoData().catch(() => {}),
     ]).then(() => {});
     
+
     gridData = createGrid();
     
     designCells.forEach(cell => {
@@ -1247,7 +1352,7 @@ function init() {
             }
         }, 100);
     } else {
-        // 🔥 Primera carga: animación secuencial
+
         enableLogoAnimation();
         setTimeout(() => {
             loadInicio(false); // false = secuencial

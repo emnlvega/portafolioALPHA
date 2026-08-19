@@ -454,7 +454,7 @@ export function handleSidebarAction(action) {
                 updateSidebarActiveStateMobile('inicio');
             }, 100);
         } else {
-            // 🔥 Usar returnToMainLogo que ya dispara loadInicioInstant
+
             returnToMainLogo();
             document.querySelectorAll('.sidebar-text').forEach(el => {
                 el.classList.remove('active');
@@ -469,11 +469,11 @@ export function handleSidebarAction(action) {
             }
             updateURL('inicio');
             
-            // Ya no necesitamos esto porque returnToMainLogo dispara el evento
-            // import('../emnlvega.js').then(module => {
-            //     module.setOnInicio(true);
-            //     module.startFlickerOnInicio();
-            // });
+
+
+
+
+
         }
         return;
     }
@@ -705,11 +705,11 @@ export function returnToMainLogo() {
         children.forEach(child => child.remove());
     });
     
-    // 🔥 No deshabilitar interacciones ni resetear el grid
-    // setGridInteractionsEnabled(false);
-    // stopRandomAnimations();
-    // resetGrid(true);
-    // isProgrammaticLoad = true;
+
+
+
+
+
     
     setTimeout(() => {
         isSpecialPageActive = false;
@@ -721,7 +721,7 @@ export function returnToMainLogo() {
         updateSidebarActiveState();
         updateURL('inicio');
         
-        // 🔥 Disparar evento para cargar inicio instantáneo
+
         const event = new CustomEvent('loadInicioInstant');
         document.dispatchEvent(event);
         

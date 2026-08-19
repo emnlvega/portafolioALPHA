@@ -462,7 +462,14 @@ function clearAllTimeouts() {
 }
 
 export function startFlickerOnInicio() {
+
     removeLettersImage();
+    
+
+    if (alwaysVisibleOnInicio) {
+        return;
+    }
+    
     lettersImage = createLettersImage();
     
     if (alwaysVisibleOnInicio) {
@@ -546,8 +553,8 @@ export function startLogoAnimation(onComplete = null, instant = false) {
         lettersImage = createLettersImage();
         showLettersImage();
         
-        // 🔥 Siempre disparar el evento para renderizar contenido
-        // pero con un delay para asegurar que las celdas estén listas
+
+
         setTimeout(() => {
             const event = new CustomEvent('renderInicioContent');
             document.dispatchEvent(event);
@@ -565,7 +572,7 @@ export function startLogoAnimation(onComplete = null, instant = false) {
         ];
         
         if (instant) {
-            // Todas las letras al mismo tiempo
+
             letterDesigns.forEach((letterDesign) => {
                 importDesignFromJSON(letterDesign, () => {}, false);
             });
@@ -583,7 +590,7 @@ export function startLogoAnimation(onComplete = null, instant = false) {
                 setTimeout(onComplete, ANIMATION_CONFIG.IMAGE_FADE_DURATION);
             }
         } else {
-            // Animación secuencial
+
             letterDesigns.forEach((letterDesign, index) => {
                 const timeout = setTimeout(() => {
                     if (!lettersImage && index > 0) return;

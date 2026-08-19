@@ -16,10 +16,14 @@ const LIGHT_TEXT_SHADOW_ACTIVE = `0 0 15px rgba(var(--color-secondary-rgb), 1)`;
 const LIGHT_TEXT_SHADOW_HOVER = `0 0 15px rgba(var(--color-secondary-rgb), 1)`;
 
 export async function loadSobreMiData() {
-    if (sobreMiData) return sobreMiData;
-    const response = await fetch(new URL('../data/sobre-mi.json', import.meta.url));
-    sobreMiData = await response.json();
-    return sobreMiData;
+    try {
+        const response = await fetch(new URL('../data/sobre-mi.json', import.meta.url));
+        const data = await response.json();
+        return data;
+    } catch (e) {
+        console.error('Error loading sobre-mi data:', e);
+        return null;
+    }
 }
 
 function calculateAge(birthDate) {

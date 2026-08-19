@@ -1,14 +1,13 @@
-
 export const MOBILE_CONFIG = {
-
-    COLS: 20,
-    ROWS: 36,
-    CELL_SIZE: 14,
-    GAP: 5,
-    SIDEBAR_WIDTH: 0,
-    BORDER_RADIUS: 1,
+    GRID: {
+        COLS: 20,
+        ROWS: 36,
+        CELL_SIZE: 14,
+        GAP: 5,
+        SIDEBAR_WIDTH: 0,
+        BORDER_RADIUS: 10
+    },
     
-
     FONT_SIZES: {
         sidebar: 8,
         logo: 9,
@@ -20,7 +19,6 @@ export const MOBILE_CONFIG = {
     PADDING: 3,
     SPACING: 3,
     
-
     SHOW: {
         grain: true,
         scanlines: false,
@@ -35,7 +33,6 @@ export const MOBILE_CONFIG = {
         texture: true
     },
     
-
     ANIMATIONS: {
         SCALE: { ENABLED: false },
         COLOR: { ENABLED: false },

@@ -66,6 +66,11 @@ export function toggleCellOff(cell) {
     
     if (cell.dataset.isSidebar) return;
 
+    const hasInicioContent = cell.querySelector('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas');
+    if (hasInicioContent) {
+        return; // No hacer nada
+    }
+
     stopFlickerAndRemoveImage();
 
     const currentState = cell.dataset.state || 'normal';

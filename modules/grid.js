@@ -15,7 +15,8 @@ export function createCell(className, x, y, size, dataset = {}) {
     cell.style.height = `${size}px`;
     cell.style.left = `${x}px`;
     cell.style.top = `${y}px`;
-    cell.style.borderRadius = `${CONFIG.BORDER_RADIUS}px`;
+
+    cell.style.borderRadius = 'var(--cell-radius, 4px)';
     cell.style.backgroundColor = CONFIG.COLORS.background;
     cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
     cell.style.borderColor = CONFIG.COLORS.primary;
@@ -50,6 +51,9 @@ export function createGrid() {
     const allCells = [];
     const newDesignCells = [];
     
+
+    const radius = getComputedStyle(document.documentElement).getPropertyValue('--cell-radius').trim() || `${CONFIG.BORDER_RADIUS}px`;
+    
     for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
             const pos = getCellPosition(col, row, cellSize, offsetX, offsetY);
@@ -64,6 +68,8 @@ export function createGrid() {
                 dataset.sidebarRow = row;
                 dataset.sidebarCol = col;
                 const cell = createCell(className, pos.x, pos.y, cellSize, dataset);
+
+                cell.style.borderRadius = radius;
                 container.appendChild(cell);
                 sidebarCells.push(cell);
                 allCells.push(cell);
@@ -72,6 +78,8 @@ export function createGrid() {
                 dataset.designRow = row;
                 dataset.designCol = col - SIDEBAR_WIDTH;
                 const cell = createCell(className, pos.x, pos.y, cellSize, dataset);
+
+                cell.style.borderRadius = radius;
                 container.appendChild(cell);
                 newDesignCells.push(cell);
                 allCells.push(cell);
