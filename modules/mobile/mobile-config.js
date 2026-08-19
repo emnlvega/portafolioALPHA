@@ -24,7 +24,7 @@ export const MOBILE_CONFIG = {
     SHOW: {
         grain: true,
         scanlines: false,
-        vignette: false,
+        vignette: true,
         glow: true,
         bloom: true,
         gaussianBlur: false,

@@ -18,17 +18,105 @@ import { renderMobileHome } from './modules/mobile/mobile-home.js';
 import { toggleMobileSimulator } from './modules/mobile/mobile-simulator.js';
 import { navigateMobileTo } from './modules/mobile/mobile-nav.js';
 import { getCurrentMobilePage } from './modules/mobile/mobile-nav.js';
+import { startLogoAnimation, stopLogoAnimation, enableLogoAnimation, disableLogoAnimation, startFlickerOnInicio, setOnInicio } from './modules/emnlvega.js';
 
 let gridData = null;
+let isLogoAnimationRunning = false;
+let isInitialized = false;
+
+function blockSidebarInteraction() {
+    const sidebarItems = document.querySelectorAll('.sidebar-text, .sidebar-cell');
+    sidebarItems.forEach(item => {
+        item.style.pointerEvents = 'none';
+    });
+}
+
+function unblockSidebarInteraction() {
+    const sidebarItems = document.querySelectorAll('.sidebar-text, .sidebar-cell');
+    sidebarItems.forEach(item => {
+        item.style.pointerEvents = '';
+    });
+}
+
+function loadSpecialPage(page, projectId = null) {
+    disableLogoAnimation();
+    stopLogoAnimation();
+    setOnInicio(false);
+    setHashLoad(false);
+    
+    animateSidebar(
+        gridData.sidebarCells,
+        gridData.rows,
+        gridData.cellSize,
+        gridData.offsetX,
+        gridData.offsetY
+    );
+    
+    if (page === 'proyectos') {
+        handleSidebarAction('proyectos');
+        if (projectId) {
+            setTimeout(() => {
+                import('./modules/sidebar/pages/proyectos.js').then(module => {
+                    module.selectProjectById(projectId);
+                });
+            }, 300);
+        }
+    } else if (page === 'sobre-mi') {
+        handleSidebarAction('sobre-mi');
+    } else if (page === 'contacto') {
+        handleSidebarAction('contacto');
+    }
+}
+
+function loadInicioNormal() {
+    disableLogoAnimation();
+    stopLogoAnimation();
+    setHashLoad(false);
+    setOnInicio(true);
+    
+    animateSidebar(
+        gridData.sidebarCells,
+        gridData.rows,
+        gridData.cellSize,
+        gridData.offsetX,
+        gridData.offsetY
+    );
+    
+    importDesignFromJSON(LOGO_DESIGN, () => {
+        startFlickerOnInicio();
+    });
+    
+    setTimeout(() => {
+        startRandomAnimations();
+    }, 500);
+}
+
+function loadInicioAnimado() {
+    stopLogoAnimation();
+    setHashLoad(false);
+    enableLogoAnimation(); // Asegurar que esté habilitada
+    setOnInicio(true);
+    isLogoAnimationRunning = true;
+    blockSidebarInteraction();
+    startLogoAnimation(() => {
+        isLogoAnimationRunning = false;
+        unblockSidebarInteraction();
+    });
+    animateSidebar(
+        gridData.sidebarCells,
+        gridData.rows,
+        gridData.cellSize,
+        gridData.offsetX,
+        gridData.offsetY
+    );
+    setTimeout(() => {
+        startRandomAnimations();
+    }, 500);
+}
 
 function initMobileSimulatorFeature() {
-
     if (isMobile()) return;
     
-
-
-    
-
     const exportBtn = document.createElement('button');
     exportBtn.id = 'mobile-export-btn';
     exportBtn.textContent = '💾 EXPORTAR MÓVIL';
@@ -65,20 +153,22 @@ function initMobileSimulatorFeature() {
     });
     
     exportBtn.addEventListener('click', () => {
-        if (isSimulatorActive()) {
-            exportMobileDesign();
+        if (document.body.classList.contains('mobile-simulator')) {
+            if (window.exportMobileDesign) {
+                window.exportMobileDesign();
+            }
         } else {
-
             toggleMobileSimulator();
             setTimeout(() => {
-                exportMobileDesign();
+                if (window.exportMobileDesign) {
+                    window.exportMobileDesign();
+                }
             }, 300);
         }
     });
     
     document.body.appendChild(exportBtn);
     
-
     const observer = new MutationObserver(() => {
         const isActive = document.body.classList.contains('mobile-simulator');
         exportBtn.style.display = isActive ? 'block' : 'none';
@@ -86,12 +176,9 @@ function initMobileSimulatorFeature() {
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 }
 
-
 document.addEventListener('keydown', (e) => {
-
     if (isMobile()) return;
     
-
     if (e.key === 'x' || e.key === 'X') {
         const target = e.target;
         if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
@@ -107,20 +194,20 @@ document.addEventListener('keydown', (e) => {
         return;
     }
     
-
     if ((e.key === 'e' || e.key === 'E') && document.body.classList.contains('mobile-simulator')) {
         const target = e.target;
         if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
             return;
         }
         e.preventDefault();
-        exportMobileDesign();
+        if (window.exportMobileDesign) {
+            window.exportMobileDesign();
+        }
     }
 });
 
 function applyMobileConfig() {
     if (isMobile()) {
-
         CONFIG.CELL_SIZE = MOBILE_CONFIG.CELL_SIZE;
         CONFIG.GAP = MOBILE_CONFIG.GAP;
         CONFIG.COLS = MOBILE_CONFIG.COLS;
@@ -128,7 +215,6 @@ function applyMobileConfig() {
         CONFIG.SIDEBAR_WIDTH = MOBILE_CONFIG.SIDEBAR_WIDTH;
         CONFIG.BORDER_RADIUS = MOBILE_CONFIG.BORDER_RADIUS;
         
-
         CONFIG.ANIMATIONS.SCALE.ENABLED = false;
         CONFIG.ANIMATIONS.COLOR.ENABLED = false;
         CONFIG.ANIMATIONS.GLOW.ENABLED = false;
@@ -136,68 +222,56 @@ function applyMobileConfig() {
         CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = false;
         CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = false;
         
-
         document.documentElement.style.setProperty('--cell-size', `${MOBILE_CONFIG.CELL_SIZE}px`);
         document.documentElement.style.setProperty('--cell-gap', `${MOBILE_CONFIG.GAP}px`);
         document.documentElement.style.setProperty('--cell-radius', `${MOBILE_CONFIG.BORDER_RADIUS}px`);
         
         document.body.classList.add('mobile-device');
         
-
         applyMobileOverlays();
     }
 }
 
-
-
 function applyMobileOverlays() {
     const show = MOBILE_CONFIG.SHOW;
     
-
     const grain = document.getElementById('grain-overlay');
     if (grain) {
         grain.style.display = show.grain ? 'block' : 'none';
     }
     
-
     const gaussian = document.getElementById('gaussian-blur');
     if (gaussian) {
         gaussian.style.display = show.gaussianBlur ? 'block' : 'none';
     }
     
-
     const bloom = document.getElementById('bloom-overlay');
     if (bloom) {
         bloom.style.display = show.bloom ? 'block' : 'none';
     }
     
-
     const burnBlur = document.getElementById('burn-blur');
     if (burnBlur) {
         burnBlur.style.display = show.burnBlur ? 'block' : 'none';
     }
     
-
     const texture = document.getElementById('overlay-container');
     if (texture) {
         texture.style.display = show.texture ? 'block' : 'none';
     }
     
-
     if (show.scanlines) {
         document.body.classList.remove('no-scanlines');
     } else {
         document.body.classList.add('no-scanlines');
     }
     
-
     if (show.vignette) {
         document.body.classList.remove('no-vignette');
     } else {
         document.body.classList.add('no-vignette');
     }
     
-
     const gridContainer = document.getElementById('grid-container');
     if (gridContainer) {
         if (show.flicker) {
@@ -207,21 +281,18 @@ function applyMobileOverlays() {
         }
     }
     
-
     if (show.glow) {
         document.body.classList.remove('no-glow');
     } else {
         document.body.classList.add('no-glow');
     }
     
-
     if (show.crtCurvature) {
         gridContainer?.classList.remove('no-curvature');
     } else {
         gridContainer?.classList.add('no-curvature');
     }
     
-
     if (show.crtReflection) {
         gridContainer?.classList.remove('no-reflection');
     } else {
@@ -230,7 +301,6 @@ function applyMobileOverlays() {
 }
 
 function injectCSSVariables() {
-
     const { COLORS } = CONFIG;
     const root = document.documentElement;
 
@@ -325,19 +395,19 @@ function hasHashInURL() {
 }
 
 function regenerateEverything() {
-
+    if (isLogoAnimationRunning) return;
+    if (!gridData) return;
+    
     const oldOverlay = document.querySelector('.sidebar-overlay');
     const oldSidebarTexts = document.querySelectorAll('.sidebar-text');
     if (oldOverlay) oldOverlay.remove();
     oldSidebarTexts.forEach(el => el.remove());
     
     stopRandomAnimations();
+    stopLogoAnimation();
     
-
-
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell');
     allCells.forEach(cell => {
-
         if (cell.dataset.isSidebar !== 'true') {
             const state = cell.dataset.state || 'normal';
             if (state === 'off') {
@@ -359,7 +429,6 @@ function regenerateEverything() {
         }
     });
     
-
     const container = document.getElementById('grid-container');
     const rect = container.getBoundingClientRect();
     const cellSize = CONFIG.CELL_SIZE;
@@ -376,34 +445,25 @@ function regenerateEverything() {
     repositionSidebarTexts(offsetX, offsetY);
     repositionCombinedCells(offsetX, offsetY);
     
-
-    setTimeout(() => {
-        importDesignFromJSON(LOGO_DESIGN);
-    }, 100);
+    animateSidebar(
+        gridData.sidebarCells,
+        gridData.rows,
+        gridData.cellSize,
+        offsetX,
+        offsetY
+    );
     
-
     setTimeout(() => {
-        animateSidebar(
-            gridData.sidebarCells,
-            gridData.rows,
-            gridData.cellSize,
-            gridData.offsetX,
-            gridData.offsetY
-        );
-        setTimeout(() => {
-            restartRandomAnimations();
-        }, 500);
-    }, CONFIG.LOGO_DELAY + 500);
+        restartRandomAnimations();
+    }, 500);
 }
 
 document.addEventListener('colorsUpdated', function(e) {
     const { colors } = e.detail;
     CONFIG.COLORS = colors;
     
-
     injectCSSVariables();
     
-
     document.querySelectorAll('.sidebar-cell').forEach(cell => {
         cell.style.borderColor = colors.primary;
         cell.style.backgroundColor = colors.background;
@@ -547,19 +607,16 @@ document.addEventListener('contextmenu', function(e) {
     }
 });
 
-
 document.addEventListener('keydown', (e) => {
-     if (isTransitioningCheck()) {
+    if (isTransitioningCheck()) {
         e.preventDefault();
         return;
     }
-
 
     const target = e.target;
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
         return;
     }
-
 
     if (e.key === 'Escape') {
         const dialogsOpen = document.querySelectorAll(
@@ -567,7 +624,6 @@ document.addEventListener('keydown', (e) => {
         );
         
         if (dialogsOpen.length > 0) {
-
             dialogsOpen.forEach(d => {
                 if (d.id === 'settings-dialog') {
                     closeSettings();
@@ -579,7 +635,6 @@ document.addEventListener('keydown', (e) => {
             return;
         }
         
-
         if (isSpecialPageActiveCheck()) {
             e.preventDefault();
             returnToMainLogo();
@@ -600,7 +655,6 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-
     if (e.key === 'e' || e.key === 'E') {
         if (CONFIG.ENABLE_EXPORT) {
             e.preventDefault();
@@ -608,7 +662,6 @@ document.addEventListener('keydown', (e) => {
         }
         return;
     }
-
 
     if (e.key === 'i' || e.key === 'I') {
         if (CONFIG.ENABLE_IMPORT) {
@@ -618,27 +671,32 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-
     if (e.key === 'p' || e.key === 'P') {
         e.preventDefault();
-        handleSidebarAction('proyectos');
+        if (!isLogoAnimationRunning) {
+            setOnInicio(false);
+            loadSpecialPage('proyectos');
+        }
         return;
     }
-
 
     if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
-        handleSidebarAction('sobre-mi');
+        if (!isLogoAnimationRunning) {
+            setOnInicio(false);
+            loadSpecialPage('sobre-mi');
+        }
         return;
     }
-
 
     if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
-        handleSidebarAction('contacto');
+        if (!isLogoAnimationRunning) {
+            setOnInicio(false);
+            loadSpecialPage('contacto');
+        }
         return;
     }
-
 
     if (e.key === 'm' || e.key === 'M') {
         e.preventDefault();
@@ -646,13 +704,14 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-
     if (e.key === ' ') {
         e.preventDefault();
-        resetGrid();
+        if (!isSpecialPageActiveCheck() && !isLogoAnimationRunning) {
+            stopLogoAnimation();
+            resetGrid();
+        }
         return;
     }
-
 
     if (e.key === 'a' || e.key === 'A') {
         e.preventDefault();
@@ -664,11 +723,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-
-
-
-
-// script.js - Añadir al inicio de init()
 function init() {
     initSettings();
     
@@ -684,7 +738,6 @@ function init() {
         loadContactoData().catch(() => {}),
     ]).then(() => {});
     
-    // 🔥 SOLO UN GRID - SE CREA UNA VEZ
     gridData = createGrid();
     
     designCells.forEach(cell => {
@@ -700,85 +753,76 @@ function init() {
         }
     });
     
+    document.addEventListener('click', function(e) {
+        if (isLogoAnimationRunning) {
+            const sidebarElement = e.target.closest('.sidebar-text, .sidebar-cell');
+            if (sidebarElement) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        }
+    }, true);
+    
     initOverlays();
     
-    // 🔥 INICIALIZAR SIMULADOR MÓVIL (solo PC)
     if (!mobile) {
         initMobileSimulatorFeature();
     }
     
-    const hasHash = hasHashInURL();
+    const hash = window.location.hash;
     
-    if (hasHash) {
-        setHashLoad(true);
-        setTimeout(() => {
-            const result = handleURLOnLoad();
-            if (result === 'inicio') {
-                setHashLoad(false);
-                if (mobile) {
-                    setTimeout(() => {
-                        import('./modules/mobile/mobile-home.js').then(module => {
-                            module.renderMobileHome();
-                        });
-                    }, 300);
-                } else {
-                    importDesignFromJSON(LOGO_DESIGN);
-                    animateSidebar(
-                        gridData.sidebarCells,
-                        gridData.rows,
-                        gridData.cellSize,
-                        gridData.offsetX,
-                        gridData.offsetY
-                    );
-                    setTimeout(() => {
-                        startRandomAnimations();
-                    }, 500);
+    // DESHABILITAR animación del logo por defecto
+    disableLogoAnimation();
+    
+    if (mobile) {
+        if (hash && hash !== '#inicio' && hash !== '#') {
+            setTimeout(() => {
+                const result = handleURLOnLoad();
+                if (result.page === 'proyectos') {
+                    loadSpecialPage('proyectos', result.projectId);
+                } else if (result.page === 'sobre-mi') {
+                    loadSpecialPage('sobre-mi');
+                } else if (result.page === 'contacto') {
+                    loadSpecialPage('contacto');
                 }
-            } else if (result.page === 'proyectos') {
-                handleSidebarAction('proyectos');
-                if (result.projectId) {
-                    setTimeout(() => {
-                        import('./modules/sidebar/pages/proyectos.js').then(module => {
-                            module.selectProjectById(result.projectId);
-                        });
-                    }, 800);
-                }
-            } else if (result.page === 'sobre-mi') {
-                handleSidebarAction('sobre-mi');
-            } else if (result.page === 'contacto') {
-                handleSidebarAction('contacto');
-            }
-        }, 100);
-    } else {
-        setHashLoad(false);
-        
-        if (mobile) {
+            }, 100);
+        } else {
             setTimeout(() => {
                 renderMobileHome();
             }, 300);
-        } else {
-            setTimeout(() => {
-                importDesignFromJSON(LOGO_DESIGN);
-            }, CONFIG.LOGO_DELAY || 500);
-            
-            setTimeout(() => {
-                animateSidebar(
-                    gridData.sidebarCells,
-                    gridData.rows,
-                    gridData.cellSize,
-                    gridData.offsetX,
-                    gridData.offsetY
-                );
-                setTimeout(() => {
-                    startRandomAnimations();
-                }, 500);
-            }, CONFIG.LOGO_DELAY + 500);
         }
+        return;
+    }
+    
+    if (hash && hash !== '#inicio' && hash !== '#') {
+        // Special page direct load - NO logo animation
+        setTimeout(() => {
+            const result = handleURLOnLoad();
+            if (result.page === 'proyectos') {
+                loadSpecialPage('proyectos', result.projectId);
+            } else if (result.page === 'sobre-mi') {
+                loadSpecialPage('sobre-mi');
+            } else if (result.page === 'contacto') {
+                loadSpecialPage('contacto');
+            }
+        }, 100);
+    } else if (hash === '#inicio') {
+        // #inicio hash - use LOGO_DESIGN
+        loadInicioNormal();
+    } else {
+        // NO hash - first load, use special animation
+        // HABILITAR animación del logo solo aquí
+        enableLogoAnimation();
+        setTimeout(() => {
+            loadInicioAnimado();
+        }, CONFIG.LOGO_DELAY || 500);
     }
 }
 
 window.addEventListener('beforeunload', () => {
     stopRandomAnimations();
+    stopLogoAnimation();
 });
 
 let resizeTimeout;
@@ -823,18 +867,12 @@ window.addEventListener('popstate', () => {
             returnToMainLogo();
         }
     } else if (result.page === 'proyectos') {
-        handleSidebarAction('proyectos');
-        if (result.projectId) {
-            setTimeout(() => {
-                import('./modules/sidebar/pages/proyectos.js').then(module => {
-                    module.selectProjectById(result.projectId);
-                });
-            }, 800);
-        }
+        loadSpecialPage('proyectos', result.projectId);
     } else if (result.page === 'sobre-mi' || result.page === 'contacto') {
-        handleSidebarAction(result.page);
+        loadSpecialPage(result.page);
     }
 });
+
 window.navigateMobileTo = navigateMobileTo;
 window.handleMobileNav = navigateMobileTo;
 window.mobileNav = navigateMobileTo;

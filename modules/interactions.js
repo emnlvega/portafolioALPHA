@@ -5,6 +5,7 @@ import { showDialog } from './dialogs.js';
 import { isSpecialPageActiveCheck } from './sidebar/index.js';
 import { isMobile } from './mobile.js';
 import { getCurrentMobilePage } from './mobile/mobile-nav.js';
+import { stopFlickerAndRemoveImage } from './emnlvega.js';
 
 export let designCells = [];
 export let selectedCells = [];
@@ -60,11 +61,12 @@ export function applyOffState(cell) {
 }
 
 export function toggleCellOff(cell) {
-
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
     
     if (cell.dataset.isSidebar) return;
+
+    stopFlickerAndRemoveImage();
 
     const currentState = cell.dataset.state || 'normal';
 
@@ -126,9 +128,10 @@ export function toggleCellOff(cell) {
 }
 
 export function restoreCell(cell) {
-
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
+
+    stopFlickerAndRemoveImage();
     
     const cellSize = CONFIG.CELL_SIZE;
     const origX = parseFloat(cell.dataset.originalX) || parseFloat(cell.style.left);
@@ -167,6 +170,8 @@ export function toggleCellStyle(cell) {
 
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
+
+    stopFlickerAndRemoveImage();
     
     const currentState = cell.dataset.state || 'normal';
 
@@ -198,6 +203,8 @@ export function toggleCombinedStyle(cell) {
 
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
+
+    stopFlickerAndRemoveImage();
     
     const currentState = cell.dataset.state || 'combined_red';
     const combinedId = cell.dataset.combinedId;
@@ -338,6 +345,8 @@ export function startResizeCombined(e, cell) {
     if (isMobileSpecialPage()) return;
     if (cell.dataset.combined !== 'true') return;
     if (e.button !== 0) return;
+
+    stopFlickerAndRemoveImage();
     
     const rect = cell.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
@@ -540,6 +549,8 @@ export function handleMouseDown(e, cell) {
     
     if (cell.dataset.isSidebar) return;
 
+    stopFlickerAndRemoveImage();
+
     if (cell.dataset.state === 'off') {
         restoreCell(cell);
         return;
@@ -652,12 +663,16 @@ export function setupCellEvents(cell) {
 
 
 export function resetGrid(keepCombined = false) {
+    // Detener la animación del logo
+    import('./logo.js').then(module => {
+        module.stopLogoAnimation();
+    }).catch(() => {});
+    
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell');
     
     allCells.forEach(cell => {
         if (cell.dataset.isSidebar === 'true') return;
         
-
         if (keepCombined && cell.dataset.combined === 'true') return;
         
         const size = CONFIG.CELL_SIZE;
@@ -703,7 +718,6 @@ export function resetGrid(keepCombined = false) {
     resizeStartCell = null;
     isClickOnCombined = false;
     
-
     document.querySelectorAll('.expand-btn').forEach(el => el.remove());
     
     setTimeout(() => {

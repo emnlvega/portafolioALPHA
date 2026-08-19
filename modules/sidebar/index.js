@@ -452,7 +452,6 @@ export function handleSidebarAction(action) {
     if (action === 'inicio') {
         if (mobile) {
             renderMobileHome();
-
             setTimeout(() => {
                 updateSidebarActiveStateMobile('inicio');
             }, 100);
@@ -470,6 +469,12 @@ export function handleSidebarAction(action) {
                 inicioText.style.textShadow = 'var(--text-shadow-active)';
             }
             updateURL('inicio');
+            
+            // Importar dinámicamente para evitar circular dependency
+            import('../emnlvega.js').then(module => {
+                module.setOnInicio(true);
+                module.startFlickerOnInicio();
+            });
         }
         return;
     }
@@ -481,7 +486,10 @@ export function handleSidebarAction(action) {
                 module.navigateMobileTo('proyectos');
             });
         } else {
-
+            import('../emnlvega.js').then(module => {
+                module.setOnInicio(false);
+            });
+            
             document.querySelectorAll('.sidebar-text').forEach(el => {
                 el.classList.remove('active');
                 el.style.color = CONFIG.COLORS.primary;
@@ -502,12 +510,15 @@ export function handleSidebarAction(action) {
 
     if (action === 'sobre-mi') {
         if (mobile) {
-
             renderMobileSobreMi();
             setTimeout(() => {
                 updateSidebarActiveStateMobile('sobre-mi');
             }, 100);
         } else {
+            import('../emnlvega.js').then(module => {
+                module.setOnInicio(false);
+            });
+            
             document.querySelectorAll('.sidebar-text').forEach(el => {
                 el.classList.remove('active');
                 el.style.color = CONFIG.COLORS.primary;
@@ -532,7 +543,10 @@ export function handleSidebarAction(action) {
                 module.navigateMobileTo('contacto');
             });
         } else {
-
+            import('../emnlvega.js').then(module => {
+                module.setOnInicio(false);
+            });
+            
             document.querySelectorAll('.sidebar-text').forEach(el => {
                 el.classList.remove('active');
                 el.style.color = CONFIG.COLORS.primary;
