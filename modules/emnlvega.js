@@ -17,9 +17,8 @@ const ANIMATION_CONFIG = {
     FLICKER_INITIAL_DELAY: 3000
 };
 
-
-const jajajuju = {
-        "0,0": {
+const LOGO_START_DESIGN = {
+    "0,0": {
         "type": "combined_normal",
         "left": 199,
         "top": 23,
@@ -27,55 +26,51 @@ const jajajuju = {
         "height": 144,
         "combined": true
     },
-}
-const LOGO_START_DESIGN = {
-
-
     "14,0": {
         "type": "combined_normal",
         "left": 199,
         "top": 765,
-        "width": 197,
+        "width": 303,
         "height": 144,
         "combined": true
     },
-    "14,4": {
+    "14,6": {
         "type": "combined_normal",
-        "left": 411,
+        "left": 517,
         "top": 765,
         "width": 303,
         "height": 144,
         "combined": true
     },
-    "14,10": {
+    "14,12": {
         "type": "combined_normal",
-        "left": 729,
+        "left": 835,
         "top": 765,
         "width": 303,
         "height": 144,
         "combined": true
     },
-    "14,16": {
+    "14,18": {
         "type": "combined_normal",
-        "left": 1047,
+        "left": 1153,
         "top": 765,
         "width": 303,
         "height": 144,
         "combined": true
     },
-    "14,22": {
+    "14,24": {
         "type": "combined_normal",
-        "left": 1365,
+        "left": 1471,
         "top": 765,
         "width": 303,
         "height": 144,
         "combined": true
     },
-    "14,28": {
-        "type": "combined_normal",
-        "left": 1683,
+    "14,30": {
+        "type": "combined_logo",
+        "left": 1789,
         "top": 765,
-        "width": 197,
+        "width": 91,
         "height": 144,
         "combined": true
     }
@@ -349,19 +344,16 @@ function createLettersImage() {
     
     container.appendChild(img);
     
-    // Aplicar color inicial
     applyColorToImage(img, CONFIG.COLORS.primary);
     
     return img;
 }
 
 function applyColorToImage(img, color) {
-    // Convertir hex a RGB
     const r = parseInt(color.substr(1, 2), 16);
     const g = parseInt(color.substr(3, 2), 16);
     const b = parseInt(color.substr(5, 2), 16);
     
-    // Crear un canvas para colorear la imagen
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
@@ -373,18 +365,15 @@ function applyColorToImage(img, color) {
         
         ctx.drawImage(tempImg, 0, 0);
         
-        // Aplicar el color
         ctx.globalCompositeOperation = 'source-in';
         ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Convertir a data URL y aplicarlo
         img.src = canvas.toDataURL();
     };
     tempImg.src = img.src;
 }
 
-// Listener global para cambios de color
 document.addEventListener('colorsUpdated', function(e) {
     const { colors } = e.detail;
     const existingImage = document.getElementById('letters-animation-image');
@@ -477,14 +466,12 @@ export function startFlickerOnInicio() {
     lettersImage = createLettersImage();
     
     if (alwaysVisibleOnInicio) {
-        // Mostrar permanentemente
         setTimeout(() => {
             if (lettersImage) {
                 lettersImage.style.opacity = ANIMATION_CONFIG.IMAGE_OPACITY;
             }
         }, 500);
     } else {
-        // Esperar 500ms antes de mostrar
         flickerTimeout = setTimeout(() => {
             showLettersImage();
             
@@ -544,7 +531,7 @@ export function stopLogoAnimation() {
     });
 }
 
-export function startLogoAnimation(onComplete = null) {
+export function startLogoAnimation(onComplete = null, instant = false) {
     if (!isEnabled) {
         if (onComplete) onComplete();
         return;
@@ -553,9 +540,18 @@ export function startLogoAnimation(onComplete = null) {
     clearAllTimeouts();
     stopLogoAnimation();
     
+    removeLettersImage();
+    
     importDesignFromJSON(LOGO_START_DESIGN, () => {
         lettersImage = createLettersImage();
         showLettersImage();
+        
+        // 🔥 Siempre disparar el evento para renderizar contenido
+        // pero con un delay para asegurar que las celdas estén listas
+        setTimeout(() => {
+            const event = new CustomEvent('renderInicioContent');
+            document.dispatchEvent(event);
+        }, 50);
         
         const letterDesigns = [
             LETTER_E_1,
@@ -568,35 +564,54 @@ export function startLogoAnimation(onComplete = null) {
             LETTER_A
         ];
         
-        letterDesigns.forEach((letterDesign, index) => {
-            const timeout = setTimeout(() => {
-                if (!lettersImage && index > 0) return;
-                
-                importDesignFromJSON(letterDesign, () => {
-                    if (index === letterDesigns.length - 1) {
-                        const finalTimeout = setTimeout(() => {
-                            if (alwaysVisibleOnInicio) {
-                                // Mantener visible permanentemente
-                                lettersImage.style.opacity = ANIMATION_CONFIG.IMAGE_OPACITY;
-                            } else {
-                                hideLettersImage();
-                                
-                                setTimeout(() => {
-                                    startFlickerCycle();
-                                }, 300);
-                            }
-                            
-                            if (onComplete) {
-                                setTimeout(onComplete, ANIMATION_CONFIG.IMAGE_FADE_DURATION);
-                            }
-                        }, ANIMATION_CONFIG.LETTER_INTERVAL);
-                        allAnimationTimeouts.push(finalTimeout);
-                    }
-                }, false);
-            }, ANIMATION_CONFIG.INITIAL_WAIT + (index * ANIMATION_CONFIG.LETTER_INTERVAL));
+        if (instant) {
+            // Todas las letras al mismo tiempo
+            letterDesigns.forEach((letterDesign) => {
+                importDesignFromJSON(letterDesign, () => {}, false);
+            });
             
-            allAnimationTimeouts.push(timeout);
-        });
+            if (alwaysVisibleOnInicio) {
+                lettersImage.style.opacity = ANIMATION_CONFIG.IMAGE_OPACITY;
+            } else {
+                hideLettersImage();
+                setTimeout(() => {
+                    startFlickerCycle();
+                }, 300);
+            }
+            
+            if (onComplete) {
+                setTimeout(onComplete, ANIMATION_CONFIG.IMAGE_FADE_DURATION);
+            }
+        } else {
+            // Animación secuencial
+            letterDesigns.forEach((letterDesign, index) => {
+                const timeout = setTimeout(() => {
+                    if (!lettersImage && index > 0) return;
+                    
+                    importDesignFromJSON(letterDesign, () => {
+                        if (index === letterDesigns.length - 1) {
+                            const finalTimeout = setTimeout(() => {
+                                if (alwaysVisibleOnInicio) {
+                                    lettersImage.style.opacity = ANIMATION_CONFIG.IMAGE_OPACITY;
+                                } else {
+                                    hideLettersImage();
+                                    setTimeout(() => {
+                                        startFlickerCycle();
+                                    }, 300);
+                                }
+                                
+                                if (onComplete) {
+                                    setTimeout(onComplete, ANIMATION_CONFIG.IMAGE_FADE_DURATION);
+                                }
+                            }, ANIMATION_CONFIG.LETTER_INTERVAL);
+                            allAnimationTimeouts.push(finalTimeout);
+                        }
+                    }, false);
+                }, ANIMATION_CONFIG.INITIAL_WAIT + (index * ANIMATION_CONFIG.LETTER_INTERVAL));
+                
+                allAnimationTimeouts.push(timeout);
+            });
+        }
     }, true);
 }
 
@@ -615,4 +630,3 @@ export function stopFlickerAndRemoveImage() {
     }
     removeLettersImage();
 }
-

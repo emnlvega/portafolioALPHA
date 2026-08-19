@@ -29,7 +29,7 @@ export const MOBILE_CONFIG = {
         bloom: true,
         gaussianBlur: false,
         burnBlur: true,
-        flicker: false,
+        flicker: true,
         crtCurvature: true,
         crtReflection: true,
         texture: true

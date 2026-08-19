@@ -9,15 +9,15 @@ let shuffleOrder = [];
 
 
 const OVERLAY_CONFIG = {
-    INTERVAL: 30000,       // 10 segundos entre cambios
-    FADE_DURATION: 0,      // 0 = cambio instantáneo
+    INTERVAL: 30000,
+    FADE_DURATION: 0,
     FOLDER: 'assets/overlays/',
     EXTENSION: 'jpg',
     BLEND_MODE: 'color-dodge',
-    OPACITY: 0.7,          // Opacidad base (para imágenes normales)
-    OPACITY_FIRST: 0.5,    // 🔥 Opacidad para la primera imagen (50%)
-    RANDOM_ORDER: true,    // true = aleatorio después del primero, false = secuencial
-    IMAGE_COUNT: 17        // Número de imágenes (1.jpg a 17.jpg)
+    OPACITY: 0.7,
+    OPACITY_FIRST: 0.5,
+    RANDOM_ORDER: true,
+    IMAGE_COUNT: 17
 };
 
 /**

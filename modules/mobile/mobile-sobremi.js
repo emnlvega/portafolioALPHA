@@ -53,7 +53,7 @@ const SOBRE_MI_DATA = {
         "PENSAMIENTO", "AUTODIDACTA", "RESOLUCIÓN DE PROBLEMAS"
     ],
     herramientas: "Photoshop · Illustrator · Lightroom · HTML · CSS · JavaScript · React · Node.js · Python · SQL · Wix · Wix Velo · Git",
-    frase: "IF LOVE IS THE ANSWER YOU'RE HOME"
+    frase: "RANDOM ACCESS MEMORIES"
 };
 
 export function renderMobileSobreMi() {
@@ -85,7 +85,7 @@ export function renderMobileSobreMi() {
         
 
         disableInteractions();
-    }, true); // 🔥 reset = false
+    }, true);
 }
 
 
@@ -131,7 +131,7 @@ function createSobreMiContent() {
             if (row === 0 && col === 0) titleCell = cell;
             else if (row === 3 && col === 0) photoCell = cell;
             else if (row === 3 && col === 6) bioCell = cell;
-            else if (row === 17 && col === 0) infoCell = cell; // 🔥 CAMBIADO A 17,0
+            else if (row === 17 && col === 0) infoCell = cell;
         }
     });
     
@@ -592,7 +592,7 @@ function createSobreMiContent() {
             line-height: 1.6;
         `;
 
-        fraseDiv.innerHTML = `IF LOVE IS THE ANSWER<br>YOU'RE HOME`;
+        fraseDiv.innerHTML = `RANDOM ACCESS MEMORIES`;
         infoContent.appendChild(fraseDiv);
         
         infoWrapper.appendChild(infoContent);

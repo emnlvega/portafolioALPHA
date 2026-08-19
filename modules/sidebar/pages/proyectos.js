@@ -23,7 +23,7 @@ let textureWasVisibleBeforeExpand = true;
 
 const LIGHT_TEXT_SHADOW = `0 0 7px rgba(var(--color-primary-rgb), 1)`;
 
-const EXPANDED_DESIGN = {
+export const EXPANDED_DESIGN = {
     "0,0": {
         "type": "combined_normal",
         "left": 199,
@@ -68,7 +68,13 @@ const CATEGORY_ICONS = {
     'ARTE': '□'
 };
 
-function toggleTextureOverlay(show) {
+
+export function setDetailExpanded(value) {
+    isDetailExpanded = value;
+}
+
+
+export function toggleTextureOverlay(show) {
     const overlay = document.getElementById('overlay-container');
     if (overlay) {
         overlay.style.display = show ? 'block' : 'none';
@@ -841,7 +847,7 @@ function showProjectDetail(project, detailCell) {
         padding: ${isExpanded ? '30px 40px' : '20px 30px'};
         color: ${CONFIG.COLORS.primary};
         font-family: 'Courier New', monospace;
-        pointer-events: auto;  /* 🔥 CAMBIADO: antes era 'none' */
+        pointer-events: auto;
         z-index: 20;
         overflow-y: auto;
         overflow-x: hidden;
@@ -866,7 +872,7 @@ function showProjectDetail(project, detailCell) {
         padding: ${isExpanded ? '20px 0' : '10px 0'};
         flex-shrink: 0;
         margin: auto;
-        pointer-events: none;  /* 🔥 Los clics pasan al contenedor padre */
+        pointer-events: none;
     `;
     
 
@@ -1203,6 +1209,8 @@ export async function selectProjectById(projectId) {
         selectedProjectData = project;
         detailPage = 0;
         window.selectedProjectId = project.id;
+        
+
         renderProyectosContent();
     }
 }

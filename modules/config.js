@@ -38,8 +38,8 @@ let currentConfig = {
     ROWS: 17,
     CELL_SIZE: 38,
     BORDER_RADIUS: 4,
-    ANIMATION_DURATION: 300,
-    ANIMATION_DURATION_LOGO: 50,
+    ANIMATION_DURATION: 700,
+    ANIMATION_DURATION_LOGO: 300,
     LOGO_DELAY_COMBINED: 0,
     LOGO_DELAY: 0,
     ENABLE_EXPORT: true,
@@ -161,14 +161,7 @@ export const MOBILE_SIMULATOR_CONFIG = {
 };
 
 export const LOGO_DESIGN = {
-  "0,0": {
-    "type": "combined_normal",
-    "left": 199,
-    "top": 23,
-    "width": 1681,
-    "height": 144,
-    "combined": true
-  },
+
   "7,4": "logo",
   "7,5": {
     "type": "combined_red",
@@ -356,47 +349,47 @@ export const LOGO_DESIGN = {
     "type": "combined_normal",
     "left": 199,
     "top": 765,
-    "width": 197,
+    "width": 303,
     "height": 144,
     "combined": true
   },
-  "14,4": {
+  "14,6": {
     "type": "combined_normal",
-    "left": 411,
+    "left": 517,
     "top": 765,
     "width": 303,
     "height": 144,
     "combined": true
   },
-  "14,10": {
+  "14,12": {
     "type": "combined_normal",
-    "left": 729,
+    "left": 835,
     "top": 765,
     "width": 303,
     "height": 144,
     "combined": true
   },
-  "14,16": {
+  "14,18": {
     "type": "combined_normal",
-    "left": 1047,
+    "left": 1153,
     "top": 765,
     "width": 303,
     "height": 144,
     "combined": true
   },
-  "14,22": {
+  "14,24": {
     "type": "combined_normal",
-    "left": 1365,
+    "left": 1471,
     "top": 765,
     "width": 303,
     "height": 144,
     "combined": true
   },
-  "14,28": {
-    "type": "combined_normal",
-    "left": 1683,
+  "14,30": {
+    "type": "combined_logo",
+    "left": 1789,
     "top": 765,
-    "width": 197,
+    "width": 91,
     "height": 144,
     "combined": true
   }

@@ -27,12 +27,12 @@ body::before {
     z-index: 9995;
     image-rendering: auto;
 }
-/* styles.css - Agregar al inicio o en la sección de variables */
+
 
 :root {
-    /* ... tus variables existentes ... */
     
-    /* 🔥 GLOW BLANCO PARA FLECHAS ACTIVAS */
+    
+    
     --text-shadow-white-active: 
         0 0 10px rgba(255, 255, 255, 1),
         0 0 20px rgba(255, 255, 255, 0.8),
@@ -66,7 +66,7 @@ body::after {
     background-size: 100% 4px;
 }
 
-/* ===== GLITCH OCASIONAL ===== */
+
 @keyframes glitch {
     0% { transform: translate(0, 0); opacity: 1; }
     1% { transform: translate(-2px, 1px); opacity: 0.95; }
@@ -88,7 +88,7 @@ body::after {
     animation: glitch 8s ease-in-out infinite;
 }
 
-/* ===== GRAIN (ARRIBA DE TODOS) ===== */
+
 #grain-overlay {
     position: fixed;
     top: 0;
@@ -111,7 +111,7 @@ body::after {
     height: 100%;
     pointer-events: none;
     z-index: 9995;
-    /* Sin blur, solo el blend y el color */
+    
     opacity: .25;
     background: hsl(0, 0%, 0%);
     mix-blend-mode: color-dodge;
@@ -128,14 +128,14 @@ body::after {
     opacity: .20;
     background: hsl(0, 0%, 65%);
     mix-blend-mode: color-dodge;
-    /* FORZAR GPU */
+    
     will-change: transform;
     transform: translateZ(0);
-    /* Reducir calidad de renderizado en movimiento */
+    
     image-rendering: auto;
 }
 
-/* ===== BLOOM (DEBAJO DEL GAUSSIAN) ===== */
+
 #bloom-overlay {
     position: fixed;
     top: 0;
@@ -144,36 +144,36 @@ body::after {
     height: 100%;
     pointer-events: none;
     z-index: 9993;
-    /* UN SOLO OVERLAY CON 3 CAPAS COMBINADAS */
+    
     background: 
-        /* Capa 1: Base amplia y suave */
+        
         radial-gradient(ellipse at 50% 45%, 
             rgba(var(--color-primary-rgb), 0.12) 0%, 
             rgba(var(--color-primary-rgb), 0.02) 40%,
             transparent 65%
         ),
-        /* Capa 2: Núcleo más intenso */
+        
         radial-gradient(ellipse at 50% 45%, 
             rgba(var(--color-primary-rgb), 0.20) 0%, 
             rgba(var(--color-primary-rgb), 0.05) 25%,
             transparent 45%
         ),
-        /* Capa 3: Toque cálido (el que antes era el segundo overlay) */
+        
         radial-gradient(ellipse at 50% 45%, 
             rgba(255, 200, 100, 0.04) 0%,
             rgba(var(--color-primary-rgb), 0.03) 30%,
             transparent 55%
         );
-    /* FORZAR GPU */
+    
     will-change: transform;
     transform: translateZ(0);
-    /* Evitar re-renderizados innecesarios */
+    
     backface-visibility: hidden;
-    /* Aislar para mejor rendimiento */
+    
     contain: layout style paint;
 }
 
-/* ===== COLOR DODGE (DEBAJO DEL BLOOM) ===== */
+
 #color-dodge-overlay {
     position: fixed;
     top: 0;
@@ -187,7 +187,7 @@ body::after {
     background: transparent;
 }
 
-/* ===== ANIMACIONES MÁS FUERTES ===== */
+
 @keyframes screenFlicker {
   0% { opacity: 1; }
   3% { opacity: 0.75; }
@@ -217,7 +217,7 @@ body::after {
   100% { opacity: 1; }
 }
 
-/* ===== SCANLINES EN MOVIMIENTO ===== */
+
 @keyframes scanMove {
   0% { background-position: 0 0; }
   100% { background-position: 0 1%; }
@@ -243,7 +243,7 @@ body::after {
     overflow: hidden;
     border-radius: 50px 50px 70px 70px / 30px 30px 50px 50px;
     border: var(--border-primary-light);
-    /* SOLO FLICKER (sin screenWarp) */
+    
     animation: screenFlicker 12s ease-in-out infinite, 
                flickerFast 3s ease-in-out 2s infinite;
     
@@ -282,7 +282,7 @@ body::after {
     );
     border-radius: 50%;
     mix-blend-mode: multiply;
-    /* No aplicar a elementos con isolation: isolate */
+    
     pointer-events: none;
 }
 
@@ -321,7 +321,7 @@ body::after {
 }
 
 
-/* ===== GLOW DE 10px PERMANENTE PARA ELEMENTOS CON FILL PRIMARIO (red) ===== */
+
 .grid-cell[data-state="red"],
 .logo-cell[data-state="red"],
 .grid-cell[data-state="combined_red"],
@@ -330,11 +330,11 @@ body::after {
 .logo-cell[data-state="combined"] {
     box-shadow: 0 0 10px var(--color-primary),
                 0 0 40px rgba(var(--color-primary-rgb), 0.3),
-                /*0 0 80px rgba(var(--color-primary-rgb), 0.15),*/
+                
                 inset 0 0 40px rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
-/* ===== GLOW DE 43px PERMANENTE PARA ELEMENTOS CON OUTLINE ROJO (normal) ===== */
+
 .grid-cell:not([data-state]):not([data-state="off"]),
 .logo-cell:not([data-state]):not([data-state="off"]),
 .grid-cell[data-state="normal"],
@@ -343,12 +343,12 @@ body::after {
 .logo-cell[data-state="combined_normal"] {
     box-shadow: 
         0 0 15px rgba(var(--color-primary-rgb), 0.5),
-        /*0 0 43px rgba(var(--color-primary-rgb), 0.15),*/
-        /*0 0 80px rgba(var(--color-primary-rgb), 0.08),*/
+        
+        
         inset 0 0 20px rgba(var(--color-primary-rgb), 0.12) !important;
 }
 
-/* ===== BORDE BLANCO INTERNO CON INSET BOX-SHADOW ===== */
+
 .grid-cell[data-state="logo"],
 .logo-cell[data-state="logo"],
 .grid-cell[data-state="combined_logo"],
@@ -357,8 +357,8 @@ body::after {
     border-color: transparent !important;
     box-shadow: inset 0 0 0 4px var(--color-secondary),
                 0 0 5px rgba(var(--color-secondary-rgb), 1),
-                /*0 0 30px rgba(var(--color-secondary-rgb), 0.1),*/
-                /*0 0 60px rgba(var(--color-secondary-rgb), 0.05),*/
+                
+                
                 inset 0 0 15px rgba(var(--color-secondary-rgb), 0.5) !important;
 }
 
@@ -379,7 +379,7 @@ body::after {
     border-color: transparent !important;
 }
 
-/* ===== HOVER PARA CELDAS NORMALES ===== */
+
 .grid-cell:not(.off):not([data-state="logo"]):not([data-state="combined_logo"]):hover,
 .logo-cell:not(.off):not([data-state="logo"]):not([data-state="combined_logo"]):hover {
     border-color: var(--color-secondary) !important;
@@ -422,7 +422,7 @@ body::after {
                 var(--sidebar-inset);
 }
 
-/* Reemplazar la sección de .sidebar-text con esto: */
+
 
 .sidebar-text {
     position: absolute;
@@ -442,14 +442,14 @@ body::after {
     opacity: 1;
     text-shadow: var(--text-shadow-normal);
     isolation: isolate;
-    /* Centrado con transform, pero ajustado para incluir el cursor */
+    
     transform: translateX(-50%);
     display: flex;
     align-items: center;
     gap: 0;
 }
 
-/* Cursor parpadeante del lado IZQUIERDO - más pequeño y pegado */
+
 .sidebar-text::before {
     content: '';
     display: inline-block;
@@ -464,12 +464,12 @@ body::after {
                 0 0 5px rgba(var(--color-primary-rgb), 1);
 }
 
-/* Eliminar el ::after que estaba a la derecha */
+
 .sidebar-text::after {
     display: none;
 }
 
-/* El texto se muestra inline con el cursor */
+
 .sidebar-text .text-content {
     display: inline-block;
 }
@@ -651,7 +651,7 @@ body::after {
     }
 }
 
-/* ===== RESIZE HANDLES ===== */
+
 .resize-handle {
     position: absolute;
     pointer-events: all;
@@ -664,7 +664,7 @@ body::after {
     transform: translate(-50%, -50%) scale(1.3) !important;
 }
 
-/* Overlay para resize */
+
 #resize-overlay {
     position: fixed;
     top: 0;
@@ -676,7 +676,7 @@ body::after {
     cursor: default;
 }
 
-/* ===== MINI LOGO EN SIDEBAR ===== */
+
 .sidebar-logo-mini {
     position: absolute;
     z-index: 21;
@@ -700,56 +700,56 @@ body::after {
     box-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.5) !important;
 }
 
-/* ===== SIDEBAR ELEMENTOS - POR ENCIMA DEL VIGNETTE PERO DEBAJO DE LOS DEMAS ===== */
+
 .sidebar-text,
 .sidebar-logo-svg,
 .sidebar-logo-text,
 #color-picker-container,
 .sidebar-logo-mini {
-    z-index: 9996 !important;  /* Entre scanlines (9996) y grain (9997) */
+    z-index: 9996 !important;  
     position: relative;
 }
 
-/* Asegurar que el texto del logo tenga el z-index correcto */
+
 .sidebar-logo-text {
     z-index: 9996 !important;
     position: absolute;
 }
 
-/* Asegurar que el logo SVG tenga el z-index correcto */
+
 .sidebar-logo-svg {
     z-index: 9996 !important;
     position: absolute;
 }
 
-/* El color picker también */
+
 #color-picker-container {
     z-index: 9996 !important;
     position: absolute;
 }
 
-/* Los textos del sidebar */
+
 .sidebar-text {
     z-index: 9996 !important;
     position: absolute;
 }
 
-/* Desactivar scanlines (body::after) */
+
 body.no-scanlines::after {
     display: none !important;
 }
 
-/* Desactivar vignette (body::before) */
+
 body.no-vignette::before {
     display: none !important;
 }
 
-/* Desactivar flicker (#grid-container) */
+
 #grid-container.no-flicker {
     animation: none !important;
 }
 
-/* ===== DESACTIVAR GLOW ===== */
+
 body.no-glow .grid-cell,
 body.no-glow .logo-cell,
 body.no-glow .sidebar-text,
@@ -792,9 +792,9 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     box-shadow: inset 0 0 0 4px var(--color-secondary) !important;
 }
 
-/* styles.css - Agregar/actualizar */
 
-/* EMNLVEGA - Siempre color primary, sin blinking */
+
+
 .sidebar-text.logo-text-item::before {
     display: none !important;
 }
@@ -802,18 +802,18 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
 .sidebar-text.logo-text-item {
     letter-spacing: 6px !important;
     font-size: 14px !important;
-    color: var(--color-primary) !important; /* Siempre verde */
+    color: var(--color-primary) !important; 
     text-shadow: var(--text-shadow-normal);
 }
 
 .sidebar-text.logo-text-item:hover {
-    color: var(--color-secondary) !important; /* Solo hover cambia a blanco */
+    color: var(--color-secondary) !important; 
     text-shadow: var(--text-shadow-hover);
 }
 
-/* EMNLVEGA nunca debe tener estado active (blanco) */
+
 .sidebar-text.logo-text-item.active {
-    color: var(--color-primary) !important; /* Forzar verde */
+    color: var(--color-primary) !important; 
     text-shadow: var(--text-shadow-normal) !important;
 }
 #import-dialog.active {
@@ -821,7 +821,7 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
 }
 
 
-/* ===== SCROLLBARS ESTILIZADAS (GLOBAL) ===== */
+
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -842,13 +842,13 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     background: rgba(var(--color-primary-rgb), 0.6);
 }
 
-/* Scroll para firefox */
+
 * {
     scrollbar-width: thin;
     scrollbar-color: rgba(var(--color-primary-rgb), 0.3) rgba(0, 0, 0, 0.3);
 }
 
-/* ===== SCROLLBAR PARA EL DETALLE DE PROYECTOS ===== */
+
 .proyectos-detail::-webkit-scrollbar {
     width: 4px;
 }
@@ -867,7 +867,7 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     background: rgba(var(--color-primary-rgb), 0.5);
 }
 
-/* ===== SCROLLBAR PARA SETTINGS ===== */
+
 #settings-content::-webkit-scrollbar {
     width: 4px;
 }
@@ -886,7 +886,7 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     background: rgba(var(--color-primary-rgb), 0.5);
 }
 
-/* ===== SCROLLBAR PARA IMPORT DIALOG ===== */
+
 #import-content::-webkit-scrollbar {
     width: 4px;
 }
@@ -905,9 +905,9 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     background: rgba(var(--color-primary-rgb), 0.5);
 }
 
-/* styles.css - Agregar al final */
 
-/* Estilos ligeros para sobre-mi (sin glow pesado) */
+
+
 .sobre-mi-content {
     will-change: transform;
     backface-visibility: hidden;
@@ -921,7 +921,7 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     text-shadow: 0 0 15px rgba(var(--color-secondary-rgb), 0.2);
 }
 
-/* styles.css - Reemplazar toda la sección móvil con esto */
+
 
 /* ========================================
    MODO MÓVIL - ESTILOS LIGEROS CON GLOW
@@ -943,7 +943,7 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
    GLOW LIGERO PARA CELDAS EN MÓVIL
    ======================================== */
 
-/* 🔥 GLOW PARA CELDAS ROJAS (fill primary) - LIGERO */
+
 .mobile-device .grid-cell[data-state="red"],
 .mobile-device .logo-cell[data-state="red"],
 .mobile-device .grid-cell[data-state="combined_red"],
@@ -955,7 +955,7 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
         0 0 20px rgba(var(--color-primary-rgb), 0.08) !important;
 }
 
-/* 🔥 GLOW PARA CELDAS NORMALES (outline) - LIGERO */
+
 .mobile-device .grid-cell:not([data-state]):not([data-state="off"]),
 .mobile-device .logo-cell:not([data-state]):not([data-state="off"]),
 .mobile-device .grid-cell[data-state="normal"],
@@ -967,7 +967,7 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
         0 0 20px rgba(var(--color-primary-rgb), 0.05) !important;
 }
 
-/* 🔥 GLOW PARA CELDAS LOGO (outline blanco) - LIGERO */
+
 .mobile-device .grid-cell[data-state="logo"],
 .mobile-device .logo-cell[data-state="logo"],
 .mobile-device .grid-cell[data-state="combined_logo"],
@@ -1032,7 +1032,7 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
    BOTONES DEL SIDEBAR MÓVIL - BLOQUEADOS
    ======================================== */
 
-/* 🔥 BOTONES - NO INTERACTUABLES CON EL GRID */
+
 .mobile-device .mobile-btn-overlay {
     pointer-events: auto !important;
     cursor: pointer !important;
@@ -1045,21 +1045,20 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     -webkit-backdrop-filter: blur(4px) !important;
 }
 
-/* 🔥 BOTONES - HOVER */
+
 .mobile-device .mobile-btn-overlay:hover {
     border-color: var(--color-secondary) !important;
     background: rgba(var(--color-secondary-rgb), 0.08) !important;
     box-shadow: 0 0 30px rgba(var(--color-secondary-rgb), 0.1) !important;
 }
 
-/* 🔥 BOTONES - TOUCH */
+
 .mobile-device .mobile-btn-overlay:active {
     transform: scale(0.97) !important;
     border-color: var(--color-secondary) !important;
     background: rgba(var(--color-secondary-rgb), 0.12) !important;
 }
 
-/* 🔥 ICONOS DE BOTONES */
 .mobile-device .mobile-btn-overlay .btn-icon {
     font-size: 28px !important;
     color: var(--color-primary) !important;
@@ -1072,7 +1071,6 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     text-shadow: 0 0 30px rgba(var(--color-secondary-rgb), 0.3) !important;
 }
 
-/* 🔥 TEXTO DE BOTONES */
 .mobile-device .mobile-btn-overlay .btn-text {
     font-size: 10px !important;
     letter-spacing: 2px !important;
@@ -1087,7 +1085,6 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     text-shadow: 0 0 30px rgba(var(--color-secondary-rgb), 0.2) !important;
 }
 
-/* 🔥 LÍNEA DECORATIVA DE BOTONES */
 .mobile-device .mobile-btn-overlay .btn-line {
     width: 30% !important;
     height: 1px !important;
@@ -1132,7 +1129,7 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
         touch-action: none !important;
     }
     
-    /* Scroll en móvil */
+    
     .mobile-device .proyectos-detail,
     .mobile-device .sobre-mi-content,
     .mobile-device .contacto-content {

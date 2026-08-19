@@ -663,7 +663,7 @@ export function setupCellEvents(cell) {
 
 
 export function resetGrid(keepCombined = false) {
-    // Detener la animación del logo
+
     import('./logo.js').then(module => {
         module.stopLogoAnimation();
     }).catch(() => {});

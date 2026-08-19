@@ -1,5 +1,3 @@
-
-
 import { CONFIG } from '../../config.js';
 import { importDesignFromJSON } from '../../logo.js';
 import { resetGrid } from '../../interactions.js';
@@ -12,7 +10,6 @@ const MAX_RETRIES = 3;
 let photoTimeout = null;
 let textureWasVisibleBefore = true;
 let isRendering = false;
-
 
 const LIGHT_TEXT_SHADOW = `0 0 7px rgba(var(--color-primary-rgb), 1)`;
 const LIGHT_TEXT_SHADOW_ACTIVE = `0 0 15px rgba(var(--color-secondary-rgb), 1)`;
@@ -66,7 +63,6 @@ export function clearSobreMiState() {
         toggleTextureOverlay(false);
     }
     
-
     const photoCell = document.querySelector('.sobre-mi-content')?.closest?.('.grid-cell, .logo-cell');
     if (photoCell && photoCell._cleanupGlitch) {
         photoCell._cleanupGlitch();
@@ -140,7 +136,6 @@ export async function renderSobreMiContent() {
         const primaryRGB = CONFIG.COLORS.primaryRGB;
         const secondaryRGB = CONFIG.COLORS.secondaryRGB;
         
-
         if (titleCell) {
             const title = document.createElement('div');
             title.className = 'sobre-mi-content';
@@ -167,7 +162,6 @@ export async function renderSobreMiContent() {
             titleCell.appendChild(title);
         }
         
-
         if (photoCell) {
             if (photoTimeout) {
                 clearTimeout(photoTimeout);
@@ -250,33 +244,26 @@ export async function renderSobreMiContent() {
             let isFirstTransitionDone = false;
             let initialGlitchIndex = 0;
             
-
             function doInitialGlitchTransition() {
-
-                const blinks = 5 + Math.floor(Math.random() * 8); // 5-13 parpadeos
+                const blinks = 5 + Math.floor(Math.random() * 8);
                 let currentBlink = 0;
                 
                 function blink() {
                     if (currentBlink >= blinks) {
-
                         img1.style.opacity = '0';
                         colorOverlay.style.opacity = '0';
                         img2.style.opacity = '1';
                         isFirstTransitionDone = true;
                         initialGlitchTimeout = null;
-
                         scheduleNextGlitch();
                         return;
                     }
                     
-
                     if (currentBlink % 2 === 0) {
-
                         img1.style.opacity = '1';
                         colorOverlay.style.opacity = '1';
                         img2.style.opacity = '0';
                     } else {
-
                         img1.style.opacity = '0';
                         colorOverlay.style.opacity = '0';
                         img2.style.opacity = '1';
@@ -284,16 +271,13 @@ export async function renderSobreMiContent() {
                     
                     currentBlink++;
                     
-
                     const delay = 50 + Math.random() * 250;
                     initialGlitchTimeout = setTimeout(blink, delay);
                 }
                 
-
                 setTimeout(blink, 200);
             }
             
-
             function doGlitch() {
                 if (isGlitching || !isFirstTransitionDone) return;
                 isGlitching = true;
@@ -326,7 +310,6 @@ export async function renderSobreMiContent() {
             
             let initialGlitchTimeout = null;
             
-
             photoTimeout = setTimeout(() => {
                 doInitialGlitchTransition();
                 photoTimeout = null;
@@ -346,7 +329,6 @@ export async function renderSobreMiContent() {
             photoCell._cleanupGlitch = cleanupGlitch;
         }
         
-
         if (bioCell) {
             const bio = document.createElement('div');
             bio.className = 'sobre-mi-content';
@@ -404,21 +386,19 @@ export async function renderSobreMiContent() {
                 color: ${primaryColor};
                 text-shadow: ${LIGHT_TEXT_SHADOW};
             `;
-            bioText.textContent = `Desde los 6 años, cuando tuve mi primera computadora, supe que la tecnología sería lo mío, la usaba, la desarmaba, la entendía, la personalizaba, mis padres me bloqueaban la computadora y yo encontraba la forma de desbloquearla.
+            bioText.textContent = `Desde los 6 años cuando tuve mi primera computadora, supe que la tecnología sería lo mío, la usaba, la desarmaba, la entendía, la personalizaba, mis padres me bloqueaban la computadora y yo encontraba la forma de desbloquearla.
 
 A los 12 años me harté de los fondos de pantalla genéricos, así que descargué Photoshop e Illustrator y empecé a crear los míos, Daft Punk y TRON: El Legado fueron mis mayores inspiraciones.
 
-En la preparatoria, mientras otros hacían calculadoras en Visual Basic 6.0, yo recreé Space Invaders, sin IA, sin tutoriales, puro escribir mi lógica y con mi obsesión por entender cómo funcionan las cosas, curiosamente, la IA de los enemigos la programé con una barra invisible que cambiaba de tamaño y velocidad aleatoriamente.
+En la preparatoria mientras otros hacían calculadoras en Visual Basic 6.0, yo recreé Space Invaders, sin IA, sin tutoriales, puro escribir mi lógica y con mi obsesión por entender cómo funcionan las cosas, curiosamente, la IA de los enemigos la programé con una barra invisible que cambiaba de tamaño y velocidad aleatoriamente.
 
 He sido diseñador, programador, editor de video, y todo lo que se necesite, he trabajado en proyectos de branding, desarrollo web completo, sistemas internos y material promocional, soy un One Man Army.
 
-Hoy, después de años de aprendizaje autodidacta y una carrera en Ingeniería de Desarrollo de Software, sigo teniendo el deseo y la curiosidad de entender todo y poder responder el "Por qué?" de las cosas.
+Después de años de aprendizaje autodidacta y una carrera en Ingeniería de Desarrollo de Software, sigo teniendo el deseo y la curiosidad de entender todo y poder responder el "Por qué?" de las cosas.
 
 Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguiré, No importa el obstáculo, siempre encuentro la forma. Mis mayores inspiraciones: Daft Punk, TRON y Gundam.`;
-
-            bio.appendChild(bioText);
             
-
+            bio.appendChild(bioText);
             
             const styleScroll = document.createElement('style');
             styleScroll.textContent = `
@@ -441,116 +421,147 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
             bioCell.appendChild(bio);
         }
         
+        if (skillsCell) {
+            const skills = document.createElement('div');
+            skills.className = 'sobre-mi-content';
+            skills.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 15px 25px;
+                pointer-events: none;
+                z-index: 20;
+            `;
+            
+            const skillsTitle = document.createElement('div');
+            skillsTitle.textContent = 'HABILIDADES';
+            skillsTitle.style.cssText = `
+                color: ${secondaryColor};
+                font-size: 15px;
+                letter-spacing: 5px;
+                font-weight: bold;
+                margin-bottom: 10px;
+                text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
+            `;
+            skills.appendChild(skillsTitle);
+            
+            const skillsGrid = document.createElement('div');
+            skillsGrid.style.cssText = `
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 5px 12px;
+                max-width: 95%;
+            `;
+            
+            const habilidades = [
+                { icon: '◆', name: 'DISEÑO GRAFICO' },
+                { icon: '◈', name: 'ILUSTRACION DIGITAL' },
+                { icon: '◉', name: 'DESARROLLO WEB' },
+                { icon: '◊', name: 'FOTOGRAFIA' },
+                { icon: '◇', name: 'UI/UX' },
+                { icon: '□', name: 'FRONTEND' },
+                { icon: '△', name: 'BRANDING' },
+                { icon: '▽', name: 'BACKEND' },
+                { icon: '◍', name: 'CREATIVIDAD' },
+                { icon: '◆', name: 'ADAPTABILIDAD' },
+                { icon: '◉', name: 'AUTODIDACTA' },
+                { icon: '◊', name: 'RESOLUCIÓN DE PROBLEMAS' }
+            ];
+            
+            habilidades.forEach(h => {
+                const item = document.createElement('div');
+                item.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    gap: 0;
+                    font-size: 10px;
+                    letter-spacing: 1.5px;
+                    color: ${primaryColor};
+                    text-shadow: ${LIGHT_TEXT_SHADOW};
+                    transition: all 0.2s ease;
+                    cursor: default;
+                    font-family: 'Courier New', monospace;
+                    text-transform: uppercase;
+                    position: relative;
+                `;
+                
+                const iconBox = document.createElement('div');
+                    iconBox.style.cssText = `
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 35px;
+                        height: 25px;
+                        background: rgba(${primaryRGB}, 1);
+                        border-radius: 4px 0 0 4px;
+                        color: ${CONFIG.COLORS.background};
+                        text-shadow: none;
+                        font-size: 17px;
+                        flex-shrink: 0;
+                        transition: all 0.2s ease;
+                        box-shadow: 0 0 20px rgba(${primaryRGB}, 0.13);
+                    `;
+                    iconBox.textContent = h.icon;
 
-if (skillsCell) {
-    const skills = document.createElement('div');
-    skills.className = 'sobre-mi-content';
-    skills.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 15px 25px;
-        pointer-events: none;
-        z-index: 20;
-    `;
-    
-    const skillsTitle = document.createElement('div');
-    skillsTitle.textContent = 'HABILIDADES';
-    skillsTitle.style.cssText = `
-        color: ${secondaryColor};
-        font-size: 15px;
-        letter-spacing: 5px;
-        font-weight: bold;
-        margin-bottom: 10px;
-        text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
-    `;
-    skills.appendChild(skillsTitle);
-    
-    const skillsGrid = document.createElement('div');
-    skillsGrid.style.cssText = `
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 6px 12px;
-        max-width: 95%;
-    `;
-    
-    const habilidades = [
-        { icon: '◆', name: 'DISEÑO GRAFICO' },
-        { icon: '◈', name: 'ILUSTRACION DIGITAL' },
-        { icon: '◉', name: 'DESARROLLO WEB' },
-        { icon: '◊', name: 'FOTOGRAFIA' },
-        { icon: '◇', name: 'UI/UX' },
-        { icon: '○', name: 'EDICION DE VIDEO' },
-        { icon: '□', name: 'FRONTEND' },
-        { icon: '△', name: 'BRANDING' },
-        { icon: '▽', name: 'BACKEND' },
-        { icon: '◍', name: 'CREATIVIDAD' },
-        { icon: '●', name: 'RESOLUCION' },
-        { icon: '◆', name: 'ADAPTABILIDAD' },
-        { icon: '◈', name: 'PENSAMIENTO' },
-        { icon: '◉', name: 'AUTODIDACTA' },
-        { icon: '◊', name: 'RESOLUCIÓN DE PROBLEMAS' }
-    ];
-    
-    habilidades.forEach(h => {
-        const item = document.createElement('div');
-        item.style.cssText = `
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            font-size: 12px;
-            letter-spacing: 1.5px;
-            padding: 3px 3px;
-            color: ${primaryColor};
-            text-shadow: ${LIGHT_TEXT_SHADOW};
-            border: 1px solid ${primaryColor};
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            cursor: default;
-            background: rgba(${primaryRGB}, 0.03);
-            box-shadow: 0 0 15px rgba(${primaryRGB}, 0.08),
-                        0 0 30px rgba(${primaryRGB}, 0.04),
-                        inset 0 0 20px rgba(${primaryRGB}, 0.03);
-        `;
-        item.innerHTML = `<span style="font-size:11px;color:${primaryColor};">${h.icon}</span> ${h.name}`;
-        
-        item.addEventListener('mouseenter', () => {
-            item.style.borderColor = secondaryColor;
-            item.style.color = secondaryColor;
-            item.style.textShadow = LIGHT_TEXT_SHADOW_HOVER;
-            item.style.background = `rgba(${secondaryRGB}, 0.05)`;
-            item.style.boxShadow = `0 0 5px rgba(${secondaryRGB}, 1),
-                                    0 0 30px rgba(${secondaryRGB}, 0.2),
-                                    0 0 60px rgba(${secondaryRGB}, 0.08),
-                                    inset 0 0 30px rgba(${secondaryRGB}, 0.05)`;
-            item.style.transform = 'scale(1.05)';
-        });
-        item.addEventListener('mouseleave', () => {
-            item.style.borderColor = primaryColor;
-            item.style.color = primaryColor;
-            item.style.textShadow = LIGHT_TEXT_SHADOW;
-            item.style.background = `rgba(${primaryRGB}, 0.03)`;
-            item.style.boxShadow = `0 0 15px rgba(${primaryRGB}, 0.08),
-                                    0 0 30px rgba(${primaryRGB}, 0.04),
-                                    inset 0 0 20px rgba(${primaryRGB}, 0.03)`;
-            item.style.transform = 'scale(1)';
-        });
-        
-        skillsGrid.appendChild(item);
-    });
-    
-    skills.appendChild(skillsGrid);
-    skillsCell.appendChild(skills);
-}
-        
+                    const nameBox = document.createElement('div');
+                    nameBox.style.cssText = `
+                        display: flex;
+                        align-items: center;
+                        padding: 0 10px;
+                        height: 25px;
+                        background: rgba(${primaryRGB}, 0.1);
+                        border-radius: 0 4px 4px 0;
+                        color: ${primaryColor};
+                        text-shadow: ${LIGHT_TEXT_SHADOW};
+                        font-size: 10px;
+                        letter-spacing: 1.5px;
+                        flex-grow: 1;
+                        transition: all 0.2s ease;
+                        white-space: nowrap;
+                        box-shadow: 0 0 10px rgba(${primaryRGB}, 0.13);
 
+                    `;
+                    nameBox.textContent = h.name;
+                item.appendChild(iconBox);
+                item.appendChild(nameBox);
+                
+                item.addEventListener('mouseenter', () => {
+                    iconBox.style.background = `rgba(${secondaryRGB}, 0.7)`;
+                    iconBox.style.borderColor = secondaryColor;
+                    iconBox.style.color = CONFIG.COLORS.background;
+                    iconBox.style.textShadow = `0 0 10px ${secondaryColor}`;
+                    
+                    nameBox.style.background = `rgba(${secondaryRGB}, 0.1)`;
+                    nameBox.style.borderColor = secondaryColor;
+                    nameBox.style.color = secondaryColor;
+                    nameBox.style.textShadow = LIGHT_TEXT_SHADOW_HOVER;
+                });
+
+                item.addEventListener('mouseleave', () => {
+                    iconBox.style.background = `rgba(${primaryRGB}, 0.7)`;
+                    iconBox.style.borderColor = primaryColor;
+                    iconBox.style.color = CONFIG.COLORS.background;
+                    iconBox.style.textShadow = 'none';
+                    
+                    nameBox.style.background = `rgba(${primaryRGB}, 0.1)`;
+                    nameBox.style.borderColor = primaryColor;
+                    nameBox.style.color = primaryColor;
+                    nameBox.style.textShadow = LIGHT_TEXT_SHADOW;
+                });
+                
+                skillsGrid.appendChild(item);
+            });
+            
+            skills.appendChild(skillsGrid);
+            skillsCell.appendChild(skills);
+        }
+        
         if (toolsCell) {
             const tools = document.createElement('div');
             tools.className = 'sobre-mi-content';
@@ -599,14 +610,8 @@ if (skillsCell) {
                 <div>
                     <span style="color:${secondaryColor};">DESARROLLO:</span> HTML · CSS · JavaScript · React · Node.js · Python · SQL
                 </div>
-                <div>
-                    <span style="color:${secondaryColor};">OTROS:</span> Wix · Wix Velo · Visual Basic 6.0 · Git
-                </div>
                 <div style="margin-top:4px; padding-top:6px; border-top:1px solid ${secondaryColor}; font-style:italic; font-size:12px; color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW};">
-                    Tengo excelente intuicion para aprender cualquier herramienta o tecnologia, incluso las mas complejas y avanzadas.
-                </div>
-                <div style="margin-top:2px; font-size:9px; letter-spacing:2px; color:${secondaryColor}; text-shadow:${LIGHT_TEXT_SHADOW_ACTIVE};">
-                    INGLES Y ESPAÑOL · HABLADO Y ESCRITO
+                    Tengo excelente intuición para aprender cualquier herramienta o tecnología, incluso las más complejas, no me enfoco en listar todas las herramientas que ya sé, solo unas, porque lo importante es la forma de pensar creativa y la capacidad para resolver problemas, puedo usar cualquier herramienta y cualquier lenguaje.
                 </div>
             `;
             
@@ -614,7 +619,6 @@ if (skillsCell) {
             toolsCell.appendChild(tools);
         }
         
-
         if (defineCell) {
             const define = document.createElement('div');
             define.className = 'sobre-mi-content';
@@ -690,7 +694,7 @@ if (skillsCell) {
             define.appendChild(defineGrid);
             
             const frase = document.createElement('div');
-            frase.textContent = 'IF LOVE IS THE ANSWER YOU\'RE HOME';
+            frase.textContent = 'RANDOM ACCESS MEMORIES';
             frase.style.cssText = `
                 color: ${secondaryColor};
                 font-size: 14px;

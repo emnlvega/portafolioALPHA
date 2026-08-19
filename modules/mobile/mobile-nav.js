@@ -8,7 +8,7 @@ import { renderMobileSobreMi } from './mobile-sobremi.js';
 import { renderMobileProyectos } from './mobile-proyectos.js';
 import { renderMobileProyectoDetalle } from './mobile-proyecto-detalle.js';
 import { renderMobileContacto } from './mobile-contacto.js';
-
+import { removeMobileHomeLetters } from './mobile-home.js';
 
 let currentMobilePage = 'inicio';
 let navButtonsCreated = false;
@@ -39,6 +39,9 @@ export function volverAProyectos() {
 }
 
 export function navigateMobileTo(page) {
+    if (page !== 'inicio') {
+        removeMobileHomeLetters();
+    }
     document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator, .mobile-sobremi-content, .mobile-home-content, .mobile-proyecto-detalle-content, .mobile-contacto-content, .mobile-contacto-social-item, .mobile-contacto-info').forEach(el => el.remove());
     
     const container = document.getElementById('grid-container');

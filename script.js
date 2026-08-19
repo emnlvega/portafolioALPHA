@@ -22,7 +22,18 @@ import { startLogoAnimation, stopLogoAnimation, enableLogoAnimation, disableLogo
 
 let gridData = null;
 let isLogoAnimationRunning = false;
+let isInicioContentClickable = false;
 let isInitialized = false;
+let proyectosData = null;
+
+window.setInicioClickable = function(value) {
+    isInicioContentClickable = value;
+    if (value) {
+        enableInicioClicks();
+    } else {
+        disableInicioClicks();
+    }
+};
 
 function blockSidebarInteraction() {
     const sidebarItems = document.querySelectorAll('.sidebar-text, .sidebar-cell');
@@ -38,26 +49,406 @@ function unblockSidebarInteraction() {
     });
 }
 
+async function loadProyectosData() {
+    if (proyectosData) return proyectosData;
+    try {
+        const response = await fetch('./modules/sidebar/data/proyectos.json');
+        proyectosData = await response.json();
+        return proyectosData;
+    } catch (e) {
+        console.error('Error loading proyectos data:', e);
+        return null;
+    }
+}
+
+function renderBienvenido() {
+    const titleCell = Array.from(document.querySelectorAll('.grid-cell, .logo-cell')).find(c => 
+        c.dataset.combined === 'true' && 
+        parseInt(c.dataset.designRow) === 0 && 
+        parseInt(c.dataset.designCol) === 0
+    );
+    
+    if (!titleCell) return;
+    
+    const bienvenido = document.createElement('div');
+    bienvenido.className = 'inicio-bienvenido';
+    bienvenido.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: ${CONFIG.COLORS.primary};
+        font-family: 'Courier New', monospace;
+        font-size: 28px;
+        letter-spacing: 15px;
+        text-transform: uppercase;
+        text-shadow: 0 0 10px ${CONFIG.COLORS.primary},
+                     0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.5),
+                     0 0 60px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+        pointer-events: none;
+        z-index: 20;
+        user-select: none;
+    `;
+    bienvenido.textContent = 'BIENVENIDO  :)';
+    titleCell.appendChild(bienvenido);
+}
+
+async function renderProyectosInicio() {
+    const data = await loadProyectosData();
+    if (!data || !data.projects || data.projects.length === 0) return;
+    
+    const projectCells = [
+        { row: 14, col: 0 },
+        { row: 14, col: 6 },
+        { row: 14, col: 12 },
+        { row: 14, col: 18 },
+        { row: 14, col: 24 }
+    ];
+    
+    const shuffled = [...data.projects].sort(() => Math.random() - 0.5).slice(0, 5);
+    
+    projectCells.forEach((pos, index) => {
+        if (index >= shuffled.length) return;
+        const project = shuffled[index];
+        
+        const cell = Array.from(document.querySelectorAll('.grid-cell, .logo-cell')).find(c => 
+            c.dataset.combined === 'true' && 
+            parseInt(c.dataset.designRow) === pos.row && 
+            parseInt(c.dataset.designCol) === pos.col
+        );
+        
+        if (!cell) return;
+        
+        cell.style.pointerEvents = 'none';
+        cell.style.cursor = 'pointer';
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'inicio-proyecto';
+        wrapper.dataset.projectId = project.id; // Para identificar
+        wrapper.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 20;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        `;
+        
+
+        if (!isInicioContentClickable) {
+            wrapper.style.pointerEvents = 'none'; // Deshabilitar clicks
+            wrapper.style.cursor = 'default';
+        }
+        
+        const bgImg = document.createElement('img');
+        bgImg.src = `https://picsum.photos/seed/${project.name.replace(/\s/g, '')}/600/400`;
+        bgImg.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+            filter: grayscale(1);
+            transition: all 0.3s ease;
+        `;
+        wrapper.appendChild(bgImg);
+        
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: ${CONFIG.COLORS.primary};
+            mix-blend-mode: color;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        `;
+        wrapper.appendChild(overlay);
+        
+        const title = document.createElement('div');
+        title.style.cssText = `
+            position: relative;
+            z-index: 2;
+            color: ${CONFIG.COLORS.secondary};
+            font-size: 18px;
+            letter-spacing: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            text-align: center;
+            padding: 10px;
+            border-radius: 4px;
+        `;
+        title.textContent = project.name;
+        wrapper.appendChild(title);
+        
+
+        wrapper.addEventListener('mouseenter', () => {
+            wrapper.style.boxShadow = `0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
+            bgImg.style.opacity = '0.6';
+            bgImg.style.transform = 'scale(1.05)';
+            title.style.textShadow = `0 0 30px rgba(255, 255, 255, 1)`;
+        });
+        
+        wrapper.addEventListener('mouseleave', () => {
+            wrapper.style.boxShadow = 'none';
+            bgImg.style.opacity = '0.4';
+            bgImg.style.transform = 'scale(1)';
+            title.style.textShadow = `0 0 20px rgba(255, 255, 255, 0.8)`;
+        });
+        
+
+        wrapper.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        
+
+        if (!isInicioContentClickable) return;
+        
+        removeInicioContent();
+        
+        disableLogoAnimation();
+        stopLogoAnimation();
+        setOnInicio(false);
+        setHashLoad(false);
+        
+
+        window.selectedProjectId = project.id;
+        
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar && !sidebar.classList.contains('active')) {
+            sidebar.classList.add('active');
+            const toggle = document.querySelector('.sidebar-toggle');
+            if (toggle) {
+                toggle.classList.add('active');
+            }
+        }
+        
+        if (gridData) {
+            const existingOverlay = document.querySelector('.sidebar-overlay');
+            if (!existingOverlay) {
+                animateSidebar(
+                    gridData.sidebarCells,
+                    gridData.rows,
+                    gridData.cellSize,
+                    gridData.offsetX || 0,
+                    gridData.offsetY || 0
+                );
+            }
+        }
+        
+
+        handleSidebarAction('proyectos');
+        
+
+        const url = `index.html#${project.id}`;
+        window.history.pushState({}, '', url);
+    });
+        
+        cell.appendChild(wrapper);
+    });
+    
+
+    const verMasCell = Array.from(document.querySelectorAll('.grid-cell, .logo-cell')).find(c => 
+        c.dataset.combined === 'true' && 
+        parseInt(c.dataset.designRow) === 14 && 
+        parseInt(c.dataset.designCol) === 30
+    );
+    
+    if (verMasCell) {
+        verMasCell.style.pointerEvents = 'none';
+        
+        const verMas = document.createElement('div');
+        verMas.className = 'inicio-vermas';
+        verMas.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 20;
+            color: ${CONFIG.COLORS.primary};
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            font-size: 48px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        `;
+        
+        verMas.textContent = '▶';
+        
+
+        if (!isInicioContentClickable) {
+            verMas.style.pointerEvents = 'none';
+            verMas.style.cursor = 'default';
+        }
+        
+        verMas.addEventListener('mouseenter', () => {
+            verMas.style.color = CONFIG.COLORS.secondary;
+            verMas.style.textShadow = `0 0 30px rgba(255, 255, 255, 1)`;
+            verMas.style.transform = 'scale(1.2)';
+        });
+        
+        verMas.addEventListener('mouseleave', () => {
+            verMas.style.color = CONFIG.COLORS.secondary;
+            verMas.style.textShadow = `0 0 20px rgba(255, 255, 255, 0.8)`;
+            verMas.style.transform = 'scale(1)';
+        });
+        
+        verMas.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            if (!isInicioContentClickable) return;
+            
+            removeInicioContent();
+            
+            disableLogoAnimation();
+            stopLogoAnimation();
+            setOnInicio(false);
+            setHashLoad(false);
+            
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar && !sidebar.classList.contains('active')) {
+                sidebar.classList.add('active');
+                const toggle = document.querySelector('.sidebar-toggle');
+                if (toggle) {
+                    toggle.classList.add('active');
+                }
+            }
+            
+            if (gridData) {
+                const existingOverlay = document.querySelector('.sidebar-overlay');
+                if (!existingOverlay) {
+                    animateSidebar(
+                        gridData.sidebarCells,
+                        gridData.rows,
+                        gridData.cellSize,
+                        gridData.offsetX || 0,
+                        gridData.offsetY || 0
+                    );
+                }
+            }
+            
+            handleSidebarAction('proyectos');
+            
+            window.history.pushState({}, '', 'index.html#proyectos');
+        });
+        
+        verMasCell.appendChild(verMas);
+    }
+}
+
+function removeInicioContent() {
+
+    isInicioContentClickable = false;
+    
+    document.querySelectorAll('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas').forEach(el => {
+        el.remove();
+    });
+    
+    document.querySelectorAll('.grid-cell, .logo-cell').forEach(cell => {
+        const childNodes = Array.from(cell.childNodes);
+        childNodes.forEach(node => {
+            if (node.nodeType === 1) {
+                const el = node;
+                if (el.classList && (
+                    el.classList.contains('inicio-bienvenido') || 
+                    el.classList.contains('inicio-proyecto') || 
+                    el.classList.contains('inicio-vermas')
+                )) {
+                    el.remove();
+                }
+            }
+        });
+        
+        cell.style.pointerEvents = '';
+        cell.style.cursor = '';
+    });
+}
+
+window.removeInicioContent = removeInicioContent;
+
+function renderInicioContent() {
+    // Limpiar contenido anterior
+    removeInicioContent();
+    
+    // 🔥 Forzar un pequeño delay para asegurar que las celdas estén listas
+    setTimeout(() => {
+        renderBienvenido();
+        renderProyectosInicio();
+        
+        // Aplicar el estado actual de clicks
+        if (isInicioContentClickable) {
+            enableInicioClicks();
+        } else {
+            disableInicioClicks();
+        }
+    }, 50);
+}
+
+
+document.addEventListener('renderInicioContent', function() {
+
+    setTimeout(() => {
+        renderInicioContent();
+    }, 50);
+});
+
 function loadSpecialPage(page, projectId = null) {
+    removeInicioContent();
+    
     disableLogoAnimation();
     stopLogoAnimation();
     setOnInicio(false);
     setHashLoad(false);
     
-    animateSidebar(
-        gridData.sidebarCells,
-        gridData.rows,
-        gridData.cellSize,
-        gridData.offsetX,
-        gridData.offsetY
-    );
+    if (gridData) {
+        animateSidebar(
+            gridData.sidebarCells,
+            gridData.rows,
+            gridData.cellSize,
+            gridData.offsetX || 0,
+            gridData.offsetY || 0
+        );
+    }
     
     if (page === 'proyectos') {
+
+        if (projectId) {
+            window.selectedProjectId = projectId;
+        }
+        
         handleSidebarAction('proyectos');
+        
         if (projectId) {
             setTimeout(() => {
                 import('./modules/sidebar/pages/proyectos.js').then(module => {
-                    module.selectProjectById(projectId);
+                    if (module.selectProjectById) {
+                        module.selectProjectById(projectId);
+                    }
+                }).catch(err => {
+                    console.error('Error loading proyectos module:', err);
                 });
             }, 300);
         }
@@ -68,51 +459,101 @@ function loadSpecialPage(page, projectId = null) {
     }
 }
 
-function loadInicioNormal() {
-    disableLogoAnimation();
+function enableInicioClicks() {
+    document.querySelectorAll('.inicio-proyecto, .inicio-vermas').forEach(el => {
+        el.style.pointerEvents = 'auto';
+        el.style.cursor = 'pointer';
+
+        el.style.zIndex = '20';
+    });
+}
+
+
+function disableInicioClicks() {
+    document.querySelectorAll('.inicio-proyecto, .inicio-vermas').forEach(el => {
+        el.style.pointerEvents = 'none';
+        el.style.cursor = 'default';
+    });
+}
+
+function loadInicio(instant = false) {
+    // Limpiar todo antes de cargar
+    removeInicioContent();
     stopLogoAnimation();
     setHashLoad(false);
     setOnInicio(true);
     
-    animateSidebar(
-        gridData.sidebarCells,
-        gridData.rows,
-        gridData.cellSize,
-        gridData.offsetX,
-        gridData.offsetY
-    );
+    // Limpiar cualquier imagen de letras residual
+    const existingImage = document.getElementById('letters-animation-image');
+    if (existingImage) {
+        existingImage.remove();
+    }
     
-    importDesignFromJSON(LOGO_DESIGN, () => {
-        startFlickerOnInicio();
-    });
+    // Si es instant (desde botón/logo), habilitar y usar modo instantáneo
+    if (instant) {
+        enableLogoAnimation();
+        isLogoAnimationRunning = true;
+        blockSidebarInteraction();
+        startLogoAnimation(() => {
+            isLogoAnimationRunning = false;
+            unblockSidebarInteraction();
+            isInicioContentClickable = true;
+            enableInicioClicks();
+        }, true);
+    } else {
+        // Primera carga: animación secuencial
+        enableLogoAnimation();
+        isLogoAnimationRunning = true;
+        blockSidebarInteraction();
+        startLogoAnimation(() => {
+            isLogoAnimationRunning = false;
+            unblockSidebarInteraction();
+            isInicioContentClickable = true;
+            enableInicioClicks();
+        }, false);
+    }
+    
+    // 🔥 Solo animar sidebar si no hay overlay (primera carga)
+    if (gridData) {
+        const existingOverlay = document.querySelector('.sidebar-overlay');
+        if (!existingOverlay) {
+            animateSidebar(
+                gridData.sidebarCells,
+                gridData.rows,
+                gridData.cellSize,
+                gridData.offsetX || 0,
+                gridData.offsetY || 0
+            );
+        }
+    }
+    
+    // 🔥 Renderizar contenido de inicio con delay para asegurar que las celdas estén listas
+    setTimeout(() => {
+        renderInicioContent();
+    }, 100);
     
     setTimeout(() => {
         startRandomAnimations();
     }, 500);
 }
 
-function loadInicioAnimado() {
+document.addEventListener('loadInicioInstant', function() {
+    // Limpiar todo antes de cargar
+    removeInicioContent();
     stopLogoAnimation();
-    setHashLoad(false);
-    enableLogoAnimation(); // Asegurar que esté habilitada
-    setOnInicio(true);
-    isLogoAnimationRunning = true;
-    blockSidebarInteraction();
-    startLogoAnimation(() => {
-        isLogoAnimationRunning = false;
-        unblockSidebarInteraction();
+    
+    // 🔥 NO resetear las celdas, solo limpiar contenido de páginas
+    document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content').forEach(el => el.remove());
+    
+    document.querySelectorAll('.grid-cell, .logo-cell').forEach(cell => {
+        const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content');
+        children.forEach(child => child.remove());
     });
-    animateSidebar(
-        gridData.sidebarCells,
-        gridData.rows,
-        gridData.cellSize,
-        gridData.offsetX,
-        gridData.offsetY
-    );
-    setTimeout(() => {
-        startRandomAnimations();
-    }, 500);
-}
+    
+    // Cargar inicio en modo instantáneo
+    loadInicio(true);
+});
+
 
 function initMobileSimulatorFeature() {
     if (isMobile()) return;
@@ -772,7 +1213,6 @@ function init() {
     
     const hash = window.location.hash;
     
-    // DESHABILITAR animación del logo por defecto
     disableLogoAnimation();
     
     if (mobile) {
@@ -796,7 +1236,6 @@ function init() {
     }
     
     if (hash && hash !== '#inicio' && hash !== '#') {
-        // Special page direct load - NO logo animation
         setTimeout(() => {
             const result = handleURLOnLoad();
             if (result.page === 'proyectos') {
@@ -807,15 +1246,11 @@ function init() {
                 loadSpecialPage('contacto');
             }
         }, 100);
-    } else if (hash === '#inicio') {
-        // #inicio hash - use LOGO_DESIGN
-        loadInicioNormal();
     } else {
-        // NO hash - first load, use special animation
-        // HABILITAR animación del logo solo aquí
+        // 🔥 Primera carga: animación secuencial
         enableLogoAnimation();
         setTimeout(() => {
-            loadInicioAnimado();
+            loadInicio(false); // false = secuencial
         }, CONFIG.LOGO_DELAY || 500);
     }
 }
