@@ -515,5 +515,5 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                 }, itemDelay);
             });
         }, combinedDelay);
-    }, 300); // Esperar a que las restauraciones terminen
+    }, 300);
 }

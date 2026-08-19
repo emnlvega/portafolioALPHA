@@ -128,7 +128,7 @@ async function renderProyectosInicio() {
         
         const wrapper = document.createElement('div');
         wrapper.className = 'inicio-proyecto';
-        wrapper.dataset.projectId = project.id; // Para identificar
+        wrapper.dataset.projectId = project.id;
         wrapper.style.cssText = `
             position: absolute;
             top: 0;
@@ -148,7 +148,7 @@ async function renderProyectosInicio() {
         
 
         if (!isInicioContentClickable) {
-            wrapper.style.pointerEvents = 'none'; // Deshabilitar clicks
+            wrapper.style.pointerEvents = 'none';
             wrapper.style.cursor = 'default';
         }
         
@@ -360,32 +360,35 @@ async function renderProyectosInicio() {
 }
 
 function removeInicioContent() {
-
     isInicioContentClickable = false;
     
-
-    document.querySelectorAll('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas').forEach(el => {
-        el.remove();
-    });
+    const allSelectors = [
+        '.inicio-bienvenido', '.inicio-proyecto', '.inicio-vermas',
+        '.proyectos-content', '.proyectos-category', '.proyectos-item', 
+        '.proyectos-detail', '.proyectos-nav', '.proyectos-filter', 
+        '.proyectos-select-message', '.sobre-mi-content', '.contacto-content',
+        '.expand-btn'
+    ];
+    
+    document.querySelectorAll(allSelectors.join(',')).forEach(el => el.remove());
     
 
     document.querySelectorAll('.grid-cell, .logo-cell').forEach(cell => {
-
         const childNodes = Array.from(cell.childNodes);
         childNodes.forEach(node => {
             if (node.nodeType === 1) {
                 const el = node;
-                if (el.classList && (
-                    el.classList.contains('inicio-bienvenido') || 
-                    el.classList.contains('inicio-proyecto') || 
-                    el.classList.contains('inicio-vermas')
-                )) {
-                    el.remove();
+                if (el.classList) {
+                    const hasContent = allSelectors.some(selector => 
+                        el.matches && el.matches(selector)
+                    );
+                    if (hasContent) {
+                        el.remove();
+                    }
                 }
             }
         });
         
-
         cell.style.pointerEvents = '';
         cell.style.cursor = '';
         cell.style.boxShadow = 'none';
@@ -393,6 +396,8 @@ function removeInicioContent() {
         cell.style.backgroundColor = CONFIG.COLORS.background;
     });
 }
+
+window.removeInicioContent = removeInicioContent;
 
 window.removeInicioContent = removeInicioContent;
 
@@ -491,6 +496,35 @@ function loadInicio(instant = false) {
     stopLogoAnimation();
     setHashLoad(false);
     setOnInicio(true);
+    
+
+    const pageSelectors = [
+        '.proyectos-content', '.proyectos-category', '.proyectos-item', 
+        '.proyectos-detail', '.proyectos-nav', '.proyectos-filter', 
+        '.proyectos-select-message', '.sobre-mi-content', '.contacto-content',
+        '.expand-btn'
+    ];
+    document.querySelectorAll(pageSelectors.join(',')).forEach(el => el.remove());
+    
+
+    document.querySelectorAll('.grid-cell, .logo-cell').forEach(cell => {
+        const children = Array.from(cell.children);
+        children.forEach(child => {
+            const hasPageContent = pageSelectors.some(selector => 
+                child.matches && child.matches(selector)
+            );
+            if (hasPageContent) {
+                child.remove();
+            }
+        });
+        
+
+        cell.style.pointerEvents = '';
+        cell.style.cursor = '';
+        cell.style.boxShadow = 'none';
+        cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+        cell.style.backgroundColor = CONFIG.COLORS.background;
+    });
     
 
     const existingImage = document.getElementById('letters-animation-image');
@@ -1273,7 +1307,7 @@ function init() {
     
 
     if (mobile) {
-        applyMobileConfig(); // Esto establece las variables CSS
+        applyMobileConfig();
     }
     
     injectCSSVariables();
@@ -1355,7 +1389,7 @@ function init() {
 
         enableLogoAnimation();
         setTimeout(() => {
-            loadInicio(false); // false = secuencial
+            loadInicio(false);
         }, CONFIG.LOGO_DELAY || 500);
     }
 }

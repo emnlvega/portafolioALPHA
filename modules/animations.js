@@ -113,7 +113,7 @@ function calculateAnimationCount(availableCells, maxSimultaneous) {
     
 
     if (totalVisible >= 50) {
-        const percentage = (Math.random() * 0.025 + 0.005) * reductionFactor; // 0.3-1.8%
+        const percentage = (Math.random() * 0.025 + 0.005) * reductionFactor;
         let count = Math.max(1, Math.floor(totalAvailable * percentage));
         count = Math.min(count, Math.floor(maxSimultaneous * 0.2 * reductionFactor));
         count = Math.min(count, Math.floor(totalAvailable / 5));
@@ -122,7 +122,7 @@ function calculateAnimationCount(availableCells, maxSimultaneous) {
     
 
     if (totalVisible >= 20) {
-        const percentage = (Math.random() * 0.04 + 0.01) * reductionFactor; // 0.6-3%
+        const percentage = (Math.random() * 0.04 + 0.01) * reductionFactor;
         let count = Math.max(1, Math.floor(totalAvailable * percentage));
         count = Math.min(count, Math.floor(maxSimultaneous * 0.3 * reductionFactor));
         count = Math.min(count, Math.floor(totalAvailable / 4));

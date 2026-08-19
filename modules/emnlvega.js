@@ -344,7 +344,7 @@ function createLettersImage() {
     
     container.appendChild(img);
     
-    applyColorToImage(img, CONFIG.COLORS.primary);
+    applyColorToImage(img, CONFIG.COLORS.secondary);
     
     return img;
 }

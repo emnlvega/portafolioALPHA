@@ -170,7 +170,7 @@ export function repositionGrid(offsetX, offsetY) {
         const isSidebar = col < SIDEBAR_WIDTH;
         
         if (isSidebar) return;
-        if (cell.dataset.combined === 'true') return; // saltamos combinadas
+        if (cell.dataset.combined === 'true') return;
         
         const pos = getCellPosition(col, row, cellSize, offsetX, offsetY);
         cell.style.left = `${pos.x}px`;
@@ -206,12 +206,12 @@ export function repositionSidebarTexts(offsetX, offsetY) {
     
 
     const items = document.querySelectorAll('.sidebar-text');
-    const totalItems = items.length + 1; // +1 por el logo SVG
+    const totalItems = items.length + 1;
     const padding = 30;
     const availableHeight = sidebarHeight - (padding * 2);
     const spacing = availableHeight / (totalItems + 1);
     
-    let currentY = offsetY + padding + 15; // +15 por el logo (igual que en setup)
+    let currentY = offsetY + padding + 15;
     
     items.forEach((el, index) => {
 

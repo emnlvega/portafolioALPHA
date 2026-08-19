@@ -697,19 +697,57 @@ export function returnToMainLogo() {
 
     clearProjectSelection();
     
-    document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content, .inicio-bienvenido, .inicio-proyecto, .inicio-vermas').forEach(el => el.remove());
+
+    const selectors = [
+        '.proyectos-content', '.proyectos-category', '.proyectos-item', 
+        '.proyectos-detail', '.proyectos-nav', '.proyectos-filter', 
+        '.proyectos-select-message', '.sobre-mi-content', '.contacto-content',
+        '.inicio-bienvenido', '.inicio-proyecto', '.inicio-vermas',
+        '.expand-btn'
+    ];
     
+
+    document.querySelectorAll(selectors.join(',')).forEach(el => el.remove());
+    
+
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
-        const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content, .inicio-bienvenido, .inicio-proyecto, .inicio-vermas');
-        children.forEach(child => child.remove());
+
+        const children = Array.from(cell.children);
+        children.forEach(child => {
+
+            const hasPageContent = selectors.some(selector => 
+                child.matches && child.matches(selector)
+            );
+            if (hasPageContent) {
+                child.remove();
+            }
+        });
+        
+
+        cell.style.pointerEvents = '';
+        cell.style.cursor = '';
+        cell.style.boxShadow = 'none';
+        cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+        cell.style.backgroundColor = CONFIG.COLORS.background;
+        cell.style.zIndex = '';
+        cell.style.opacity = '1';
+        cell.style.transform = 'scale(1)';
     });
     
 
+    const textureOverlay = document.getElementById('overlay-container');
+    if (textureOverlay) {
+        textureOverlay.style.display = 'block';
+    }
+    
 
-
-
-
+    document.querySelectorAll('.mobile-proyectos-content, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator').forEach(el => el.remove());
+    
+    setGridInteractionsEnabled(false);
+    stopRandomAnimations();
+    resetGrid(true);
+    isProgrammaticLoad = true;
     
     setTimeout(() => {
         isSpecialPageActive = false;
@@ -721,7 +759,6 @@ export function returnToMainLogo() {
         updateSidebarActiveState();
         updateURL('inicio');
         
-
         const event = new CustomEvent('loadInicioInstant');
         document.dispatchEvent(event);
         

@@ -190,18 +190,6 @@ async function loadProyectosData() {
         categorias = ['TODOS', ...Array.from(cats)];
         return true;
     } catch (err) {
-        proyectosData = [
-            { id: 1, name: 'BRANDING', icon: '◆', category: 'DISEÑO' },
-            { id: 2, name: 'UI/UX', icon: '◈', category: 'DISEÑO' },
-            { id: 3, name: 'ILUSTRACION', icon: '◉', category: 'ARTE' },
-            { id: 4, name: 'MOTION', icon: '◊', category: 'ANIMACIÓN' },
-            { id: 5, name: 'WEB DESIGN', icon: '◇', category: 'WEB' },
-            { id: 6, name: 'APP DESIGN', icon: '○', category: 'DISEÑO' },
-            { id: 7, name: 'LOGO', icon: '□', category: 'BRANDING' },
-            { id: 8, name: 'PACKAGING', icon: '△', category: 'DISEÑO' },
-            { id: 9, name: 'FOTOGRAFIA', icon: '▽', category: 'ARTE' }
-        ];
-        categorias = ['TODOS', 'DISEÑO', 'ARTE', 'ANIMACIÓN', 'WEB', 'BRANDING'];
         return false;
     }
 }

@@ -51,12 +51,12 @@ let currentConfig = {
     
 
     ARCHITECT_MODE: {
-        ENABLED: true,          // Habilitar/deshabilitar completamente
-        TOGGLE_KEY: 'KeyA',     // Tecla para activar/desactivar
-        FONT_SIZE: 11,          // Tamaño de fuente de las coordenadas
-        OPACITY: 0.7,           // Opacidad del fondo de las etiquetas
-        SHOW_GRID: true,        // Mostrar borde de grid
-        COLOR: '#00ff91'        // Color de las coordenadas
+        ENABLED: true,
+        TOGGLE_KEY: 'KeyA',
+        FONT_SIZE: 11,
+        OPACITY: 1,
+        SHOW_GRID: false,
+        COLOR: '#ffffff'
     },
     
 
@@ -152,12 +152,12 @@ export const CONFIG = new Proxy(currentConfig, {
 });
 
 export const MOBILE_SIMULATOR_CONFIG = {
-    ENABLED: true,           // Habilitar/deshabilitar completamente
-    TOGGLE_KEY: 'KeyX',      // Tecla X
-    SHOW_COORDINATES: true,  // Mostrar botón de coordenadas
-    SHOW_EXPORT: true,       // Mostrar botón de exportar
-    SHOW_IMPORT: true,       // Mostrar botón de importar
-    SHOW_NAV_TOGGLE: true    // Mostrar botón toggle nav
+    ENABLED: false,
+    TOGGLE_KEY: 'KeyX',
+    SHOW_COORDINATES: true,
+    SHOW_EXPORT: true,
+    SHOW_IMPORT: true,
+    SHOW_NAV_TOGGLE: true
 };
 
 export const LOGO_DESIGN = {

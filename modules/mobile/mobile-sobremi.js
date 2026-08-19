@@ -356,10 +356,10 @@ function createSobreMiContent() {
                 clearTimeout(imageSwitchTimeout);
                 imageSwitchTimeout = null;
             }
-            const delay = 15000 + Math.random() * 25000; // 15-40 segundos
+            const delay = 15000 + Math.random() * 25000;
             imageSwitchTimeout = setTimeout(() => {
                 switchBaseImage();
-                scheduleImageSwitch(); // Programar el siguiente
+                scheduleImageSwitch();
             }, delay);
         }
         

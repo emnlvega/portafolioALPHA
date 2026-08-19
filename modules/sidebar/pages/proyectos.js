@@ -59,7 +59,7 @@ export const EXPANDED_DESIGN = {
 };
 
 const CATEGORY_ICONS = {
-    'DISEÑO GRAFICO': '◆',
+    '≤2021': '◆',
     'DISENO WEB': '◈',
     'FRONTEND': '◉',
     'BACKEND': '◊',

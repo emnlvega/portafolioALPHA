@@ -20,10 +20,6 @@ const OVERLAY_CONFIG = {
     IMAGE_COUNT: 17
 };
 
-/**
- * Inicializa el sistema de overlays
- */
-
 
 export function initOverlays() {
     stopOverlays();
@@ -94,9 +90,7 @@ export function initOverlays() {
     startOverlays(config.INTERVAL);
 }
 
-/**
- * Mezcla un array (Fisher-Yates)
- */
+
 function shuffleArray(array) {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -106,15 +100,13 @@ function shuffleArray(array) {
     return arr;
 }
 
-/**
- * Carga una imagen de overlay específica (cambio instantáneo)
- */
+
 function loadOverlayImage(index) {
     if (!overlayElement || imageCount === 0) return;
     
 
     const realIndex = shuffleOrder[index % shuffleOrder.length];
-    const imageNumber = realIndex + 1; // +1 porque las imágenes empiezan en 1
+    const imageNumber = realIndex + 1;
     
     const imagePath = `${OVERLAY_CONFIG.FOLDER}${imageNumber}.${OVERLAY_CONFIG.EXTENSION}`;
     
@@ -131,9 +123,7 @@ function loadOverlayImage(index) {
     void overlayElement.offsetHeight;
 }
 
-/**
- * Inicia el ciclo de overlays
- */
+
 function startOverlays(interval) {
     if (isRunning) return;
     isRunning = true;
@@ -150,9 +140,7 @@ function startOverlays(interval) {
     }, interval);
 }
 
-/**
- * Detiene el ciclo de overlays
- */
+
 export function stopOverlays() {
     isRunning = false;
     if (overlayInterval) {
@@ -161,9 +149,7 @@ export function stopOverlays() {
     }
 }
 
-/**
- * Pausa los overlays (mantiene la imagen actual)
- */
+
 export function pauseOverlays() {
     isRunning = false;
     if (overlayInterval) {
@@ -172,27 +158,21 @@ export function pauseOverlays() {
     }
 }
 
-/**
- * Reanuda los overlays
- */
+
 export function resumeOverlays() {
     if (isRunning) return;
     if (imageCount === 0) return;
     startOverlays(OVERLAY_CONFIG.INTERVAL);
 }
 
-/**
- * Cambia a una imagen específica (0-indexed en el orden)
- */
+
 export function setOverlayImage(index) {
     if (!overlayElement || imageCount === 0) return;
     currentIndex = index % shuffleOrder.length;
     loadOverlayImage(currentIndex);
 }
 
-/**
- * Cambia la opacidad del overlay (instantáneo)
- */
+
 export function setOverlayOpacity(opacity) {
     if (!overlayElement) return;
     OVERLAY_CONFIG.OPACITY = Math.max(0, Math.min(1, opacity));
@@ -203,18 +183,14 @@ export function setOverlayOpacity(opacity) {
     }
 }
 
-/**
- * Cambia el modo de blending (instantáneo)
- */
+
 export function setOverlayBlendMode(mode) {
     if (!overlayElement) return;
     OVERLAY_CONFIG.BLEND_MODE = mode;
     overlayElement.style.mixBlendMode = mode;
 }
 
-/**
- * Cambia el orden a aleatorio o secuencial
- */
+
 export function setOverlayRandomOrder(random) {
     OVERLAY_CONFIG.RANDOM_ORDER = random;
     
@@ -240,9 +216,7 @@ export function setOverlayRandomOrder(random) {
     loadOverlayImage(0);
 }
 
-/**
- * Elimina completamente el overlay
- */
+
 export function destroyOverlays() {
     stopOverlays();
     if (overlayElement) {
@@ -254,9 +228,6 @@ export function destroyOverlays() {
     shuffleOrder = [];
 }
 
-/**
- * Recarga la imagen actual (instantáneo)
- */
 export function refreshOverlay() {
     if (!overlayElement || imageCount === 0) return;
     loadOverlayImage(currentIndex);

@@ -68,7 +68,7 @@ export function toggleCellOff(cell) {
 
     const hasInicioContent = cell.querySelector('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas');
     if (hasInicioContent) {
-        return; // No hacer nada
+        return;
     }
 
     stopFlickerAndRemoveImage();
@@ -356,7 +356,7 @@ export function startResizeCombined(e, cell) {
     const rect = cell.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-    const threshold = 10; // ← Reducido de 15 a 10
+    const threshold = 10;
     
     const width = parseFloat(cell.style.width);
     const height = parseFloat(cell.style.height);
@@ -595,7 +595,7 @@ export function handleMouseUp(e, cell) {
     }
     isDragging = false;
     dragStartCell = null;
-    isClickOnCombined = false; // ← Asegurar reset
+    isClickOnCombined = false;
 }
 
 export function handleMouseEnter(e, cell) {
