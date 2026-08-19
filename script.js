@@ -21,13 +21,6 @@ import { getCurrentMobilePage } from './modules/mobile/mobile-nav.js';
 
 let gridData = null;
 
-
-
-
-
-
-
-
 function initMobileSimulatorFeature() {
 
     if (isMobile()) return;
@@ -675,10 +668,10 @@ document.addEventListener('keydown', (e) => {
 
 
 
+// script.js - Añadir al inicio de init()
 function init() {
     initSettings();
     
-
     const mobile = isMobile();
     if (mobile) {
         applyMobileConfig();
@@ -691,7 +684,7 @@ function init() {
         loadContactoData().catch(() => {}),
     ]).then(() => {});
     
-
+    // 🔥 SOLO UN GRID - SE CREA UNA VEZ
     gridData = createGrid();
     
     designCells.forEach(cell => {
@@ -709,6 +702,11 @@ function init() {
     
     initOverlays();
     
+    // 🔥 INICIALIZAR SIMULADOR MÓVIL (solo PC)
+    if (!mobile) {
+        initMobileSimulatorFeature();
+    }
+    
     const hasHash = hasHashInURL();
     
     if (hasHash) {
@@ -718,7 +716,6 @@ function init() {
             if (result === 'inicio') {
                 setHashLoad(false);
                 if (mobile) {
-
                     setTimeout(() => {
                         import('./modules/mobile/mobile-home.js').then(module => {
                             module.renderMobileHome();
@@ -756,12 +753,10 @@ function init() {
         setHashLoad(false);
         
         if (mobile) {
-
             setTimeout(() => {
                 renderMobileHome();
             }, 300);
         } else {
-
             setTimeout(() => {
                 importDesignFromJSON(LOGO_DESIGN);
             }, CONFIG.LOGO_DELAY || 500);

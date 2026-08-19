@@ -25,7 +25,7 @@ export function createColors(primary, secondary, background = '#000000') {
         get primaryDim() { return `rgba(${this.primaryRGB}, 0.3)`; },
         get primaryVeryDim() { return `rgba(${this.primaryRGB}, 0.2)`; },
         get secondaryDim() { return `rgba(${this.secondaryRGB}, 1)`; },
-        get scanlineColor() { return `rgba(0, 0, 0, .5)`; },
+        get scanlineColor() { return `rgba(0, 0, 0, .3)`; },
         get vignetteColor() { return `rgba(0, 0, 0, 0.7)`; },
         get bloomColor() { return `rgba(${this.primaryRGB}, 0.06)`; }
     };
@@ -38,8 +38,8 @@ let currentConfig = {
     ROWS: 17,
     CELL_SIZE: 38,
     BORDER_RADIUS: 4,
-    ANIMATION_DURATION: 800,
-    ANIMATION_DURATION_LOGO: 800,
+    ANIMATION_DURATION: 500,
+    ANIMATION_DURATION_LOGO: 100,
     LOGO_DELAY_COMBINED: 0,
     LOGO_DELAY: 0,
     ENABLE_EXPORT: true,
@@ -161,6 +161,14 @@ export const MOBILE_SIMULATOR_CONFIG = {
 };
 
 export const LOGO_DESIGN = {
+  "0,0": {
+    "type": "combined_normal",
+    "left": 199,
+    "top": 23,
+    "width": 1681,
+    "height": 144,
+    "combined": true
+  },
   "7,4": "logo",
   "7,5": {
     "type": "combined_red",
@@ -342,6 +350,54 @@ export const LOGO_DESIGN = {
     "top": 500,
     "width": 91,
     "height": 38,
+    "combined": true
+  },
+  "14,0": {
+    "type": "combined_normal",
+    "left": 199,
+    "top": 765,
+    "width": 197,
+    "height": 144,
+    "combined": true
+  },
+  "14,4": {
+    "type": "combined_normal",
+    "left": 411,
+    "top": 765,
+    "width": 303,
+    "height": 144,
+    "combined": true
+  },
+  "14,10": {
+    "type": "combined_normal",
+    "left": 729,
+    "top": 765,
+    "width": 303,
+    "height": 144,
+    "combined": true
+  },
+  "14,16": {
+    "type": "combined_normal",
+    "left": 1047,
+    "top": 765,
+    "width": 303,
+    "height": 144,
+    "combined": true
+  },
+  "14,22": {
+    "type": "combined_normal",
+    "left": 1365,
+    "top": 765,
+    "width": 303,
+    "height": 144,
+    "combined": true
+  },
+  "14,28": {
+    "type": "combined_normal",
+    "left": 1683,
+    "top": 765,
+    "width": 197,
+    "height": 144,
     "combined": true
   }
 };

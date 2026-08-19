@@ -62,7 +62,7 @@ body::after {
     );
     pointer-events: none;
     z-index: 9993;
-    animation: scanMove 5s linear infinite;
+    animation: scanMove 10s linear infinite;
     background-size: 100% 4px;
 }
 
@@ -330,8 +330,8 @@ body::after {
 .logo-cell[data-state="combined"] {
     box-shadow: 0 0 10px var(--color-primary),
                 0 0 40px rgba(var(--color-primary-rgb), 0.3),
-                0 0 80px rgba(var(--color-primary-rgb), 0.15),
-                inset 0 0 40px rgba(var(--color-primary-rgb), 0.12) !important;
+                /*0 0 80px rgba(var(--color-primary-rgb), 0.15),*/
+                inset 0 0 40px rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
 /* ===== GLOW DE 43px PERMANENTE PARA ELEMENTOS CON OUTLINE ROJO (normal) ===== */
@@ -342,10 +342,10 @@ body::after {
 .grid-cell[data-state="combined_normal"],
 .logo-cell[data-state="combined_normal"] {
     box-shadow: 
-        0 0 15px rgba(var(--color-primary-rgb), 0.3),
-        0 0 43px rgba(var(--color-primary-rgb), 0.15),
-        0 0 80px rgba(var(--color-primary-rgb), 0.08),
-        inset 0 0 20px rgba(var(--color-primary-rgb), 0.05) !important;
+        0 0 15px rgba(var(--color-primary-rgb), 0.5),
+        /*0 0 43px rgba(var(--color-primary-rgb), 0.15),*/
+        /*0 0 80px rgba(var(--color-primary-rgb), 0.08),*/
+        inset 0 0 20px rgba(var(--color-primary-rgb), 0.12) !important;
 }
 
 /* ===== BORDE BLANCO INTERNO CON INSET BOX-SHADOW ===== */
@@ -357,9 +357,9 @@ body::after {
     border-color: transparent !important;
     box-shadow: inset 0 0 0 4px var(--color-secondary),
                 0 0 5px rgba(var(--color-secondary-rgb), 1),
-                0 0 30px rgba(var(--color-secondary-rgb), 0.1),
-                0 0 60px rgba(var(--color-secondary-rgb), 0.05),
-                inset 0 0 30px rgba(var(--color-secondary-rgb), 0.05) !important;
+                /*0 0 30px rgba(var(--color-secondary-rgb), 0.1),*/
+                /*0 0 60px rgba(var(--color-secondary-rgb), 0.05),*/
+                inset 0 0 15px rgba(var(--color-secondary-rgb), 0.5) !important;
 }
 
 .grid-cell[data-state="logo"]:hover,
@@ -391,69 +391,7 @@ body::after {
                 inset 0 0 40px rgba(var(--color-secondary-rgb), 0.08) !important;
 }
 
-/* ===== SCANLINES ===== */
-.grid-cell[data-state="red"]::after,
-.logo-cell[data-state="red"]::after,
-.grid-cell[data-state="combined_red"]::after,
-.logo-cell[data-state="combined_red"]::after,
-.grid-cell[data-state="combined"]::after,
-.logo-cell[data-state="combined"]::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: var(--cell-radius);
-    background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 3px,
-        var(--scanline-red) 4px
-    );
-    pointer-events: none;
-    z-index: 2;
-}
 
-.grid-cell[data-state="logo"]::after,
-.logo-cell[data-state="logo"]::after,
-.grid-cell[data-state="combined_logo"]::after,
-.logo-cell[data-state="combined_logo"]::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: var(--cell-radius);
-    background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 3px,
-        var(--scanline-white) 4px
-    );
-    pointer-events: none;
-    z-index: 2;
-}
-
-.grid-cell:not([data-state]):not([data-state="off"])::after,
-.logo-cell:not([data-state]):not([data-state="off"])::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: var(--cell-radius);
-    background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 3px,
-        var(--scanline-normal) 4px
-    );
-    pointer-events: none;
-    z-index: 2;
-}
 
 .grid-cell[data-state="off"],
 .logo-cell[data-state="off"] {
@@ -496,7 +434,7 @@ body::after {
     font-family: 'Courier New', monospace;
     text-transform: uppercase;
     transition: color 0.3s ease, text-shadow 0.3s ease;
-    z-index: 21;
+    z-index: 999;
     user-select: none;
     -webkit-user-select: none;
     white-space: nowrap;

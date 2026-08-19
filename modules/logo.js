@@ -176,14 +176,16 @@ function applyDesignDirectly(jsonData, onComplete) {
             cell.style.transform = 'scale(1)';
             
         } else if (value === 'off') {
-            cell.style.border = 'none';
-            cell.style.borderColor = 'transparent';
+            cell.style.border = `1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
+            cell.style.borderColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
             cell.style.backgroundColor = CONFIG.COLORS.background;
-            cell.style.opacity = '0';
-            cell.style.transform = 'scale(0)';
-            cell.style.pointerEvents = 'none';
+            cell.style.opacity = '1';
+            cell.style.transform = 'scale(1)';
+            cell.style.pointerEvents = 'auto';
             cell.style.boxShadow = 'none';
             cell.dataset.state = 'off';
+            cell.dataset.prevState = 'normal';
+            cell.classList.add('off');
         }
     });
     
@@ -357,15 +359,16 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
         
         offItems.forEach(({ cell }) => {
             cell.style.transition = 'all 0.3s ease';
-            cell.style.border = 'none';
-            cell.style.borderColor = 'transparent';
+            cell.style.border = `1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
+            cell.style.borderColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
             cell.style.backgroundColor = CONFIG.COLORS.background;
-            cell.style.opacity = '0';
-            cell.style.transform = 'scale(0)';
-            cell.style.pointerEvents = 'none';
+            cell.style.opacity = '1';
+            cell.style.transform = 'scale(1)';
+            cell.style.pointerEvents = 'auto';
             cell.style.boxShadow = 'none';
             cell.dataset.state = 'off';
             cell.dataset.prevState = 'normal';
+            cell.classList.add('off');
         });
         
 

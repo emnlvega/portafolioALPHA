@@ -198,6 +198,83 @@ export async function renderContactoContent() {
     }
     
 
+    
+    
+
+    if (availabilityCell) {
+        const availability = document.createElement('div');
+        availability.className = 'contacto-content';
+        availability.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 30px;
+            color: ${primaryColor};
+            font-family: 'Courier New', monospace;
+            pointer-events: none;
+            z-index: 20;
+            gap: 4px;
+            border: 1px solid rgba(${secondaryRGB}, 0.15);
+            border-radius: 8px;
+            background: rgba(${secondaryRGB}, 0.03);
+        `;
+        
+
+        const icon = document.createElement('div');
+        icon.textContent = '◆';
+        icon.style.cssText = `
+            font-size: 32px;
+            color: ${secondaryColor};
+            text-shadow: 0 0 40px rgba(${secondaryRGB}, 0.3);
+            margin-bottom: 4px;
+        `;
+        availability.appendChild(icon);
+        
+
+        const mainText = document.createElement('div');
+        mainText.textContent = data.content.availability;
+        mainText.style.cssText = `
+            font-size: 22px;
+            letter-spacing: 8px;
+            font-weight: bold;
+            color: ${secondaryColor};
+            text-shadow: 0 0 30px rgba(${secondaryRGB}, 0.2);
+        `;
+        availability.appendChild(mainText);
+
+        const sepa = document.createElement('div');
+        sepa.style.cssText = `
+            width: 30%;
+            height: 1px;
+            background: ${secondaryColor};
+            margin: 4px 0;
+            opacity: 1;
+        `;
+        availability.appendChild(sepa);
+        
+
+        const subText = document.createElement('div');
+        subText.textContent = data.content.availabilitySub;
+        subText.style.cssText = `
+            font-size: 11px;
+            letter-spacing: 2px;
+            opacity: 1;
+            margin-top: 2px;
+        `;
+        availability.appendChild(subText);
+        
+
+        
+        
+        availabilityCell.appendChild(availability);
+    }
+
     const socialData = data.content.social;
 
     socialCells.forEach(({ cell }, index) => {
@@ -331,81 +408,6 @@ export async function renderContactoContent() {
         
         cell.appendChild(wrapper);
     });
-    
-
-    if (availabilityCell) {
-        const availability = document.createElement('div');
-        availability.className = 'contacto-content';
-        availability.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px 30px;
-            color: ${primaryColor};
-            font-family: 'Courier New', monospace;
-            pointer-events: none;
-            z-index: 20;
-            gap: 4px;
-            border: 1px solid rgba(${secondaryRGB}, 0.15);
-            border-radius: 8px;
-            background: rgba(${secondaryRGB}, 0.03);
-        `;
-        
-
-        const icon = document.createElement('div');
-        icon.textContent = '◆';
-        icon.style.cssText = `
-            font-size: 32px;
-            color: ${secondaryColor};
-            text-shadow: 0 0 40px rgba(${secondaryRGB}, 0.3);
-            margin-bottom: 4px;
-        `;
-        availability.appendChild(icon);
-        
-
-        const mainText = document.createElement('div');
-        mainText.textContent = data.content.availability;
-        mainText.style.cssText = `
-            font-size: 22px;
-            letter-spacing: 8px;
-            font-weight: bold;
-            color: ${secondaryColor};
-            text-shadow: 0 0 30px rgba(${secondaryRGB}, 0.2);
-        `;
-        availability.appendChild(mainText);
-
-        const sepa = document.createElement('div');
-        sepa.style.cssText = `
-            width: 30%;
-            height: 1px;
-            background: ${secondaryColor};
-            margin: 4px 0;
-            opacity: 1;
-        `;
-        availability.appendChild(sepa);
-        
-
-        const subText = document.createElement('div');
-        subText.textContent = data.content.availabilitySub;
-        subText.style.cssText = `
-            font-size: 11px;
-            letter-spacing: 2px;
-            opacity: 1;
-            margin-top: 2px;
-        `;
-        availability.appendChild(subText);
-        
-
-        
-        
-        availabilityCell.appendChild(availability);
-    }
     
 
     if (infoCell) {
