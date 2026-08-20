@@ -1,6 +1,6 @@
 import { CONFIG, LOGO_DESIGN, updateColors, getCurrentColors, createColors, MOBILE_SIMULATOR_CONFIG } from './modules/config.js';
 import { createGrid, repositionGrid, repositionSidebarOverlay, repositionSidebarTexts, repositionCombinedCells } from './modules/grid.js';
-import { resetGrid, exportDesignToJSON, designCells, setupCellEvents, toggleCellOff } from './modules/interactions.js';
+import { resetGrid, exportDesignToJSON, designCells, setupCellEvents, toggleCellOff, cleanInicioContent } from './modules/interactions.js';
 import { importDesignFromJSON } from './modules/logo.js';
 import { animateSidebar, returnToMainLogo, isSpecialPageActiveCheck, handleSidebarAction, isTransitioningCheck } from './modules/sidebar/index.js';
 import { startRandomAnimations, stopRandomAnimations, restartRandomAnimations } from './modules/animations.js';
@@ -18,13 +18,15 @@ import { renderMobileHome } from './modules/mobile/mobile-home.js';
 import { toggleMobileSimulator } from './modules/mobile/mobile-simulator.js';
 import { navigateMobileTo } from './modules/mobile/mobile-nav.js';
 import { getCurrentMobilePage } from './modules/mobile/mobile-nav.js';
-import { startLogoAnimation, stopLogoAnimation, enableLogoAnimation, disableLogoAnimation, startFlickerOnInicio, setOnInicio } from './modules/emnlvega.js';
+import { startLogoAnimation, stopLogoAnimation, enableLogoAnimation, disableLogoAnimation, startFlickerOnInicio, setOnInicio, stopFlickerOnInicio } from './modules/emnlvega.js';
 
 let gridData = null;
 let isLogoAnimationRunning = false;
 let isInicioContentClickable = false;
 let isInitialized = false;
 let proyectosData = null;
+
+window.stopFlickerOnInicio = stopFlickerOnInicio;
 
 window.setInicioClickable = function(value) {
     isInicioContentClickable = value;
@@ -123,9 +125,6 @@ async function renderProyectosInicio() {
         
         if (!cell) return;
         
-        cell.style.pointerEvents = 'none';
-        cell.style.cursor = 'pointer';
-        
         const wrapper = document.createElement('div');
         wrapper.className = 'inicio-proyecto';
         wrapper.dataset.projectId = project.id;
@@ -146,7 +145,6 @@ async function renderProyectosInicio() {
             font-family: 'Courier New', monospace;
         `;
         
-
         if (!isInicioContentClickable) {
             wrapper.style.pointerEvents = 'none';
             wrapper.style.cursor = 'default';
@@ -194,11 +192,11 @@ async function renderProyectosInicio() {
             text-align: center;
             padding: 10px;
             border-radius: 4px;
+            pointer-events: none;
         `;
         title.textContent = project.name;
         wrapper.appendChild(title);
         
-
         wrapper.addEventListener('mouseenter', () => {
             wrapper.style.boxShadow = `0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
             bgImg.style.opacity = '0.6';
@@ -213,58 +211,70 @@ async function renderProyectosInicio() {
             title.style.textShadow = `0 0 20px rgba(255, 255, 255, 0.8)`;
         });
         
-
         wrapper.addEventListener('click', (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        
-
-        if (!isInicioContentClickable) return;
-        
-        removeInicioContent();
-        
-        disableLogoAnimation();
-        stopLogoAnimation();
-        setOnInicio(false);
-        setHashLoad(false);
-        
-
-        window.selectedProjectId = project.id;
-        
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar && !sidebar.classList.contains('active')) {
-            sidebar.classList.add('active');
-            const toggle = document.querySelector('.sidebar-toggle');
-            if (toggle) {
-                toggle.classList.add('active');
+            e.stopPropagation();
+            e.preventDefault();
+            
+            if (!isInicioContentClickable) return;
+            
+            removeInicioContent();
+            
+            disableLogoAnimation();
+            stopLogoAnimation();
+            setOnInicio(false);
+            setHashLoad(false);
+            
+            window.selectedProjectId = project.id;
+            
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar && !sidebar.classList.contains('active')) {
+                sidebar.classList.add('active');
+                const toggle = document.querySelector('.sidebar-toggle');
+                if (toggle) {
+                    toggle.classList.add('active');
+                }
             }
-        }
-        
-        if (gridData) {
-            const existingOverlay = document.querySelector('.sidebar-overlay');
-            if (!existingOverlay) {
-                animateSidebar(
-                    gridData.sidebarCells,
-                    gridData.rows,
-                    gridData.cellSize,
-                    gridData.offsetX || 0,
-                    gridData.offsetY || 0
-                );
+            
+            if (gridData) {
+                const existingOverlay = document.querySelector('.sidebar-overlay');
+                if (!existingOverlay) {
+                    animateSidebar(
+                        gridData.sidebarCells,
+                        gridData.rows,
+                        gridData.cellSize,
+                        gridData.offsetX || 0,
+                        gridData.offsetY || 0
+                    );
+                }
             }
-        }
+            
+            handleSidebarAction('proyectos');
+            
+            const url = `index.html#${project.id}`;
+            window.history.pushState({}, '', url);
+        });
         
-
-        handleSidebarAction('proyectos');
+        wrapper.addEventListener('auxclick', (e) => {
+            if (e.button === 1) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(`index.html#${project.id}`, '_blank');
+            }
+        });
         
-
-        const url = `index.html#${project.id}`;
-        window.history.pushState({}, '', url);
-    });
+        wrapper.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const parentCell = this.closest('.grid-cell, .logo-cell');
+            if (parentCell && !parentCell.dataset.isSidebar) {
+                toggleCellOff(parentCell);
+            }
+            return false;
+        });
         
         cell.appendChild(wrapper);
     });
     
-
     const verMasCell = Array.from(document.querySelectorAll('.grid-cell, .logo-cell')).find(c => 
         c.dataset.combined === 'true' && 
         parseInt(c.dataset.designRow) === 14 && 
@@ -272,8 +282,6 @@ async function renderProyectosInicio() {
     );
     
     if (verMasCell) {
-        verMasCell.style.pointerEvents = 'none';
-        
         const verMas = document.createElement('div');
         verMas.className = 'inicio-vermas';
         verMas.style.cssText = `
@@ -297,7 +305,6 @@ async function renderProyectosInicio() {
         
         verMas.textContent = '▶';
         
-
         if (!isInicioContentClickable) {
             verMas.style.pointerEvents = 'none';
             verMas.style.cursor = 'default';
@@ -355,6 +362,24 @@ async function renderProyectosInicio() {
             window.history.pushState({}, '', 'index.html#proyectos');
         });
         
+        verMas.addEventListener('auxclick', (e) => {
+            if (e.button === 1) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open('index.html#proyectos', '_blank');
+            }
+        });
+        
+        verMas.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const parentCell = this.closest('.grid-cell, .logo-cell');
+            if (parentCell && !parentCell.dataset.isSidebar) {
+                toggleCellOff(parentCell);
+            }
+            return false;
+        });
+        
         verMasCell.appendChild(verMas);
     }
 }
@@ -372,7 +397,6 @@ function removeInicioContent() {
     
     document.querySelectorAll(allSelectors.join(',')).forEach(el => el.remove());
     
-
     document.querySelectorAll('.grid-cell, .logo-cell').forEach(cell => {
         const childNodes = Array.from(cell.childNodes);
         childNodes.forEach(node => {
@@ -396,10 +420,6 @@ function removeInicioContent() {
         cell.style.backgroundColor = CONFIG.COLORS.background;
     });
 }
-
-window.removeInicioContent = removeInicioContent;
-
-window.removeInicioContent = removeInicioContent;
 
 window.removeInicioContent = removeInicioContent;
 
@@ -1128,17 +1148,6 @@ document.addEventListener('contextmenu', function(e) {
     const gridContainer = document.getElementById('grid-container');
     if (gridContainer && gridContainer.contains(e.target)) {
         e.preventDefault();
-        
-        const cell = e.target.closest('.grid-cell, .logo-cell');
-        if (cell && !cell.dataset.isSidebar) {
-
-            const hasInicioContent = cell.querySelector('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas');
-            if (hasInicioContent) {
-
-                return false;
-            }
-            toggleCellOff(cell);
-        }
         return false;
     }
     if (e.target.closest('#color-picker-container')) {
@@ -1254,36 +1263,16 @@ document.addEventListener('keydown', (e) => {
     if (e.key === ' ') {
         e.preventDefault();
         
-
         if (!isSpecialPageActiveCheck() && !isLogoAnimationRunning) {
-
-            removeInicioContent();
-            
-
-            const existingImage = document.getElementById('letters-animation-image');
-            if (existingImage) {
-                existingImage.remove();
-            }
-            
-
             stopLogoAnimation();
-            resetGrid();
             
+            resetGrid();
 
             if (!window.location.hash || window.location.hash === '#inicio' || window.location.hash === '#') {
                 setTimeout(() => {
-
                     renderInicioContent();
-                    
-
                     isInicioContentClickable = true;
                     enableInicioClicks();
-                    
-
-
-                    
-
-
                 }, 300);
             }
         }
@@ -1408,6 +1397,8 @@ window.addEventListener('resize', () => {
         if (isResizing) return;
         isResizing = true;
         
+        updateLettersPosition()
+
         const container = document.getElementById('grid-container');
         const rect = container.getBoundingClientRect();
         const cellSize = CONFIG.CELL_SIZE;
@@ -1425,6 +1416,12 @@ window.addEventListener('resize', () => {
         repositionSidebarOverlay(newOffsetX, newOffsetY);
         repositionSidebarTexts(newOffsetX, newOffsetY);
         repositionCombinedCells(newOffsetX, newOffsetY);
+
+        import('./modules/emnlvega.js').then(module => {
+            if (module.updateLettersPosition) {
+                module.updateLettersPosition();
+            }
+        });
         
         if (isArchitectModeActive()) {
             setTimeout(updateArchitectOverlay, 100);
@@ -1433,6 +1430,18 @@ window.addEventListener('resize', () => {
         isResizing = false;
     }, 50);
 });
+
+function updateLettersImagePosition() {
+    const img = document.getElementById('letters-animation-image');
+    if (img) {
+        img.remove();
+
+    }
+}
+
+export function updateLettersPosition() {
+    updateLettersImagePosition();
+}
 
 window.addEventListener('popstate', () => {
     const result = handleURLOnLoad();

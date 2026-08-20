@@ -5,7 +5,6 @@ import { showDialog } from './dialogs.js';
 import { isSpecialPageActiveCheck } from './sidebar/index.js';
 import { isMobile } from './mobile.js';
 import { getCurrentMobilePage } from './mobile/mobile-nav.js';
-import { stopFlickerAndRemoveImage } from './emnlvega.js';
 
 export let designCells = [];
 export let selectedCells = [];
@@ -26,8 +25,11 @@ export let isClickOnCombined = false;
 function isMobileSpecialPage() {
     if (!isMobile()) return false;
     const page = getCurrentMobilePage ? getCurrentMobilePage() : 'inicio';
-
     return page === 'sobre-mi' || page === 'proyectos' || page === 'proyecto-detalle' || page === 'contacto';
+}
+
+function hasInicioContent(cell) {
+    return cell.querySelector('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas');
 }
 
 export function setDesignCells(cells) {
@@ -35,7 +37,6 @@ export function setDesignCells(cells) {
 }
 
 export function applyOffState(cell) {
-
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
     
@@ -60,18 +61,31 @@ export function applyOffState(cell) {
     cell.classList.add('off');
 }
 
+export function cleanInicioContent() {
+    document.querySelectorAll('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas').forEach(el => {
+        el.remove();
+    });
+    
+    const existingImage = document.getElementById('letters-animation-image');
+    if (existingImage) {
+        existingImage.remove();
+    }
+    
+    if (window.stopFlickerOnInicio) {
+        window.stopFlickerOnInicio();
+    }
+    
+    if (window.setInicioClickable) {
+        window.setInicioClickable(false);
+    }
+}
+
 export function toggleCellOff(cell) {
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
-    
     if (cell.dataset.isSidebar) return;
 
-    const hasInicioContent = cell.querySelector('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas');
-    if (hasInicioContent) {
-        return;
-    }
-
-    stopFlickerAndRemoveImage();
+    cleanInicioContent();
 
     const currentState = cell.dataset.state || 'normal';
 
@@ -83,44 +97,39 @@ export function toggleCellOff(cell) {
     if (cell.dataset.combined === 'true') {
         const combinedId = cell.dataset.combinedId;
         const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
-        const cellsToRestore = [];
         
         allCells.forEach(c => {
             if (c.dataset.combinedId === combinedId) {
-                cellsToRestore.push(c);
+                const size = CONFIG.CELL_SIZE;
+                const origX = parseFloat(c.dataset.originalX) || parseFloat(c.style.left);
+                const origY = parseFloat(c.dataset.originalY) || parseFloat(c.style.top);
+                
+                c.style.transition = 'all 0.3s ease';
+                c.style.left = `${origX}px`;
+                c.style.top = `${origY}px`;
+                c.style.width = `${size}px`;
+                c.style.height = `${size}px`;
+                c.style.opacity = '1';
+                c.style.transform = 'scale(1)';
+                c.style.pointerEvents = 'auto';
+                c.style.zIndex = '';
+                c.style.boxShadow = 'none';
+                c.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+                c.style.borderColor = CONFIG.COLORS.primary;
+                c.style.backgroundColor = CONFIG.COLORS.background;
+                
+                c.dataset.state = 'normal';
+                c.dataset.prevState = 'normal';
+                c.dataset.combined = 'false';
+                c.classList.remove('off');
+                delete c.dataset.combinedId;
+                delete c.dataset.combinedLeft;
+                delete c.dataset.combinedTop;
+                delete c.dataset.combinedWidth;
+                delete c.dataset.combinedHeight;
+                delete c.dataset.combinedRows;
+                delete c.dataset.combinedCols;
             }
-        });
-
-        cellsToRestore.forEach(c => {
-            const size = CONFIG.CELL_SIZE;
-            const origX = parseFloat(c.dataset.originalX) || parseFloat(c.style.left);
-            const origY = parseFloat(c.dataset.originalY) || parseFloat(c.style.top);
-            
-            c.style.transition = 'all 0.3s ease';
-            c.style.left = `${origX}px`;
-            c.style.top = `${origY}px`;
-            c.style.width = `${size}px`;
-            c.style.height = `${size}px`;
-            c.style.opacity = '1';
-            c.style.transform = 'scale(1)';
-            c.style.pointerEvents = 'auto';
-            c.style.zIndex = '';
-            c.style.boxShadow = 'none';
-            c.style.border = `1px solid ${CONFIG.COLORS.primary}`;
-            c.style.borderColor = CONFIG.COLORS.primary;
-            c.style.backgroundColor = CONFIG.COLORS.background;
-            
-            c.dataset.state = 'normal';
-            c.dataset.prevState = 'normal';
-            c.dataset.combined = 'false';
-            c.classList.remove('off');
-            delete c.dataset.combinedId;
-            delete c.dataset.combinedLeft;
-            delete c.dataset.combinedTop;
-            delete c.dataset.combinedWidth;
-            delete c.dataset.combinedHeight;
-            delete c.dataset.combinedRows;
-            delete c.dataset.combinedCols;
         });
         
         setTimeout(() => {
@@ -135,8 +144,6 @@ export function toggleCellOff(cell) {
 export function restoreCell(cell) {
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
-
-    stopFlickerAndRemoveImage();
     
     const cellSize = CONFIG.CELL_SIZE;
     const origX = parseFloat(cell.dataset.originalX) || parseFloat(cell.style.left);
@@ -172,11 +179,11 @@ export function restoreCell(cell) {
 }
 
 export function toggleCellStyle(cell) {
-
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
+    if (hasInicioContent(cell)) return;
 
-    stopFlickerAndRemoveImage();
+    cleanInicioContent();
     
     const currentState = cell.dataset.state || 'normal';
 
@@ -205,11 +212,11 @@ export function toggleCellStyle(cell) {
 }
 
 export function toggleCombinedStyle(cell) {
-
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
+    if (hasInicioContent(cell)) return;
 
-    stopFlickerAndRemoveImage();
+    cleanInicioContent();
     
     const currentState = cell.dataset.state || 'combined_red';
     const combinedId = cell.dataset.combinedId;
@@ -268,6 +275,8 @@ export function combineCells(cells) {
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
     if (cells.length < 2) return;
+
+    cleanInicioContent();
 
     let minRow = Infinity, minCol = Infinity;
     let maxRow = -Infinity, maxCol = -Infinity;
@@ -350,8 +359,9 @@ export function startResizeCombined(e, cell) {
     if (isMobileSpecialPage()) return;
     if (cell.dataset.combined !== 'true') return;
     if (e.button !== 0) return;
+    if (hasInicioContent(cell)) return;
 
-    stopFlickerAndRemoveImage();
+    cleanInicioContent();
     
     const rect = cell.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
@@ -453,6 +463,8 @@ function handleResizeMove(e) {
 
 function handleResizeEnd(e) {
     if (!isResizingCombined || !resizeStartCell) return;
+
+    cleanInicioContent();
     
     document.removeEventListener('mousemove', handleResizeMove);
     document.removeEventListener('mouseup', handleResizeEnd);
@@ -548,13 +560,10 @@ function getCellsInArea(left, top, width, height) {
 }
 
 export function handleMouseDown(e, cell) {
-
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
-    
     if (cell.dataset.isSidebar) return;
-
-    stopFlickerAndRemoveImage();
+    if (hasInicioContent(cell)) return;
 
     if (cell.dataset.state === 'off') {
         restoreCell(cell);
@@ -581,14 +590,14 @@ export function handleMouseUp(e, cell) {
         handleResizeEnd(e);
         return;
     }
-    
 
     if (isClickOnCombined && cell && cell.dataset.combined === 'true') {
-        toggleCombinedStyle(cell);
+        if (!hasInicioContent(cell)) {
+            toggleCombinedStyle(cell);
+        }
         isClickOnCombined = false;
         return;
     }
-    
 
     if (isDragging && selectedCells.length > 1) {
         combineCells(selectedCells);
@@ -599,15 +608,12 @@ export function handleMouseUp(e, cell) {
 }
 
 export function handleMouseEnter(e, cell) {
-
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
-    
     if (cell.dataset.isSidebar) return;
-    if (cell.dataset.combined === 'true') {
-        return;
-    }
+    if (cell.dataset.combined === 'true') return;
     if (cell.dataset.state === 'off') return;
+    if (hasInicioContent(cell)) return;
     if (e.buttons !== 1) return;
     if (!dragStartCell) return;
 
@@ -651,6 +657,9 @@ export function setupCellEvents(cell) {
 
     cell.addEventListener('contextmenu', function(e) {
         e.preventDefault();
+        if (!this.dataset.isSidebar) {
+            toggleCellOff(this);
+        }
         return false;
     });
 
@@ -665,19 +674,13 @@ export function setupCellEvents(cell) {
     cell.addEventListener('dragstart', (e) => e.preventDefault());
 }
 
-
-
 export function resetGrid(keepCombined = false) {
-
-    import('./logo.js').then(module => {
-        module.stopLogoAnimation();
-    }).catch(() => {});
-    
+    cleanInicioContent();
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell');
     
     allCells.forEach(cell => {
         if (cell.dataset.isSidebar === 'true') return;
-        
+
         if (keepCombined && cell.dataset.combined === 'true') return;
         
         const size = CONFIG.CELL_SIZE;
@@ -722,7 +725,7 @@ export function resetGrid(keepCombined = false) {
     isResizingCombined = false;
     resizeStartCell = null;
     isClickOnCombined = false;
-    
+
     document.querySelectorAll('.expand-btn').forEach(el => el.remove());
     
     setTimeout(() => {
@@ -735,8 +738,6 @@ export function resetGrid(keepCombined = false) {
 }
 
 export function exportDesignToJSON() {
-
-
     if (isMobileSpecialPage()) return;
     
     const result = {};
@@ -779,7 +780,6 @@ export function exportDesignToJSON() {
 
     const json = JSON.stringify(result, null, 2);
     console.log(json);
-
 
     navigator.clipboard.writeText(json).then(() => {
         showDialog('DISEÑO EXPORTADO', 'El diseño ha sido copiado al portapapeles como JSON.');

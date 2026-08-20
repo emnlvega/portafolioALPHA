@@ -325,16 +325,42 @@ export function disableLogoAnimation() {
 function createLettersImage() {
     const container = document.getElementById('grid-container');
     
+    const cellSize = CONFIG.CELL_SIZE;
+    const gap = CONFIG.GAP;
+    const offsetX = parseFloat(container.dataset.originalOffsetX) || 0;
+    const offsetY = parseFloat(container.dataset.originalOffsetY) || 0;
+    const sidebarWidth = CONFIG.SIDEBAR_WIDTH;
+    
+    const startCol = sidebarWidth + 4;
+    const startRow = 7;
+    const endCol = sidebarWidth + 27;
+    const endRow = 9;
+    
+    const startX = offsetX + startCol * (cellSize + gap);
+    const startY = offsetY + startRow * (cellSize + gap);
+    const endX = offsetX + (endCol + 1) * (cellSize + gap) - gap;
+    const endY = offsetY + (endRow + 1) * (cellSize + gap) - gap;
+    
+    const areaWidth = endX - startX;
+    const areaHeight = endY - startY;
+    
+    const offsetLeft = -1;
+    const offsetTop = 0;
+    
+    const centerX = startX + areaWidth / 2 + offsetLeft;
+    const centerY = startY + areaHeight / 2 + offsetTop;
+    
     const img = document.createElement('img');
     img.src = ANIMATION_CONFIG.IMAGE_PATH;
     img.style.position = 'absolute';
-    img.style.left = '54%';
-    img.style.top = '50%';
+    img.style.left = `${centerX}px`;
+    img.style.top = `${centerY}px`;
     img.style.transform = 'translate(-50%, -50%)';
     img.style.width = 'auto';
     img.style.height = 'auto';
     img.style.maxWidth = '100%';
     img.style.maxHeight = '100%';
+    img.style.objectFit = 'contain';
     img.style.zIndex = ANIMATION_CONFIG.IMAGE_Z_INDEX;
     img.style.opacity = '0';
     img.style.pointerEvents = 'none';
@@ -437,6 +463,19 @@ function startFlickerCycle() {
     flickerTimeout = setTimeout(() => {
         scheduleNextFlicker();
     }, ANIMATION_CONFIG.FLICKER_INITIAL_DELAY);
+}
+
+export function stopFlickerOnInicio() {
+    if (flickerTimeout) {
+        clearTimeout(flickerTimeout);
+        flickerTimeout = null;
+    }
+    if (lettersImage) {
+        lettersImage.style.opacity = '0';
+        setTimeout(() => {
+            removeLettersImage();
+        }, 300);
+    }
 }
 
 function stopFlickerCycle() {

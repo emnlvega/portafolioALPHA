@@ -75,7 +75,7 @@ function createMobileLettersImage() {
     container.appendChild(img);
     
 
-    applyColorToMobileImage(img, CONFIG.COLORS.primary);
+    applyColorToMobileImage(img, CONFIG.COLORS.secondary);
     
     return img;
 }

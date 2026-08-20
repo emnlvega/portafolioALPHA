@@ -11,7 +11,7 @@ const DEFAULT_SETTINGS = {
     burnBlur: true,
     textura: true,
     animations: true,
-    scanlines: true,
+    scanlines: false,
     vignette: true,
     flicker: true,
     glow: true
