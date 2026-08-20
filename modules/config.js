@@ -39,7 +39,7 @@ let currentConfig = {
     CELL_SIZE: 38,
     BORDER_RADIUS: 4,
     ANIMATION_DURATION: 700,
-    ANIMATION_DURATION_LOGO: 300,
+    ANIMATION_DURATION_LOGO: 700,
     LOGO_DELAY_COMBINED: 0,
     LOGO_DELAY: 0,
     ENABLE_EXPORT: true,
@@ -47,7 +47,7 @@ let currentConfig = {
     BG_DOT_SIZE: 3,
     BG_DOT_OPACITY: 0.15,
     BG_MOUSE_SENSITIVITY: 0.02,
-    COLORS: createColors('#00ff91', '#ffffff', '#000000'),
+    COLORS: createColors('#00FF9B', '#ffffff', '#000000'),
     
 
     ARCHITECT_MODE: {
@@ -68,16 +68,16 @@ let currentConfig = {
             DURATION: 2000,
             SCALE_FACTOR: 1.07,
             MIN_INTERVAL: 1000,
-            MAX_INTERVAL: 9000,
+            MAX_INTERVAL: 5000,
             MAX_SIMULTANEOUS: 5,
         },
         
 
         COLOR: {
             ENABLED: false,
-            DURATION: 2000,
-            MIN_INTERVAL: 8000,
-            MAX_INTERVAL: 20000,
+            DURATION: 1000,
+            MIN_INTERVAL: 100,
+            MAX_INTERVAL: 100,
             MAX_SIMULTANEOUS: 2,
         },
         
@@ -105,7 +105,7 @@ let currentConfig = {
         BORDER_SHIFT: {
             ENABLED: true,
             DURATION: 2500,
-            MIN_INTERVAL: 4000,
+            MIN_INTERVAL: 1000,
             MAX_INTERVAL: 18000,
             MAX_SIMULTANEOUS: 4,
             SHIFT_AMOUNT: 2
@@ -115,9 +115,9 @@ let currentConfig = {
         OPACITY_WAVE: {
             ENABLED: true,
             DURATION: 2000,
-            MIN_INTERVAL: 1000,
-            MAX_INTERVAL: 9000,
-            MAX_SIMULTANEOUS: 3,
+            MIN_INTERVAL: 200,
+            MAX_INTERVAL: 200,
+            MAX_SIMULTANEOUS: 20,
             MIN_OPACITY: 0.3,
             MAX_OPACITY: 1.0
         }

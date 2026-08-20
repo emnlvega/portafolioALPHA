@@ -8,7 +8,7 @@ const DEFAULT_SETTINGS = {
     grain: true,
     gaussianBlur: true,
     bloom: true,
-    burnBlur: true,
+    burnBlur: false,
     textura: true,
     animations: true,
     scanlines: false,
@@ -71,7 +71,7 @@ export function saveSettings(settings) {
 
 function resetAllAndRefresh() {
 
-    const defaultColor = '#00ff91';
+    const defaultColor = '#00FF9B';
     
 
     updateColors(defaultColor);
@@ -94,7 +94,7 @@ function resetAllAndRefresh() {
     const sidebarPicker = document.getElementById('colorPicker');
     if (sidebarPicker) sidebarPicker.value = defaultColor;
     const sidebarHex = document.getElementById('colorHexLabel');
-    if (sidebarHex) sidebarHex.textContent = '#00FF91';
+    if (sidebarHex) sidebarHex.textContent = '#00FF9B';
     
 
     closeSettings();
@@ -389,7 +389,7 @@ function createSettingsDialog() {
         text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
         line-height: 1;
     `;
-    resetColorBtn.title = 'Resetear color a #00ff91';
+    resetColorBtn.title = 'Resetear color a #00FF9B';
     
     resetColorBtn.addEventListener('mouseenter', () => {
         resetColorBtn.style.borderColor = 'var(--color-secondary)';

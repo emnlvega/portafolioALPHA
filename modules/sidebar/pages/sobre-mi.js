@@ -509,7 +509,8 @@ Tengo la idea de que mientras algo sea posible, si depende de m√≠, lo conseguir√
                         font-size: 17px;
                         flex-shrink: 0;
                         transition: all 0.2s ease;
-                        box-shadow: 0 0 20px rgba(${primaryRGB}, 0.13);
+                        border: 1px solid rgba(${primaryRGB}, 0.5);
+                        box-shadow: 0 0 20px rgba(${primaryRGB}, 0.5);
                     `;
                     iconBox.textContent = h.icon;
 
@@ -528,7 +529,8 @@ Tengo la idea de que mientras algo sea posible, si depende de m√≠, lo conseguir√
                         flex-grow: 1;
                         transition: all 0.2s ease;
                         white-space: nowrap;
-                        box-shadow: 0 0 10px rgba(${primaryRGB}, 0.13);
+                        border: 1px solid rgba(${primaryRGB}, 0.5);
+                        box-shadow: 0 0 20px rgba(${primaryRGB}, 0.2);
 
                     `;
                     nameBox.textContent = h.name;

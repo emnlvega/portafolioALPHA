@@ -176,7 +176,7 @@ function showArchitectOverlay() {
         
         const fontSize = archConfig.FONT_SIZE || 11;
         const opacity = archConfig.OPACITY || 0.7;
-        const color = archConfig.COLOR || '#00ff91';
+        const color = archConfig.COLOR || '#00FF9B';
         const showGrid = archConfig.SHOW_GRID !== undefined ? archConfig.SHOW_GRID : true;
         
 
@@ -204,9 +204,9 @@ function showArchitectOverlay() {
             text-shadow: 
                 0 0 10px ${color},
                 0 0 20px ${color},
-                0 0 40px rgba(0, 255, 145, 0.3);
+                0 0 40px rgba(0, 255, 155, 0.3);
             background: rgba(0, 0, 0, ${opacity});
-            border: ${showGrid ? `1px solid rgba(0, 255, 145, 0.2)` : 'none'};
+            border: ${showGrid ? `1px solid rgba(0, 255, 155, 0.2)` : 'none'};
             border-radius: 2px;
             pointer-events: none;
             z-index: 101;
@@ -225,7 +225,7 @@ function showArchitectOverlay() {
             label.style.textShadow = `
                 0 0 15px ${color},
                 0 0 30px ${color},
-                0 0 60px rgba(0, 255, 145, 0.3)
+                0 0 60px rgba(0, 255, 155, 0.3)
             `;
             
 
@@ -238,13 +238,13 @@ function showArchitectOverlay() {
 
         label.addEventListener('mouseenter', () => {
             label.style.transform = 'scale(1.1)';
-            label.style.borderColor = 'rgba(0, 255, 145, 0.8)';
-            label.style.boxShadow = '0 0 20px rgba(0, 255, 145, 0.3)';
+            label.style.borderColor = 'rgba(0, 255, 155, 0.8)';
+            label.style.boxShadow = '0 0 20px rgba(0, 255, 155, 0.3)';
             label.style.zIndex = '102';
         });
         label.addEventListener('mouseleave', () => {
             label.style.transform = 'scale(1)';
-            label.style.borderColor = isCombined ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 255, 145, 0.2)';
+            label.style.borderColor = isCombined ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 255, 155, 0.2)';
             label.style.boxShadow = 'none';
             label.style.zIndex = '101';
         });

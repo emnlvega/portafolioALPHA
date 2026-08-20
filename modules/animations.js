@@ -171,7 +171,32 @@ function getAvailableBorderShiftCells() {
 }
 
 function getAvailableOpacityWaveCells() {
-    const eligibleCells = getCellsByType();
+    const container = document.getElementById('grid-container');
+    if (!container) return [];
+    
+    const cells = container.querySelectorAll('.grid-cell, .logo-cell');
+    const eligibleCells = [];
+    
+    cells.forEach(cell => {
+        if (cell.dataset.isSidebar === 'true') return;
+        if (cell.dataset.combined === 'true') return;
+        if (cell.dataset.state === 'hidden') return;
+        if (cell.dataset.state === 'off') return;
+        
+        const opacity = parseFloat(cell.style.opacity);
+        if (!isNaN(opacity) && opacity === 0) return;
+        
+        const width = parseFloat(cell.style.width);
+        const height = parseFloat(cell.style.height);
+        const cellSize = CONFIG.CELL_SIZE;
+        if (width !== cellSize || height !== cellSize) return;
+        
+        const state = cell.dataset.state || 'normal';
+        if (state === 'red' || state === 'logo' || state === 'normal') {
+            eligibleCells.push(cell);
+        }
+    });
+    
     return eligibleCells.filter(cell => !activeOpacityWaveAnimations.has(cell));
 }
 
@@ -454,7 +479,22 @@ function animateOpacityWave(cell) {
     if (!cell) return;
     if (activeOpacityWaveAnimations.has(cell)) return;
     if (!CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED) return;
-    if (!isCellEligible(cell)) return;
+    
+    if (cell.dataset.isSidebar === 'true') return;
+    if (cell.dataset.combined === 'true') return;
+    if (cell.dataset.state === 'hidden') return;
+    if (cell.dataset.state === 'off') return;
+    
+    const opacity = parseFloat(cell.style.opacity);
+    if (!isNaN(opacity) && opacity === 0) return;
+    
+    const width = parseFloat(cell.style.width);
+    const height = parseFloat(cell.style.height);
+    const cellSize = CONFIG.CELL_SIZE;
+    if (width !== cellSize || height !== cellSize) return;
+    
+    const state = cell.dataset.state || 'normal';
+    if (state !== 'red' && state !== 'logo' && state !== 'normal') return;
     
     activeOpacityWaveAnimations.add(cell);
     const duration = CONFIG.ANIMATIONS.OPACITY_WAVE.DURATION;

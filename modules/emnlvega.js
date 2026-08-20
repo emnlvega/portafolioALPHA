@@ -7,7 +7,7 @@ const ANIMATION_CONFIG = {
     LETTER_INTERVAL: 300,
     IMAGE_FADE_DURATION: 300,
     IMAGE_PATH: 'assets/images/letters.png',
-    IMAGE_Z_INDEX: 1000,
+    IMAGE_Z_INDEX: 99999,
     IMAGE_OPACITY: 1,
     FLICKER_MIN_DELAY: 3000,
     FLICKER_MAX_DELAY: 15000,
@@ -361,7 +361,7 @@ function createLettersImage() {
     img.style.maxWidth = '100%';
     img.style.maxHeight = '100%';
     img.style.objectFit = 'contain';
-    img.style.zIndex = ANIMATION_CONFIG.IMAGE_Z_INDEX;
+    img.style.zIndex = 9999;
     img.style.opacity = '0';
     img.style.pointerEvents = 'none';
     img.style.transition = `opacity ${ANIMATION_CONFIG.FLICKER_FADE_DURATION}ms ease`;

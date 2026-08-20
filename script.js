@@ -95,7 +95,7 @@ function renderBienvenido() {
         z-index: 20;
         user-select: none;
     `;
-    bienvenido.textContent = 'BIENVENIDO  :)';
+    bienvenido.textContent = 'BIENVENIDO A MI PORTAFOLIO:)';
     titleCell.appendChild(bienvenido);
 }
 
