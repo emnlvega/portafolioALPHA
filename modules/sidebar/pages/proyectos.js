@@ -28,7 +28,23 @@ export const EXPANDED_DESIGN = {
         "type": "combined_normal",
         "left": 199,
         "top": 23,
-        "width": 1681,
+        "width": 91,
+        "height": 91,
+        "combined": true
+    },
+    "0,2": {
+        "type": "combined_normal",
+        "left": 305,
+        "top": 23,
+        "width": 1469,
+        "height": 886,
+        "combined": true
+    },
+    "0,30": {
+        "type": "combined_normal",
+        "left": 1789,
+        "top": 23,
+        "width": 91,
         "height": 91,
         "combined": true
     },
@@ -37,14 +53,6 @@ export const EXPANDED_DESIGN = {
         "left": 199,
         "top": 129,
         "width": 91,
-        "height": 780,
-        "combined": true
-    },
-    "2,2": {
-        "type": "combined_normal",
-        "left": 305,
-        "top": 129,
-        "width": 1469,
         "height": 780,
         "combined": true
     },
@@ -129,6 +137,13 @@ export function clearProjectSelection() {
         renderTimeout = null;
     }
 
+    const textureEnabled = getTextureVisibilityFromSettings();
+    if (textureEnabled && textureWasVisibleBeforeExpand) {
+        toggleTextureOverlay(true);
+    } else {
+        toggleTextureOverlay(false);
+    }
+
     if (window.location.hash.includes('proyectos')) {
         updateURL('proyectos');
     }
@@ -144,7 +159,6 @@ function toggleDetailExpand() {
     
     isExpanding = true;
 
-
     textureWasVisibleBeforeExpand = getTextureVisibilityFromSettings();
 
     loadProyectosData().then(data => {
@@ -156,20 +170,30 @@ function toggleDetailExpand() {
         const designToImport = newExpandedState ? EXPANDED_DESIGN : data.design;
 
         if (newExpandedState) {
-
             toggleTextureOverlay(false);
         } else {
-
             toggleTextureOverlay(textureWasVisibleBeforeExpand);
         }
 
-        document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn').forEach(el => el.remove());
+        document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn').forEach(el => el.remove());
         
         const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
         allCells.forEach(cell => {
-            const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn');
+            const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn');
             children.forEach(child => child.remove());
         });
+
+        const titleCell = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="0"]');
+        if (titleCell) {
+            const children = titleCell.querySelectorAll('.proyectos-content, .proyectos-detail, .proyectos-select-message, .expand-back-btn');
+            children.forEach(child => child.remove());
+        }
+
+        const nextCell = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="30"]');
+        if (nextCell) {
+            const children = nextCell.querySelectorAll('.expand-next-btn');
+            children.forEach(child => child.remove());
+        }
 
         const shouldReset = false;
 
@@ -261,17 +285,40 @@ export async function renderProyectosContent() {
     const container = document.getElementById('grid-container');
     if (!container) return;
     
-
-    if (!isDetailExpanded) {
-        const textureEnabled = getTextureVisibilityFromSettings();
-        toggleTextureOverlay(textureEnabled);
+    const titleCellClean = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="0"]');
+    if (titleCellClean) {
+        const children = titleCellClean.querySelectorAll('.proyectos-content, .proyectos-detail, .proyectos-select-message, .expand-back-btn');
+        children.forEach(child => child.remove());
+        titleCellClean.style.backgroundColor = CONFIG.COLORS.background;
+        titleCellClean.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+        titleCellClean.style.borderColor = CONFIG.COLORS.primary;
+        titleCellClean.style.boxShadow = 'none';
     }
     
-    document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn').forEach(el => el.remove());
+    const nextCellClean = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="30"]');
+    if (nextCellClean) {
+        const children = nextCellClean.querySelectorAll('.expand-next-btn');
+        children.forEach(child => child.remove());
+        nextCellClean.style.backgroundColor = CONFIG.COLORS.background;
+        nextCellClean.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+        nextCellClean.style.borderColor = CONFIG.COLORS.primary;
+        nextCellClean.style.boxShadow = 'none';
+    }
+    
+    if (!selectedProjectId || !selectedProjectData) {
+        if (!isDetailExpanded) {
+            const textureEnabled = getTextureVisibilityFromSettings();
+            toggleTextureOverlay(textureEnabled);
+        }
+    } else {
+        toggleTextureOverlay(false);
+    }
+    
+    document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn').forEach(el => el.remove());
     
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
-        const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn');
+        const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn');
         children.forEach(child => child.remove());
     });
     
@@ -285,6 +332,8 @@ export async function renderProyectosContent() {
     let categoryCells = [];
     let projectCells = [];
     let detailCell = null;
+    let backButtonCell = null;
+    let nextProjectCell = null;
 
     const categoryCols = [2, 6, 10, 14, 18, 22, 26];
     const projectCols = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28];
@@ -295,13 +344,10 @@ export async function renderProyectosContent() {
             const col = parseInt(cell.dataset.designCol);
             const key = `${row},${col}`;
             
-            if (key === '0,0') {
+            if (key === '0,0' && !isDetailExpanded) {
                 titleCell = cell;
             }
-            else if (!isDetailExpanded && row === 2 && categoryCols.includes(col)) {
-                categoryCells.push(cell);
-            }
-            else if (!isDetailExpanded && row === 5 && projectCols.includes(col)) {
+            else if (!isDetailExpanded && row === 2 && projectCols.includes(col)) {
                 projectCells.push(cell);
             }
             else if (!isDetailExpanded && row === 2 && col === 0) {
@@ -313,22 +359,28 @@ export async function renderProyectosContent() {
             else if (isDetailExpanded && row === 2 && col === 0) {
                 detailLeftArrow = cell;
             }
-            else if (isDetailExpanded && row === 2 && col === 2) {
-                detailCell = cell;
-                detailCellRef = cell;
-            }
             else if (isDetailExpanded && row === 2 && col === 30) {
                 detailRightArrow = cell;
             }
-            else if (!isDetailExpanded && row === 7 && col === 0) {
+            else if (!isDetailExpanded && row === 4 && col === 0) {
                 detailLeftArrow = cell;
             }
-            else if (!isDetailExpanded && row === 7 && col === 2) {
+            else if (!isDetailExpanded && row === 4 && col === 2) {
                 detailCell = cell;
                 detailCellRef = cell;
             }
-            else if (!isDetailExpanded && row === 7 && col === 30) {
+            else if (!isDetailExpanded && row === 4 && col === 30) {
                 detailRightArrow = cell;
+            }
+            else if (isDetailExpanded && row === 0 && col === 0) {
+                backButtonCell = cell;
+            }
+            else if (isDetailExpanded && row === 0 && col === 2) {
+                detailCell = cell;
+                detailCellRef = cell;
+            }
+            else if (isDetailExpanded && row === 0 && col === 30) {
+                nextProjectCell = cell;
             }
         }
     });
@@ -338,7 +390,7 @@ export async function renderProyectosContent() {
         return;
     }
     
-    if (titleCell) {
+    if (titleCell && !isDetailExpanded) {
         const title = document.createElement('div');
         title.className = 'proyectos-content';
         title.style.cssText = `
@@ -369,6 +421,7 @@ export async function renderProyectosContent() {
         
         titleCell.appendChild(title);
     }
+
     
     if (!isDetailExpanded) {
         const categories = ['TODOS', ...data.categories];
@@ -593,7 +646,7 @@ export async function renderProyectosContent() {
                 pointer-events: none;
                 z-index: 20;
                 gap: 16px;
-                opacity: 0.6;
+                opacity: 1;
                 background: transparent;
             `;
             
@@ -602,6 +655,7 @@ export async function renderProyectosContent() {
             text.style.cssText = `
                 font-size: 14px;
                 letter-spacing: 6px;
+                opacity: 100%;
                 text-transform: uppercase;
                 text-shadow: var(--text-shadow-normal);
             `;
@@ -759,6 +813,8 @@ export async function renderProyectosContent() {
 
     detailArrows.forEach((arrow) => {
         if (!arrow.cell) return;
+
+
         
         const el = document.createElement('div');
         el.className = 'proyectos-nav detail-arrow';
@@ -823,6 +879,149 @@ export async function renderProyectosContent() {
         
         arrow.cell.appendChild(el);
     });
+
+    if (isDetailExpanded) {
+    const allProjects = data.projects;
+    const currentIndex = allProjects.findIndex(p => p.id === selectedProjectId);
+    const nextIndex = (currentIndex + 1) % allProjects.length;
+    const nextProject = allProjects[nextIndex];
+    
+    const backButtonCell = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="0"]');
+    if (backButtonCell) {
+        const backBtn = document.createElement('div');
+        backBtn.className = 'expand-back-btn';
+        backBtn.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 25;
+            font-family: 'Courier New', monospace;
+            color: ${CONFIG.COLORS.primary};
+            transition: all 0.3s ease;
+            gap: 4px;
+        `;
+        
+        const arrowIcon = document.createElement('span');
+        arrowIcon.textContent = '◀';
+        arrowIcon.style.cssText = `
+            font-size: 28px;
+            text-shadow: 0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+            transition: all 0.3s ease;
+        `;
+        backBtn.appendChild(arrowIcon);
+        
+        const backText = document.createElement('span');
+        backText.textContent = 'REGRESAR';
+        backText.style.cssText = `
+            font-size: 10px;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        `;
+        backBtn.appendChild(backText);
+        
+        backBtn.addEventListener('mouseenter', () => {
+            backBtn.style.color = CONFIG.COLORS.secondary;
+            arrowIcon.style.textShadow = `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)`;
+            backText.style.opacity = '1';
+        });
+        
+        backBtn.addEventListener('mouseleave', () => {
+            backBtn.style.color = CONFIG.COLORS.primary;
+            arrowIcon.style.textShadow = `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
+            backText.style.opacity = '0.7';
+        });
+        
+        backBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isDetailExpanded) {
+                toggleDetailExpand();
+            }
+        });
+        
+        backButtonCell.appendChild(backBtn);
+    }
+    
+    const nextProjectCell = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="30"]');
+        if (nextProjectCell) {
+            const nextBtn = document.createElement('div');
+            nextBtn.className = 'expand-next-btn';
+            nextBtn.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                pointer-events: auto;
+                z-index: 25;
+                font-family: 'Courier New', monospace;
+                color: ${CONFIG.COLORS.primary};
+                transition: all 0.3s ease;
+                gap: 4px;
+            `;
+            
+            const arrowIcon = document.createElement('span');
+            arrowIcon.textContent = '▶';
+            arrowIcon.style.cssText = `
+                font-size: 28px;
+                text-shadow: 0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+                transition: all 0.3s ease;
+            `;
+            nextBtn.appendChild(arrowIcon);
+            
+            const nextText = document.createElement('span');
+            nextText.textContent = 'SIGUIENTE';
+            nextText.style.cssText = `
+                font-size: 10px;
+                letter-spacing: 2px;
+                opacity: 0.7;
+                transition: all 0.3s ease;
+                text-align: center;
+                white-space: nowrap;
+                width: 100%;
+            `;
+            nextBtn.appendChild(nextText);
+            
+            nextBtn.addEventListener('mouseenter', () => {
+                nextBtn.style.color = CONFIG.COLORS.secondary;
+                arrowIcon.style.textShadow = `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)`;
+                nextText.style.opacity = '1';
+            });
+            
+            nextBtn.addEventListener('mouseleave', () => {
+                nextBtn.style.color = CONFIG.COLORS.primary;
+                arrowIcon.style.textShadow = `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
+                nextText.style.opacity = '0.7';
+            });
+            
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (nextProject) {
+                    selectedProjectId = nextProject.id;
+                    selectedProjectData = nextProject;
+                    detailPage = 0;
+                    window.selectedProjectId = nextProject.id;
+                    updateURL('proyectos', nextProject.id);
+                    renderProyectosContent();
+                }
+            });
+            
+            nextProjectCell.appendChild(nextBtn);
+        }
+    }
 }
 
 function showProjectDetail(project, detailCell) {
@@ -859,7 +1058,6 @@ function showProjectDetail(project, detailCell) {
         scroll-behavior: smooth;
     `;
     
-
     const contentWrapper = document.createElement('div');
     contentWrapper.style.cssText = `
         display: flex;
@@ -874,8 +1072,22 @@ function showProjectDetail(project, detailCell) {
         margin: auto;
         pointer-events: none;
     `;
-    
 
+    if (isExpanded && hasPages) {
+        const pageIndicator2 = document.createElement('div');
+        pageIndicator2.textContent = `PÁGINA ${detailPage + 1} DE ${project.pages.length}`;
+        pageIndicator2.style.cssText = `
+            font-size: 20px;
+            letter-spacing: 2px;
+            color: white;
+            opacity: 1;
+            margin-top: 6px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        `;
+        contentWrapper.appendChild(pageIndicator2);
+    }
+    
     const icon = document.createElement('div');
     icon.textContent = project.icon;
     icon.style.cssText = `
@@ -887,12 +1099,11 @@ function showProjectDetail(project, detailCell) {
     `;
     contentWrapper.appendChild(icon);
     
-
     const meta = document.createElement('div');
     meta.style.cssText = `
         font-size: ${isExpanded ? '12px' : '10px'};
         letter-spacing: 2px;
-        opacity: 0.5;
+        opacity: 1;
         text-align: center;
         line-height: 1.8;
         flex-shrink: 0;
@@ -900,7 +1111,6 @@ function showProjectDetail(project, detailCell) {
     meta.textContent = `${project.category}  ·  ${project.type}  ·  ${project.year}`;
     contentWrapper.appendChild(meta);
     
-
     const name = document.createElement('div');
     name.textContent = project.name;
     name.style.cssText = `
@@ -914,21 +1124,19 @@ function showProjectDetail(project, detailCell) {
     `;
     contentWrapper.appendChild(name);
     
-
     const desc = document.createElement('div');
     desc.textContent = project.description;
     desc.style.cssText = `
         font-size: ${isExpanded ? '14px' : '12px'};
         letter-spacing: 1px;
         line-height: 1.6;
-        opacity: 0.8;
+        opacity: 1;
         text-align: center;
         max-width: 90%;
         flex-shrink: 0;
     `;
     contentWrapper.appendChild(desc);
     
-
     const separator = document.createElement('div');
     separator.style.cssText = `
         width: 30%;
@@ -978,7 +1186,7 @@ function showProjectDetail(project, detailCell) {
                 font-size: ${isExpanded ? '13px' : '11px'};
                 letter-spacing: 0.5px;
                 line-height: 1.6;
-                opacity: 0.8;
+                opacity: 1;
                 text-align: center;
             `;
             contentContainer.appendChild(textEl);
@@ -991,7 +1199,8 @@ function showProjectDetail(project, detailCell) {
         pageIndicator.style.cssText = `
             font-size: ${isExpanded ? '11px' : '9px'};
             letter-spacing: 2px;
-            opacity: 0.3;
+            color: white;
+            opacity: 1;
             margin-top: 6px;
             text-transform: uppercase;
             flex-shrink: 0;
@@ -1004,7 +1213,7 @@ function showProjectDetail(project, detailCell) {
             font-size: ${isExpanded ? '13px' : '11px'};
             letter-spacing: 0.5px;
             line-height: 1.5;
-            opacity: 0.6;
+            opacity: 1;
             text-align: center;
             max-width: 90%;
             flex-shrink: 0;
@@ -1015,7 +1224,6 @@ function showProjectDetail(project, detailCell) {
     detail.appendChild(contentWrapper);
     detailCell.appendChild(detail);
     
-
     setTimeout(() => {
         detail.scrollTop = 0;
     }, 50);
@@ -1038,7 +1246,7 @@ function renderContentItem(item, isExpanded) {
                 font-size: ${isExpanded ? '13px' : '11px'};
                 letter-spacing: 0.5px;
                 line-height: 1.8;
-                opacity: 0.85;
+                opacity: 1;
             `;
             container.appendChild(textEl);
             break;
@@ -1096,9 +1304,9 @@ function renderContentItem(item, isExpanded) {
                 const captionEl = document.createElement('div');
                 captionEl.textContent = item.caption;
                 captionEl.style.cssText = `
-                    font-size: ${isExpanded ? '11px' : '9px'};
+                    font-size: 20;
                     letter-spacing: 1px;
-                    opacity: 0.5;
+                    opacity: 1;
                     text-align: center;
                     margin-top: 2px;
                 `;
@@ -1184,9 +1392,9 @@ function renderContentItem(item, isExpanded) {
                 const captionEl = document.createElement('div');
                 captionEl.textContent = item.caption;
                 captionEl.style.cssText = `
-                    font-size: ${isExpanded ? '11px' : '9px'};
+                    font-size: 20;
                     letter-spacing: 1px;
-                    opacity: 0.5;
+                    opacity: 1;
                     text-align: center;
                     margin-top: 2px;
                 `;
@@ -1210,7 +1418,12 @@ export async function selectProjectById(projectId) {
         detailPage = 0;
         window.selectedProjectId = project.id;
         
-
+        if (!textureWasVisibleBeforeExpand) {
+            textureWasVisibleBeforeExpand = getTextureVisibilityFromSettings();
+        }
+        
+        toggleTextureOverlay(false);
+        
         renderProyectosContent();
     }
 }

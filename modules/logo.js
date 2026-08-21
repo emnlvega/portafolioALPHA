@@ -200,11 +200,7 @@ function applyDesignDirectly(jsonData, onComplete) {
 }
 
 export function importDesignFromJSON(jsonData, onComplete, reset = true) {
-
-
-
     if (isHashLoad) {
-
         applyDesignDirectly(jsonData, onComplete);
         return;
     }
@@ -213,7 +209,12 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
     
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
     
-
+    allCells.forEach(cell => {
+        if (cell.dataset.isSidebar === 'true') return;
+        cell.style.pointerEvents = 'none';
+        cell.style.cursor = 'default';
+    });
+    
     if (reset) {
         allCells.forEach(cell => {
             if (cell.dataset.isSidebar === 'true') return;
@@ -233,7 +234,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                 cell.style.backgroundColor = CONFIG.COLORS.background;
                 cell.style.opacity = '1';
                 cell.style.transform = 'scale(1)';
-                cell.style.pointerEvents = 'auto';
+                cell.style.pointerEvents = 'none';
                 cell.style.zIndex = '';
                 cell.style.boxShadow = 'none';
                 cell.dataset.state = 'normal';
@@ -251,9 +252,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
         });
     }
     
-
     setTimeout(() => {
-
         const outlineItems = [];
         const redItems = [];
         const combinedItems = [];
@@ -276,7 +275,6 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
             );
             if (!cell) return;
             
-
             if (cell.dataset.combined === 'true') {
                 const size = CONFIG.CELL_SIZE;
                 const origX = parseFloat(cell.dataset.originalX);
@@ -290,7 +288,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                     cell.style.backgroundColor = CONFIG.COLORS.background;
                     cell.style.opacity = '1';
                     cell.style.transform = 'scale(1)';
-                    cell.style.pointerEvents = 'auto';
+                    cell.style.pointerEvents = 'none';
                     cell.style.zIndex = '';
                     cell.style.boxShadow = 'none';
                     cell.dataset.state = 'normal';
@@ -322,7 +320,6 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
             }
         });
         
-
         const shuffledOutline = shuffleArray([...outlineItems]);
         shuffledOutline.forEach((item, index) => {
             setTimeout(() => {
@@ -336,7 +333,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                 cell.dataset.prevState = 'logo';
                 cell.style.opacity = '1';
                 cell.style.transform = 'scale(1)';
-                cell.style.pointerEvents = 'auto';
+                cell.style.pointerEvents = 'none';
             }, index * 50);
         });
         
@@ -353,7 +350,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                 cell.dataset.prevState = 'red';
                 cell.style.opacity = '1';
                 cell.style.transform = 'scale(1)';
-                cell.style.pointerEvents = 'auto';
+                cell.style.pointerEvents = 'none';
             }, outlineDelay + index * 50);
         });
         
@@ -364,14 +361,13 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
             cell.style.backgroundColor = CONFIG.COLORS.background;
             cell.style.opacity = '1';
             cell.style.transform = 'scale(1)';
-            cell.style.pointerEvents = 'auto';
+            cell.style.pointerEvents = 'none';
             cell.style.boxShadow = 'none';
             cell.dataset.state = 'off';
             cell.dataset.prevState = 'normal';
             cell.classList.add('off');
         });
         
-
         const combinedDelay = outlineDelay + redItems.length * 50 + CONFIG.LOGO_DELAY_COMBINED;
         setTimeout(() => {
             const animDuration = CONFIG.ANIMATION_DURATION_LOGO;
@@ -404,7 +400,6 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                     const newWidth = combinedCols * (cellSize + gap) - gap;
                     const newHeight = combinedRows * (cellSize + gap) - gap;
                     
-
                     if (!cell || cell.dataset.combined === 'true') {
                         const existingCell = designCells.find(c => 
                             parseInt(c.dataset.designRow) === row && 
@@ -417,7 +412,6 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                         }
                     }
                     
-
                     if (cell.dataset.combined === 'true') {
                         const size = CONFIG.CELL_SIZE;
                         const origX = parseFloat(cell.dataset.originalX);
@@ -431,7 +425,7 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                             cell.style.backgroundColor = CONFIG.COLORS.background;
                             cell.style.opacity = '1';
                             cell.style.transform = 'scale(1)';
-                            cell.style.pointerEvents = 'auto';
+                            cell.style.pointerEvents = 'none';
                             cell.style.zIndex = '';
                             cell.style.boxShadow = 'none';
                             cell.dataset.state = 'normal';
@@ -447,14 +441,13 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                     const combinedId = 'import_' + Date.now() + '_' + row + '_' + col;
                     const cellsInArea = getCellsInArea(newLeft, newTop, newWidth, newHeight);
                     
-
                     cell.style.transition = `all ${animDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
                     cell.style.left = `${newLeft}px`;
                     cell.style.top = `${newTop}px`;
                     cell.style.width = `${newWidth}px`;
                     cell.style.height = `${newHeight}px`;
                     cell.style.zIndex = '10';
-                    cell.style.pointerEvents = 'auto';
+                    cell.style.pointerEvents = 'none';
                     cell.style.opacity = '1';
                     cell.style.transform = 'scale(1)';
                     cell.dataset.combined = 'true';
@@ -489,7 +482,6 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                     }
                     cell.dataset.prevState = cell.dataset.state;
                     
-
                     cellsInArea.forEach(c => {
                         if (c !== cell) {
                             c.style.transition = `all ${animDuration * 0.3}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
@@ -506,6 +498,14 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                     
                     if (onComplete && index === shuffledCombined.length - 1) {
                         setTimeout(() => {
+                            const allCellsFinal = document.querySelectorAll('.grid-cell, .logo-cell');
+                            allCellsFinal.forEach(c => {
+                                if (c.dataset.isSidebar === 'true') return;
+                                if (!c.querySelector('.proyectos-item, .proyectos-category, .proyectos-nav, .expand-btn, .proyectos-detail, .proyectos-select-message')) {
+                                    c.style.pointerEvents = 'auto';
+                                    c.style.cursor = '';
+                                }
+                            });
                             setTimeout(() => {
                                 restartRandomAnimations();
                             }, 500);

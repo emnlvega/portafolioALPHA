@@ -176,14 +176,13 @@ export async function renderSobreMiContent() {
             photoWrapper.className = 'sobre-mi-content';
             photoWrapper.style.cssText = `
                 position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
+                top: 1%;
+                left: 2%;
+                width: 96%;
+                height: 98%;
+                opacity: 100;
                 display: flex;
-                align-items: center;
-                justify-content: center;
-                pointer-events: none;
+
                 z-index: 20;
                 overflow: hidden;
                 background: rgba(0,0,0,0.3);
@@ -486,7 +485,7 @@ Tengo la idea de que mientras algo sea posible, si depende de m√≠, lo conseguir√
                     gap: 0;
                     font-size: 10px;
                     letter-spacing: 1.5px;
-                    color: ${primaryColor};
+                    color: ${secondaryColor};
                     text-shadow: ${LIGHT_TEXT_SHADOW};
                     transition: all 0.2s ease;
                     cursor: default;
@@ -522,7 +521,7 @@ Tengo la idea de que mientras algo sea posible, si depende de m√≠, lo conseguir√
                         height: 25px;
                         background: rgba(${primaryRGB}, 0.1);
                         border-radius: 0 4px 4px 0;
-                        color: ${primaryColor};
+                        color: ${secondaryColor};
                         text-shadow: ${LIGHT_TEXT_SHADOW};
                         font-size: 10px;
                         letter-spacing: 1.5px;

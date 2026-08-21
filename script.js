@@ -51,6 +51,8 @@ function unblockSidebarInteraction() {
     });
 }
 
+window.unblockSidebarInteraction = unblockSidebarInteraction;
+
 async function loadProyectosData() {
     if (proyectosData) return proyectosData;
     try {
@@ -468,7 +470,6 @@ function loadSpecialPage(page, projectId = null) {
     }
     
     if (page === 'proyectos') {
-
         if (projectId) {
             window.selectedProjectId = projectId;
         }

@@ -1,55 +1,55 @@
 {
   "title": "SOBRE MI",
   "design": {
-    "0,0": {
-      "type": "combined_normal",
-      "left": 199,
-      "top": 23,
-      "width": 1681,
-      "height": 91,
-      "combined": true
-    },
-    "2,0": {
-      "type": "combined_normal",
-      "left": 199,
-      "top": 129,
-      "width": 250,
-      "height": 409,
-      "combined": true
-    },
-    "2,5": {
-      "type": "combined_normal",
-      "left": 464,
-      "top": 129,
-      "width": 1416,
-      "height": 409,
-      "combined": true
-    },
-    "10,0": {
-      "type": "combined_normal",
-      "left": 199,
-      "top": 553,
-      "width": 833,
-      "height": 197,
-      "combined": true
-    },
-    "10,16": {
-      "type": "combined_normal",
-      "left": 1047,
-      "top": 553,
-      "width": 833,
-      "height": 197,
-      "combined": true
-    },
-    "14,0": {
-      "type": "combined_normal",
-      "left": 199,
-      "top": 765,
-      "width": 1681,
-      "height": 144,
-      "combined": true
-    }
+  "0,0": {
+    "type": "combined_normal",
+    "left": 199,
+    "top": 23,
+    "width": 1681,
+    "height": 91,
+    "combined": true
   },
+  "2,0": {
+    "type": "combined_logo",
+    "left": 199,
+    "top": 129,
+    "width": 250,
+    "height": 409,
+    "combined": true
+  },
+  "2,5": {
+    "type": "combined_normal",
+    "left": 464,
+    "top": 129,
+    "width": 1416,
+    "height": 409,
+    "combined": true
+  },
+  "10,0": {
+    "type": "combined_normal",
+    "left": 199,
+    "top": 553,
+    "width": 833,
+    "height": 197,
+    "combined": true
+  },
+  "10,16": {
+    "type": "combined_normal",
+    "left": 1047,
+    "top": 553,
+    "width": 833,
+    "height": 197,
+    "combined": true
+  },
+  "14,0": {
+    "type": "combined_logo",
+    "left": 199,
+    "top": 765,
+    "width": 1681,
+    "height": 144,
+    "combined": true
+  }
+},
   "content": {
     "photo1": "assets/photo/yoedit.png",
     "photo2": "assets/photo/yo.png"

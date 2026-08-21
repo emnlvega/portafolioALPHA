@@ -378,13 +378,13 @@ body::after {
 
 .grid-cell:not(.off):not([data-state="logo"]):not([data-state="combined_logo"]):hover,
 .logo-cell:not(.off):not([data-state="logo"]):not([data-state="combined_logo"]):hover {
-    border-color: var(--color-secondary) !important;
+    border-color: var(--color-primary) !important;
     transform: scale(1.05);
     z-index: 10;
-    box-shadow: 0 0 5px rgba(var(--color-secondary-rgb), 1),
-                0 0 60px rgba(var(--color-secondary-rgb), 0.2),
-                0 0 120px rgba(var(--color-secondary-rgb), 0.08),
-                inset 0 0 40px rgba(var(--color-secondary-rgb), 0.08) !important;
+    box-shadow: 0 0 5px rgba(var(--color-primary-rgb), 1),
+                0 0 60px rgba(var(--color-primary-rgb), 0.3),
+                0 0 120px rgba(var(--color-primary-rgb), 0.2),
+                inset 0 0 40px rgba(var(--color-primary-rgb), 0.1) !important;
 }
 
 
@@ -825,23 +825,21 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
 
 ::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
     background: rgba(var(--color-primary-rgb), 0.3);
-    border-radius: 3px;
     transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(var(--color-primary-rgb), 0.6);
+    background: rgba(var(--color-primary-rgb), 1);
 }
 
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(var(--color-primary-rgb), 0.3) rgba(0, 0, 0, 0.3);
+    scrollbar-color: rgba(var(--color-primary-rgb), 0.6) rgba(0, 0, 0, 0);
 }
 
 
@@ -976,53 +974,6 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
         0 0 15px rgba(var(--color-secondary-rgb), 0.05) !important;
 }
 
-/* ========================================
-   SCANLINES DENTRO DE CELDAS
-   ======================================== */
-
-.mobile-device .grid-cell[data-state="red"]::after,
-.mobile-device .logo-cell[data-state="red"]::after,
-.mobile-device .grid-cell[data-state="combined_red"]::after,
-.mobile-device .logo-cell[data-state="combined_red"]::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: var(--cell-radius) !important;
-    background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(var(--color-primary-rgb), 0.06) 3px
-    ) !important;
-    pointer-events: none !important;
-    z-index: 2 !important;
-    display: block !important;
-}
-
-.mobile-device .grid-cell[data-state="logo"]::after,
-.mobile-device .logo-cell[data-state="logo"]::after,
-.mobile-device .grid-cell[data-state="combined_logo"]::after,
-.mobile-device .logo-cell[data-state="combined_logo"]::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: var(--cell-radius) !important;
-    background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(255, 255, 255, 0.04) 3px
-    ) !important;
-    pointer-events: none !important;
-    z-index: 2 !important;
-    display: block !important;
-}
 
 /* ========================================
    BOTONES DEL SIDEBAR MÓVIL - BLOQUEADOS

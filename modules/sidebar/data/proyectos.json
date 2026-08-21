@@ -1,223 +1,167 @@
 {
   "title": "PROYECTOS",
   "design": {
-    "0,0": {
-      "type": "combined_normal",
-      "left": 199,
-      "top": 23,
-      "width": 1681,
-      "height": 91,
-      "combined": true
-    },
-    "2,0": {
-      "type": "combined_normal",
-      "left": 199,
-      "top": 129,
-      "width": 91,
-      "height": 250,
-      "combined": true
-    },
-    "2,2": {
-      "type": "combined_normal",
-      "left": 305,
-      "top": 129,
-      "width": 197,
-      "height": 144,
-      "combined": true
-    },
-    "2,6": {
-      "type": "combined_normal",
-      "left": 517,
-      "top": 129,
-      "width": 197,
-      "height": 144,
-      "combined": true
-    },
-    "2,10": {
-      "type": "combined_normal",
-      "left": 729,
-      "top": 129,
-      "width": 197,
-      "height": 144,
-      "combined": true
-    },
-    "2,14": {
-      "type": "combined_normal",
-      "left": 941,
-      "top": 129,
-      "width": 197,
-      "height": 144,
-      "combined": true
-    },
-    "2,18": {
-      "type": "combined_normal",
-      "left": 1153,
-      "top": 129,
-      "width": 197,
-      "height": 144,
-      "combined": true
-    },
-    "2,22": {
-      "type": "combined_normal",
-      "left": 1365,
-      "top": 129,
-      "width": 197,
-      "height": 144,
-      "combined": true
-    },
-    "2,26": {
-      "type": "combined_normal",
-      "left": 1577,
-      "top": 129,
-      "width": 197,
-      "height": 144,
-      "combined": true
-    },
-    "2,30": {
-      "type": "combined_normal",
-      "left": 1789,
-      "top": 129,
-      "width": 91,
-      "height": 250,
-      "combined": true
-    },
-    "5,2": {
-      "type": "combined_normal",
-      "left": 305,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,4": {
-      "type": "combined_normal",
-      "left": 411,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,6": {
-      "type": "combined_normal",
-      "left": 517,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,8": {
-      "type": "combined_normal",
-      "left": 623,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,10": {
-      "type": "combined_normal",
-      "left": 729,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,12": {
-      "type": "combined_normal",
-      "left": 835,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,14": {
-      "type": "combined_normal",
-      "left": 941,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,16": {
-      "type": "combined_normal",
-      "left": 1047,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,18": {
-      "type": "combined_normal",
-      "left": 1153,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,20": {
-      "type": "combined_normal",
-      "left": 1259,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,22": {
-      "type": "combined_normal",
-      "left": 1365,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,24": {
-      "type": "combined_normal",
-      "left": 1471,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,26": {
-      "type": "combined_normal",
-      "left": 1577,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "5,28": {
-      "type": "combined_normal",
-      "left": 1683,
-      "top": 288,
-      "width": 91,
-      "height": 91,
-      "combined": true
-    },
-    "7,0": {
-      "type": "combined_normal",
-      "left": 199,
-      "top": 394,
-      "width": 91,
-      "height": 515,
-      "combined": true
-    },
-    "7,2": {
-      "type": "combined_normal",
-      "left": 305,
-      "top": 394,
-      "width": 1469,
-      "height": 515,
-      "combined": true
-    },
-    "7,30": {
-      "type": "combined_normal",
-      "left": 1789,
-      "top": 394,
-      "width": 91,
-      "height": 515,
-      "combined": true
-    }
+  "0,0": {
+    "type": "combined_normal",
+    "left": 199,
+    "top": 23,
+    "width": 1681,
+    "height": 91,
+    "combined": true
   },
+  "2,0": {
+    "type": "combined_normal",
+    "left": 199,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,2": {
+    "type": "combined_normal",
+    "left": 305,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,4": {
+    "type": "combined_normal",
+    "left": 411,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,6": {
+    "type": "combined_normal",
+    "left": 517,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,8": {
+    "type": "combined_normal",
+    "left": 623,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,10": {
+    "type": "combined_normal",
+    "left": 729,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,12": {
+    "type": "combined_normal",
+    "left": 835,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,14": {
+    "type": "combined_normal",
+    "left": 941,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,16": {
+    "type": "combined_normal",
+    "left": 1047,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,18": {
+    "type": "combined_normal",
+    "left": 1153,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,20": {
+    "type": "combined_normal",
+    "left": 1259,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,22": {
+    "type": "combined_normal",
+    "left": 1365,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,24": {
+    "type": "combined_normal",
+    "left": 1471,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,26": {
+    "type": "combined_normal",
+    "left": 1577,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,28": {
+    "type": "combined_normal",
+    "left": 1683,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "2,30": {
+    "type": "combined_normal",
+    "left": 1789,
+    "top": 129,
+    "width": 91,
+    "height": 91,
+    "combined": true
+  },
+  "4,0": {
+    "type": "combined_normal",
+    "left": 199,
+    "top": 235,
+    "width": 91,
+    "height": 674,
+    "combined": true
+  },
+  "4,2": {
+    "type": "combined_normal",
+    "left": 305,
+    "top": 235,
+    "width": 1469,
+    "height": 674,
+    "combined": true
+  },
+  "4,30": {
+    "type": "combined_normal",
+    "left": 1789,
+    "top": 235,
+    "width": 91,
+    "height": 674,
+    "combined": true
+  }
+},
   "categories": [
     "≤2021",
     "2022",

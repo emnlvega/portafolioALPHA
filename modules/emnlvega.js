@@ -534,6 +534,10 @@ export function stopLogoAnimation() {
     clearAllTimeouts();
     removeLettersImage();
     
+    if (window.cleanInicioContent) {
+        window.cleanInicioContent();
+    }
+    
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
         if (cell.dataset.isSidebar === 'true') return;
@@ -575,25 +579,28 @@ export function stopLogoAnimation() {
             delete cell.dataset.combinedId;
         }
     });
+    
+    if (window.unblockSidebarInteraction) {
+        window.unblockSidebarInteraction();
+    }
 }
 
 export function startLogoAnimation(onComplete = null, instant = false) {
     if (!isEnabled) {
         if (onComplete) onComplete();
+        if (window.unblockSidebarInteraction) {
+            window.unblockSidebarInteraction();
+        }
         return;
     }
     
     clearAllTimeouts();
     stopLogoAnimation();
     
-    removeLettersImage();
-    
     importDesignFromJSON(LOGO_START_DESIGN, () => {
         lettersImage = createLettersImage();
         showLettersImage();
         
-
-
         setTimeout(() => {
             const event = new CustomEvent('renderInicioContent');
             document.dispatchEvent(event);
@@ -611,7 +618,6 @@ export function startLogoAnimation(onComplete = null, instant = false) {
         ];
         
         if (instant) {
-
             letterDesigns.forEach((letterDesign) => {
                 importDesignFromJSON(letterDesign, () => {}, false);
             });
@@ -628,8 +634,13 @@ export function startLogoAnimation(onComplete = null, instant = false) {
             if (onComplete) {
                 setTimeout(onComplete, ANIMATION_CONFIG.IMAGE_FADE_DURATION);
             }
+            
+            if (window.unblockSidebarInteraction) {
+                setTimeout(() => {
+                    window.unblockSidebarInteraction();
+                }, ANIMATION_CONFIG.IMAGE_FADE_DURATION + 100);
+            }
         } else {
-
             letterDesigns.forEach((letterDesign, index) => {
                 const timeout = setTimeout(() => {
                     if (!lettersImage && index > 0) return;
@@ -648,6 +659,12 @@ export function startLogoAnimation(onComplete = null, instant = false) {
                                 
                                 if (onComplete) {
                                     setTimeout(onComplete, ANIMATION_CONFIG.IMAGE_FADE_DURATION);
+                                }
+                                
+                                if (window.unblockSidebarInteraction) {
+                                    setTimeout(() => {
+                                        window.unblockSidebarInteraction();
+                                    }, ANIMATION_CONFIG.IMAGE_FADE_DURATION + 100);
                                 }
                             }, ANIMATION_CONFIG.LETTER_INTERVAL);
                             allAnimationTimeouts.push(finalTimeout);

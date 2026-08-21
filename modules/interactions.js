@@ -78,6 +78,19 @@ export function cleanInicioContent() {
     if (window.setInicioClickable) {
         window.setInicioClickable(false);
     }
+    
+
+    if (window.unblockSidebarInteraction) {
+        window.unblockSidebarInteraction();
+    }
+    
+    const gridCells = document.querySelectorAll('.grid-cell, .logo-cell');
+    gridCells.forEach(cell => {
+        if (cell.dataset.isSidebar !== 'true') {
+            cell.style.pointerEvents = '';
+            cell.style.cursor = '';
+        }
+    });
 }
 
 export function toggleCellOff(cell) {

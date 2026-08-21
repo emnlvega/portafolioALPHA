@@ -64,7 +64,7 @@ let currentConfig = {
         TARGET_CELLS: 'all',
 
         SCALE: {
-            ENABLED: true,
+            ENABLED: true,//
             DURATION: 2000,
             SCALE_FACTOR: 1.07,
             MIN_INTERVAL: 1000,
@@ -75,18 +75,18 @@ let currentConfig = {
 
         COLOR: {
             ENABLED: false,
-            DURATION: 1000,
-            MIN_INTERVAL: 100,
-            MAX_INTERVAL: 100,
-            MAX_SIMULTANEOUS: 2,
+            DURATION: 6000,
+            MIN_INTERVAL: 600,
+            MAX_INTERVAL: 1500,
+            MAX_SIMULTANEOUS: 0,
         },
         
 
         GLOW: {
-            ENABLED: true,
+            ENABLED: false,//
             DURATION: 3000,
-            MIN_INTERVAL: 1000,
-            MAX_INTERVAL: 9000,
+            MIN_INTERVAL: 100,
+            MAX_INTERVAL: 100,
             MAX_SIMULTANEOUS: 3,
             INTENSITY: 10
         },
@@ -95,25 +95,25 @@ let currentConfig = {
         ROTATE: {
             ENABLED: false,
             DURATION: 4000,
-            MIN_INTERVAL: 12000,
-            MAX_INTERVAL: 30000,
+            MIN_INTERVAL: 100,
+            MAX_INTERVAL: 100,
             MAX_SIMULTANEOUS: 2,
             ROTATION_ANGLE: 3
         },
         
 
         BORDER_SHIFT: {
-            ENABLED: true,
+            ENABLED: true,//
             DURATION: 2500,
-            MIN_INTERVAL: 1000,
-            MAX_INTERVAL: 18000,
+            MIN_INTERVAL: 1500,
+            MAX_INTERVAL: 11000,
             MAX_SIMULTANEOUS: 4,
-            SHIFT_AMOUNT: 2
+            SHIFT_AMOUNT: 3
         },
         
 
         OPACITY_WAVE: {
-            ENABLED: true,
+            ENABLED: true,//
             DURATION: 2000,
             MIN_INTERVAL: 200,
             MAX_INTERVAL: 200,
@@ -123,6 +123,8 @@ let currentConfig = {
         }
     }
 };
+
+
 
 export function updateColors(newPrimary, newSecondary = '#ffffff', newBackground = '#000000') {
     const newColors = createColors(newPrimary, newSecondary, newBackground);

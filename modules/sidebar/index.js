@@ -164,7 +164,7 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
     document.querySelectorAll('.sidebar-text, .sidebar-logo-svg, .sidebar-logo-text, #settings-cog-btn, #color-picker-container').forEach(el => el.remove());
     
     const menuItems = [
-        { text: 'EMNLVEGA', action: 'inicio', isLogo: true },
+
         { text: 'INICIO', action: 'inicio' },
         { text: 'PROYECTOS', action: 'proyectos' },
         { text: 'SOBRE MI', action: 'sobre-mi' },
@@ -454,7 +454,6 @@ export function handleSidebarAction(action) {
                 updateSidebarActiveStateMobile('inicio');
             }, 100);
         } else {
-
             returnToMainLogo();
             document.querySelectorAll('.sidebar-text').forEach(el => {
                 el.classList.remove('active');
@@ -469,11 +468,13 @@ export function handleSidebarAction(action) {
             }
             updateURL('inicio');
             
-
-
-
-
-
+            import('../emnlvega.js').then(module => {
+                module.setOnInicio(true);
+                module.startFlickerOnInicio();
+            });
+            
+            const event = new CustomEvent('loadInicioInstant');
+            document.dispatchEvent(event);
         }
         return;
     }
@@ -499,10 +500,11 @@ export function handleSidebarAction(action) {
                 currentText.style.color = CONFIG.COLORS.secondary;
                 currentText.style.textShadow = 'var(--text-shadow-active)';
             }
-            updateURL(action);
             
 
-            loadSidebarPage(action, !!window.selectedProjectId);
+            const hasProject = !!window.selectedProjectId;
+            updateURL(action);
+            loadSidebarPage(action, hasProject);
         }
         return;
     }
@@ -576,7 +578,6 @@ export function handleSidebarAction(action) {
 function loadSidebarPage(pageKey, hasProjectId = false) {
     if (isTransitioning) return;
     
-
     document.querySelectorAll('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas').forEach(el => el.remove());
     document.querySelectorAll('.grid-cell, .logo-cell').forEach(cell => {
         const children = cell.querySelectorAll('.inicio-bienvenido, .inicio-proyecto, .inicio-vermas');
@@ -595,27 +596,45 @@ function loadSidebarPage(pageKey, hasProjectId = false) {
     isTransitioning = true;
     setHashLoad(false);
     
-    document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content').forEach(el => el.remove());
+    document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content, .expand-back-btn, .expand-next-btn').forEach(el => el.remove());
     
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
-        const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content');
+        const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content, .expand-back-btn, .expand-next-btn');
         children.forEach(child => child.remove());
     });
+    
+    const titleCell = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="0"]');
+    if (titleCell) {
+        const children = titleCell.querySelectorAll('.proyectos-content, .proyectos-detail, .proyectos-select-message, .expand-back-btn');
+        children.forEach(child => child.remove());
+        titleCell.style.backgroundColor = CONFIG.COLORS.background;
+        titleCell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+        titleCell.style.borderColor = CONFIG.COLORS.primary;
+        titleCell.style.boxShadow = 'none';
+    }
+
+    const nextCell = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="30"]');
+    if (nextCell) {
+        const children = nextCell.querySelectorAll('.expand-next-btn');
+        children.forEach(child => child.remove());
+        nextCell.style.backgroundColor = CONFIG.COLORS.background;
+        nextCell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+        nextCell.style.borderColor = CONFIG.COLORS.primary;
+        nextCell.style.boxShadow = 'none';
+    }
     
     setGridInteractionsEnabled(false);
     stopRandomAnimations();
     resetGrid(false);
     isProgrammaticLoad = true;
     
-
-    const shouldExpand = pageKey === 'proyectos' && (hasProjectId || window.selectedProjectId);
-    const projectIdToSelect = window.selectedProjectId;
+    const projectIdToSelect = window.selectedProjectId || null;
+    const shouldExpand = pageKey === 'proyectos' && projectIdToSelect;
     
     setTimeout(async () => {
         try {
-            if (shouldExpand && projectIdToSelect) {
-
+            if (shouldExpand) {
                 const proyectosModule = await import('./pages/proyectos.js');
                 
                 proyectosModule.toggleTextureOverlay(false);
@@ -629,17 +648,15 @@ function loadSidebarPage(pageKey, hasProjectId = false) {
                     updateSidebarActiveState();
                     
                     setTimeout(() => {
-
                         handler.render();
                         
-
                         setTimeout(() => {
                             import('./pages/proyectos.js').then(module => {
                                 if (module.selectProjectById) {
                                     module.selectProjectById(projectIdToSelect);
                                 }
                             });
-                        }, 100);
+                        }, 200);
                         
                         if (pageKey === 'proyectos' && projectIdToSelect) {
                             updateURL('proyectos', projectIdToSelect);
@@ -651,7 +668,6 @@ function loadSidebarPage(pageKey, hasProjectId = false) {
                     }, 300);
                 }, false);
             } else {
-
                 const design = await handler.getDesign();
                 importDesignFromJSON(design, () => {
                     isSpecialPageActive = true;
@@ -777,7 +793,6 @@ export function handleURLOnLoad() {
     const page = hash.replace('#', '');
     
     if (/^\d+$/.test(page)) {
-
         window.selectedProjectId = parseInt(page);
         return { page: 'proyectos', projectId: parseInt(page) };
     }

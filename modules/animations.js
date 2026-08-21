@@ -260,20 +260,52 @@ function animateColor(cell) {
     activeColorAnimations.add(cell);
     const duration = CONFIG.ANIMATIONS.COLOR.DURATION;
     const primaryColor = CONFIG.COLORS.primary;
-    const bgColor = CONFIG.COLORS.background;
     const primaryRGB = CONFIG.COLORS.primaryRGB;
+    const bgColor = CONFIG.COLORS.background;
+    const opacity = 0.008;
+    
+    const originalState = cell.dataset.state || 'normal';
+    const originalBgColor = cell.style.backgroundColor;
+    const originalBorderColor = cell.style.borderColor;
+    const originalBoxShadow = cell.style.boxShadow;
     
     cell.style.transition = `all ${duration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-    cell.style.backgroundColor = primaryColor;
+    cell.style.backgroundColor = `rgba(${primaryRGB}, ${opacity})`;
     cell.style.borderColor = primaryColor;
     cell.dataset.state = 'red';
-    cell.style.boxShadow = `0 0 10px ${primaryColor}, 0 0 40px rgba(${primaryRGB}, 0.3), 0 0 80px rgba(${primaryRGB}, 0.15), inset 0 0 40px rgba(${primaryRGB}, 0.12)`;
+    cell.style.boxShadow = `0 0 10px rgba(${primaryRGB}, 0.3), 0 0 40px rgba(${primaryRGB}, 0.15), 0 0 80px rgba(${primaryRGB}, 0.05), inset 0 0 40px rgba(${primaryRGB}, 0.05)`;
     
     setTimeout(() => {
-        cell.style.backgroundColor = bgColor;
-        cell.style.borderColor = CONFIG.COLORS.primary;
-        cell.dataset.state = 'normal';
-        cell.style.boxShadow = '';
+        cell.style.backgroundColor = originalBgColor || bgColor;
+        cell.style.borderColor = originalBorderColor || CONFIG.COLORS.primary;
+        cell.dataset.state = originalState;
+        cell.style.boxShadow = originalBoxShadow || '';
+        
+        if (originalState === 'logo') {
+            cell.style.border = 'none';
+            cell.style.borderColor = 'transparent';
+            cell.style.backgroundColor = CONFIG.COLORS.background;
+            cell.style.boxShadow = `inset 0 0 0 4px ${CONFIG.COLORS.secondary}`;
+        } else if (originalState === 'red') {
+            cell.style.backgroundColor = CONFIG.COLORS.primary;
+            cell.style.borderColor = CONFIG.COLORS.primary;
+            cell.style.boxShadow = 'none';
+        } else if (originalState === 'combined_red') {
+            cell.style.backgroundColor = CONFIG.COLORS.primary;
+            cell.style.borderColor = CONFIG.COLORS.primary;
+            cell.style.boxShadow = 'none';
+        } else if (originalState === 'combined_logo') {
+            cell.style.border = 'none';
+            cell.style.borderColor = 'transparent';
+            cell.style.backgroundColor = CONFIG.COLORS.background;
+            cell.style.boxShadow = `inset 0 0 0 4px ${CONFIG.COLORS.secondary}`;
+        } else if (originalState === 'combined_normal') {
+            cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
+            cell.style.borderColor = CONFIG.COLORS.primary;
+            cell.style.backgroundColor = CONFIG.COLORS.background;
+            cell.style.boxShadow = 'none';
+        }
+        
         setTimeout(() => {
             cell.style.transition = '';
             activeColorAnimations.delete(cell);
@@ -281,7 +313,25 @@ function animateColor(cell) {
     }, duration);
 }
 
+function scheduleNextColor() {
+    if (!isRunning || !CONFIG.ANIMATIONS.COLOR.ENABLED) return;
+    const min = CONFIG.ANIMATIONS.COLOR.MIN_INTERVAL || 5000;
+    const max = CONFIG.ANIMATIONS.COLOR.MAX_INTERVAL || 5000;
+    const interval = Math.floor(Math.random() * (max - min + 1)) + min;
+    
+    colorTimeout = setTimeout(() => {
+        if (isRunning && CONFIG.ANIMATIONS.COLOR.ENABLED) {
+            triggerColorAnimation();
+        }
+        if (isRunning && CONFIG.ANIMATIONS.COLOR.ENABLED) {
+            scheduleNextColor();
+        }
+    }, interval);
+}
+
 function triggerColorAnimation() {
+    if (activeColorAnimations.size > CONFIG.ANIMATIONS.COLOR.MAX_SIMULTANEOUS) return;
+    
     const availableCells = getAvailableColorCells();
     if (availableCells.length === 0) return;
     
@@ -292,18 +342,6 @@ function triggerColorAnimation() {
     const shuffled = availableCells.sort(() => Math.random() - 0.5);
     const selectedCells = shuffled.slice(0, Math.min(count, availableCells.length));
     selectedCells.forEach(cell => animateColor(cell));
-}
-
-function scheduleNextColor() {
-    if (!isRunning || !CONFIG.ANIMATIONS.COLOR.ENABLED) return;
-    const min = CONFIG.ANIMATIONS.COLOR.MIN_INTERVAL;
-    const max = CONFIG.ANIMATIONS.COLOR.MAX_INTERVAL;
-    const interval = Math.floor(Math.random() * (max - min + 1)) + min;
-    
-    colorTimeout = setTimeout(() => {
-        triggerColorAnimation();
-        scheduleNextColor();
-    }, interval);
 }
 
 
@@ -553,7 +591,6 @@ function clearAllTimeouts() {
 
 
 export function startRandomAnimations() {
-
     if (IS_MOBILE) {
         return;
     }

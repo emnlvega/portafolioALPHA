@@ -154,7 +154,7 @@ export function applySettings(settings) {
     
     if (settings.animations) {
         CONFIG.ANIMATIONS.SCALE.ENABLED = true;
-        CONFIG.ANIMATIONS.GLOW.ENABLED = true;
+        CONFIG.ANIMATIONS.GLOW.ENABLED = false;
         CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = true;
         CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = true;
         CONFIG.ANIMATIONS.COLOR.ENABLED = false;

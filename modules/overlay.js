@@ -14,10 +14,10 @@ const OVERLAY_CONFIG = {
     FOLDER: 'assets/overlays/',
     EXTENSION: 'jpg',
     BLEND_MODE: 'color-dodge',
-    OPACITY: 0.7,
+    OPACITY: 0.5,
     OPACITY_FIRST: 0.5,
     RANDOM_ORDER: true,
-    IMAGE_COUNT: 17
+    IMAGE_COUNT: 18
 };
 
 
