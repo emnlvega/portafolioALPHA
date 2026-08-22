@@ -1,5 +1,3 @@
-
-
 import { CONFIG } from '../../config.js';
 import { showDialog } from '../../dialogs.js';
 import { importDesignFromJSON } from '../../logo.js';
@@ -8,7 +6,6 @@ import { isTransitioningCheck, updateURL } from '../index.js';
 
 let proyectosData = null;
 let currentPage = 0;
-let currentCategory = 'TODOS';
 const PROJECTS_PER_PAGE = 14;
 let projectsCache = null;
 let selectedProjectId = null;
@@ -22,6 +19,39 @@ let renderTimeout = null;
 let textureWasVisibleBeforeExpand = true;
 
 const LIGHT_TEXT_SHADOW = `0 0 7px rgba(var(--color-primary-rgb), 1)`;
+
+function getTextSizes() {
+    return CONFIG.TEXT_SIZES || {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 14,
+        small: 10,
+        tiny: 8
+    };
+}
+
+function getLetterSpacing() {
+    return CONFIG.LETTER_SPACING || {
+        title: 12,
+        subTitle: 6,
+        medium: 0.5,
+        small: 1.5,
+        tiny: 2
+    };
+}
+
+function getLineHeight() {
+    return CONFIG.LINE_HEIGHT || {
+        title: 1.2,
+        subTitle: 1.4,
+        medium: 1.6,
+        small: 1.5,
+        tiny: 1.3
+    };
+}
 
 export const EXPANDED_DESIGN = {
     "0,0": {
@@ -66,21 +96,9 @@ export const EXPANDED_DESIGN = {
     }
 };
 
-const CATEGORY_ICONS = {
-    '≤2021': '◆',
-    'DISENO WEB': '◈',
-    'FRONTEND': '◉',
-    'BACKEND': '◊',
-    'LOGOS': '◇',
-    'BRANDING': '○',
-    'ARTE': '□'
-};
-
-
 export function setDetailExpanded(value) {
     isDetailExpanded = value;
 }
-
 
 export function toggleTextureOverlay(show) {
     const overlay = document.getElementById('overlay-container');
@@ -100,12 +118,8 @@ function getTextureVisibilityFromSettings() {
     return true;
 }
 
-
 export function clearProyectosTextureState() {
-
     const textureEnabled = getTextureVisibilityFromSettings();
-    
-
     if (textureEnabled) {
         toggleTextureOverlay(true);
     } else {
@@ -175,11 +189,11 @@ function toggleDetailExpand() {
             toggleTextureOverlay(textureWasVisibleBeforeExpand);
         }
 
-        document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn').forEach(el => el.remove());
+        document.querySelectorAll('.proyectos-content, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn').forEach(el => el.remove());
         
         const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
         allCells.forEach(cell => {
-            const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn');
+            const children = cell.querySelectorAll('.proyectos-content, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn');
             children.forEach(child => child.remove());
         });
 
@@ -220,7 +234,6 @@ function toggleDetailExpand() {
 function updateExpandButton(cell) {
     const oldBtn = cell.querySelector('.expand-btn');
     if (oldBtn) oldBtn.remove();
-    
 
     if (selectedProjectId && selectedProjectData) {
         addExpandButton(cell);
@@ -233,6 +246,7 @@ function addExpandButton(cell) {
     
     const btn = document.createElement('div');
     btn.className = 'expand-btn';
+    const textSizes = getTextSizes();
     btn.style.cssText = `
         position: absolute;
         top: 8px;
@@ -241,7 +255,7 @@ function addExpandButton(cell) {
         cursor: pointer;
         pointer-events: auto;
         color: ${CONFIG.COLORS.primary};
-        font-size: 50px;
+        font-size: ${textSizes.arrows + 22}px;
         transition: all 0.3s ease;
         opacity: 0.8;
         user-select: none;
@@ -280,10 +294,21 @@ function addExpandButton(cell) {
     cell.appendChild(btn);
 }
 
+
+
 export async function renderProyectosContent() {
+    const textSizes = getTextSizes();
+    const letterSpacing = getLetterSpacing();
     const data = await loadProyectosData();
     const container = document.getElementById('grid-container');
     if (!container) return;
+
+    const lineHeight = getLineHeight();
+    const primaryColor = CONFIG.COLORS.primary;
+    const secondaryColor = CONFIG.COLORS.secondary;
+    const primaryRGB = CONFIG.COLORS.primaryRGB;
+    const secondaryRGB = CONFIG.COLORS.secondaryRGB;
+    const content = data.content || {};
     
     const titleCellClean = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="0"]');
     if (titleCellClean) {
@@ -314,28 +339,24 @@ export async function renderProyectosContent() {
         toggleTextureOverlay(false);
     }
     
-    document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn').forEach(el => el.remove());
+    document.querySelectorAll('.proyectos-content, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn').forEach(el => el.remove());
     
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
-        const children = cell.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn');
+        const children = cell.querySelectorAll('.proyectos-content, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn');
         children.forEach(child => child.remove());
     });
     
     const cells = container.querySelectorAll('.grid-cell, .logo-cell');
     
     let titleCell = null;
-    let categoryLeftArrow = null;
-    let categoryRightArrow = null;
     let detailLeftArrow = null;
     let detailRightArrow = null;
-    let categoryCells = [];
     let projectCells = [];
     let detailCell = null;
     let backButtonCell = null;
     let nextProjectCell = null;
 
-    const categoryCols = [2, 6, 10, 14, 18, 22, 26];
     const projectCols = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28];
     
     cells.forEach(cell => {
@@ -349,12 +370,6 @@ export async function renderProyectosContent() {
             }
             else if (!isDetailExpanded && row === 2 && projectCols.includes(col)) {
                 projectCells.push(cell);
-            }
-            else if (!isDetailExpanded && row === 2 && col === 0) {
-                categoryLeftArrow = cell;
-            }
-            else if (!isDetailExpanded && row === 2 && col === 30) {
-                categoryRightArrow = cell;
             }
             else if (isDetailExpanded && row === 2 && col === 0) {
                 detailLeftArrow = cell;
@@ -402,10 +417,10 @@ export async function renderProyectosContent() {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: ${CONFIG.COLORS.primary};
+            color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            font-size: 32px;
-            letter-spacing: 12px;
+            font-size: ${textSizes.title}px;
+            letter-spacing: ${letterSpacing.title}px;
             text-transform: uppercase;
             text-shadow: ${LIGHT_TEXT_SHADOW};
             pointer-events: none;
@@ -416,113 +431,20 @@ export async function renderProyectosContent() {
         if (selectedProjectId && selectedProjectData) {
             title.textContent = selectedProjectData.name;
         } else {
-            title.textContent = data.title + (currentCategory !== 'TODOS' ? ` - ${currentCategory}` : '');
+            title.textContent = data.title;
         }
         
         titleCell.appendChild(title);
     }
-
     
     if (!isDetailExpanded) {
-        const categories = ['TODOS', ...data.categories];
-        categoryCells.forEach((cell, index) => {
-            if (index >= categories.length) return;
-            
-            const catName = categories[index];
-            const isActive = catName === currentCategory;
-            const catIcon = catName === 'TODOS' ? '◈' : CATEGORY_ICONS[catName] || '◆';
-            
-            const cat = document.createElement('div');
-            cat.className = 'proyectos-category proyectos-filter';
-            cat.dataset.category = catName;
-            cat.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                color: ${isActive ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary};
-                font-family: 'Courier New', monospace;
-                font-size: 10px;
-                letter-spacing: 2px;
-                text-transform: uppercase;
-                text-shadow: ${isActive ? 'var(--text-shadow-active)' : 'var(--text-shadow-normal)'};
-                pointer-events: auto;
-                cursor: pointer;
-                z-index: 20;
-                padding: 8px;
-                text-align: center;
-                line-height: 1.3;
-                border: 1px solid ${isActive ? CONFIG.COLORS.secondary : `rgba(${CONFIG.COLORS.primaryRGB}, 0.1)`};
-                border-radius: 4px;
-                transition: all 0.3s ease;
-                gap: 4px;
-                background: transparent;
-            `;
-            
-            const iconSpan = document.createElement('span');
-            iconSpan.textContent = catIcon;
-            iconSpan.style.cssText = `
-                font-size: 50px;
-                color: ${isActive ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary};
-                transition: all 0.3s ease;
-            `;
-            
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = catName;
-            nameSpan.style.cssText = `
-                font-size: 15px;
-                letter-spacing: 1px;
-                opacity: 0.8;
-            `;
-            
-            cat.appendChild(iconSpan);
-            cat.appendChild(nameSpan);
-            
-            cat.addEventListener('mouseenter', () => {
-                if (!isActive) {
-                    cat.style.borderColor = CONFIG.COLORS.secondary;
-                    cat.style.color = CONFIG.COLORS.secondary;
-                    iconSpan.style.color = CONFIG.COLORS.secondary;
-                    cat.style.textShadow = 'var(--text-shadow-hover)';
-                }
-            });
-            cat.addEventListener('mouseleave', () => {
-                if (!isActive) {
-                    cat.style.borderColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.1)`;
-                    cat.style.color = CONFIG.COLORS.primary;
-                    iconSpan.style.color = CONFIG.COLORS.primary;
-                    cat.style.textShadow = 'var(--text-shadow-normal)';
-                }
-            });
-            
-            cat.addEventListener('click', () => {
-                if (catName === currentCategory) return;
-                currentCategory = catName;
-                currentPage = 0;
-                renderProyectosContent();
-            });
-            
-            cell.appendChild(cat);
-        });
-    }
-    
-    if (!isDetailExpanded) {
-        const allProjects = data.projects;
-        const filteredProjects = currentCategory === 'TODOS' 
-            ? allProjects 
-            : allProjects.filter(p => p.category === currentCategory);
-
-        const totalPages = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
+        const allProjects = data.projects || [];
+        const totalPages = Math.ceil(allProjects.length / PROJECTS_PER_PAGE);
         const startIndex = currentPage * PROJECTS_PER_PAGE;
-        const endIndex = Math.min(startIndex + PROJECTS_PER_PAGE, filteredProjects.length);
-        const pageProjects = filteredProjects.slice(startIndex, endIndex);
+        const endIndex = Math.min(startIndex + PROJECTS_PER_PAGE, allProjects.length);
+        const pageProjects = allProjects.slice(startIndex, endIndex);
 
-        projectsCache = { filteredProjects, totalPages, startIndex, endIndex };
+        projectsCache = { allProjects, totalPages, startIndex, endIndex };
 
         projectCells.forEach((cell, index) => {
             if (index >= pageProjects.length) return;
@@ -543,14 +465,14 @@ export async function renderProyectosContent() {
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                color: ${isSelected ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary};
+                color: ${isSelected ? secondaryColor : primaryColor};
                 font-family: 'Courier New', monospace;
                 cursor: pointer;
                 pointer-events: auto;
                 z-index: 20;
                 padding: 8px;
                 text-align: center;
-                border: 1px solid ${isSelected ? CONFIG.COLORS.secondary : `rgba(${CONFIG.COLORS.primaryRGB}, 0.1)`};
+                border: 1px solid ${isSelected ? secondaryColor : `rgba(${primaryRGB}, 0.1)`};
                 border-radius: 4px;
                 transition: all 0.3s ease;
                 background: transparent;
@@ -558,76 +480,153 @@ export async function renderProyectosContent() {
             `;
             
             const icon = document.createElement('span');
-            icon.textContent = project.icon;
+            icon.textContent = project.icon || '◆';
             icon.style.cssText = `
-                font-size: 24px;
+                font-size: ${textSizes.projectIcon}px;
                 margin-bottom: 4px;
-                color: ${isSelected ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary};
-                text-shadow: ${isSelected ? `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 1)` : `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 1)`};
+                color: ${isSelected ? secondaryColor : primaryColor};
+                text-shadow: ${isSelected ? `0 0 30px rgba(${secondaryRGB}, 1)` : `0 0 20px rgba(${primaryRGB}, 1)`};
                 transition: all 0.3s ease;
             `;
             
             const name = document.createElement('span');
             name.textContent = project.name;
             name.style.cssText = `
-                font-size: 10px;
-                letter-spacing: 1px;
-                opacity: ${isSelected ? '1' : '1'};
+                font-size: ${textSizes.small}px;
+                letter-spacing: ${letterSpacing.small}px;
+                opacity: 1;
             `;
-            
-
             
             item.appendChild(icon);
             item.appendChild(name);
-
             
             item.addEventListener('mouseenter', () => {
                 if (!isSelected) {
-                    item.style.borderColor = CONFIG.COLORS.secondary;
-                    item.style.color = CONFIG.COLORS.secondary;
+                    item.style.borderColor = secondaryColor;
+                    item.style.color = secondaryColor;
                     item.style.textShadow = 'var(--text-shadow-hover)';
-                    icon.style.color = CONFIG.COLORS.secondary;
-                    icon.style.textShadow = `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)`;
+                    icon.style.color = secondaryColor;
+                    icon.style.textShadow = `0 0 30px rgba(${secondaryRGB}, 0.4)`;
                 }
             });
             
             item.addEventListener('mouseleave', () => {
                 if (!isSelected) {
-                    item.style.borderColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.1)`;
-                    item.style.color = CONFIG.COLORS.primary;
+                    item.style.borderColor = `rgba(${primaryRGB}, 0.1)`;
+                    item.style.color = primaryColor;
                     item.style.textShadow = 'var(--text-shadow-normal)';
-                    icon.style.color = CONFIG.COLORS.primary;
-                    icon.style.textShadow = `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`;
+                    icon.style.color = primaryColor;
+                    icon.style.textShadow = `0 0 20px rgba(${primaryRGB}, 0.2)`;
                 }
             });
             
             item.addEventListener('click', () => {
-            if (selectedProjectId === project.id) {
-                selectedProjectId = null;
-                selectedProjectData = null;
+                if (selectedProjectId === project.id) {
+                    selectedProjectId = null;
+                    selectedProjectData = null;
+                    detailPage = 0;
+                    updateURL('proyectos');
+                    renderProyectosContent();
+                    return;
+                }
+                
+                selectedProjectId = project.id;
+                selectedProjectData = project;
                 detailPage = 0;
-
-                updateURL('proyectos');
+                window.selectedProjectId = project.id;
+                updateURL('proyectos', project.id);
                 renderProyectosContent();
-                return;
-            }
-            
-            selectedProjectId = project.id;
-            selectedProjectData = project;
-            detailPage = 0;
-            window.selectedProjectId = project.id;
-
-            updateURL('proyectos', project.id);
-            renderProyectosContent();
-        });
+            });
             
             cell.appendChild(item);
         });
+        
+
+        const leftArrowCell = document.querySelector('.grid-cell[data-design-row="2"][data-design-col="0"]');
+        const rightArrowCell = document.querySelector('.grid-cell[data-design-row="2"][data-design-col="30"]');
+        
+        if (leftArrowCell) {
+            const el = document.createElement('div');
+            el.className = 'proyectos-nav project-arrow';
+            const isActive = currentPage > 0;
+            el.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Courier New', monospace;
+                font-size: ${textSizes.arrows}px;
+                cursor: ${isActive ? 'pointer' : 'default'};
+                pointer-events: ${isActive ? 'auto' : 'none'};
+                z-index: 20;
+                opacity: ${isActive ? '1' : '0.2'};
+                transition: color 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
+                background: transparent;
+                color: ${CONFIG.COLORS.background};
+                -webkit-text-stroke: 2px ${primaryColor};
+                text-stroke: 2px ${primaryColor};
+            `;
+            el.textContent = '◀';
+            if (isActive) {
+                el.style.textShadow = `0 0 10px rgba(${primaryRGB}, 1), 0 0 20px rgba(${primaryRGB}, 0.8), 0 0 40px rgba(${primaryRGB}, 0.4), 0 0 80px rgba(${primaryRGB}, 0.2)`;
+                el.style.animation = 'blinkArrow 1.2s ease-in-out infinite';
+                el.addEventListener('click', () => {
+                    if (currentPage > 0) {
+                        currentPage--;
+                        renderProyectosContent();
+                    }
+                });
+            }
+            leftArrowCell.appendChild(el);
+        }
+        
+        if (rightArrowCell) {
+            const el = document.createElement('div');
+            el.className = 'proyectos-nav project-arrow';
+            const isActive = currentPage < totalPages - 1;
+            el.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Courier New', monospace;
+                font-size: ${textSizes.arrows}px;
+                cursor: ${isActive ? 'pointer' : 'default'};
+                pointer-events: ${isActive ? 'auto' : 'none'};
+                z-index: 20;
+                opacity: ${isActive ? '1' : '0.2'};
+                transition: color 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
+                background: transparent;
+                color: ${CONFIG.COLORS.background};
+                -webkit-text-stroke: 2px ${primaryColor};
+                text-stroke: 2px ${primaryColor};
+            `;
+            el.textContent = '▶';
+            if (isActive) {
+                el.style.textShadow = `0 0 10px rgba(${primaryRGB}, 1), 0 0 20px rgba(${primaryRGB}, 0.8), 0 0 40px rgba(${primaryRGB}, 0.4), 0 0 80px rgba(${primaryRGB}, 0.2)`;
+                el.style.animation = 'blinkArrow 1.2s ease-in-out infinite';
+                el.addEventListener('click', () => {
+                    if (currentPage < totalPages - 1) {
+                        currentPage++;
+                        renderProyectosContent();
+                    }
+                });
+            }
+            rightArrowCell.appendChild(el);
+        }
     }
     
     if (detailCell) {
         if (selectedProjectId && selectedProjectData) {
-            showProjectDetail(selectedProjectData, detailCell);
+            showProjectDetail(selectedProjectData, detailCell, textSizes, letterSpacing, getLineHeight(), content);
         } else if (!isDetailExpanded) {
             const message = document.createElement('div');
             message.className = 'proyectos-select-message';
@@ -641,7 +640,7 @@ export async function renderProyectosContent() {
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                color: ${CONFIG.COLORS.primary};
+                color: ${primaryColor};
                 font-family: 'Courier New', monospace;
                 pointer-events: none;
                 z-index: 20;
@@ -651,11 +650,11 @@ export async function renderProyectosContent() {
             `;
             
             const text = document.createElement('span');
-            text.textContent = 'SELECCIONA UN PROYECTO';
+            text.textContent = content.selectMessage;
             text.style.cssText = `
-                font-size: 14px;
-                letter-spacing: 6px;
-                opacity: 100%;
+                font-size: ${textSizes.subTitle}px;
+                letter-spacing: ${letterSpacing.subTitle}px;
+                opacity: 1;
                 text-transform: uppercase;
                 text-shadow: var(--text-shadow-normal);
             `;
@@ -663,10 +662,10 @@ export async function renderProyectosContent() {
             const arrows = document.createElement('span');
             arrows.textContent = '▲ ▲ ▲';
             arrows.style.cssText = `
-                font-size: 24px;
-                letter-spacing: 12px;
+                font-size: ${textSizes.arrows}px;
+                letter-spacing: ${textSizes.arrows * 0.4}px;
                 animation: blinkArrows 1.2s ease-in-out infinite;
-                text-shadow: 0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+                text-shadow: 0 0 20px rgba(${primaryRGB}, 0.3);
             `;
             message.appendChild(arrows);
             message.appendChild(text);
@@ -687,103 +686,6 @@ export async function renderProyectosContent() {
         }
         
         updateExpandButton(detailCell);
-    }
-    
-    if (!isDetailExpanded) {
-        const allProjects = data.projects;
-        const filteredProjects = currentCategory === 'TODOS' 
-            ? allProjects 
-            : allProjects.filter(p => p.category === currentCategory);
-        const totalPages = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
-
-        const categoryArrows = [
-            {
-                cell: categoryLeftArrow,
-                direction: '◀',
-                isActive: currentPage > 0,
-                onClick: () => { 
-                    currentPage--; 
-                    renderProyectosContent(); 
-                }
-            },
-            {
-                cell: categoryRightArrow,
-                direction: '▶',
-                isActive: currentPage < totalPages - 1,
-                onClick: () => { 
-                    currentPage++; 
-                    renderProyectosContent(); 
-                }
-            }
-        ];
-
-        categoryArrows.forEach((arrow) => {
-            if (!arrow.cell) return;
-            
-            const el = document.createElement('div');
-            el.className = 'proyectos-nav category-arrow';
-            el.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-family: 'Courier New', monospace;
-                font-size: 28px;
-                cursor: ${arrow.isActive ? 'pointer' : 'default'};
-                pointer-events: ${arrow.isActive ? 'auto' : 'none'};
-                z-index: 20;
-                opacity: ${arrow.isActive ? '1' : '0.2'};
-                transition: color 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
-                background: transparent;
-                color: ${CONFIG.COLORS.background};
-                -webkit-text-stroke: 2px ${CONFIG.COLORS.primary};
-                text-stroke: 2px ${CONFIG.COLORS.primary};
-            `;
-            el.textContent = arrow.direction;
-            
-            if (arrow.isActive) {
-                el.style.textShadow = `
-                    0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 1),
-                    0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
-                    0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
-                    0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)
-                `;
-                el.style.animation = 'blinkArrow 1.2s ease-in-out infinite';
-            } else {
-                el.style.textShadow = 'var(--text-shadow-normal)';
-                el.style.opacity = '0.2';
-            }
-            
-            if (arrow.isActive) {
-                el.addEventListener('mouseenter', () => {
-                    el.style.textShadow = `
-                        0 0 5px rgba(${CONFIG.COLORS.primaryRGB}, 1),
-                        0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
-                        0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
-                        0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2),
-                        0 0 120px rgba(${CONFIG.COLORS.primaryRGB}, 0.1)
-                    `;
-                });
-                el.addEventListener('mouseleave', () => {
-                    el.style.textShadow = `
-                        0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 1),
-                        0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
-                        0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
-                        0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)
-                    `;
-                });
-                el.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    arrow.onClick();
-                });
-            }
-            
-            arrow.cell.appendChild(el);
-        });
     }
     
     const detailArrows = [
@@ -814,8 +716,6 @@ export async function renderProyectosContent() {
     detailArrows.forEach((arrow) => {
         if (!arrow.cell) return;
 
-
-        
         const el = document.createElement('div');
         el.className = 'proyectos-nav detail-arrow';
         el.style.cssText = `
@@ -828,7 +728,7 @@ export async function renderProyectosContent() {
             align-items: center;
             justify-content: center;
             font-family: 'Courier New', monospace;
-            font-size: 28px;
+            font-size: ${textSizes.arrows}px;
             cursor: ${arrow.isActive ? 'pointer' : 'default'};
             pointer-events: ${arrow.isActive ? 'auto' : 'none'};
             z-index: 20;
@@ -839,119 +739,102 @@ export async function renderProyectosContent() {
         el.textContent = arrow.direction;
         
         if (arrow.isActive) {
-            el.style.color = CONFIG.COLORS.primary;
+            el.style.color = primaryColor;
             el.style.textShadow = `
-                0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 1),
-                0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
-                0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
-                0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)
+                0 0 10px rgba(${primaryRGB}, 1),
+                0 0 20px rgba(${primaryRGB}, 0.8),
+                0 0 40px rgba(${primaryRGB}, 0.4),
+                0 0 80px rgba(${primaryRGB}, 0.2)
             `;
             el.style.animation = 'blinkArrow 1.2s ease-in-out infinite';
-        } else {
-            el.style.color = CONFIG.COLORS.primary;
-            el.style.textShadow = 'var(--text-shadow-normal)';
-            el.style.opacity = '0.2';
-        }
-        
-        if (arrow.isActive) {
-            el.addEventListener('mouseenter', () => {
-                el.style.textShadow = `
-                    0 0 5px rgba(${CONFIG.COLORS.primaryRGB}, 1),
-                    0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
-                    0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
-                    0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2),
-                    0 0 120px rgba(${CONFIG.COLORS.primaryRGB}, 0.1)
-                `;
-            });
-            el.addEventListener('mouseleave', () => {
-                el.style.textShadow = `
-                    0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 1),
-                    0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.8),
-                    0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.4),
-                    0 0 80px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)
-                `;
-            });
             el.addEventListener('click', (e) => {
                 e.stopPropagation();
                 arrow.onClick();
             });
+        } else {
+            el.style.color = primaryColor;
+            el.style.textShadow = 'var(--text-shadow-normal)';
+            el.style.opacity = '0.2';
         }
         
         arrow.cell.appendChild(el);
     });
 
     if (isDetailExpanded) {
-    const allProjects = data.projects;
-    const currentIndex = allProjects.findIndex(p => p.id === selectedProjectId);
-    const nextIndex = (currentIndex + 1) % allProjects.length;
-    const nextProject = allProjects[nextIndex];
-    
-    const backButtonCell = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="0"]');
-    if (backButtonCell) {
-        const backBtn = document.createElement('div');
-        backBtn.className = 'expand-back-btn';
-        backBtn.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            pointer-events: auto;
-            z-index: 25;
-            font-family: 'Courier New', monospace;
-            color: ${CONFIG.COLORS.primary};
-            transition: all 0.3s ease;
-            gap: 4px;
-        `;
+        const allProjects = data.projects || [];
+        const currentIndex = allProjects.findIndex(p => p.id === selectedProjectId);
+        const nextIndex = (currentIndex + 1) % allProjects.length;
+        const nextProject = allProjects[nextIndex];
         
-        const arrowIcon = document.createElement('span');
-        arrowIcon.textContent = '◀';
-        arrowIcon.style.cssText = `
-            font-size: 28px;
-            text-shadow: 0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
-            transition: all 0.3s ease;
-        `;
-        backBtn.appendChild(arrowIcon);
+        const backButtonCell = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="0"]');
+        if (backButtonCell) {
+            const backBtn = document.createElement('div');
+            backBtn.className = 'expand-back-btn';
+            backBtn.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                pointer-events: auto;
+                z-index: 25;
+                font-family: 'Courier New', monospace;
+                color: ${primaryColor};
+                transition: all 0.3s ease;
+                gap: 4px;
+            `;
+            
+            const arrowIcon = document.createElement('span');
+            arrowIcon.textContent = '◀';
+            arrowIcon.style.cssText = `
+                font-size: ${textSizes.arrows}px;
+                text-shadow: 0 0 20px rgba(${primaryRGB}, 0.3);
+                transition: all 0.3s ease;
+            `;
+            backBtn.appendChild(arrowIcon);
+            
+            const backText = document.createElement('span');
+            backText.textContent = content.backText;
+            backText.style.cssText = `
+                font-size: ${textSizes.small}px;
+                letter-spacing: ${letterSpacing.small}px;
+                opacity: 1;
+                transition: all 0.3s ease;
+                text-align: center;
+                white-space: nowrap;
+                width: 100%;
+            `;
+            backBtn.appendChild(backText);
+            
+            backBtn.addEventListener('mouseenter', () => {
+                backBtn.style.color = secondaryColor;
+                arrowIcon.style.textShadow = `0 0 30px rgba(${secondaryRGB}, 0.4)`;
+                backText.style.opacity = '1';
+            });
+            
+            backBtn.addEventListener('mouseleave', () => {
+                backBtn.style.color = primaryColor;
+                arrowIcon.style.textShadow = `0 0 20px rgba(${primaryRGB}, 0.3)`;
+                backText.style.opacity = '1';
+            });
+            
+            backBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (isDetailExpanded) {
+                    toggleDetailExpand();
+                }
+            });
+            
+            backButtonCell.appendChild(backBtn);
+        }
         
-        const backText = document.createElement('span');
-        backText.textContent = 'REGRESAR';
-        backText.style.cssText = `
-            font-size: 10px;
-            letter-spacing: 2px;
-            opacity: 0.7;
-            transition: all 0.3s ease;
-        `;
-        backBtn.appendChild(backText);
-        
-        backBtn.addEventListener('mouseenter', () => {
-            backBtn.style.color = CONFIG.COLORS.secondary;
-            arrowIcon.style.textShadow = `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)`;
-            backText.style.opacity = '1';
-        });
-        
-        backBtn.addEventListener('mouseleave', () => {
-            backBtn.style.color = CONFIG.COLORS.primary;
-            arrowIcon.style.textShadow = `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
-            backText.style.opacity = '0.7';
-        });
-        
-        backBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (isDetailExpanded) {
-                toggleDetailExpand();
-            }
-        });
-        
-        backButtonCell.appendChild(backBtn);
-    }
-    
-    const nextProjectCell = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="30"]');
-        if (nextProjectCell) {
+        const nextProjectCell = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="30"]');
+        if (nextProjectCell && nextProject) {
             const nextBtn = document.createElement('div');
             nextBtn.className = 'expand-next-btn';
             nextBtn.style.cssText = `
@@ -968,7 +851,7 @@ export async function renderProyectosContent() {
                 pointer-events: auto;
                 z-index: 25;
                 font-family: 'Courier New', monospace;
-                color: ${CONFIG.COLORS.primary};
+                color: ${primaryColor};
                 transition: all 0.3s ease;
                 gap: 4px;
             `;
@@ -976,18 +859,18 @@ export async function renderProyectosContent() {
             const arrowIcon = document.createElement('span');
             arrowIcon.textContent = '▶';
             arrowIcon.style.cssText = `
-                font-size: 28px;
-                text-shadow: 0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+                font-size: ${textSizes.arrows}px;
+                text-shadow: 0 0 20px rgba(${primaryRGB}, 0.3);
                 transition: all 0.3s ease;
             `;
             nextBtn.appendChild(arrowIcon);
             
             const nextText = document.createElement('span');
-            nextText.textContent = 'SIGUIENTE';
+            nextText.textContent = content.nextText;
             nextText.style.cssText = `
-                font-size: 10px;
-                letter-spacing: 2px;
-                opacity: 0.7;
+                font-size: ${textSizes.small}px;
+                letter-spacing: ${letterSpacing.small}px;
+                opacity: 1;
                 transition: all 0.3s ease;
                 text-align: center;
                 white-space: nowrap;
@@ -996,15 +879,15 @@ export async function renderProyectosContent() {
             nextBtn.appendChild(nextText);
             
             nextBtn.addEventListener('mouseenter', () => {
-                nextBtn.style.color = CONFIG.COLORS.secondary;
-                arrowIcon.style.textShadow = `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)`;
+                nextBtn.style.color = secondaryColor;
+                arrowIcon.style.textShadow = `0 0 30px rgba(${secondaryRGB}, 0.4)`;
                 nextText.style.opacity = '1';
             });
             
             nextBtn.addEventListener('mouseleave', () => {
-                nextBtn.style.color = CONFIG.COLORS.primary;
-                arrowIcon.style.textShadow = `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
-                nextText.style.opacity = '0.7';
+                nextBtn.style.color = primaryColor;
+                arrowIcon.style.textShadow = `0 0 20px rgba(${primaryRGB}, 0.3)`;
+                nextText.style.opacity = '1';
             });
             
             nextBtn.addEventListener('click', (e) => {
@@ -1024,16 +907,18 @@ export async function renderProyectosContent() {
     }
 }
 
-function showProjectDetail(project, detailCell) {
-    if (!detailCell) {
-        return;
-    }
+function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHeight, content) {
+    if (!detailCell) return;
     
     const hasPages = project.pages && project.pages.length > 0;
     const currentPageData = hasPages ? project.pages[detailPage] : null;
     totalDetailPages = hasPages ? project.pages.length : 0;
     
     const isExpanded = isDetailExpanded;
+    const primaryColor = CONFIG.COLORS.primary;
+    const secondaryColor = CONFIG.COLORS.secondary;
+    const primaryRGB = CONFIG.COLORS.primaryRGB;
+    const secondaryRGB = CONFIG.COLORS.secondaryRGB;
     
     const detail = document.createElement('div');
     detail.className = 'proyectos-detail';
@@ -1044,7 +929,7 @@ function showProjectDetail(project, detailCell) {
         width: 100%;
         height: 100%;
         padding: ${isExpanded ? '30px 40px' : '20px 30px'};
-        color: ${CONFIG.COLORS.primary};
+        color: ${primaryColor};
         font-family: 'Courier New', monospace;
         pointer-events: auto;
         z-index: 20;
@@ -1075,10 +960,10 @@ function showProjectDetail(project, detailCell) {
 
     if (isExpanded && hasPages) {
         const pageIndicator2 = document.createElement('div');
-        pageIndicator2.textContent = `PÁGINA ${detailPage + 1} DE ${project.pages.length}`;
+        pageIndicator2.textContent = `${content.pagePrefix} ${detailPage + 1} ${content.pageOf} ${project.pages.length}`;
         pageIndicator2.style.cssText = `
-            font-size: 20px;
-            letter-spacing: 2px;
+            font-size: ${content.pageIndicatorExpandedSize || 20}px;
+            letter-spacing: ${letterSpacing.subTitle}px;
             color: white;
             opacity: 1;
             margin-top: 6px;
@@ -1089,11 +974,11 @@ function showProjectDetail(project, detailCell) {
     }
     
     const icon = document.createElement('div');
-    icon.textContent = project.icon;
+    icon.textContent = project.icon || '◆';
     icon.style.cssText = `
-        font-size: ${isExpanded ? '48px' : '36px'};
-        color: ${CONFIG.COLORS.primary};
-        text-shadow: 0 0 40px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+        font-size: ${isExpanded ? textSizes.title : textSizes.arrows}px;
+        color: ${primaryColor};
+        text-shadow: 0 0 40px rgba(${primaryRGB}, 0.3);
         text-align: center;
         flex-shrink: 0;
     `;
@@ -1101,35 +986,35 @@ function showProjectDetail(project, detailCell) {
     
     const meta = document.createElement('div');
     meta.style.cssText = `
-        font-size: ${isExpanded ? '12px' : '10px'};
-        letter-spacing: 2px;
+        font-size: ${isExpanded ? textSizes.medium : textSizes.small}px;
+        letter-spacing: ${letterSpacing.medium}px;
         opacity: 1;
         text-align: center;
-        line-height: 1.8;
+        line-height: ${lineHeight.small};
         flex-shrink: 0;
     `;
-    meta.textContent = `${project.category}  ·  ${project.type}  ·  ${project.year}`;
+    meta.textContent = `${project.category || ''}${project.category && project.type ? '  ·  ' : ''}${project.type || ''}${(project.category || project.type) && project.year ? '  ·  ' : ''}${project.year || ''}`;
     contentWrapper.appendChild(meta);
     
     const name = document.createElement('div');
     name.textContent = project.name;
     name.style.cssText = `
-        font-size: ${isExpanded ? '28px' : '20px'};
-        letter-spacing: ${isExpanded ? '8px' : '4px'};
+        font-size: ${isExpanded ? textSizes.title : textSizes.normalTitle}px;
+        letter-spacing: ${isExpanded ? letterSpacing.title : letterSpacing.subTitle}px;
         font-weight: bold;
-        text-shadow: 0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.2);
-        color: ${CONFIG.COLORS.secondary};
+        text-shadow: 0 0 30px rgba(${primaryRGB}, 0.2);
+        color: ${secondaryColor};
         text-align: center;
         flex-shrink: 0;
     `;
     contentWrapper.appendChild(name);
     
     const desc = document.createElement('div');
-    desc.textContent = project.description;
+    desc.textContent = project.description || '';
     desc.style.cssText = `
-        font-size: ${isExpanded ? '14px' : '12px'};
-        letter-spacing: 1px;
-        line-height: 1.6;
+        font-size: ${isExpanded ? textSizes.medium : textSizes.small}px;
+        letter-spacing: ${letterSpacing.medium}px;
+        line-height: ${lineHeight.medium};
         opacity: 1;
         text-align: center;
         max-width: 90%;
@@ -1141,7 +1026,7 @@ function showProjectDetail(project, detailCell) {
     separator.style.cssText = `
         width: 30%;
         height: 1px;
-        background: rgba(${CONFIG.COLORS.secondaryRGB}, 0.2);
+        background: rgba(${secondaryRGB}, 0.2);
         margin: 4px 0;
         flex-shrink: 0;
     `;
@@ -1149,12 +1034,12 @@ function showProjectDetail(project, detailCell) {
     
     if (hasPages && currentPageData) {
         const pageTitle = document.createElement('div');
-        pageTitle.textContent = currentPageData.title;
+        pageTitle.textContent = currentPageData.title || '';
         pageTitle.style.cssText = `
-            font-size: ${isExpanded ? '16px' : '13px'};
-            letter-spacing: 2px;
+            font-size: ${isExpanded ? textSizes.subTitle : textSizes.medium}px;
+            letter-spacing: ${letterSpacing.subTitle}px;
             font-weight: bold;
-            color: ${CONFIG.COLORS.secondary};
+            color: ${secondaryColor};
             text-align: center;
             flex-shrink: 0;
         `;
@@ -1174,7 +1059,7 @@ function showProjectDetail(project, detailCell) {
         
         if (Array.isArray(currentPageData.content)) {
             currentPageData.content.forEach(item => {
-                const element = renderContentItem(item, isExpanded);
+                const element = renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeight);
                 if (element) {
                     contentContainer.appendChild(element);
                 }
@@ -1183,9 +1068,9 @@ function showProjectDetail(project, detailCell) {
             const textEl = document.createElement('div');
             textEl.textContent = currentPageData.content;
             textEl.style.cssText = `
-                font-size: ${isExpanded ? '13px' : '11px'};
-                letter-spacing: 0.5px;
-                line-height: 1.6;
+                font-size: ${isExpanded ? textSizes.medium : textSizes.small}px;
+                letter-spacing: ${letterSpacing.medium}px;
+                line-height: ${lineHeight.medium};
                 opacity: 1;
                 text-align: center;
             `;
@@ -1195,10 +1080,10 @@ function showProjectDetail(project, detailCell) {
         contentWrapper.appendChild(contentContainer);
         
         const pageIndicator = document.createElement('div');
-        pageIndicator.textContent = `PÁGINA ${detailPage + 1} DE ${project.pages.length}`;
+        pageIndicator.textContent = `${content.pagePrefix} ${detailPage + 1} ${content.pageOf} ${project.pages.length}`;
         pageIndicator.style.cssText = `
-            font-size: ${isExpanded ? '11px' : '9px'};
-            letter-spacing: 2px;
+            font-size: ${content.pageIndicatorNormalSize || 11}px;
+            letter-spacing: ${letterSpacing.small}px;
             color: white;
             opacity: 1;
             margin-top: 6px;
@@ -1208,11 +1093,11 @@ function showProjectDetail(project, detailCell) {
         contentWrapper.appendChild(pageIndicator);
     } else {
         const details = document.createElement('div');
-        details.textContent = project.details;
+        details.textContent = project.details || '';
         details.style.cssText = `   
-            font-size: ${isExpanded ? '13px' : '11px'};
-            letter-spacing: 0.5px;
-            line-height: 1.5;
+            font-size: ${isExpanded ? textSizes.medium : textSizes.small}px;
+            letter-spacing: ${letterSpacing.medium}px;
+            line-height: ${lineHeight.medium};
             opacity: 1;
             text-align: center;
             max-width: 90%;
@@ -1229,7 +1114,7 @@ function showProjectDetail(project, detailCell) {
     }, 50);
 }
 
-function renderContentItem(item, isExpanded) {
+function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeight) {
     const container = document.createElement('div');
     container.style.cssText = `
         display: flex;
@@ -1237,15 +1122,19 @@ function renderContentItem(item, isExpanded) {
         gap: 4px;
         width: 100%;
     `;
+    const primaryColor = CONFIG.COLORS.primary;
+    const secondaryColor = CONFIG.COLORS.secondary;
+    const primaryRGB = CONFIG.COLORS.primaryRGB;
+    const secondaryRGB = CONFIG.COLORS.secondaryRGB;
     
     switch (item.type) {
         case 'text':
             const textEl = document.createElement('div');
-            textEl.textContent = item.value;
+            textEl.textContent = item.value || '';
             textEl.style.cssText = `
-                font-size: ${isExpanded ? '13px' : '11px'};
-                letter-spacing: 0.5px;
-                line-height: 1.8;
+                font-size: ${isExpanded ? textSizes.medium : textSizes.small}px;
+                letter-spacing: ${letterSpacing.medium}px;
+                line-height: ${lineHeight.medium};
                 opacity: 1;
             `;
             container.appendChild(textEl);
@@ -1253,15 +1142,15 @@ function renderContentItem(item, isExpanded) {
             
         case 'link':
             const linkEl = document.createElement('a');
-            linkEl.href = item.value;
-            linkEl.textContent = item.label || item.value;
+            linkEl.href = item.value || '#';
+            linkEl.textContent = item.label || item.value || '';
             linkEl.target = '_blank';
             linkEl.style.cssText = `
-                color: ${CONFIG.COLORS.primary};
-                font-size: ${isExpanded ? '13px' : '11px'};
-                letter-spacing: 1px;
+                color: ${primaryColor};
+                font-size: ${isExpanded ? textSizes.medium : textSizes.small}px;
+                letter-spacing: ${letterSpacing.medium}px;
                 text-decoration: none;
-                border-bottom: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+                border-bottom: 1px solid rgba(${primaryRGB}, 0.3);
                 padding: 2px 0;
                 transition: all 0.3s ease;
                 display: inline-block;
@@ -1270,12 +1159,12 @@ function renderContentItem(item, isExpanded) {
                 pointer-events: auto;
             `;
             linkEl.addEventListener('mouseenter', () => {
-                linkEl.style.borderBottomColor = CONFIG.COLORS.secondary;
-                linkEl.style.color = CONFIG.COLORS.secondary;
+                linkEl.style.borderBottomColor = secondaryColor;
+                linkEl.style.color = secondaryColor;
             });
             linkEl.addEventListener('mouseleave', () => {
-                linkEl.style.borderBottomColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
-                linkEl.style.color = CONFIG.COLORS.primary;
+                linkEl.style.borderBottomColor = `rgba(${primaryRGB}, 0.3)`;
+                linkEl.style.color = primaryColor;
             });
             container.appendChild(linkEl);
             break;
@@ -1286,11 +1175,11 @@ function renderContentItem(item, isExpanded) {
                 width: 100%;
                 border-radius: 4px;
                 overflow: hidden;
-                border: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.1);
+                border: 1px solid rgba(${primaryRGB}, 0.1);
             `;
             
             const imgEl = document.createElement('img');
-            imgEl.src = item.value;
+            imgEl.src = item.value || '';
             imgEl.alt = item.caption || '';
             imgEl.style.cssText = `
                 width: 100%;
@@ -1304,8 +1193,8 @@ function renderContentItem(item, isExpanded) {
                 const captionEl = document.createElement('div');
                 captionEl.textContent = item.caption;
                 captionEl.style.cssText = `
-                    font-size: 20;
-                    letter-spacing: 1px;
+                    font-size: ${textSizes.small}px;
+                    letter-spacing: ${letterSpacing.small}px;
                     opacity: 1;
                     text-align: center;
                     margin-top: 2px;
@@ -1330,7 +1219,7 @@ function renderContentItem(item, isExpanded) {
                     imgContainer.style.cssText = `
                         border-radius: 4px;
                         overflow: hidden;
-                        border: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.1);
+                        border: 1px solid rgba(${primaryRGB}, 0.1);
                         aspect-ratio: 1;
                         cursor: pointer;
                         transition: all 0.3s ease;
@@ -1338,7 +1227,7 @@ function renderContentItem(item, isExpanded) {
                     `;
                     
                     const thumb = document.createElement('img');
-                    thumb.src = imgSrc;
+                    thumb.src = imgSrc || '';
                     thumb.style.cssText = `
                         width: 100%;
                         height: 100%;
@@ -1351,11 +1240,11 @@ function renderContentItem(item, isExpanded) {
                     
                     imgContainer.addEventListener('mouseenter', () => {
                         thumb.style.transform = 'scale(1.05)';
-                        imgContainer.style.borderColor = CONFIG.COLORS.secondary;
+                        imgContainer.style.borderColor = secondaryColor;
                     });
                     imgContainer.addEventListener('mouseleave', () => {
                         thumb.style.transform = 'scale(1)';
-                        imgContainer.style.borderColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.1)`;
+                        imgContainer.style.borderColor = `rgba(${primaryRGB}, 0.1)`;
                     });
                     
                     imgContainer.addEventListener('click', () => {
@@ -1374,12 +1263,12 @@ function renderContentItem(item, isExpanded) {
                 width: 100%;
                 border-radius: 4px;
                 overflow: hidden;
-                border: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.1);
+                border: 1px solid rgba(${primaryRGB}, 0.1);
                 background: #000;
             `;
             
             const videoEl = document.createElement('video');
-            videoEl.src = item.value;
+            videoEl.src = item.value || '';
             videoEl.controls = true;
             videoEl.style.cssText = `
                 width: 100%;
@@ -1392,8 +1281,8 @@ function renderContentItem(item, isExpanded) {
                 const captionEl = document.createElement('div');
                 captionEl.textContent = item.caption;
                 captionEl.style.cssText = `
-                    font-size: 20;
-                    letter-spacing: 1px;
+                    font-size: ${textSizes.small}px;
+                    letter-spacing: ${letterSpacing.small}px;
                     opacity: 1;
                     text-align: center;
                     margin-top: 2px;

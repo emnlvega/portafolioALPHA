@@ -6,6 +6,20 @@ import { isSpecialPageActiveCheck } from './sidebar/index.js';
 import { isMobile } from './mobile.js';
 import { getCurrentMobilePage } from './mobile/mobile-nav.js';
 
+let dicc = null;
+
+async function loadDicc() {
+    if (dicc) return dicc;
+    try {
+        const response = await fetch('./modules/dicc.json');
+        dicc = await response.json();
+        return dicc;
+    } catch (e) {
+        console.error('Error loading dicc:', e);
+        return null;
+    }
+}
+
 export let designCells = [];
 export let selectedCells = [];
 export let isDragging = false;
@@ -79,7 +93,6 @@ export function cleanInicioContent() {
         window.setInicioClickable(false);
     }
     
-
     if (window.unblockSidebarInteraction) {
         window.unblockSidebarInteraction();
     }
@@ -751,52 +764,61 @@ export function resetGrid(keepCombined = false) {
 }
 
 export function exportDesignToJSON() {
-    if (isMobileSpecialPage()) return;
-    
-    const result = {};
+    loadDicc().then((d) => {
+        const dlg = d || { dialogs: {} };
+        const dlgTexts = dlg.dialogs || {};
+        
+        if (isMobileSpecialPage()) return;
+        
+        const result = {};
 
-    designCells.forEach(cell => {
-        const row = parseInt(cell.dataset.designRow);
-        const col = parseInt(cell.dataset.designCol);
-        const state = cell.dataset.state || 'normal';
-        const key = `${row},${col}`;
+        designCells.forEach(cell => {
+            const row = parseInt(cell.dataset.designRow);
+            const col = parseInt(cell.dataset.designCol);
+            const state = cell.dataset.state || 'normal';
+            const key = `${row},${col}`;
 
-        if (state === 'hidden') return;
-        if (state === 'normal') return;
+            if (state === 'hidden') return;
+            if (state === 'normal') return;
 
-        if (state === 'off') {
-            result[key] = 'off';
-        } else if (state === 'logo') {
-            result[key] = 'logo';
-        } else if (state === 'red') {
-            result[key] = 'red';
-        } else if (cell.dataset.combined === 'true') {
-            const left = parseFloat(cell.dataset.combinedLeft) || parseFloat(cell.style.left);
-            const top = parseFloat(cell.dataset.combinedTop) || parseFloat(cell.style.top);
-            const width = parseFloat(cell.dataset.combinedWidth) || parseFloat(cell.style.width);
-            const height = parseFloat(cell.dataset.combinedHeight) || parseFloat(cell.style.height);
-            
-            let type = 'combined_red';
-            if (state === 'combined_logo') type = 'combined_logo';
-            else if (state === 'combined_normal') type = 'combined_normal';
-            
-            result[key] = {
-                type: type,
-                left: left,
-                top: top,
-                width: width,
-                height: height,
-                combined: true
-            };
-        }
-    });
+            if (state === 'off') {
+                result[key] = 'off';
+            } else if (state === 'logo') {
+                result[key] = 'logo';
+            } else if (state === 'red') {
+                result[key] = 'red';
+            } else if (cell.dataset.combined === 'true') {
+                const left = parseFloat(cell.dataset.combinedLeft) || parseFloat(cell.style.left);
+                const top = parseFloat(cell.dataset.combinedTop) || parseFloat(cell.style.top);
+                const width = parseFloat(cell.dataset.combinedWidth) || parseFloat(cell.style.width);
+                const height = parseFloat(cell.dataset.combinedHeight) || parseFloat(cell.style.height);
+                
+                let type = 'combined_red';
+                if (state === 'combined_logo') type = 'combined_logo';
+                else if (state === 'combined_normal') type = 'combined_normal';
+                
+                result[key] = {
+                    type: type,
+                    left: left,
+                    top: top,
+                    width: width,
+                    height: height,
+                    combined: true
+                };
+            }
+        });
 
-    const json = JSON.stringify(result, null, 2);
-    console.log(json);
+        const json = JSON.stringify(result, null, 2);
+        console.log(json);
 
-    navigator.clipboard.writeText(json).then(() => {
-        showDialog('DISEÑO EXPORTADO', 'El diseño ha sido copiado al portapapeles como JSON.');
-    }).catch(() => {
-        showDialog('DISEÑO EXPORTADO', 'Copia el siguiente JSON manualmente:\n\n' + json);
+        const title = dlgTexts.exportTitle;
+        const message = dlgTexts.exportMessage;
+        const messageManual = dlgTexts.exportMessageManual;
+
+        navigator.clipboard.writeText(json).then(() => {
+            showDialog(title, message);
+        }).catch(() => {
+            showDialog(title, messageManual + json);
+        });
     });
 }

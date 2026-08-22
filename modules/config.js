@@ -1,3 +1,4 @@
+import { isMobile } from './mobile.js';
 function hexToRgb(hex) {
     hex = hex.replace(/^#/, '');
     if (hex.length === 3) {
@@ -124,7 +125,133 @@ let currentConfig = {
     }
 };
 
+export function getTextSizes() {
+    const width = window.innerWidth;
+    
+    let modifier = 0;
+    
+    if (width <= 1280) {
+        modifier = -8;
+    } else if (width <= 1440) {
+        modifier = -6;
+    } else if (width <= 1600) {
+        modifier = -4;
+    } else if (width <= 1920) {
+        modifier = 0;
+    } else if (width <= 2560) {
+        modifier = 2;
+    } else if (width <= 3840) {
+        modifier = 4;
+    } else {
+        modifier = 6;
+    }
+    
+    return {
+        title: Math.max(12, 32 + modifier),
+        arrows: Math.max(10, 28 + modifier),
+        projectIcon: Math.max(10, 24 + modifier),
+        normalTitle: Math.max(10, 20 + modifier),
+        subTitle: Math.max(8, 16 + modifier),
+        medium: Math.max(6, 12 + modifier),
+        small: Math.max(6, 10 + modifier),
+        tiny: Math.max(6, 8 + modifier)
+    };
+}
 
+export function getResponsiveConfig() {
+    const width = window.innerWidth;
+    
+    let cellSize = 38;
+    let gap = 15;
+    let textModifier = 0;
+    let letterSpacingModifier = 0;
+    
+    if (width <= 1280) {
+        cellSize = 27;
+        gap = 8;
+        textModifier = -4;
+        letterSpacingModifier = -3;
+    } else if (width <= 1440) {
+        cellSize = 30;
+        gap = 10;
+        textModifier = -4;
+        letterSpacingModifier = -1;
+    } else if (width <= 1600) {
+        cellSize = 33;
+        gap = 12;
+        textModifier = -2;
+        letterSpacingModifier = 0;
+    } else if (width <= 1920) {
+        cellSize = 38;
+        gap = 15;
+        textModifier = 0;
+        letterSpacingModifier = 0;
+    } else if (width <= 2560) {
+        cellSize = 42;
+        gap = 18;
+        textModifier = 2;
+        letterSpacingModifier = 1;
+    } else if (width <= 3840) {
+        cellSize = 48;
+        gap = 22;
+        textModifier = 4;
+        letterSpacingModifier = 2;
+    } else {
+        cellSize = 54;
+        gap = 26;
+        textModifier = 6;
+        letterSpacingModifier = 3;
+    }
+    
+    const baseSizes = {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 15,
+        medium: 14,
+        small: 12,
+        tiny: 10
+    };
+    
+    const baseLetterSpacing = {
+        title: 12,
+        subTitle: 6,
+        medium: 0.2,
+        medium: 0.5,
+        small: 2,
+        tiny: 2.5
+    };
+    
+    const textSizes = {};
+    const letterSpacing = {};
+    const lineHeight = {};
+    
+    Object.keys(baseSizes).forEach(key => {
+        textSizes[key] = Math.max(6, baseSizes[key] + textModifier);
+    });
+    
+    Object.keys(baseLetterSpacing).forEach(key => {
+        letterSpacing[key] = Math.max(0, baseLetterSpacing[key] + (letterSpacingModifier * 0.5));
+    });
+    
+    lineHeight.title = 1.2;
+    lineHeight.subTitle = 1;
+    lineHeight.big = 1.8;
+    lineHeight.medium = 1.7;
+    lineHeight.small = 1.6;
+    lineHeight.tiny = 1.5;
+    
+    return {
+        CELL_SIZE: cellSize,
+        GAP: gap,
+        TEXT_MODIFIER: textModifier,
+        TEXT_SIZES: textSizes,
+        LETTER_SPACING: letterSpacing,
+        LINE_HEIGHT: lineHeight
+    };
+}
 
 export function updateColors(newPrimary, newSecondary = '#ffffff', newBackground = '#000000') {
     const newColors = createColors(newPrimary, newSecondary, newBackground);
@@ -154,7 +281,7 @@ export const CONFIG = new Proxy(currentConfig, {
 });
 
 export const MOBILE_SIMULATOR_CONFIG = {
-    ENABLED: false,
+    ENABLED: true,
     TOGGLE_KEY: 'KeyX',
     SHOW_COORDINATES: true,
     SHOW_EXPORT: true,

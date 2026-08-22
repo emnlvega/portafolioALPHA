@@ -1,8 +1,48 @@
-
-
 import { CONFIG, updateColors, createColors } from './config.js';
 import { restartRandomAnimations, stopRandomAnimations } from './animations.js';
 
+let dicc = null;
+
+async function loadDicc() {
+    if (dicc) return dicc;
+    try {
+        const response = await fetch('./modules/dicc.json');
+        dicc = await response.json();
+        return dicc;
+    } catch (e) {
+        console.error('Error loading dicc:', e);
+        return null;
+    }
+}
+
+function getTextSizes() {
+    if (CONFIG.TEXT_SIZES && typeof CONFIG.TEXT_SIZES === 'object') {
+        return CONFIG.TEXT_SIZES;
+    }
+    return {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 14,
+        small: 10,
+        tiny: 8
+    };
+}
+
+function getLetterSpacing() {
+    if (CONFIG.LETTER_SPACING && typeof CONFIG.LETTER_SPACING === 'object') {
+        return CONFIG.LETTER_SPACING;
+    }
+    return {
+        title: 12,
+        subTitle: 6,
+        medium: 0.5,
+        small: 1.5,
+        tiny: 2
+    };
+}
 
 const DEFAULT_SETTINGS = {
     grain: true,
@@ -20,7 +60,6 @@ const DEFAULT_SETTINGS = {
 let currentSettings = { ...DEFAULT_SETTINGS };
 let settingsDialog = null;
 let isInitialized = false;
-
 
 const ELEMENTS = {
     grain: 'grain-overlay',
@@ -70,41 +109,30 @@ export function saveSettings(settings) {
 }
 
 function resetAllAndRefresh() {
-
     const defaultColor = '#00FF9B';
     
-
     updateColors(defaultColor);
     
-
     const dataToSave = { ...currentSettings };
     dataToSave.primaryColor = defaultColor;
     try {
         localStorage.setItem('edesign_settings', JSON.stringify(dataToSave));
     } catch (e) {}
     
-
     const colorInputEl = settingsDialog?.querySelector('input[type="color"]');
     if (colorInputEl) {
         colorInputEl.value = defaultColor;
         colorInputEl.dispatchEvent(new Event('input'));
     }
     
-
     const sidebarPicker = document.getElementById('colorPicker');
     if (sidebarPicker) sidebarPicker.value = defaultColor;
     const sidebarHex = document.getElementById('colorHexLabel');
     if (sidebarHex) sidebarHex.textContent = '#00FF9B';
     
-
     closeSettings();
-    
-
     window.location.reload();
 }
-
-
-
 
 export function applySettings(settings) {
     const grain = document.getElementById(ELEMENTS.grain);
@@ -119,7 +147,6 @@ export function applySettings(settings) {
     const burnBlur = document.getElementById(ELEMENTS.burnBlur);
     if (burnBlur) burnBlur.style.display = settings.burnBlur ? 'block' : 'none';
     
-
     const overlay = document.getElementById(ELEMENTS.overlay);
     if (overlay) {
         overlay.style.display = settings.textura ? 'block' : 'none';
@@ -171,7 +198,6 @@ export function applySettings(settings) {
     }
 }
 
-
 function updateSwitchVisualAndFunction(id, checked) {
     const input = document.getElementById(id);
     if (!input) return;
@@ -206,9 +232,8 @@ function updateSwitchVisualAndFunction(id, checked) {
     currentSettings[key] = checked;
 }
 
-
 function updateAllSwitches(value) {
-    const switchKeys = ['grain', 'gaussianBlur', 'bloom', 'burnBlur', 'textura', 'animations', 'scanlines', 'vignette', 'flicker', 'glow'];
+    const switchKeys = ['grain', 'gaussianBlur', 'bloom', 'textura', 'animations', 'vignette', 'flicker', 'glow'];
     
     switchKeys.forEach(key => {
         currentSettings[key] = value;
@@ -248,9 +273,14 @@ function updateAllSwitches(value) {
     saveSettings(currentSettings);
 }
 
-
 function createSettingsDialog() {
     if (settingsDialog) return settingsDialog;
+    
+    const textSizes = getTextSizes();
+    const letterSpacing = getLetterSpacing();
+    const d = dicc || { settings: {}, script: {} };
+    const scriptTexts = d.script || {};
+    const settingsTexts = d.settings || {};
     
     const dialog = document.createElement('div');
     dialog.id = 'settings-dialog';
@@ -272,7 +302,6 @@ function createSettingsDialog() {
         flex-wrap: wrap;
     `;
     
-
     const configPanel = document.createElement('div');
     configPanel.style.cssText = `
         background: var(--color-bg);
@@ -289,13 +318,13 @@ function createSettingsDialog() {
     `;
     
     const configTitle = document.createElement('h2');
-    configTitle.textContent = '◆ CONFIGURACIÓN';
+    configTitle.textContent = scriptTexts.settingsTitle;
     configTitle.style.cssText = `
         color: var(--color-primary);
-        font-size: 18px;
+        font-size: ${textSizes.subTitle + 2}px;
         margin-bottom: 20px;
         font-family: 'Courier New', monospace;
-        letter-spacing: 6px;
+        letter-spacing: ${letterSpacing.subTitle}px;
         text-transform: uppercase;
         text-align: center;
         text-shadow: 0 0 30px rgba(var(--color-primary-rgb), 0.3);
@@ -304,7 +333,6 @@ function createSettingsDialog() {
     `;
     configPanel.appendChild(configTitle);
     
-
     const colorRow = document.createElement('div');
     colorRow.style.cssText = `
         display: flex;
@@ -316,12 +344,12 @@ function createSettingsDialog() {
     `;
     
     const colorLabel = document.createElement('span');
-    colorLabel.textContent = 'COLOR';
+    colorLabel.textContent = scriptTexts.colorPickerLabel;
     colorLabel.style.cssText = `
         color: var(--color-primary);
         font-family: 'Courier New', monospace;
-        font-size: 11px;
-        letter-spacing: 2px;
+        font-size: ${textSizes.small + 1}px;
+        letter-spacing: ${letterSpacing.small + 0.5}px;
         text-transform: uppercase;
         font-weight: bold;
     `;
@@ -350,46 +378,45 @@ function createSettingsDialog() {
     colorHex.textContent = CONFIG.COLORS.primary.toUpperCase();
     colorHex.style.cssText = `
         font-family: 'Courier New', monospace;
-        font-size: 11px;
-        letter-spacing: 1px;
+        font-size: ${textSizes.small + 1}px;
+        letter-spacing: ${letterSpacing.small + 0.5}px;
         color: var(--color-primary);
         min-width: 50px;
         font-weight: bold;
     `;
     
     const applyColorBtn = document.createElement('button');
-    applyColorBtn.textContent = 'APLICAR';
+    applyColorBtn.textContent = scriptTexts.colorPickerApply;
     applyColorBtn.style.cssText = `
         background: transparent;
         border: 1px solid rgba(var(--color-primary-rgb), 0.4);
         color: var(--color-primary);
         padding: 4px 14px;
         font-family: 'Courier New', monospace;
-        font-size: 10px;
-        letter-spacing: 2px;
+        font-size: ${textSizes.small}px;
+        letter-spacing: ${letterSpacing.small + 0.5}px;
         cursor: pointer;
         transition: all 0.3s ease;
         border-radius: 4px;
         text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
     `;
     
-
     const resetColorBtn = document.createElement('button');
-    resetColorBtn.textContent = '⟳';
+    resetColorBtn.textContent = scriptTexts.colorPickerReset;
     resetColorBtn.style.cssText = `
         background: transparent;
         border: 1px solid rgba(var(--color-primary-rgb), 0.3);
         color: var(--color-primary);
         padding: 4px 8px;
         font-family: 'Courier New', monospace;
-        font-size: 12px;
+        font-size: ${textSizes.small + 2}px;
         cursor: pointer;
         transition: all 0.3s ease;
         border-radius: 4px;
         text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
         line-height: 1;
     `;
-    resetColorBtn.title = 'Resetear color a #00FF9B';
+    resetColorBtn.title = scriptTexts.colorPickerResetTitle;
     
     resetColorBtn.addEventListener('mouseenter', () => {
         resetColorBtn.style.borderColor = 'var(--color-secondary)';
@@ -436,7 +463,6 @@ function createSettingsDialog() {
         currentSettings.primaryColor = tempColor;
         saveSettings(currentSettings);
         
-
         closeSettings();
         window.location.reload();
     });
@@ -449,7 +475,6 @@ function createSettingsDialog() {
     colorRow.appendChild(colorWrap);
     configPanel.appendChild(colorRow);
     
-
     const btnRow = document.createElement('div');
     btnRow.style.cssText = `
         display: flex;
@@ -458,15 +483,15 @@ function createSettingsDialog() {
     `;
     
     const enableAllBtn = document.createElement('button');
-    enableAllBtn.textContent = '◈ HABILITAR TODO';
+    enableAllBtn.textContent = scriptTexts.enableAll;
     enableAllBtn.style.cssText = `
         background: transparent;
         border: 1px solid rgba(var(--color-primary-rgb), 0.4);
         color: var(--color-primary);
         padding: 6px 10px;
         font-family: 'Courier New', monospace;
-        font-size: 9px;
-        letter-spacing: 2px;
+        font-size: ${textSizes.tiny + 1}px;
+        letter-spacing: ${letterSpacing.tiny}px;
         text-transform: uppercase;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -477,15 +502,15 @@ function createSettingsDialog() {
     `;
     
     const disableAllBtn = document.createElement('button');
-    disableAllBtn.textContent = '◈ DESHABILITAR TODO';
+    disableAllBtn.textContent = scriptTexts.disableAll;
     disableAllBtn.style.cssText = `
         background: transparent;
         border: 1px solid rgba(var(--color-primary-rgb), 0.4);
         color: var(--color-primary);
         padding: 6px 10px;
         font-family: 'Courier New', monospace;
-        font-size: 9px;
-        letter-spacing: 2px;
+        font-size: ${textSizes.tiny + 1}px;
+        letter-spacing: ${letterSpacing.tiny}px;
         text-transform: uppercase;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -522,17 +547,16 @@ function createSettingsDialog() {
     btnRow.appendChild(disableAllBtn);
     configPanel.appendChild(btnRow);
     
-
     const switches = [
-        { id: 'setting-grain', label: 'GRANO', key: 'grain', icon: '◈' },
-        { id: 'setting-bloom', label: 'BLOOM', key: 'bloom', icon: '◊' },
-        { id: 'setting-burnBlur', label: 'BURN BLUR', key: 'burnBlur', icon: '◆' },
-        { id: 'setting-textura', label: 'TEXTURA', key: 'textura', icon: '▣' },
-        { id: 'setting-animations', label: 'ANIMACIONES', key: 'animations', icon: '◍' },
-        { id: 'setting-scanlines', label: 'SCANLINES', key: 'scanlines', icon: '▤' },
-        { id: 'setting-vignette', label: 'VIGNETTE', key: 'vignette', icon: '▥' },
-        { id: 'setting-flicker', label: 'FLICKER', key: 'flicker', icon: '▦' },
-        { id: 'setting-glow', label: 'GLOW', key: 'glow', icon: '◐' }
+        { id: 'setting-grain', label: 'grain', key: 'grain', icon: '◈' },
+        { id: 'setting-bloom', label: 'bloom', key: 'bloom', icon: '◊' },
+        //{ id: 'setting-burnBlur', label: 'burnBlur', key: 'burnBlur', icon: '◆' },
+        { id: 'setting-textura', label: 'textura', key: 'textura', icon: '▣' },
+        { id: 'setting-animations', label: 'animations', key: 'animations', icon: '◍' },
+        //{ id: 'setting-scanlines', label: 'scanlines', key: 'scanlines', icon: '▤' },
+        { id: 'setting-vignette', label: 'vignette', key: 'vignette', icon: '▥' },
+        { id: 'setting-flicker', label: 'flicker', key: 'flicker', icon: '▦' },
+        { id: 'setting-glow', label: 'glow', key: 'glow', icon: '◐' }
     ];
     
     const switchContainer = document.createElement('div');
@@ -554,14 +578,17 @@ function createSettingsDialog() {
             gap: 8px;
         `;
         
+        const labelText = scriptTexts.switchLabels ? scriptTexts.switchLabels[sw.key] : sw.label;
+        const iconText = scriptTexts.switchIcons ? scriptTexts.switchIcons[sw.key] : sw.icon;
+        
         const label = document.createElement('label');
         label.htmlFor = sw.id;
-        label.innerHTML = `<span style="font-size:16px;margin-right:5px;display:inline-block;">${sw.icon}</span> ${sw.label}`;
+        label.innerHTML = `<span style="font-size:${textSizes.projectIcon - 8}px;margin-right:5px;display:inline-block;">${iconText}</span> ${labelText}`;
         label.style.cssText = `
             color: var(--color-primary);
             font-family: 'Courier New', monospace;
-            font-size: 11px;
-            letter-spacing: 1px;
+            font-size: ${textSizes.small + 1}px;
+            letter-spacing: ${letterSpacing.small + 0.5}px;
             cursor: pointer;
             text-transform: uppercase;
             white-space: nowrap;
@@ -651,7 +678,6 @@ function createSettingsDialog() {
     });
     configPanel.appendChild(switchContainer);
     
-
     const commandsPanel = document.createElement('div');
     commandsPanel.style.cssText = `
         background: var(--color-bg);
@@ -668,13 +694,13 @@ function createSettingsDialog() {
     `;
     
     const commandsTitle = document.createElement('h2');
-    commandsTitle.textContent = '◆ COMANDOS';
+    commandsTitle.textContent = scriptTexts.commandsTitle;
     commandsTitle.style.cssText = `
         color: var(--color-primary);
-        font-size: 18px;
+        font-size: ${textSizes.subTitle + 2}px;
         margin-bottom: 20px;
         font-family: 'Courier New', monospace;
-        letter-spacing: 6px;
+        letter-spacing: ${letterSpacing.subTitle}px;
         text-transform: uppercase;
         text-align: center;
         text-shadow: 0 0 30px rgba(var(--color-primary-rgb), 0.3);
@@ -683,16 +709,17 @@ function createSettingsDialog() {
     `;
     commandsPanel.appendChild(commandsTitle);
     
+    const cmdTexts = scriptTexts.commands || {};
     const commandList = [
-        { key: 'E', desc: 'EXPORTAR' },
-        { key: 'I', desc: 'IMPORTAR' },
-        { key: 'P', desc: 'PROYECTOS' },
-        { key: 'S', desc: 'SOBRE MI' },
-        { key: 'C', desc: 'CONTACTO' },
-        { key: 'M', desc: 'MENU' },
-        { key: '␣', desc: 'RESET' },
-        { key: 'A', desc: 'COORDENADAS' },
-        { key: 'ESC', desc: 'CERRAR / INICIO' }
+        { key: 'E', desc: cmdTexts.export },
+        { key: 'I', desc: cmdTexts.import },
+        { key: 'P', desc: cmdTexts.proyectos },
+        { key: 'S', desc: cmdTexts.sobreMi },
+        { key: 'C', desc: cmdTexts.contacto },
+        { key: 'M', desc: cmdTexts.menu },
+        { key: '␣', desc: cmdTexts.reset },
+        { key: 'A', desc: cmdTexts.coordenadas },
+        { key: 'ESC', desc: cmdTexts.cerrar }
     ];
     
     const commandsContainer = document.createElement('div');
@@ -725,7 +752,7 @@ function createSettingsDialog() {
             border: 1px solid rgba(var(--color-primary-rgb), 0.25);
             border-radius: 4px;
             font-family: 'Courier New', monospace;
-            font-size: 11px;
+            font-size: ${textSizes.small + 1}px;
             font-weight: bold;
             color: var(--color-primary);
             background: rgba(var(--color-primary-rgb), 0.05);
@@ -738,8 +765,8 @@ function createSettingsDialog() {
         desc.style.cssText = `
             color: var(--color-primary);
             font-family: 'Courier New', monospace;
-            font-size: 10px;
-            letter-spacing: 1px;
+            font-size: ${textSizes.small}px;
+            letter-spacing: ${letterSpacing.small + 0.5}px;
             opacity: 0.7;
             white-space: nowrap;
         `;
@@ -751,15 +778,15 @@ function createSettingsDialog() {
     commandsPanel.appendChild(commandsContainer);
     
     const closeBtn = document.createElement('button');
-    closeBtn.textContent = '[ CERRAR ]';
+    closeBtn.textContent = scriptTexts.closeBtn;
     closeBtn.style.cssText = `
         background: transparent;
         border: 1px solid rgba(var(--color-primary-rgb), 0.4);
         color: var(--color-primary);
         padding: 8px 16px;
         font-family: 'Courier New', monospace;
-        font-size: 11px;
-        letter-spacing: 4px;
+        font-size: ${textSizes.small + 1}px;
+        letter-spacing: ${letterSpacing.subTitle - 2}px;
         text-transform: uppercase;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -857,9 +884,10 @@ export function toggleSettings() {
 export function initSettings() {
     if (isInitialized) return;
     
-    loadSettings();
-    applySettings(currentSettings);
-    createSettingsDialog();
-    
-    isInitialized = true;
+    loadDicc().then(() => {
+        loadSettings();
+        applySettings(currentSettings);
+        createSettingsDialog();
+        isInitialized = true;
+    });
 }

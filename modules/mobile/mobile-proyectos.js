@@ -1,4 +1,3 @@
-
 import { CONFIG } from '../config.js';
 import { importDesignFromJSON } from '../logo.js';
 import { resetGrid } from '../interactions.js';
@@ -8,220 +7,194 @@ import { createMobileNavButtons } from './mobile-nav.js';
 const PROYECTOS_DESIGN = {
   "0,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 126.5,
+    "left": 452.5,
+    "top": -28.83331298828125,
     "width": 375,
     "height": 52,
     "combined": true
   },
   "3,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 183.5,
-    "width": 33,
-    "height": 109,
-    "combined": true
-  },
-  "3,2": {
-    "type": "combined_normal",
-    "left": 810.5,
-    "top": 183.5,
-    "width": 71,
-    "height": 109,
-    "combined": true
-  },
-  "3,6": {
-    "type": "combined_normal",
-    "left": 886.5,
-    "top": 183.5,
-    "width": 71,
-    "height": 109,
-    "combined": true
-  },
-  "3,10": {
-    "type": "combined_normal",
-    "left": 962.5,
-    "top": 183.5,
-    "width": 71,
-    "height": 109,
-    "combined": true
-  },
-  "3,14": {
-    "type": "combined_normal",
-    "left": 1038.5,
-    "top": 183.5,
-    "width": 71,
-    "height": 109,
-    "combined": true
-  },
-  "3,18": {
-    "type": "combined_normal",
-    "left": 1114.5,
-    "top": 183.5,
-    "width": 33,
-    "height": 109,
-    "combined": true
-  },
-  "9,0": {
-    "type": "combined_normal",
-    "left": 772.5,
-    "top": 297.5,
+    "left": 452.5,
+    "top": 28.16668701171875,
     "width": 14,
-    "height": 337,
+    "height": 451,
+    "combined": true
+  },
+  "3,1": {
+    "type": "combined_normal",
+    "left": 471.5,
+    "top": 28.16668701171875,
+    "width": 109,
+    "height": 109,
+    "combined": true
+  },
+  "3,7": {
+    "type": "combined_normal",
+    "left": 585.5,
+    "top": 28.16668701171875,
+    "width": 109,
+    "height": 109,
+    "combined": true
+  },
+  "3,13": {
+    "type": "combined_normal",
+    "left": 699.5,
+    "top": 28.16668701171875,
+    "width": 109,
+    "height": 109,
+    "combined": true
+  },
+  "3,19": {
+    "type": "combined_normal",
+    "left": 813.5,
+    "top": 28.16668701171875,
+    "width": 14,
+    "height": 451,
     "combined": true
   },
   "9,1": {
     "type": "combined_normal",
-    "left": 791.5,
-    "top": 297.5,
+    "left": 471.5,
+    "top": 142.16668701171875,
     "width": 109,
     "height": 109,
     "combined": true
   },
   "9,7": {
     "type": "combined_normal",
-    "left": 905.5,
-    "top": 297.5,
+    "left": 585.5,
+    "top": 142.16668701171875,
     "width": 109,
     "height": 109,
     "combined": true
   },
   "9,13": {
     "type": "combined_normal",
-    "left": 1019.5,
-    "top": 297.5,
+    "left": 699.5,
+    "top": 142.16668701171875,
     "width": 109,
     "height": 109,
     "combined": true
   },
-  "9,19": {
-    "type": "combined_normal",
-    "left": 1133.5,
-    "top": 297.5,
-    "width": 14,
-    "height": 337,
-    "combined": true
-  },
   "15,1": {
     "type": "combined_normal",
-    "left": 791.5,
-    "top": 411.5,
+    "left": 471.5,
+    "top": 256.16668701171875,
     "width": 109,
     "height": 109,
     "combined": true
   },
   "15,7": {
     "type": "combined_normal",
-    "left": 905.5,
-    "top": 411.5,
+    "left": 585.5,
+    "top": 256.16668701171875,
     "width": 109,
     "height": 109,
     "combined": true
   },
   "15,13": {
     "type": "combined_normal",
-    "left": 1019.5,
-    "top": 411.5,
+    "left": 699.5,
+    "top": 256.16668701171875,
     "width": 109,
     "height": 109,
     "combined": true
   },
   "21,1": {
     "type": "combined_normal",
-    "left": 791.5,
-    "top": 525.5,
+    "left": 471.5,
+    "top": 370.16668701171875,
     "width": 109,
     "height": 109,
     "combined": true
   },
   "21,7": {
     "type": "combined_normal",
-    "left": 905.5,
-    "top": 525.5,
+    "left": 585.5,
+    "top": 370.16668701171875,
     "width": 109,
     "height": 109,
     "combined": true
   },
   "21,13": {
     "type": "combined_normal",
-    "left": 1019.5,
-    "top": 525.5,
+    "left": 699.5,
+    "top": 370.16668701171875,
     "width": 109,
     "height": 109,
     "combined": true
   },
   "27,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 639.5,
+    "left": 452.5,
+    "top": 484.16668701171875,
     "width": 185,
     "height": 52,
     "combined": true
   },
   "27,10": {
     "type": "combined_normal",
-    "left": 962.5,
-    "top": 639.5,
+    "left": 642.5,
+    "top": 484.16668701171875,
     "width": 185,
     "height": 52,
     "combined": true
   }
 };
 
-let proyectosData = [];
-let categorias = ['TODOS'];
-let categoriaActual = 0;
+let proyectosData = null;
 let paginaProyectos = 0;
-let startCat = 0;
-const PROYECTOS_POR_PAGINA = 9;
+const PROYECTOS_POR_PAGINA = 12;
 let gridReady = false;
 
-async function loadProyectosData() {
-    try {
-        const response = await fetch('./modules/sidebar/data/proyectos.json');
-        if (!response.ok) throw new Error('No se pudo cargar');
-        const data = await response.json();
-        proyectosData = data.projects || [];
-        
-        const cats = new Set();
-        proyectosData.forEach(p => {
-            if (p.category) cats.add(p.category);
-        });
-        categorias = ['TODOS', ...Array.from(cats)];
-        return true;
-    } catch (err) {
-        return false;
-    }
+function getTextSizes() {
+    return CONFIG.TEXT_SIZES || {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 14,
+        small: 10,
+        tiny: 8
+    };
 }
 
-function getProyectosFiltrados() {
-    const categoria = categorias[categoriaActual] || 'TODOS';
-    if (categoria === 'TODOS') return proyectosData;
-    return proyectosData.filter(p => p.category === categoria);
+function getLetterSpacing() {
+    return CONFIG.LETTER_SPACING || {
+        title: 12,
+        subTitle: 6,
+        medium: 0.5,
+        small: 1.5,
+        tiny: 2
+    };
+}
+
+async function loadProyectosData() {
+    if (proyectosData) return proyectosData;
+    const response = await fetch('./modules/sidebar/data/proyectos.json');
+    proyectosData = await response.json();
+    return proyectosData;
 }
 
 function getProyectosPagina() {
-    const filtrados = getProyectosFiltrados();
+    const allProjects = proyectosData.projects;
     const start = paginaProyectos * PROYECTOS_POR_PAGINA;
-    return filtrados.slice(start, start + PROYECTOS_POR_PAGINA);
+    return allProjects.slice(start, start + PROYECTOS_POR_PAGINA);
 }
 
 function getTotalPaginas() {
-    const filtrados = getProyectosFiltrados();
-    return Math.ceil(filtrados.length / PROYECTOS_POR_PAGINA) || 1;
+    return Math.ceil(proyectosData.projects.length / PROYECTOS_POR_PAGINA);
 }
 
 export async function renderMobileProyectos() {
     const container = document.getElementById('grid-container');
     if (!container) return;
     
-    if (proyectosData.length === 0) {
-        await loadProyectosData();
-    }
+    await loadProyectosData();
     
-    startCat = Math.max(0, Math.min(categoriaActual, categorias.length - 4));
-    
-    document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator').forEach(el => el.remove());
+    document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-flecha, .mobile-page-indicator').forEach(el => el.remove());
     
     stopRandomAnimations();
     resetGrid(false);
@@ -229,16 +202,14 @@ export async function renderMobileProyectos() {
     importDesignFromJSON(PROYECTOS_DESIGN, () => {
         gridReady = true;
         createProyectosContent();
-
         createMobileNavButtons('proyectos');
         disableInteractions();
     }, true);
 }
 
 function updateProyectosContent() {
-    document.querySelectorAll('.mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator, .mobile-proyectos-content').forEach(el => el.remove());
+    document.querySelectorAll('.mobile-proyecto-item, .mobile-flecha, .mobile-page-indicator, .mobile-proyectos-content').forEach(el => el.remove());
     createProyectosContent();
-
     createMobileNavButtons('proyectos');
 }
 
@@ -256,6 +227,8 @@ function disableInteractions() {
 }
 
 function createProyectosContent() {
+    const textSizes = getTextSizes();
+    const letterSpacing = getLetterSpacing();
     const container = document.getElementById('grid-container');
     const primaryColor = CONFIG.COLORS.primary;
     const secondaryColor = CONFIG.COLORS.secondary;
@@ -265,35 +238,36 @@ function createProyectosContent() {
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
     
     let titleCell = null;
-    let catLeftArrow = null;
-    let catRightArrow = null;
-    let catCells = [];
     let projLeftArrow = null;
     let projRightArrow = null;
     let projCells = [];
+    let extraCells = [];
     
     allCells.forEach(cell => {
         if (cell.dataset.combined === 'true') {
             const row = parseInt(cell.dataset.designRow);
             const col = parseInt(cell.dataset.designCol);
             
-            if (row === 0 && col === 0) titleCell = cell;
-            else if (row === 3 && col === 0) catLeftArrow = cell;
-            else if (row === 3 && col === 18) catRightArrow = cell;
-            else if (row === 27 && col === 0) projLeftArrow = cell;
-            else if (row === 27 && col === 10) projRightArrow = cell;
-            else if (row === 3 && col >= 2 && col <= 14 && col % 4 === 2) {
-                catCells.push({ cell, index: Math.floor((col - 2) / 4) });
+            if (row === 0 && col === 0) {
+                titleCell = cell;
+            }
+            else if (row === 27 && col === 0) {
+                projLeftArrow = cell;
+            }
+            else if (row === 27 && col === 10) {
+                projRightArrow = cell;
+            }
+            else if (row === 3 && (col === 1 || col === 7 || col === 13)) {
+                extraCells.push({ cell, col, index: Math.floor((col - 1) / 6) });
             }
             else if ((row === 9 || row === 15 || row === 21) && [1, 7, 13].includes(col)) {
-                projCells.push({ cell, row, col });
+                projCells.push({ cell, row, col, index: projCells.length });
             }
         }
     });
     
-    catCells.sort((a, b) => a.index - b.index);
+    projCells.sort((a, b) => a.row - b.row || a.col - b.col);
     
-
     if (titleCell) {
         const oldTitle = titleCell.querySelector('.mobile-proyectos-content');
         if (oldTitle) oldTitle.remove();
@@ -311,8 +285,8 @@ function createProyectosContent() {
             justify-content: center;
             color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            font-size: 20px;
-            letter-spacing: 8px;
+            font-size: ${textSizes.normalTitle}px;
+            letter-spacing: ${letterSpacing.subTitle + 2}px;
             text-transform: uppercase;
             text-shadow: 0 0 20px rgba(${primaryRGB}, 1),
                          0 0 40px rgba(${primaryRGB}, 0.6),
@@ -321,24 +295,26 @@ function createProyectosContent() {
             z-index: 20;
             user-select: none;
         `;
-        title.textContent = 'PROYECTOS';
+        title.textContent = proyectosData.title;
         titleCell.appendChild(title);
     }
     
-
-
-    const categoriasVisibles = 4;
+    const proyectos = getProyectosPagina();
+    const totalPaginas = getTotalPaginas();
     
-    catCells.forEach(({ cell }, index) => {
-        const catIndex = startCat + index;
-        if (catIndex >= categorias.length) return;
+    if (paginaProyectos >= totalPaginas && totalPaginas > 0) {
+        paginaProyectos = totalPaginas - 1;
+    }
+    
+    const allProjects = proyectosData.projects;
+    
+    extraCells.forEach(({ cell }, index) => {
+        const project = allProjects[index];
         
-        const categoria = categorias[catIndex];
-        const isActive = catIndex === categoriaActual;
-        
-        const catItem = document.createElement('div');
-        catItem.className = 'mobile-categoria-item';
-        catItem.style.cssText = `
+        const item = document.createElement('div');
+        item.className = 'mobile-proyecto-item mobile-proyecto-destacado';
+        item.dataset.projectId = project.id;
+        item.style.cssText = `
             position: absolute;
             top: 0;
             left: 0;
@@ -348,96 +324,73 @@ function createProyectosContent() {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: ${isActive ? secondaryColor : primaryColor};
+            color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            text-shadow: ${isActive ? `0 0 20px rgba(${secondaryRGB}, 0.3)` : `0 0 10px rgba(${primaryRGB}, 0.1)`};
-            border: 1px solid ${isActive ? secondaryColor : `rgba(${primaryRGB}, 0.1)`};
-            border-radius: 2px;
-            background: ${isActive ? `rgba(${secondaryRGB}, 0.05)` : 'transparent'};
-            padding: 4px;
-            text-align: center;
-            gap: 2px;
+            border: 1px solid rgba(${primaryRGB}, 0.15);
+            border-radius: 4px;
+            background: rgba(${primaryRGB}, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
             pointer-events: auto;
-            z-index: 15;
+            z-index: 20;
+            gap: 2px;
+            padding: 8px;
         `;
-
-        catItem.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (catIndex !== categoriaActual) {
-                categoriaActual = catIndex;
-                paginaProyectos = 0;
-
-                const categoriasVisibles = 4;
-                if (categoriaActual < startCat || categoriaActual >= startCat + categoriasVisibles) {
-                    startCat = Math.max(0, Math.min(categoriaActual, categorias.length - categoriasVisibles));
-                }
-                updateProyectosContent();
-            }
+        
+        const icon = document.createElement('span');
+        icon.textContent = project.icon;
+        icon.style.cssText = `
+            font-size: ${textSizes.projectIcon + 4}px;
+            color: ${primaryColor};
+            text-shadow: 0 0 20px rgba(${primaryRGB}, 0.2);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        `;
+        item.appendChild(icon);
+        
+        const name = document.createElement('span');
+        name.textContent = project.name;
+        name.style.cssText = `
+            font-size: ${textSizes.small}px;
+            letter-spacing: ${letterSpacing.small}px;
+            color: ${primaryColor};
+            text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            text-align: center;
+        `;
+        item.appendChild(name);
+        
+        item.addEventListener('mouseenter', () => {
+            item.style.borderColor = secondaryColor;
+            item.style.background = `rgba(${secondaryRGB}, 0.08)`;
+            item.style.boxShadow = `0 0 30px rgba(${secondaryRGB}, 0.08)`;
+            icon.style.color = secondaryColor;
+            icon.style.textShadow = `0 0 30px rgba(${secondaryRGB}, 0.3)`;
+            name.style.color = secondaryColor;
         });
         
-        const iconSpan = document.createElement('span');
-        const firstProject = proyectosData.find(p => p.category === categoria);
-        iconSpan.textContent = firstProject?.icon || '◆';
-        iconSpan.style.cssText = `font-size: 20px; color: ${isActive ? secondaryColor : primaryColor};`;
-        catItem.appendChild(iconSpan);
+        item.addEventListener('mouseleave', () => {
+            item.style.borderColor = `rgba(${primaryRGB}, 0.15)`;
+            item.style.background = `rgba(${primaryRGB}, 0.05)`;
+            item.style.boxShadow = 'none';
+            icon.style.color = primaryColor;
+            icon.style.textShadow = `0 0 20px rgba(${primaryRGB}, 0.2)`;
+            name.style.color = primaryColor;
+        });
         
-        const nameSpan = document.createElement('span');
-        nameSpan.textContent = categoria;
-        nameSpan.style.cssText = `font-size: 7px; letter-spacing: 2px; color: ${isActive ? secondaryColor : primaryColor};`;
-        catItem.appendChild(nameSpan);
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            import('./mobile-nav.js').then(module => {
+                module.openProyectoDetalle(project.id);
+            });
+        });
         
-        cell.appendChild(catItem);
+        cell.appendChild(item);
     });
-    
-
-    createArrow(catLeftArrow, '◀', startCat > 0, () => {
-        if (startCat > 0) {
-            startCat = Math.max(0, startCat - 4);
-            paginaProyectos = 0;
-            updateProyectosContent();
-        }
-    });
-    
-    createArrow(catRightArrow, '▶', startCat + 4 < categorias.length, () => {
-        if (startCat + 4 < categorias.length) {
-            startCat = Math.min(categorias.length - 4, startCat + 4);
-            paginaProyectos = 0;
-            updateProyectosContent();
-        }
-    });
-    
-
-    const proyectos = getProyectosPagina();
-    const totalPaginas = getTotalPaginas();
-    
-    if (paginaProyectos >= totalPaginas && totalPaginas > 0) {
-        paginaProyectos = totalPaginas - 1;
-    }
     
     projCells.forEach(({ cell }, index) => {
         const project = proyectos[index];
-        
-        if (!project) {
-            const empty = document.createElement('div');
-            empty.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: rgba(${primaryRGB}, 0.1);
-                font-family: 'Courier New', monospace;
-                font-size: 12px;
-                pointer-events: none;
-                z-index: 10;
-            `;
-            empty.textContent = '·';
-            cell.appendChild(empty);
-            return;
-        }
         
         const projItem = document.createElement('div');
         projItem.className = 'mobile-proyecto-item';
@@ -466,9 +419,9 @@ function createProyectosContent() {
         `;
         
         const icon = document.createElement('span');
-        icon.textContent = project.icon || '◆';
+        icon.textContent = project.icon;
         icon.style.cssText = `
-            font-size: 28px;
+            font-size: ${textSizes.projectIcon + 4}px;
             color: ${primaryColor};
             text-shadow: 0 0 20px rgba(${primaryRGB}, 0.2);
             transition: all 0.3s ease;
@@ -477,12 +430,12 @@ function createProyectosContent() {
         projItem.appendChild(icon);
         
         const name = document.createElement('span');
-        name.textContent = project.name || 'PROYECTO';
+        name.textContent = project.name;
         name.style.cssText = `
-            font-size: 8px;
-            letter-spacing: 2px;
-            color: ${primaryColor};
-            text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
+            font-size: ${textSizes.small}px;
+            letter-spacing: ${letterSpacing.small}px;
+            color: ${secondaryColor};
+            text-shadow: 0 0 10px rgba(${secondaryRGB}, 0.1);
             transition: all 0.3s ease;
             pointer-events: none;
             text-align: center;
@@ -517,7 +470,6 @@ function createProyectosContent() {
         cell.appendChild(projItem);
     });
     
-
     createArrow(projLeftArrow, '◀', paginaProyectos > 0, () => {
         if (paginaProyectos > 0) {
             paginaProyectos--;
@@ -531,8 +483,6 @@ function createProyectosContent() {
             updateProyectosContent();
         }
     });
-    
-
 }
 
 function createArrow(cell, direction, isActive, onClick) {
@@ -540,6 +490,12 @@ function createArrow(cell, direction, isActive, onClick) {
     
     const oldArrow = cell.querySelector('.mobile-flecha');
     if (oldArrow) oldArrow.remove();
+    
+    const textSizes = getTextSizes();
+    const primaryColor = CONFIG.COLORS.primary;
+    const primaryRGB = CONFIG.COLORS.primaryRGB;
+    const secondaryColor = CONFIG.COLORS.secondary;
+    const secondaryRGB = CONFIG.COLORS.secondaryRGB;
     
     const arrow = document.createElement('div');
     arrow.className = 'mobile-flecha';
@@ -553,9 +509,9 @@ function createArrow(cell, direction, isActive, onClick) {
         align-items: center;
         justify-content: center;
         font-family: 'Courier New', monospace;
-        font-size: 28px;
-        color: ${isActive ? CONFIG.COLORS.primary : `rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`};
-        text-shadow: ${isActive ? `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)` : 'none'};
+        font-size: ${textSizes.arrows}px;
+        color: ${isActive ? secondaryColor : `rgba(${secondaryRGB}, 0.2)`};
+        text-shadow: ${isActive ? `0 0 20px rgba(${secondaryRGB}, 1)` : 'none'};
         cursor: ${isActive ? 'pointer' : 'default'};
         pointer-events: ${isActive ? 'auto' : 'none'};
         z-index: 25;
@@ -574,8 +530,8 @@ function createArrow(cell, direction, isActive, onClick) {
         });
         arrow.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            arrow.style.color = CONFIG.COLORS.secondary;
-            arrow.style.textShadow = `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)`;
+            arrow.style.color = secondaryColor;
+            arrow.style.textShadow = `0 0 30px rgba(${secondaryRGB}, 0.4)`;
         }, { passive: false });
         arrow.addEventListener('touchend', (e) => {
             e.preventDefault();

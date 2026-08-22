@@ -15,10 +15,45 @@ const LIGHT_TEXT_SHADOW = `0 0 7px rgba(var(--color-primary-rgb), 1)`;
 const LIGHT_TEXT_SHADOW_ACTIVE = `0 0 15px rgba(var(--color-secondary-rgb), 1)`;
 const LIGHT_TEXT_SHADOW_HOVER = `0 0 15px rgba(var(--color-secondary-rgb), 1)`;
 
+function getTextSizes() {
+    return CONFIG.TEXT_SIZES || {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 12,
+        small: 10,
+        tiny: 8
+    };
+}
+
+function getLetterSpacing() {
+    return CONFIG.LETTER_SPACING || {
+        title: 12,
+        subTitle: 6,
+        medium: 0.5,
+        small: 1.5,
+        tiny: 2
+    };
+}
+
+function getLineHeight() {
+    return CONFIG.LINE_HEIGHT || {
+        title: 1.2,
+        subTitle: 1.4,
+        medium: 1.8,
+        small: 1.6,
+        tiny: 1.4
+    };
+}
+
 export async function loadSobreMiData() {
+    if (sobreMiData) return sobreMiData;
     try {
         const response = await fetch(new URL('../data/sobre-mi.json', import.meta.url));
         const data = await response.json();
+        sobreMiData = data;
         return data;
     } catch (e) {
         console.error('Error loading sobre-mi data:', e);
@@ -84,11 +119,24 @@ export async function renderSobreMiContent() {
     
     try {
         const data = await loadSobreMiData();
+        if (!data) {
+            isRendering = false;
+            return;
+        }
+        
         const container = document.getElementById('grid-container');
         if (!container) {
             isRendering = false;
             return;
         }
+        
+        const textSizes = getTextSizes();
+        const letterSpacing = getLetterSpacing();
+        const lineHeight = getLineHeight();
+        const primaryColor = CONFIG.COLORS.primary;
+        const secondaryColor = CONFIG.COLORS.secondary;
+        const primaryRGB = CONFIG.COLORS.primaryRGB;
+        const secondaryRGB = CONFIG.COLORS.secondaryRGB;
         
         textureWasVisibleBefore = getTextureVisibilityFromSettings();
         toggleTextureOverlay(false);
@@ -135,11 +183,6 @@ export async function renderSobreMiContent() {
         }
         retryCountSobreMi = 0;
         
-        const primaryColor = CONFIG.COLORS.primary;
-        const secondaryColor = CONFIG.COLORS.secondary;
-        const primaryRGB = CONFIG.COLORS.primaryRGB;
-        const secondaryRGB = CONFIG.COLORS.secondaryRGB;
-        
         if (titleCell) {
             const title = document.createElement('div');
             title.className = 'sobre-mi-content';
@@ -154,8 +197,8 @@ export async function renderSobreMiContent() {
                 justify-content: center;
                 color: ${primaryColor};
                 font-family: 'Courier New', monospace;
-                font-size: 32px;
-                letter-spacing: 12px;
+                font-size: ${textSizes.title}px;
+                letter-spacing: ${letterSpacing.title}px;
                 text-transform: uppercase;
                 text-shadow: ${LIGHT_TEXT_SHADOW};
                 pointer-events: none;
@@ -182,7 +225,6 @@ export async function renderSobreMiContent() {
                 height: 98%;
                 opacity: 100;
                 display: flex;
-
                 z-index: 20;
                 overflow: hidden;
                 background: rgba(0,0,0,0.3);
@@ -245,7 +287,7 @@ export async function renderSobreMiContent() {
             let glitchTimeout = null;
             let isGlitching = false;
             let isFirstTransitionDone = false;
-            let initialGlitchIndex = 0;
+            let initialGlitchTimeout = null;
             
             function doInitialGlitchTransition() {
                 const blinks = 5 + Math.floor(Math.random() * 8);
@@ -273,7 +315,6 @@ export async function renderSobreMiContent() {
                     }
                     
                     currentBlink++;
-                    
                     const delay = 50 + Math.random() * 250;
                     initialGlitchTimeout = setTimeout(blink, delay);
                 }
@@ -294,7 +335,6 @@ export async function renderSobreMiContent() {
                     img1.style.opacity = '0';
                     colorOverlay.style.opacity = '0';
                     img2.style.opacity = '1';
-                    
                     isGlitching = false;
                     scheduleNextGlitch();
                 }, glitchDuration);
@@ -310,8 +350,6 @@ export async function renderSobreMiContent() {
                     doGlitch();
                 }, delay);
             }
-            
-            let initialGlitchTimeout = null;
             
             photoTimeout = setTimeout(() => {
                 doInitialGlitchTransition();
@@ -355,11 +393,11 @@ export async function renderSobreMiContent() {
             `;
             
             const bioTitle = document.createElement('div');
-            bioTitle.textContent = 'BIOGRAFIA';
+            bioTitle.textContent = data.content.bioTitle;
             bioTitle.style.cssText = `
                 color: ${secondaryColor};
-                font-size: 14px;
-                letter-spacing: 6px;
+                font-size: ${textSizes.subTitle}px;
+                letter-spacing: ${letterSpacing.subTitle}px;
                 font-weight: bold;
                 margin-bottom: 6px;
                 text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
@@ -368,11 +406,11 @@ export async function renderSobreMiContent() {
             
             const age = calculateAge('1999-07-29');
             const nameLine = document.createElement('div');
-            nameLine.textContent = `EMANUEL VEGA · ${age} AÑOS`;
+            nameLine.textContent = data.content.bioName.replace('%age%', age);
             nameLine.style.cssText = `
                 color: ${secondaryColor};
-                font-size: 16px;
-                letter-spacing: 3px;
+                font-size: ${textSizes.subTitle}px;
+                letter-spacing: ${letterSpacing.subTitle * 0.5}px;
                 font-weight: bold;
                 margin-bottom: 12px;
                 text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
@@ -381,26 +419,15 @@ export async function renderSobreMiContent() {
             
             const bioText = document.createElement('div');
             bioText.style.cssText = `
-                font-size: 15px;
-                line-height: 1.8;
-                letter-spacing: 0.5px;
+                font-size: ${textSizes.big}px;
+                line-height: ${lineHeight.medium};
+                letter-spacing: ${letterSpacing.big}px;
                 max-width: 90%;
                 text-align: justify;
                 color: ${primaryColor};
                 text-shadow: ${LIGHT_TEXT_SHADOW};
             `;
-            bioText.textContent = `Desde los 6 años cuando tuve mi primera computadora, supe que la tecnología sería lo mío, la usaba, la desarmaba, la entendía, la personalizaba, mis padres me bloqueaban la computadora y yo encontraba la forma de desbloquearla.
-
-A los 12 años me harté de los fondos de pantalla genéricos, así que descargué Photoshop e Illustrator y empecé a crear los míos, Daft Punk y TRON: El Legado fueron mis mayores inspiraciones.
-
-En la preparatoria mientras otros hacían calculadoras en Visual Basic 6.0, yo recreé Space Invaders, sin IA, sin tutoriales, puro escribir mi lógica y con mi obsesión por entender cómo funcionan las cosas, curiosamente, la IA de los enemigos la programé con una barra invisible que cambiaba de tamaño y velocidad aleatoriamente.
-
-He sido diseñador, programador, editor de video, y todo lo que se necesite, he trabajado en proyectos de branding, desarrollo web completo, sistemas internos y material promocional, soy un One Man Army.
-
-Después de años de aprendizaje autodidacta y una carrera en Ingeniería de Desarrollo de Software, sigo teniendo el deseo y la curiosidad de entender todo y poder responder el "Por qué?" de las cosas.
-
-Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguiré, No importa el obstáculo, siempre encuentro la forma. Mis mayores inspiraciones: Daft Punk, TRON y Gundam.`;
-            
+            bioText.textContent = data.content.bioText;
             bio.appendChild(bioText);
             
             const styleScroll = document.createElement('style');
@@ -443,11 +470,11 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
             `;
             
             const skillsTitle = document.createElement('div');
-            skillsTitle.textContent = 'HABILIDADES';
+            skillsTitle.textContent = data.content.skillsTitle;
             skillsTitle.style.cssText = `
                 color: ${secondaryColor};
-                font-size: 15px;
-                letter-spacing: 5px;
+                font-size: ${textSizes.subTitle}px;
+                letter-spacing: ${letterSpacing.subTitle}px;
                 font-weight: bold;
                 margin-bottom: 10px;
                 text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
@@ -462,29 +489,14 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
                 max-width: 95%;
             `;
             
-            const habilidades = [
-                { icon: '◆', name: 'DISEÑO GRAFICO' },
-                { icon: '◈', name: 'ILUSTRACION DIGITAL' },
-                { icon: '◉', name: 'DESARROLLO WEB' },
-                { icon: '◊', name: 'FOTOGRAFIA' },
-                { icon: '◇', name: 'UI/UX' },
-                { icon: '□', name: 'FRONTEND' },
-                { icon: '△', name: 'BRANDING' },
-                { icon: '▽', name: 'BACKEND' },
-                { icon: '◍', name: 'CREATIVIDAD' },
-                { icon: '◆', name: 'ADAPTABILIDAD' },
-                { icon: '◉', name: 'AUTODIDACTA' },
-                { icon: '◊', name: 'RESOLUCIÓN DE PROBLEMAS' }
-            ];
-            
-            habilidades.forEach(h => {
+            data.content.skills.forEach(h => {
                 const item = document.createElement('div');
                 item.style.cssText = `
                     display: flex;
                     align-items: center;
                     gap: 0;
-                    font-size: 10px;
-                    letter-spacing: 1.5px;
+                    font-size: ${textSizes.small}px;
+                    letter-spacing: ${letterSpacing.small}px;
                     color: ${secondaryColor};
                     text-shadow: ${LIGHT_TEXT_SHADOW};
                     transition: all 0.2s ease;
@@ -495,44 +507,43 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
                 `;
                 
                 const iconBox = document.createElement('div');
-                    iconBox.style.cssText = `
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 35px;
-                        height: 25px;
-                        background: rgba(${primaryRGB}, 1);
-                        border-radius: 4px 0 0 4px;
-                        color: ${CONFIG.COLORS.background};
-                        text-shadow: none;
-                        font-size: 17px;
-                        flex-shrink: 0;
-                        transition: all 0.2s ease;
-                        border: 1px solid rgba(${primaryRGB}, 0.5);
-                        box-shadow: 0 0 20px rgba(${primaryRGB}, 0.5);
-                    `;
-                    iconBox.textContent = h.icon;
+                iconBox.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 35px;
+                    height: 25px;
+                    background: rgba(${primaryRGB}, 1);
+                    border-radius: 4px 0 0 4px;
+                    color: ${CONFIG.COLORS.background};
+                    text-shadow: none;
+                    font-size: ${textSizes.projectIcon}px;
+                    flex-shrink: 0;
+                    transition: all 0.2s ease;
+                    border: 1px solid rgba(${primaryRGB}, 0.5);
+                    box-shadow: 0 0 20px rgba(${primaryRGB}, 0.5);
+                `;
+                iconBox.textContent = h.icon;
 
-                    const nameBox = document.createElement('div');
-                    nameBox.style.cssText = `
-                        display: flex;
-                        align-items: center;
-                        padding: 0 10px;
-                        height: 25px;
-                        background: rgba(${primaryRGB}, 0.1);
-                        border-radius: 0 4px 4px 0;
-                        color: ${secondaryColor};
-                        text-shadow: ${LIGHT_TEXT_SHADOW};
-                        font-size: 10px;
-                        letter-spacing: 1.5px;
-                        flex-grow: 1;
-                        transition: all 0.2s ease;
-                        white-space: nowrap;
-                        border: 1px solid rgba(${primaryRGB}, 0.5);
-                        box-shadow: 0 0 20px rgba(${primaryRGB}, 0.2);
-
-                    `;
-                    nameBox.textContent = h.name;
+                const nameBox = document.createElement('div');
+                nameBox.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    padding: 0 10px;
+                    height: 25px;
+                    background: rgba(${primaryRGB}, 0.1);
+                    border-radius: 0 4px 4px 0;
+                    color: ${secondaryColor};
+                    text-shadow: ${LIGHT_TEXT_SHADOW};
+                    font-size: ${textSizes.small}px;
+                    letter-spacing: ${letterSpacing.small}px;
+                    flex-grow: 1;
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                    border: 1px solid rgba(${primaryRGB}, 0.5);
+                    box-shadow: 0 0 20px rgba(${primaryRGB}, 0.2);
+                `;
+                nameBox.textContent = h.name;
                 item.appendChild(iconBox);
                 item.appendChild(nameBox);
                 
@@ -541,7 +552,6 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
                     iconBox.style.borderColor = secondaryColor;
                     iconBox.style.color = CONFIG.COLORS.background;
                     iconBox.style.textShadow = `0 0 10px ${secondaryColor}`;
-                    
                     nameBox.style.background = `rgba(${secondaryRGB}, 0.1)`;
                     nameBox.style.borderColor = secondaryColor;
                     nameBox.style.color = secondaryColor;
@@ -553,7 +563,6 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
                     iconBox.style.borderColor = primaryColor;
                     iconBox.style.color = CONFIG.COLORS.background;
                     iconBox.style.textShadow = 'none';
-                    
                     nameBox.style.background = `rgba(${primaryRGB}, 0.1)`;
                     nameBox.style.borderColor = primaryColor;
                     nameBox.style.color = primaryColor;
@@ -586,11 +595,11 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
             `;
             
             const toolsTitle = document.createElement('div');
-            toolsTitle.textContent = 'HERRAMIENTAS Y TECNOLOGIAS';
+            toolsTitle.textContent = data.content.toolsTitle;
             toolsTitle.style.cssText = `
                 color: ${secondaryColor};
-                font-size: 15px;
-                letter-spacing: 5px;
+                font-size: ${textSizes.subTitle}px;
+                letter-spacing: ${letterSpacing.subTitle}px;
                 font-weight: bold;
                 margin-bottom: 8px;
                 text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
@@ -599,26 +608,24 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
             
             const toolsContent = document.createElement('div');
             toolsContent.style.cssText = `
-                font-size: 12px;
-                line-height: 2;
-                letter-spacing: 0.5px;
+                font-size: ${textSizes.medium}px;
+                line-height: ${lineHeight.medium};
+                letter-spacing: ${letterSpacing.medium}px;
                 color: ${primaryColor};
                 text-shadow: ${LIGHT_TEXT_SHADOW};
                 max-width: 90%;
                 text-align: center;
             `;
             
-            toolsContent.innerHTML = `
-                <div>
-                    <span style="color:${secondaryColor};">DISEÑO:</span> Photoshop · Illustrator · Lightroom
-                </div>
-                <div>
-                    <span style="color:${secondaryColor};">DESARROLLO:</span> HTML · CSS · JavaScript · React · Node.js · Python · SQL
-                </div>
-                <div style="margin-top:4px; padding-top:6px; border-top:1px solid ${secondaryColor}; font-style:italic; font-size:12px; color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW};">
-                    Tengo excelente intuición para aprender cualquier herramienta o tecnología, incluso las más complejas, no me enfoco en listar todas las herramientas que ya sé, solo unas, porque lo importante es la forma de pensar creativa y la capacidad para resolver problemas, puedo usar cualquier herramienta y cualquier lenguaje.
-                </div>
-            `;
+            let toolsHTML = '';
+            data.content.toolsContent.forEach(item => {
+                if (item.label) {
+                    toolsHTML += `<div><span style="color:${secondaryColor};">${item.label}</span> ${item.items}</div>`;
+                } else if (item.note) {
+                    toolsHTML += `<div style="margin-top:4px; padding-top:6px; border-top:1px solid ${secondaryColor}; font-style:italic; font-size:${textSizes.small}px; letter-spacing:${letterSpacing.small}px; line-height:${lineHeight.small}; color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW};">${item.note}</div>`;
+                }
+            });
+            toolsContent.innerHTML = toolsHTML;
             
             tools.appendChild(toolsContent);
             toolsCell.appendChild(tools);
@@ -644,51 +651,40 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
             `;
             
             const defineTitle = document.createElement('div');
-            defineTitle.textContent = 'LO QUE ME DEFINE';
+            defineTitle.textContent = data.content.defineTitle;
             defineTitle.style.cssText = `
                 color: ${secondaryColor};
-                font-size: 14px;
-                letter-spacing: 6px;
+                font-size: ${textSizes.subTitle}px;
+                letter-spacing: ${letterSpacing.subTitle}px;
                 font-weight: bold;
-                margin-bottom: 6px;
                 text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
             `;
             define.appendChild(defineTitle);
-            
-            const items = [
-                '◆ Autodidacta desde los 6 años',
-                '◆ Creativo por naturaleza',
-                '◆ Resuelvo problemas que otros evitan',
-                '◆ Aprendo cualquier cosa y tema en poco tiempo',
-                '◆ Humilde pero consciente de mi valor',
-                '◆ Siempre en busca de mejorar',
-                '◆ Si algo es posible y depende de mí, lo conseguiré',
-                '◆ Mi necesidad de proveer momentos y cosas buenas al mundo',
-                '◆ Mi genial gusto musical, checa mi playlist'
-            ];
             
             const defineGrid = document.createElement('div');
             defineGrid.style.cssText = `
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
-                gap: 2px 25px;
                 width: 100%;
                 max-width: 90%;
             `;
             
-            items.forEach(item => {
+            const playlistItem = data.content.defineItems.findIndex(item => item === "◆ Mi genial gusto musical");
+            
+            data.content.defineItems.forEach((item, index) => {
                 const el = document.createElement('div');
                 el.style.cssText = `
-                    font-size: 12px;
-                    letter-spacing: 0.5px;
+                    font-size: ${textSizes.small}px;
+                    letter-spacing: ${letterSpacing.small}px;
+                    line-height: ${lineHeight.small};
                     padding: 1px 0;
                     color: ${primaryColor};
                     text-shadow: ${LIGHT_TEXT_SHADOW};
                     text-align: center;
                 `;
                 
-                if (item.includes('checa mi playlist')) {
-                    el.innerHTML = `◆ Mi genial gusto musical, <a href="https://open.spotify.com/playlist/6rjGBL7CWlpC2FXOZhTAQE?si=151b3d02bb00400e" target="_blank" style="color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW}; text-decoration:underline; text-underline-offset:2px; transition:all 0.3s ease; cursor:pointer; pointer-events:auto;" onmouseenter="this.style.color='${secondaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW_HOVER}';" onmouseleave="this.style.color='${primaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW}';">checa mi playlist</a>`;
+                if (index === playlistItem) {
+                    el.innerHTML = `${data.content.playlistPrefix}<a href="${data.content.playlistLink}" target="_blank" style="color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW}; text-decoration:underline; text-underline-offset:2px; transition:all 0.3s ease; cursor:pointer; pointer-events:auto;" onmouseenter="this.style.color='${secondaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW_HOVER}';" onmouseleave="this.style.color='${primaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW}';">${data.content.playlistText}</a>`;
                 } else {
                     el.textContent = item;
                 }
@@ -699,15 +695,15 @@ Tengo la idea de que mientras algo sea posible, si depende de mí, lo conseguir�
             define.appendChild(defineGrid);
             
             const frase = document.createElement('div');
-            frase.textContent = 'RANDOM ACCESS MEMORIES';
+            frase.textContent = data.content.frase;
             frase.style.cssText = `
                 color: ${secondaryColor};
-                font-size: 14px;
-                letter-spacing: 6px;
-                margin-top: 6px;
+                font-size: ${textSizes.subTitle}px;
+                letter-spacing: ${letterSpacing.subTitle}px;
+
                 text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
-                border-top: 1px solid ${secondaryColor};
-                padding-top: 8px;
+
+
                 width: 80%;
                 text-align: center;
                 font-weight: bold;

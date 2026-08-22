@@ -356,10 +356,8 @@ function createLettersImage() {
     img.style.left = `${centerX}px`;
     img.style.top = `${centerY}px`;
     img.style.transform = 'translate(-50%, -50%)';
-    img.style.width = 'auto';
-    img.style.height = 'auto';
-    img.style.maxWidth = '100%';
-    img.style.maxHeight = '100%';
+    img.style.width = `${areaWidth}px`;
+    img.style.height = `${areaHeight}px`;
     img.style.objectFit = 'contain';
     img.style.zIndex = 9999;
     img.style.opacity = '0';

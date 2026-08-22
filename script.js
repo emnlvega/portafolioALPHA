@@ -1,5 +1,5 @@
-import { CONFIG, LOGO_DESIGN, updateColors, getCurrentColors, createColors, MOBILE_SIMULATOR_CONFIG } from './modules/config.js';
-import { createGrid, repositionGrid, repositionSidebarOverlay, repositionSidebarTexts, repositionCombinedCells } from './modules/grid.js';
+import { CONFIG, LOGO_DESIGN, updateColors, getCurrentColors, createColors, MOBILE_SIMULATOR_CONFIG, getResponsiveConfig } from './modules/config.js';
+import { createGrid, repositionGrid, repositionSidebarOverlay, repositionSidebarTexts, repositionCombinedCells, getCellPosition } from './modules/grid.js';
 import { resetGrid, exportDesignToJSON, designCells, setupCellEvents, toggleCellOff, cleanInicioContent } from './modules/interactions.js';
 import { importDesignFromJSON } from './modules/logo.js';
 import { animateSidebar, returnToMainLogo, isSpecialPageActiveCheck, handleSidebarAction, isTransitioningCheck } from './modules/sidebar/index.js';
@@ -20,11 +20,36 @@ import { navigateMobileTo } from './modules/mobile/mobile-nav.js';
 import { getCurrentMobilePage } from './modules/mobile/mobile-nav.js';
 import { startLogoAnimation, stopLogoAnimation, enableLogoAnimation, disableLogoAnimation, startFlickerOnInicio, setOnInicio, stopFlickerOnInicio } from './modules/emnlvega.js';
 
+let dicc = null;
 let gridData = null;
 let isLogoAnimationRunning = false;
 let isInicioContentClickable = false;
 let isInitialized = false;
 let proyectosData = null;
+
+async function loadDicc() {
+    if (dicc) return dicc;
+    try {
+        const response = await fetch('./modules/dicc.json');
+        dicc = await response.json();
+        return dicc;
+    } catch (e) {
+        console.error('Error loading dicc:', e);
+        return null;
+    }
+}
+
+function getTextSizes() {
+    return CONFIG.TEXT_SIZES;
+}
+
+function getLetterSpacing() {
+    return CONFIG.LETTER_SPACING;
+}
+
+function getLineHeight() {
+    return CONFIG.LINE_HEIGHT;
+}
 
 window.stopFlickerOnInicio = stopFlickerOnInicio;
 
@@ -66,6 +91,11 @@ async function loadProyectosData() {
 }
 
 function renderBienvenido() {
+    const textSizes = getTextSizes();
+    const letterSpacing = getLetterSpacing();
+    const primaryColor = CONFIG.COLORS.primary;
+    const primaryRGB = CONFIG.COLORS.primaryRGB;
+    
     const titleCell = Array.from(document.querySelectorAll('.grid-cell, .logo-cell')).find(c => 
         c.dataset.combined === 'true' && 
         parseInt(c.dataset.designRow) === 0 && 
@@ -85,25 +115,31 @@ function renderBienvenido() {
         display: flex;
         align-items: center;
         justify-content: center;
-        color: ${CONFIG.COLORS.primary};
+        color: ${primaryColor};
         font-family: 'Courier New', monospace;
-        font-size: 28px;
-        letter-spacing: 15px;
+        font-size: ${textSizes.subTitle + 12}px;
+        letter-spacing: ${letterSpacing.title + 3}px;
         text-transform: uppercase;
-        text-shadow: 0 0 10px ${CONFIG.COLORS.primary},
-                     0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.5),
-                     0 0 60px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+        text-shadow: 0 0 10px ${primaryColor},
+                     0 0 30px rgba(${primaryRGB}, 0.5),
+                     0 0 60px rgba(${primaryRGB}, 0.3);
         pointer-events: none;
         z-index: 20;
         user-select: none;
     `;
-    bienvenido.textContent = 'BIENVENIDO A MI PORTAFOLIO:)';
+    bienvenido.textContent = dicc.script.bienvenido;
     titleCell.appendChild(bienvenido);
 }
 
 async function renderProyectosInicio() {
     const data = await loadProyectosData();
     if (!data || !data.projects || data.projects.length === 0) return;
+    
+    const textSizes = getTextSizes();
+    const primaryColor = CONFIG.COLORS.primary;
+    const secondaryColor = CONFIG.COLORS.secondary;
+    const primaryRGB = CONFIG.COLORS.primaryRGB;
+    const secondaryRGB = CONFIG.COLORS.secondaryRGB;
     
     const projectCells = [
         { row: 14, col: 0 },
@@ -174,7 +210,7 @@ async function renderProyectosInicio() {
             left: 0;
             width: 100%;
             height: 100%;
-            background: ${CONFIG.COLORS.primary};
+            background: ${primaryColor};
             mix-blend-mode: color;
             opacity: 0.3;
             transition: all 0.3s ease;
@@ -185,9 +221,9 @@ async function renderProyectosInicio() {
         title.style.cssText = `
             position: relative;
             z-index: 2;
-            color: ${CONFIG.COLORS.secondary};
-            font-size: 18px;
-            letter-spacing: 4px;
+            color: ${secondaryColor};
+            font-size: ${textSizes.subTitle + 2}px;
+            letter-spacing: ${textSizes.small + 1}px;
             font-weight: bold;
             text-transform: uppercase;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
@@ -200,7 +236,7 @@ async function renderProyectosInicio() {
         wrapper.appendChild(title);
         
         wrapper.addEventListener('mouseenter', () => {
-            wrapper.style.boxShadow = `0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
+            wrapper.style.boxShadow = `0 0 30px rgba(${primaryRGB}, 0.3)`;
             bgImg.style.opacity = '0.6';
             bgImg.style.transform = 'scale(1.05)';
             title.style.textShadow = `0 0 30px rgba(255, 255, 255, 1)`;
@@ -298,14 +334,15 @@ async function renderProyectosInicio() {
             pointer-events: auto;
             cursor: pointer;
             z-index: 20;
-            color: ${CONFIG.COLORS.primary};
+            color: ${primaryColor};
             transition: all 0.3s ease;
             font-family: 'Courier New', monospace;
-            font-size: 48px;
+            font-size: ${textSizes.arrows + 20}px;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
         `;
         
-        verMas.textContent = '▶';
+        const verMasText = dicc.script.verMas;
+        verMas.textContent = verMasText;
         
         if (!isInicioContentClickable) {
             verMas.style.pointerEvents = 'none';
@@ -313,13 +350,13 @@ async function renderProyectosInicio() {
         }
         
         verMas.addEventListener('mouseenter', () => {
-            verMas.style.color = CONFIG.COLORS.secondary;
+            verMas.style.color = secondaryColor;
             verMas.style.textShadow = `0 0 30px rgba(255, 255, 255, 1)`;
             verMas.style.transform = 'scale(1.2)';
         });
         
         verMas.addEventListener('mouseleave', () => {
-            verMas.style.color = CONFIG.COLORS.secondary;
+            verMas.style.color = secondaryColor;
             verMas.style.textShadow = `0 0 20px rgba(255, 255, 255, 0.8)`;
             verMas.style.transform = 'scale(1)';
         });
@@ -394,7 +431,7 @@ function removeInicioContent() {
         '.proyectos-content', '.proyectos-category', '.proyectos-item', 
         '.proyectos-detail', '.proyectos-nav', '.proyectos-filter', 
         '.proyectos-select-message', '.sobre-mi-content', '.contacto-content',
-        '.expand-btn'
+        '.expand-btn', '.expand-back-btn', '.expand-next-btn'
     ];
     
     document.querySelectorAll(allSelectors.join(',')).forEach(el => el.remove());
@@ -426,14 +463,11 @@ function removeInicioContent() {
 window.removeInicioContent = removeInicioContent;
 
 function renderInicioContent() {
-
     removeInicioContent();
-    
 
     setTimeout(() => {
         renderBienvenido();
         renderProyectosInicio();
-        
 
         if (isInicioContentClickable) {
             enableInicioClicks();
@@ -443,9 +477,7 @@ function renderInicioContent() {
     }, 50);
 }
 
-
 document.addEventListener('renderInicioContent', function() {
-
     setTimeout(() => {
         renderInicioContent();
     }, 50);
@@ -474,6 +506,20 @@ function loadSpecialPage(page, projectId = null) {
             window.selectedProjectId = projectId;
         }
         
+        if (isMobile()) {
+            if (projectId) {
+                import('./modules/mobile/mobile-nav.js').then(module => {
+                    module.openProyectoDetalle(projectId);
+                });
+                return;
+            } else {
+                import('./modules/mobile/mobile-nav.js').then(module => {
+                    module.navigateMobileTo('proyectos');
+                });
+                return;
+            }
+        }
+        
         handleSidebarAction('proyectos');
         
         if (projectId) {
@@ -488,8 +534,20 @@ function loadSpecialPage(page, projectId = null) {
             }, 300);
         }
     } else if (page === 'sobre-mi') {
+        if (isMobile()) {
+            import('./modules/mobile/mobile-nav.js').then(module => {
+                module.navigateMobileTo('sobre-mi');
+            });
+            return;
+        }
         handleSidebarAction('sobre-mi');
     } else if (page === 'contacto') {
+        if (isMobile()) {
+            import('./modules/mobile/mobile-nav.js').then(module => {
+                module.navigateMobileTo('contacto');
+            });
+            return;
+        }
         handleSidebarAction('contacto');
     }
 }
@@ -498,11 +556,9 @@ function enableInicioClicks() {
     document.querySelectorAll('.inicio-proyecto, .inicio-vermas').forEach(el => {
         el.style.pointerEvents = 'auto';
         el.style.cursor = 'pointer';
-
         el.style.zIndex = '20';
     });
 }
-
 
 function disableInicioClicks() {
     document.querySelectorAll('.inicio-proyecto, .inicio-vermas').forEach(el => {
@@ -512,13 +568,11 @@ function disableInicioClicks() {
 }
 
 function loadInicio(instant = false) {
-
     removeInicioContent();
     stopLogoAnimation();
     setHashLoad(false);
     setOnInicio(true);
     
-
     const pageSelectors = [
         '.proyectos-content', '.proyectos-category', '.proyectos-item', 
         '.proyectos-detail', '.proyectos-nav', '.proyectos-filter', 
@@ -527,7 +581,6 @@ function loadInicio(instant = false) {
     ];
     document.querySelectorAll(pageSelectors.join(',')).forEach(el => el.remove());
     
-
     document.querySelectorAll('.grid-cell, .logo-cell').forEach(cell => {
         const children = Array.from(cell.children);
         children.forEach(child => {
@@ -539,7 +592,6 @@ function loadInicio(instant = false) {
             }
         });
         
-
         cell.style.pointerEvents = '';
         cell.style.cursor = '';
         cell.style.boxShadow = 'none';
@@ -547,13 +599,11 @@ function loadInicio(instant = false) {
         cell.style.backgroundColor = CONFIG.COLORS.background;
     });
     
-
     const existingImage = document.getElementById('letters-animation-image');
     if (existingImage) {
         existingImage.remove();
     }
     
-
     if (instant) {
         enableLogoAnimation();
         isLogoAnimationRunning = true;
@@ -565,7 +615,6 @@ function loadInicio(instant = false) {
             enableInicioClicks();
         }, true);
     } else {
-
         enableLogoAnimation();
         isLogoAnimationRunning = true;
         blockSidebarInteraction();
@@ -577,7 +626,6 @@ function loadInicio(instant = false) {
         }, false);
     }
     
-
     if (gridData) {
         const existingOverlay = document.querySelector('.sidebar-overlay');
         if (!existingOverlay) {
@@ -591,7 +639,6 @@ function loadInicio(instant = false) {
         }
     }
     
-
     setTimeout(() => {
         renderInicioContent();
     }, 100);
@@ -602,11 +649,9 @@ function loadInicio(instant = false) {
 }
 
 document.addEventListener('loadInicioInstant', function() {
-
     removeInicioContent();
     stopLogoAnimation();
     
-
     document.querySelectorAll('.proyectos-content, .proyectos-category, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-filter, .proyectos-select-message, .sobre-mi-content, .contacto-content').forEach(el => el.remove());
     
     document.querySelectorAll('.grid-cell, .logo-cell').forEach(cell => {
@@ -614,17 +659,17 @@ document.addEventListener('loadInicioInstant', function() {
         children.forEach(child => child.remove());
     });
     
-
     loadInicio(true);
 });
-
 
 function initMobileSimulatorFeature() {
     if (isMobile()) return;
     
+    const exportBtnText = dicc.script.mobileExportBtn;
+    
     const exportBtn = document.createElement('button');
     exportBtn.id = 'mobile-export-btn';
-    exportBtn.textContent = '💾 EXPORTAR MÓVIL';
+    exportBtn.textContent = exportBtnText;
     exportBtn.style.cssText = `
         position: fixed;
         bottom: 20px;
@@ -715,7 +760,6 @@ function applyMobileConfig() {
     if (isMobile()) {
         const grid = MOBILE_CONFIG.GRID || MOBILE_CONFIG;
         
-
         CONFIG.CELL_SIZE = grid.CELL_SIZE;
         CONFIG.GAP = grid.GAP;
         CONFIG.COLS = grid.COLS;
@@ -730,14 +774,12 @@ function applyMobileConfig() {
         CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = false;
         CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = false;
         
-
         document.documentElement.style.setProperty('--cell-size', `${grid.CELL_SIZE}px`);
         document.documentElement.style.setProperty('--cell-gap', `${grid.GAP}px`);
         document.documentElement.style.setProperty('--cell-radius', `${grid.BORDER_RADIUS}px`);
         
         document.body.classList.add('mobile-device');
         
-
         setTimeout(() => {
             document.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell').forEach(cell => {
                 cell.style.borderRadius = `${grid.BORDER_RADIUS}px`;
@@ -780,7 +822,6 @@ function applyMobileOverlays() {
         texture.style.display = show.texture !== undefined ? (show.texture ? 'block' : 'none') : 'block';
     }
     
-
     if (show.scanlines !== undefined) {
         if (show.scanlines) {
             document.body.classList.remove('no-scanlines');
@@ -791,7 +832,6 @@ function applyMobileOverlays() {
         document.body.classList.add('no-scanlines');
     }
     
-
     if (show.vignette !== undefined) {
         if (show.vignette) {
             document.body.classList.remove('no-vignette');
@@ -815,7 +855,6 @@ function applyMobileOverlays() {
         }
     }
     
-
     if (show.glow !== undefined) {
         if (show.glow) {
             document.body.classList.remove('no-glow');
@@ -826,7 +865,6 @@ function applyMobileOverlays() {
         document.body.classList.remove('no-glow');
     }
     
-
     if (gridContainer) {
         if (show.crtCurvature !== undefined) {
             if (show.crtCurvature) {
@@ -839,7 +877,6 @@ function applyMobileOverlays() {
         }
     }
     
-
     if (gridContainer) {
         if (show.crtReflection !== undefined) {
             if (show.crtReflection) {
@@ -1291,60 +1328,87 @@ document.addEventListener('keydown', (e) => {
 });
 
 function init() {
-    initSettings();
-    
-    const mobile = isMobile();
-    
-
-    if (mobile) {
-        applyMobileConfig();
-    }
-    
-    injectCSSVariables();
-    
-    Promise.all([
-        loadSobreMiData().catch(() => {}),
-        loadContactoData().catch(() => {}),
-    ]).then(() => {});
-    
-
-    gridData = createGrid();
-    
-    designCells.forEach(cell => {
-        setupCellEvents(cell);
-    });
-    
-    const container = document.getElementById('grid-container');
-    container.addEventListener('contextmenu', function(e) {
-        const cell = e.target.closest('.grid-cell, .logo-cell');
-        if (cell && !cell.dataset.isSidebar) {
-            e.preventDefault();
-            toggleCellOff(cell);
+    loadDicc().then(() => {
+        initSettings();
+        
+        const mobile = isMobile();
+        
+        if (mobile) {
+            applyMobileConfig();
+        } else {
+            applyResponsiveConfig();
         }
-    });
-    
-    document.addEventListener('click', function(e) {
-        if (isLogoAnimationRunning) {
-            const sidebarElement = e.target.closest('.sidebar-text, .sidebar-cell');
-            if (sidebarElement) {
+        
+        injectCSSVariables();
+        
+        Promise.all([
+            loadSobreMiData().catch(() => {}),
+            loadContactoData().catch(() => {}),
+        ]).then(() => {});
+        
+        gridData = createGrid();
+        
+        designCells.forEach(cell => {
+            setupCellEvents(cell);
+        });
+        
+        const container = document.getElementById('grid-container');
+        container.addEventListener('contextmenu', function(e) {
+            const cell = e.target.closest('.grid-cell, .logo-cell');
+            if (cell && !cell.dataset.isSidebar) {
                 e.preventDefault();
-                e.stopPropagation();
-                return false;
+                toggleCellOff(cell);
             }
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (isLogoAnimationRunning) {
+                const sidebarElement = e.target.closest('.sidebar-text, .sidebar-cell');
+                if (sidebarElement) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }
+        }, true);
+        
+        initOverlays();
+        
+        if (!mobile) {
+            initMobileSimulatorFeature();
         }
-    }, true);
-    
-    initOverlays();
-    
-    if (!mobile) {
-        initMobileSimulatorFeature();
-    }
-    
-    const hash = window.location.hash;
-    
-    disableLogoAnimation();
-    
-    if (mobile) {
+        
+        const hash = window.location.hash;
+        
+        disableLogoAnimation();
+        
+        if (mobile) {
+            if (hash && hash !== '#inicio' && hash !== '#') {
+                setTimeout(() => {
+                    const result = handleURLOnLoad();
+                    if (result.page === 'proyectos' && result.projectId) {
+                        window.selectedProjectId = result.projectId;
+                        import('./modules/mobile/mobile-nav.js').then(module => {
+                            module.openProyectoDetalle(result.projectId);
+                        });
+                    } else if (result.page === 'sobre-mi') {
+                        import('./modules/mobile/mobile-nav.js').then(module => {
+                            module.navigateMobileTo('sobre-mi');
+                        });
+                    } else if (result.page === 'contacto') {
+                        import('./modules/mobile/mobile-nav.js').then(module => {
+                            module.navigateMobileTo('contacto');
+                        });
+                    }
+                }, 100);
+            } else {
+                setTimeout(() => {
+                    renderMobileHome();
+                }, 300);
+            }
+            return;
+        }
+        
         if (hash && hash !== '#inicio' && hash !== '#') {
             setTimeout(() => {
                 const result = handleURLOnLoad();
@@ -1357,31 +1421,12 @@ function init() {
                 }
             }, 100);
         } else {
+            enableLogoAnimation();
             setTimeout(() => {
-                renderMobileHome();
-            }, 300);
+                loadInicio(false);
+            }, CONFIG.LOGO_DELAY || 500);
         }
-        return;
-    }
-    
-    if (hash && hash !== '#inicio' && hash !== '#') {
-        setTimeout(() => {
-            const result = handleURLOnLoad();
-            if (result.page === 'proyectos') {
-                loadSpecialPage('proyectos', result.projectId);
-            } else if (result.page === 'sobre-mi') {
-                loadSpecialPage('sobre-mi');
-            } else if (result.page === 'contacto') {
-                loadSpecialPage('contacto');
-            }
-        }, 100);
-    } else {
-
-        enableLogoAnimation();
-        setTimeout(() => {
-            loadInicio(false);
-        }, CONFIG.LOGO_DELAY || 500);
-    }
+    });
 }
 
 window.addEventListener('beforeunload', () => {
@@ -1393,13 +1438,15 @@ let resizeTimeout;
 let isResizing = false;
 
 window.addEventListener('resize', () => {
+    if (isMobile()) return;
+
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
         if (isResizing) return;
         isResizing = true;
         
-        updateLettersPosition()
-
+        applyResponsiveConfig();
+        
         const container = document.getElementById('grid-container');
         const rect = container.getBoundingClientRect();
         const cellSize = CONFIG.CELL_SIZE;
@@ -1413,31 +1460,62 @@ window.addEventListener('resize', () => {
         container.dataset.originalOffsetX = newOffsetX;
         container.dataset.originalOffsetY = newOffsetY;
         
+        const allCells = document.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell');
+        allCells.forEach(cell => {
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+            if (!isNaN(row) && !isNaN(col)) {
+                const pos = getCellPosition(col, row, cellSize, newOffsetX, newOffsetY);
+                if (!cell.dataset.isSidebar) {
+                    cell.style.left = `${pos.x}px`;
+                    cell.style.top = `${pos.y}px`;
+                    cell.dataset.originalX = pos.x;
+                    cell.dataset.originalY = pos.y;
+                }
+            }
+        });
+        
         repositionGrid(newOffsetX, newOffsetY);
         repositionSidebarOverlay(newOffsetX, newOffsetY);
         repositionSidebarTexts(newOffsetX, newOffsetY);
         repositionCombinedCells(newOffsetX, newOffsetY);
-
+        
         import('./modules/emnlvega.js').then(module => {
             if (module.updateLettersPosition) {
                 module.updateLettersPosition();
             }
         });
         
+        restartRandomAnimations();
+        
         if (isArchitectModeActive()) {
             setTimeout(updateArchitectOverlay, 100);
         }
         
         isResizing = false;
-    }, 50);
+    }, 100);
 });
 
 function updateLettersImagePosition() {
     const img = document.getElementById('letters-animation-image');
     if (img) {
         img.remove();
-
     }
+}
+
+function applyResponsiveConfig() {
+    if (isMobile()) return;
+    
+    const responsive = getResponsiveConfig();
+    
+    CONFIG.CELL_SIZE = responsive.CELL_SIZE;
+    CONFIG.GAP = responsive.GAP;
+    CONFIG.TEXT_SIZES = responsive.TEXT_SIZES;
+    CONFIG.LETTER_SPACING = responsive.LETTER_SPACING;
+    CONFIG.LINE_HEIGHT = responsive.LINE_HEIGHT;
+    
+    document.documentElement.style.setProperty('--cell-size', `${CONFIG.CELL_SIZE}px`);
+    document.documentElement.style.setProperty('--cell-gap', `${CONFIG.GAP}px`);
 }
 
 export function updateLettersPosition() {

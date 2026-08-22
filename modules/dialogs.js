@@ -1,9 +1,43 @@
-
-
 import { CONFIG } from './config.js';
 import { importDesignFromJSON } from './logo.js';
 import { isSpecialPageActiveCheck } from './sidebar/index.js';
 
+let dicc = null;
+
+async function loadDicc() {
+    if (dicc) return dicc;
+    try {
+        const response = await fetch('./modules/dicc.json');
+        dicc = await response.json();
+        return dicc;
+    } catch (e) {
+        console.error('Error loading dicc:', e);
+        return null;
+    }
+}
+
+function getTextSizes() {
+    return CONFIG.TEXT_SIZES || {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 14,
+        small: 10,
+        tiny: 8
+    };
+}
+
+function getLetterSpacing() {
+    return CONFIG.LETTER_SPACING || {
+        title: 12,
+        subTitle: 6,
+        medium: 0.5,
+        small: 1.5,
+        tiny: 2
+    };
+}
 
 export function showDialog(title, message) {
     const dialog = document.getElementById('custom-dialog');
@@ -12,18 +46,18 @@ export function showDialog(title, message) {
     dialog.classList.add('active');
 }
 
-
 document.getElementById('dialog-close')?.addEventListener('click', () => {
     document.getElementById('custom-dialog').classList.remove('active');
 });
-
 
 document.getElementById('custom-dialog')?.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) e.currentTarget.classList.remove('active');
 });
 
-
 export function showProjects() {
+    const d = dicc || { dialogs: {} };
+    const dialogTexts = d.dialogs || {};
+    
     let dialog = document.getElementById('projects-dialog');
     
     if (!dialog) {
@@ -31,7 +65,7 @@ export function showProjects() {
         dialog.id = 'projects-dialog';
         dialog.innerHTML = `
             <div id="projects-content">
-                <h2>▲ PROYECTOS</h2>
+                <h2>${dialogTexts.projectsTitle}</h2>
                 <div id="projects-grid"></div>
             </div>
         `;
@@ -48,7 +82,7 @@ export function showProjects() {
     }
     
     const grid = document.getElementById('projects-grid');
-    const projects = [
+    const projects = dialogTexts.projectsList || [
         { name: 'Branding', icon: '◆' },
         { name: 'UI/UX', icon: '◈' },
         { name: 'Ilustración', icon: '◉' },
@@ -65,10 +99,14 @@ export function showProjects() {
     projects.forEach(proj => {
         const item = document.createElement('div');
         item.className = 'project-item';
-        item.innerHTML = `<span class="icon">${proj.icon}</span><span class="name">${proj.name}</span>`;
+        const projectName = proj.name || proj;
+        const projectIcon = proj.icon || '◆';
+        item.innerHTML = `<span class="icon">${projectIcon}</span><span class="name">${projectName}</span>`;
         item.addEventListener('click', (e) => {
             e.stopPropagation();
-            showDialog('PROYECTO', `Detalles de ${proj.name}\n\nPróximamente...`);
+            const dialogTitle = dialogTexts.projectDialogTitle;
+            const dialogMessage = (dialogTexts.projectDialogMessage).replace('%s', projectName);
+            showDialog(dialogTitle, dialogMessage);
             dialog.classList.remove('active');
         });
         grid.appendChild(item);
@@ -77,12 +115,16 @@ export function showProjects() {
     dialog.classList.add('active');
 }
 
-
 export function showImportDialog() {
-
     if (isSpecialPageActiveCheck()) {
         return;
     }
+    
+    const d = dicc || { dialogs: {} };
+    const dialogTexts = d.dialogs || {};
+    const scriptTexts = d.script || {};
+    const textSizes = getTextSizes();
+    const letterSpacing = getLetterSpacing();
     
     let dialog = document.getElementById('import-dialog');
     
@@ -118,15 +160,14 @@ export function showImportDialog() {
             position: relative;
         `;
         
-
         const title = document.createElement('h2');
-        title.textContent = '◆ IMPORTAR DISEÑO';
+        title.textContent = dialogTexts.importTitle;
         title.style.cssText = `
             color: var(--color-primary);
-            font-size: 20px;
+            font-size: ${textSizes.subTitle + 4}px;
             margin-bottom: 20px;
             font-family: 'Courier New', monospace;
-            letter-spacing: 4px;
+            letter-spacing: ${letterSpacing.subTitle}px;
             text-transform: uppercase;
             text-shadow: 0 0 30px rgba(var(--color-primary-rgb), 0.3);
             border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.2);
@@ -134,23 +175,21 @@ export function showImportDialog() {
         `;
         content.appendChild(title);
         
-
         const desc = document.createElement('p');
-        desc.textContent = 'Pega el JSON del diseño en el área de abajo:';
+        desc.textContent = dialogTexts.importDesc;
         desc.style.cssText = `
             color: var(--color-primary);
             font-family: 'Courier New', monospace;
-            font-size: 13px;
-            letter-spacing: 1px;
+            font-size: ${textSizes.small + 3}px;
+            letter-spacing: ${letterSpacing.small}px;
             margin-bottom: 15px;
             opacity: 0.7;
         `;
         content.appendChild(desc);
         
-
         const textarea = document.createElement('textarea');
         textarea.id = 'import-textarea';
-        textarea.placeholder = 'Pega aquí el JSON...';
+        textarea.placeholder = dialogTexts.importPlaceholder;
         textarea.style.cssText = `
             width: 100%;
             height: 180px;
@@ -159,7 +198,7 @@ export function showImportDialog() {
             border-radius: 10px;
             color: var(--color-primary);
             font-family: 'Courier New', monospace;
-            font-size: 12px;
+            font-size: ${textSizes.small + 2}px;
             padding: 15px;
             resize: vertical;
             outline: none;
@@ -175,7 +214,6 @@ export function showImportDialog() {
         });
         content.appendChild(textarea);
         
-
         const checkboxRow = document.createElement('div');
         checkboxRow.style.cssText = `
             display: flex;
@@ -189,12 +227,12 @@ export function showImportDialog() {
         
         const checkboxLabel = document.createElement('label');
         checkboxLabel.htmlFor = 'import-noreset-checkbox';
-        checkboxLabel.textContent = 'NO resetear grid';
+        checkboxLabel.textContent = dialogTexts.importNoReset;
         checkboxLabel.style.cssText = `
             color: var(--color-primary);
             font-family: 'Courier New', monospace;
-            font-size: 11px;
-            letter-spacing: 1px;
+            font-size: ${textSizes.small + 1}px;
+            letter-spacing: ${letterSpacing.small}px;
             cursor: pointer;
             text-transform: uppercase;
             opacity: 0.7;
@@ -221,7 +259,6 @@ export function showImportDialog() {
         checkboxRow.appendChild(checkboxLabel);
         content.appendChild(checkboxRow);
         
-
         const btnContainer = document.createElement('div');
         btnContainer.style.cssText = `
             display: flex;
@@ -230,15 +267,15 @@ export function showImportDialog() {
         `;
         
         const importBtn = document.createElement('button');
-        importBtn.textContent = '✓ IMPORTAR';
+        importBtn.textContent = dialogTexts.importBtn;
         importBtn.style.cssText = `
             background: transparent;
             border: 1px solid rgba(var(--color-primary-rgb), 0.4);
             color: var(--color-primary);
             padding: 10px 30px;
             font-family: 'Courier New', monospace;
-            font-size: 12px;
-            letter-spacing: 4px;
+            font-size: ${textSizes.small + 2}px;
+            letter-spacing: ${letterSpacing.small + 1.5}px;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -260,15 +297,15 @@ export function showImportDialog() {
         });
         
         const closeBtn = document.createElement('button');
-        closeBtn.textContent = '[ CERRAR ]';
+        closeBtn.textContent = scriptTexts.closeBtn;
         closeBtn.style.cssText = `
             background: transparent;
             border: 1px solid rgba(var(--color-primary-rgb), 0.2);
             color: rgba(var(--color-primary-rgb), 0.6);
             padding: 10px 30px;
             font-family: 'Courier New', monospace;
-            font-size: 12px;
-            letter-spacing: 4px;
+            font-size: ${textSizes.small + 2}px;
+            letter-spacing: ${letterSpacing.small + 1.5}px;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -294,25 +331,22 @@ export function showImportDialog() {
         dialog.appendChild(content);
         document.body.appendChild(dialog);
         
-
         dialog.addEventListener('click', (e) => {
             if (e.target === dialog) {
                 dialog.classList.remove('active');
             }
         });
         
-
         dialog.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 dialog.classList.remove('active');
             }
         });
         
-
         function performImport() {
             const jsonText = textarea.value.trim();
             if (!jsonText) {
-                showDialog('ERROR', 'El campo está vacío. Pega un JSON válido.');
+                showDialog(dialogTexts.errorTitle || 'ERROR', dialogTexts.errorEmpty);
                 return;
             }
             try {
@@ -326,7 +360,8 @@ export function showImportDialog() {
                     importDesignFromJSON(json, () => {}, shouldReset);
                 }, 150);
             } catch (err) {
-                showDialog('ERROR', 'JSON inválido. Verifica el formato.\n\n' + err.message);
+                const errorMsg = (dialogTexts.errorInvalid);
+                showDialog(dialogTexts.errorTitle || 'ERROR', errorMsg);
             }
         }
         
@@ -348,7 +383,7 @@ export function showImportDialog() {
                 e.preventDefault();
                 const jsonText = textarea.value.trim();
                 if (!jsonText) {
-                    showDialog('ERROR', 'El campo está vacío. Pega un JSON válido.');
+                    showDialog(dialogTexts.errorTitle);
                     return;
                 }
                 try {
@@ -363,7 +398,8 @@ export function showImportDialog() {
                         importDesignFromJSON(json, () => {}, shouldReset);
                     }, 150);
                 } catch (err) {
-                    showDialog('ERROR', 'JSON inválido. Verifica el formato.\n\n' + err.message);
+                    const errorMsg = (dialogTexts.errorInvalid);
+                    showDialog(dialogTexts.errorTitle || 'ERROR', errorMsg);
                 }
             }
         });
@@ -381,3 +417,5 @@ export function showImportDialog() {
         if (textarea) textarea.focus();
     }, 100);
 }
+
+loadDicc();

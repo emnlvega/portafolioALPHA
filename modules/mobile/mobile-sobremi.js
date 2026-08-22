@@ -1,10 +1,11 @@
-
 import { CONFIG } from '../config.js';
 import { importDesignFromJSON } from '../logo.js';
 import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations } from '../animations.js';
 import { createMobileNavButtons } from './mobile-nav.js';
 
+let dicc = null;
+let sobreMiData = null;
 
 const SOBRE_MI_DESIGN = {
   "0,0": {
@@ -41,83 +42,113 @@ const SOBRE_MI_DESIGN = {
   }
 };
 
-
-const SOBRE_MI_DATA = {
-    foto: "assets/photo/yoedit.png",
-    bio: "Desde los 6 años, cuando tuve mi primera computadora, supe que la tecnología sería lo mío, la usaba, la desarmaba, la entendía, la personalizaba, mis padres me bloqueaban la computadora y yo encontraba la forma de desbloquearla.\n\nA los 12 años me harté de los fondos de pantalla genéricos, así que descargué Photoshop e Illustrator y empecé a crear los míos, Daft Punk y TRON: El Legado fueron mis mayores inspiraciones.\n\nEn la preparatoria, mientras otros hacían calculadoras en Visual Basic 6.0, yo recreé Space Invaders, sin IA, sin tutoriales, puro escribir mi lógica y con mi obsesión por entender cómo funcionan las cosas.",
-    habilidades: [
-        "DISEÑO GRAFICO", "ILUSTRACION DIGITAL", "DESARROLLO WEB",
-        "FOTOGRAFIA", "UI/UX", "EDICION DE VIDEO",
-        "FRONTEND", "BRANDING", "BACKEND",
-        "CREATIVIDAD", "RESOLUCION", "ADAPTABILIDAD",
-        "PENSAMIENTO", "AUTODIDACTA", "RESOLUCIÓN DE PROBLEMAS"
-    ],
-    herramientas: "Photoshop · Illustrator · Lightroom · HTML · CSS · JavaScript · React · Node.js · Python · SQL · Wix · Wix Velo · Git",
-    frase: "RANDOM ACCESS MEMORIES"
-};
-
-export function renderMobileSobreMi() {
-
-    const container = document.getElementById('grid-container');
-    if (!container) {
-        return;
+async function loadDicc() {
+    if (dicc) return dicc;
+    try {
+        const response = await fetch('./modules/dicc.json');
+        dicc = await response.json();
+        return dicc;
+    } catch (e) {
+        console.error('Error loading dicc:', e);
+        return null;
     }
-    
+}
 
+async function loadSobreMiData() {
+    if (sobreMiData) return sobreMiData;
+    try {
+        const response = await fetch('./modules/sidebar/data/sobre-mi.json');
+        sobreMiData = await response.json();
+        return sobreMiData;
+    } catch (e) {
+        console.error('Error loading sobre-mi data:', e);
+        return null;
+    }
+}
+
+function getTextSizes() {
+    return CONFIG.TEXT_SIZES || {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 14,
+        small: 10,
+        tiny: 8
+    };
+}
+
+function getLetterSpacing() {
+    return CONFIG.LETTER_SPACING || {
+        title: 12,
+        subTitle: 6,
+        medium: 0.5,
+        small: 1.5,
+        tiny: 2
+    };
+}
+
+function calculateAge(birthDate) {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+export async function renderMobileSobreMi() {
+    await loadDicc();
+    await loadSobreMiData();
+    
+    const container = document.getElementById('grid-container');
+    if (!container) return;
+    
     document.querySelectorAll('.mobile-sobremi-content, .mobile-nav-btn, .mobile-btn-overlay').forEach(el => el.remove());
     
-
-    
-
     stopRandomAnimations();
-    
-
     resetGrid(false);
     
-
     importDesignFromJSON(SOBRE_MI_DESIGN, () => {
-
-
         createSobreMiContent();
-
-
         createMobileNavButtons('sobre-mi');
-        
-
         disableInteractions();
     }, true);
 }
 
-
 function disableInteractions() {
     const container = document.getElementById('grid-container');
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell');
-    
     allCells.forEach(cell => {
-
         cell.style.pointerEvents = 'none';
         cell.style.cursor = 'default';
         cell.dataset.locked = 'true';
-        
-
         cell.onclick = null;
         cell.onmousedown = null;
         cell.oncontextmenu = null;
     });
-    
-
 }
 
 function createSobreMiContent() {
-
+    const textSizes = getTextSizes();
+    const letterSpacing = getLetterSpacing();
     const container = document.getElementById('grid-container');
     const primaryColor = CONFIG.COLORS.primary;
     const secondaryColor = CONFIG.COLORS.secondary;
     const primaryRGB = CONFIG.COLORS.primaryRGB;
     const secondaryRGB = CONFIG.COLORS.secondaryRGB;
+    const content = sobreMiData.content;
+    const d = dicc || { mobile: { sobremi: {} } };
+    const sobremiTexts = d.mobile.sobremi || {};
+    
+    const LIGHT_TEXT_SHADOW = `0 0 7px rgba(${primaryRGB}, 1)`;
+    const LIGHT_TEXT_SHADOW_ACTIVE = `0 0 15px rgba(${secondaryRGB}, 1)`;
+    const LIGHT_TEXT_SHADOW_HOVER = `0 0 15px rgba(${secondaryRGB}, 1)`;
     
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
-
     
     let titleCell = null;
     let photoCell = null;
@@ -135,8 +166,6 @@ function createSobreMiContent() {
         }
     });
     
-
-
     if (titleCell) {
         const oldTitle = titleCell.querySelector('.mobile-sobremi-content');
         if (oldTitle) oldTitle.remove();
@@ -154,8 +183,8 @@ function createSobreMiContent() {
             justify-content: center;
             color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            font-size: 20px;
-            letter-spacing: 8px;
+            font-size: ${textSizes.normalTitle}px;
+            letter-spacing: ${letterSpacing.subTitle + 2}px;
             text-transform: uppercase;
             text-shadow: 0 0 20px rgba(${primaryRGB}, 1),
                         0 0 40px rgba(${primaryRGB}, 0.6),
@@ -164,13 +193,11 @@ function createSobreMiContent() {
             z-index: 20;
             user-select: none;
         `;
-        title.textContent = 'SOBRE MI';
+        title.textContent = sobreMiData.title;
         titleCell.appendChild(title);
     }
     
-
     if (photoCell) {
-
         const photoWrapper = document.createElement('div');
         photoWrapper.className = 'mobile-sobremi-content';
         photoWrapper.style.cssText = `
@@ -190,7 +217,6 @@ function createSobreMiContent() {
             border: 1px solid rgba(${primaryRGB}, 0.1);
         `;
         
-
         const imgContainer = document.createElement('div');
         imgContainer.style.cssText = `
             position: relative;
@@ -198,9 +224,8 @@ function createSobreMiContent() {
             height: 100%;
         `;
         
-
         const img1 = document.createElement('img');
-        img1.src = SOBRE_MI_DATA.foto;
+        img1.src = content.photo1;
         img1.alt = 'Emanuel Vega';
         img1.style.cssText = `
             position: absolute;
@@ -215,7 +240,6 @@ function createSobreMiContent() {
         `;
         imgContainer.appendChild(img1);
         
-
         const colorOverlay = document.createElement('div');
         colorOverlay.style.cssText = `
             position: absolute;
@@ -231,9 +255,8 @@ function createSobreMiContent() {
         `;
         imgContainer.appendChild(colorOverlay);
         
-
         const img2 = document.createElement('img');
-        img2.src = 'assets/photo/yo.png';
+        img2.src = content.photo2;
         img2.alt = 'Emanuel Vega Color';
         img2.style.cssText = `
             position: absolute;
@@ -250,32 +273,23 @@ function createSobreMiContent() {
         photoWrapper.appendChild(imgContainer);
         photoCell.appendChild(photoWrapper);
         
-
         let glitchTimeout = null;
         let isFirstTransitionDone = false;
         let isUsingYoEdit = true;
         let imageSwitchTimeout = null;
         
-
         function switchBaseImage() {
             if (isUsingYoEdit) {
-
-                img1.src = 'assets/photo/yo.png';
+                img1.src = content.photo2;
                 isUsingYoEdit = false;
-
             } else {
-
-                img1.src = SOBRE_MI_DATA.foto;
+                img1.src = content.photo1;
                 isUsingYoEdit = true;
-
             }
-
             img1.style.opacity = '1';
             colorOverlay.style.opacity = '1';
             img2.style.opacity = '0';
             isFirstTransitionDone = false;
-            
-
             setTimeout(() => {
                 doInitialGlitchTransition();
             }, 1000);
@@ -284,7 +298,6 @@ function createSobreMiContent() {
         function doInitialGlitchTransition() {
             const blinks = 5 + Math.floor(Math.random() * 8);
             let currentBlink = 0;
-            
             function blink() {
                 if (currentBlink >= blinks) {
                     img1.style.opacity = '0';
@@ -294,7 +307,6 @@ function createSobreMiContent() {
                     scheduleNextGlitch();
                     return;
                 }
-                
                 if (currentBlink % 2 === 0) {
                     img1.style.opacity = '1';
                     colorOverlay.style.opacity = '1';
@@ -304,22 +316,18 @@ function createSobreMiContent() {
                     colorOverlay.style.opacity = '0';
                     img2.style.opacity = '1';
                 }
-                
                 currentBlink++;
                 const delay = 50 + Math.random() * 250;
                 glitchTimeout = setTimeout(blink, delay);
             }
-            
             setTimeout(blink, 200);
         }
         
         function doGlitch() {
             if (!isFirstTransitionDone) return;
-            
             img1.style.opacity = '1';
             colorOverlay.style.opacity = '1';
             img2.style.opacity = '0';
-            
             const glitchDuration = 300 + Math.random() * 4700;
             setTimeout(() => {
                 img1.style.opacity = '0';
@@ -340,17 +348,14 @@ function createSobreMiContent() {
             }, delay);
         }
         
-
         setTimeout(() => {
             doInitialGlitchTransition();
         }, 10000);
         
-
         imageSwitchTimeout = setTimeout(() => {
             switchBaseImage();
         }, 10000);
         
-
         function scheduleImageSwitch() {
             if (imageSwitchTimeout) {
                 clearTimeout(imageSwitchTimeout);
@@ -363,53 +368,63 @@ function createSobreMiContent() {
             }, delay);
         }
         
-
         setTimeout(() => {
             scheduleImageSwitch();
         }, 12000);
     }
     
-
     if (bioCell) {
+    const bioWrapper = document.createElement('div');
+    bioWrapper.className = 'mobile-sobremi-content';
+    bioWrapper.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 12px 16px;
+        pointer-events: auto;
+        z-index: 20;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    `;
 
-        const bioWrapper = document.createElement('div');
-        bioWrapper.className = 'mobile-sobremi-content';
-        bioWrapper.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding: 12px 16px;
-            pointer-events: auto;
-            z-index: 20;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-        `;
-        
-        const bioContent = document.createElement('div');
-        bioContent.style.cssText = `
-            color: ${primaryColor};
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            line-height: 1.3;
-            letter-spacing: 0.3px;
-            text-align: justify;
-            text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
-            padding-right: 4px;
-        `;
-        bioContent.textContent = SOBRE_MI_DATA.bio;
-        
-        bioWrapper.appendChild(bioContent);
-        bioCell.appendChild(bioWrapper);
-    }
+    const age = calculateAge('1999-07-29');
+    const bioName = content.bioName.replace('%age%', age);
+
+    const nameLine = document.createElement('div');
+    nameLine.textContent = bioName;
+    nameLine.style.cssText = `
+        color: ${secondaryColor};
+        font-family: 'Courier New', monospace;
+        font-size: ${textSizes.medium}px;
+        letter-spacing: ${letterSpacing.medium + 1}px;
+        font-weight: bold;
+        text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
+        text-align: center;
+        margin-bottom: 8px;
+    `;
+    bioWrapper.appendChild(nameLine);
+
+    const bioText = document.createElement('div');
+    bioText.style.cssText = `
+        color: ${primaryColor};
+        font-family: 'Courier New', monospace;
+        font-size: ${textSizes.medium}px;
+        line-height: 1.3;
+        letter-spacing: ${letterSpacing.medium}px;
+        text-align: justify;
+        text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
+        padding-right: 4px;
+    `;
+    bioText.textContent = content.bioText;
+    bioWrapper.appendChild(bioText);
+
+    bioCell.appendChild(bioWrapper);
+}
     
-
-
-
-
     if (infoCell) {
         const infoWrapper = document.createElement('div');
         infoWrapper.className = 'mobile-sobremi-content';
@@ -432,9 +447,9 @@ function createSobreMiContent() {
         infoContent.style.cssText = `
             color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            font-size: 10px;
+            font-size: ${textSizes.small}px;
             line-height: 1.6;
-            letter-spacing: 0.5px;
+            letter-spacing: ${letterSpacing.medium}px;
             text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
             padding-right: 4px;
             display: flex;
@@ -442,15 +457,14 @@ function createSobreMiContent() {
             gap: 8px;
         `;
         
-
         const habilidadesTitle = document.createElement('div');
-        habilidadesTitle.textContent = '◆ HABILIDADES';
+        habilidadesTitle.textContent = sobremiTexts.skillsTitle || '◆ HABILIDADES';
         habilidadesTitle.style.cssText = `
             color: ${secondaryColor};
-            font-size: 11px;
-            letter-spacing: 4px;
+            font-size: ${textSizes.small + 1}px;
+            letter-spacing: ${letterSpacing.small + 1.5}px;
             font-weight: bold;
-            text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
+            text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
             text-align: center;
             border-bottom: 1px solid rgba(${secondaryRGB}, 1);
             padding-bottom: 4px;
@@ -460,42 +474,111 @@ function createSobreMiContent() {
         const habilidadesGrid = document.createElement('div');
         habilidadesGrid.style.cssText = `
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 3px 6px;
-            margin-bottom: 4px;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 8px;
+            margin-bottom: 6px;
+            width: 100%;
         `;
-        
-        SOBRE_MI_DATA.habilidades.forEach(h => {
+
+        const skills = content.skills || [];
+        skills.forEach((h) => {
             const item = document.createElement('div');
+            const isLong = h.name && h.name.length > 18;
+            
             item.style.cssText = `
-                font-size: 10px;
-                letter-spacing: 1px;
-                padding: 3px 2px;
-                color: ${primaryColor};
-                text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
-                border: 1px solid rgba(${primaryRGB}, 0.15);
-                border-radius: 2px;
-                text-align: center;
-                background: rgba(${primaryRGB}, 0.03);
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                min-height: 20px;
+                gap: 0;
+                font-size: ${isLong ? textSizes.tiny : textSizes.tiny + 1}px;
+                letter-spacing: ${isLong ? letterSpacing.tiny - 0.5 : letterSpacing.tiny}px;
+                color: ${secondaryColor};
+                text-shadow: ${LIGHT_TEXT_SHADOW};
+                transition: all 0.2s ease;
+                cursor: default;
+                font-family: 'Courier New', monospace;
+                text-transform: uppercase;
+                position: relative;
+                grid-column: ${isLong ? '1 / -1' : 'auto'};
+                width: 100%;
             `;
-            item.textContent = h;
+            
+            const iconBox = document.createElement('div');
+            iconBox.style.cssText = `
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 24px;
+                height: 20px;
+                background: rgba(${primaryRGB}, 1);
+                border-radius: 4px 0 0 4px;
+                color: ${CONFIG.COLORS.background};
+                text-shadow: none;
+                font-size: ${textSizes.small + 2}px;
+                flex-shrink: 0;
+                transition: all 0.2s ease;
+                border: 1px solid rgba(${primaryRGB}, 0.5);
+                box-shadow: 0 0 20px rgba(${primaryRGB}, 0.5);
+            `;
+            iconBox.textContent = h.icon || '◆';
+            
+            const nameBox = document.createElement('div');
+            nameBox.style.cssText = `
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 6px;
+                height: 20px;
+                background: rgba(${primaryRGB}, 0.1);
+                border-radius: 0 4px 4px 0;
+                color: ${secondaryColor};
+                text-shadow: ${LIGHT_TEXT_SHADOW};
+                font-size: ${isLong ? textSizes.tiny : textSizes.tiny + 1}px;
+                letter-spacing: ${letterSpacing.tiny}px;
+                flex: 1;
+                transition: all 0.2s ease;
+                border: 1px solid rgba(${primaryRGB}, 0.5);
+                box-shadow: 0 0 20px rgba(${primaryRGB}, 0.2);
+                text-align: center;
+            `;
+            nameBox.textContent = h.name || h;
+            item.appendChild(iconBox);
+            item.appendChild(nameBox);
+            
+            item.addEventListener('mouseenter', () => {
+                iconBox.style.background = `rgba(${secondaryRGB}, 0.7)`;
+                iconBox.style.borderColor = secondaryColor;
+                iconBox.style.color = CONFIG.COLORS.background;
+                iconBox.style.textShadow = `0 0 10px ${secondaryColor}`;
+                nameBox.style.background = `rgba(${secondaryRGB}, 0.1)`;
+                nameBox.style.borderColor = secondaryColor;
+                nameBox.style.color = secondaryColor;
+                nameBox.style.textShadow = LIGHT_TEXT_SHADOW_HOVER;
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                iconBox.style.background = `rgba(${primaryRGB}, 0.7)`;
+                iconBox.style.borderColor = primaryColor;
+                iconBox.style.color = CONFIG.COLORS.background;
+                iconBox.style.textShadow = 'none';
+                nameBox.style.background = `rgba(${primaryRGB}, 0.1)`;
+                nameBox.style.borderColor = primaryColor;
+                nameBox.style.color = primaryColor;
+                nameBox.style.textShadow = LIGHT_TEXT_SHADOW;
+            });
+            
             habilidadesGrid.appendChild(item);
         });
         infoContent.appendChild(habilidadesGrid);
         
-
         const herramientasTitle = document.createElement('div');
-        herramientasTitle.textContent = '◆ HERRAMIENTAS Y TECNOLOGIAS';
+        herramientasTitle.textContent = sobremiTexts.toolsTitle || '◆ HERRAMIENTAS Y TECNOLOGIAS';
         herramientasTitle.style.cssText = `
             color: ${secondaryColor};
-            font-size: 11px;
-            letter-spacing: 4px;
+            font-size: ${textSizes.small + 1}px;
+            letter-spacing: ${letterSpacing.small + 1.5}px;
             font-weight: bold;
-            text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
+            text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
             text-align: center;
             border-bottom: 1px solid rgba(${secondaryRGB}, 1);
             padding-bottom: 4px;
@@ -503,28 +586,36 @@ function createSobreMiContent() {
         `;
         infoContent.appendChild(herramientasTitle);
         
-        const herramientasText = document.createElement('div');
-        herramientasText.style.cssText = `
-            font-size: 12px;
-            letter-spacing: 0.5px;
+        const toolsText = document.createElement('div');
+        toolsText.style.cssText = `
+            font-size: ${textSizes.small + 2}px;
+            letter-spacing: ${letterSpacing.medium}px;
             text-align: center;
             padding: 4px 0;
             color: ${primaryColor};
-            text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
+            text-shadow: ${LIGHT_TEXT_SHADOW};
             line-height: 1.8;
         `;
-        herramientasText.textContent = SOBRE_MI_DATA.herramientas;
-        infoContent.appendChild(herramientasText);
+        const herramientasContent = content.toolsContent || [];
+        let toolsHTML = '';
+        herramientasContent.forEach(item => {
+            if (item.label) {
+                toolsHTML += `<div><span style="color:${secondaryColor};">${item.label}</span> ${item.items}</div>`;
+            } else if (item.note) {
+                toolsHTML += `<div style="margin-top:4px; padding-top:6px; border-top:1px solid ${secondaryColor}; font-style:italic; font-size:${textSizes.tiny + 1}px; letter-spacing:${letterSpacing.tiny}px; color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW};">${item.note}</div>`;
+            }
+        });
+        toolsText.innerHTML = toolsHTML;
+        infoContent.appendChild(toolsText);
         
-
         const defineTitle = document.createElement('div');
-        defineTitle.textContent = '◆ LO QUE ME DEFINE';
+        defineTitle.textContent = sobremiTexts.defineTitle || '◆ LO QUE ME DEFINE';
         defineTitle.style.cssText = `
             color: ${secondaryColor};
-            font-size: 11px;
-            letter-spacing: 4px;
+            font-size: ${textSizes.small + 1}px;
+            letter-spacing: ${letterSpacing.small + 1.5}px;
             font-weight: bold;
-            text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
+            text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
             text-align: center;
             border-bottom: 1px solid rgba(${secondaryRGB}, 1);
             padding-bottom: 4px;
@@ -532,18 +623,7 @@ function createSobreMiContent() {
         `;
         infoContent.appendChild(defineTitle);
         
-        const defineItems = [
-            '◆ Autodidacta desde los 6 años',
-            '◆ Creativo por naturaleza',
-            '◆ Resuelvo problemas que otros evitan',
-            '◆ Aprendo cualquier cosa en poco tiempo',
-            '◆ Humilde pero consciente de mi valor',
-            '◆ Siempre en busca de mejorar',
-            '◆ Si algo es posible, lo conseguiré',
-            '◆ Mi necesidad de proveer momentos buenos al mundo',
-            '◆ Mi genial gusto musical'
-        ];
-        
+        const defineItems = content.defineItems || [];
         const defineGrid = document.createElement('div');
         defineGrid.style.cssText = `
             display: grid;
@@ -555,23 +635,26 @@ function createSobreMiContent() {
         defineItems.forEach(item => {
             const el = document.createElement('div');
             el.style.cssText = `
-                font-size: 12px;
-                letter-spacing: 0.5px;
+                font-size: ${textSizes.small + 2}px;
+                letter-spacing: ${letterSpacing.medium}px;
                 padding: 2px 0;
                 color: ${primaryColor};
-                text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
+                text-shadow: ${LIGHT_TEXT_SHADOW};
                 display: flex;
                 align-items: center;
+                justify-content: center;
+                text-align: center;
             `;
             
-            if (item.includes('gusto musical')) {
-
+            if (typeof item === 'string' && item.includes('gusto musical')) {
                 el.style.gridColumn = '1 / -1';
-                el.style.justifyContent = 'center';
-                el.style.textAlign = 'center';
-                el.innerHTML = `◆ Mi genial gusto musical, <a href="https://open.spotify.com/playlist/6rjGBL7CWlpC2FXOZhTAQE?si=151b3d02bb00400e" target="_blank" style="color:${primaryColor}; text-shadow:0 0 10px rgba(${primaryRGB},0.1); text-decoration:underline; text-underline-offset:2px; transition:all 0.3s ease; cursor:pointer; pointer-events:auto;" onmouseenter="this.style.color='${secondaryColor}'; this.style.textShadow='0 0 20px rgba(${secondaryRGB},0.3)';" onmouseleave="this.style.color='${primaryColor}'; this.style.textShadow='0 0 10px rgba(${primaryRGB},0.1)';">checa mi playlist</a>`;
-            } else {
+                const playlistLink = content.playlistLink || '#';
+                const playlistText = content.playlistText || 'checa mi playlist';
+                el.innerHTML = `◆ Mi genial gusto musical, <a href="${playlistLink}" target="_blank" style="color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW}; text-decoration:underline; text-underline-offset:2px; transition:all 0.3s ease; cursor:pointer; pointer-events:auto;" onmouseenter="this.style.color='${secondaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW_HOVER}';" onmouseleave="this.style.color='${primaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW}';">${playlistText}</a>`;
+            } else if (typeof item === 'string') {
                 el.textContent = item;
+            } else {
+                el.textContent = item.name || item;
             }
             
             defineGrid.appendChild(el);
@@ -579,29 +662,25 @@ function createSobreMiContent() {
         infoContent.appendChild(defineGrid);
         
         const fraseDiv = document.createElement('div');
+        fraseDiv.textContent = content.frase;
         fraseDiv.style.cssText = `
             color: ${secondaryColor};
-            font-size: 11px;
-            letter-spacing: 4px;
+            font-size: ${textSizes.small + 1}px;
+            letter-spacing: ${letterSpacing.small + 1.5}px;
             font-weight: bold;
             text-align: center;
-            text-shadow: 0 0 30px rgba(${secondaryRGB}, 0.15);
+            text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
             border-top: 1px solid rgba(${secondaryRGB}, 1);
             padding-top: 6px;
             margin-top: 4px;
             line-height: 1.6;
         `;
-
-        fraseDiv.innerHTML = `RANDOM ACCESS MEMORIES`;
         infoContent.appendChild(fraseDiv);
         
         infoWrapper.appendChild(infoContent);
         infoCell.appendChild(infoWrapper);
     }
-    
-
 }
-
 
 export function getMobileSobreMiDesign() {
     return SOBRE_MI_DESIGN;

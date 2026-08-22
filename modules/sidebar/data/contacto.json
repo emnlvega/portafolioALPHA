@@ -75,6 +75,9 @@
     }
   },
   "content": {
+    "availabilityIcon": "◆",
+    "availability": "DISPONIBLE PARA PROYECTOS REMOTOS",
+    "availabilitySub": "EN CUALQUIER HORARIO, ME ADAPTO AL QUE NECESITE",
     "social": [
       { "id": "gmail", "name": "GMAIL", "value": "emnlvega@gmail.com", "link": "mailto:emnlvega@gmail.com" },
       { "id": "phone", "name": "TELÉFONO", "value": "+52 664 204 4771", "link": "tel:+526642044771" },
@@ -83,9 +86,11 @@
       { "id": "instagram", "name": "INSTAGRAM", "value": "@emnlvega", "link": "https://www.instagram.com/emnlvega/" },
       { "id": "steam", "name": "STEAM", "value": "emnlvega", "link": "https://steamcommunity.com/id/emnlvega/" }
     ],
-    "availability": "DISPONIBLE PARA PROYECTOS REMOTOS",
-    "availabilitySub": "EN CUALQUIER HORARIO, ME ADAPTO AL QUE NECESITE",
     "quote": "TIJUANA, BAJA CALIFORNIA, MÉXICO",
-    "location": "RESPONDO MÁS RÁPIDO POR GMAIL Y WHATSAPP" 
+    "location": "RESPONDO MÁS RÁPIDO POR GMAIL Y WHATSAPP",
+    "gmailCopiedTitle": "CORREO COPIADO",
+    "gmailCopiedMessage": "Se ha copiado el correo a portapapeles:",
+    "phoneCopiedTitle": "TELÉFONO COPIADO",
+    "phoneCopiedMessage": "Se ha copiado el teléfono a portapapeles:"
   }
 }

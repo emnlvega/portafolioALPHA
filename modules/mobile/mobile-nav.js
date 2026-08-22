@@ -1,4 +1,3 @@
-
 import { CONFIG } from '../config.js';
 import { importDesignFromJSON } from '../logo.js';
 import { resetGrid } from '../interactions.js';
@@ -13,6 +12,19 @@ import { removeMobileHomeLetters } from './mobile-home.js';
 let currentMobilePage = 'inicio';
 let navButtonsCreated = false;
 let currentProjectId = null;
+let dicc = null;
+
+async function loadDicc() {
+    if (dicc) return dicc;
+    try {
+        const response = await fetch('./modules/dicc.json');
+        dicc = await response.json();
+        return dicc;
+    } catch (e) {
+        console.error('Error loading dicc:', e);
+        return null;
+    }
+}
 
 const MOBILE_PAGES = {
     'inicio': renderMobileHome,
@@ -38,10 +50,15 @@ export function volverAProyectos() {
     navigateMobileTo('proyectos');
 }
 
-export function navigateMobileTo(page) {
+export function navigateMobileTo(page, projectId = null) {
     if (page !== 'inicio') {
         removeMobileHomeLetters();
     }
+    
+    if (projectId) {
+        currentProjectId = projectId;
+    }
+    
     document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator, .mobile-sobremi-content, .mobile-home-content, .mobile-proyecto-detalle-content, .mobile-contacto-content, .mobile-contacto-social-item, .mobile-contacto-info').forEach(el => el.remove());
     
     const container = document.getElementById('grid-container');
@@ -60,6 +77,14 @@ export function navigateMobileTo(page) {
     }
     
     currentMobilePage = page;
+    
+    if (page === 'inicio') {
+        window.history.pushState({}, '', window.location.pathname);
+    } else if (page === 'proyecto-detalle' && projectId) {
+        window.history.pushState({}, '', `#${projectId}`);
+    } else {
+        window.history.pushState({}, '', `#${page}`);
+    }
     
     const renderFn = MOBILE_PAGES[page];
     if (!renderFn) {
@@ -108,39 +133,41 @@ export function updateMobileNavButtons(activePage) {
 }
 
 export function createMobileNavButtons(activePage = 'inicio') {
-    document.querySelectorAll('.mobile-nav-btn').forEach(el => el.remove());
-    navButtonsCreated = false;
-    
-    const container = document.getElementById('grid-container');
-    if (!container) return;
-    
-    fetch('./modules/mobile/sidebar-movil.json')
-        .then(response => {
-            if (!response.ok) throw new Error('No se pudo cargar sidebar-movil.json');
-            return response.json();
-        })
-        .then(sidebarDesign => {
-            const existingCells = container.querySelectorAll('.grid-cell, .logo-cell');
-            let hasSidebarCells = false;
-            
-            existingCells.forEach(cell => {
-                if (cell.dataset.combined === 'true') {
-                    const row = parseInt(cell.dataset.designRow);
-                    if (row === 30) hasSidebarCells = true;
-                }
-            });
-            
-            if (!hasSidebarCells) {
-                importDesignFromJSON(sidebarDesign, () => {
+    loadDicc().then(() => {
+        document.querySelectorAll('.mobile-nav-btn').forEach(el => el.remove());
+        navButtonsCreated = false;
+        
+        const container = document.getElementById('grid-container');
+        if (!container) return;
+        
+        fetch('./modules/mobile/sidebar-movil.json')
+            .then(response => {
+                if (!response.ok) throw new Error('No se pudo cargar sidebar-movil.json');
+                return response.json();
+            })
+            .then(sidebarDesign => {
+                const existingCells = container.querySelectorAll('.grid-cell, .logo-cell');
+                let hasSidebarCells = false;
+                
+                existingCells.forEach(cell => {
+                    if (cell.dataset.combined === 'true') {
+                        const row = parseInt(cell.dataset.designRow);
+                        if (row === 30) hasSidebarCells = true;
+                    }
+                });
+                
+                if (!hasSidebarCells) {
+                    importDesignFromJSON(sidebarDesign, () => {
+                        createButtonsFromCells(activePage);
+                    }, false);
+                } else {
                     createButtonsFromCells(activePage);
-                }, false);
-            } else {
+                }
+            })
+            .catch(() => {
                 createButtonsFromCells(activePage);
-            }
-        })
-        .catch(() => {
-            createButtonsFromCells(activePage);
-        });
+            });
+    });
 }
 
 function createButtonsFromCells(activePage) {
@@ -148,14 +175,18 @@ function createButtonsFromCells(activePage) {
     if (!container) return;
     
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
+    const d = dicc || { mobile: { nav: {} } };
+    const mobileTexts = d.mobile.nav || {};
+    const mobileIcons = d.mobile.icons || {};
+    
+    // Si es proyecto-detalle, usar 'proyectos' como activePage para resaltar ese botón
+    const displayPage = activePage === 'proyecto-detalle' ? 'proyectos' : activePage;
     
     const buttons = [
-        { action: 'sobre-mi', text: 'SOBRE MI', icon: '◍', row: 30, col: 0 },
-        { action: 'proyectos', text: 'PROYECTOS', icon: '◈', row: 30, col: 6 },
-        { action: 'contacto', text: 'CONTACTO', icon: '△', row: 30, col: 14 }
+        { action: 'sobre-mi', text: mobileTexts.sobreMi, icon: mobileIcons.sobreMi || '◍', row: 30, col: 0 },
+        { action: 'proyectos', text: mobileTexts.proyectos, icon: mobileIcons.proyectos || '◈', row: 30, col: 6 },
+        { action: 'contacto', text: mobileTexts.contacto, icon: mobileIcons.contacto || '△', row: 30, col: 14 }
     ];
-    
-    let foundCount = 0;
     
     buttons.forEach(btnConfig => {
         let targetCell = null;
@@ -172,8 +203,6 @@ function createButtonsFromCells(activePage) {
         
         if (!targetCell) return;
         
-        foundCount++;
-        
         targetCell.style.pointerEvents = 'none';
         targetCell.style.cursor = 'default';
         targetCell.dataset.locked = 'true';
@@ -181,9 +210,8 @@ function createButtonsFromCells(activePage) {
         targetCell.style.webkitUserSelect = 'none';
         targetCell.style.touchAction = 'none';
         
-        const isActive = btnConfig.action === activePage;
-
-        const displayText = isActive ? '◀ INICIO' : btnConfig.text;
+        const isActive = btnConfig.action === displayPage;
+        const displayText = isActive ? (mobileTexts.inicioActive || '◀ INICIO') : btnConfig.text;
         
         const borderColor = isActive ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary;
         const textColor = isActive ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary;
@@ -234,7 +262,6 @@ function createButtonsFromCells(activePage) {
         `;
         btn.appendChild(icon);
         
-
         const line = document.createElement('div');
         line.className = 'btn-line';
         line.style.cssText = `

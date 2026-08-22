@@ -1,9 +1,14 @@
-
 import { CONFIG } from '../config.js';
 import { importDesignFromJSON } from '../logo.js';
 import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations } from '../animations.js';
 import { createMobileNavButtons, volverAProyectos } from './mobile-nav.js';
+
+let dicc = null;
+let proyectoActual = null;
+let paginaActual = 0;
+let proyectoData = [];
+let gridReady = false;
 
 const PROYECTO_DETALLE_DESIGN = {
   "0,0": {
@@ -48,17 +53,49 @@ const PROYECTO_DETALLE_DESIGN = {
   }
 };
 
-let proyectoActual = null;
-let paginaActual = 0;
-let proyectoData = [];
-let gridReady = false;
+async function loadDicc() {
+    if (dicc) return dicc;
+    try {
+        const response = await fetch('./modules/dicc.json');
+        dicc = await response.json();
+        return dicc;
+    } catch (e) {
+        console.error('Error loading dicc:', e);
+        return null;
+    }
+}
+
+function getTextSizes() {
+    return CONFIG.TEXT_SIZES || {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 14,
+        small: 10,
+        tiny: 8
+    };
+}
+
+function getLetterSpacing() {
+    return CONFIG.LETTER_SPACING || {
+        title: 12,
+        subTitle: 6,
+        medium: 0.5,
+        small: 1.5,
+        tiny: 2
+    };
+}
 
 async function loadProyectoData(projectId) {
+    if (proyectoData.length > 0 && proyectoActual && proyectoActual.id === projectId) {
+        return true;
+    }
     try {
         const response = await fetch('./modules/sidebar/data/proyectos.json');
-        if (!response.ok) throw new Error('No se pudo cargar');
         const data = await response.json();
-        proyectoData = data.projects || [];
+        proyectoData = data.projects;
         const project = proyectoData.find(p => p.id === projectId);
         if (project) {
             proyectoActual = project;
@@ -72,16 +109,16 @@ async function loadProyectoData(projectId) {
 }
 
 export async function renderMobileProyectoDetalle(projectId) {
+    await loadDicc();
+    
     const container = document.getElementById('grid-container');
     if (!container) return;
     
     const loaded = await loadProyectoData(projectId);
     if (!loaded || !proyectoActual) return;
     
-
     document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-sobremi-content, .mobile-home-content, .mobile-proyecto-detalle-content').forEach(el => el.remove());
     
-
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
         const children = cell.querySelectorAll('div:not(.grid-cell):not(.logo-cell):not(.sidebar-cell)');
@@ -100,8 +137,7 @@ export async function renderMobileProyectoDetalle(projectId) {
     importDesignFromJSON(PROYECTO_DETALLE_DESIGN, () => {
         gridReady = true;
         createDetalleContent();
-
-        createMobileNavButtons('proyectos');
+        createMobileNavButtons('proyecto-detalle');
         disableInteractions();
     }, true);
 }
@@ -129,6 +165,8 @@ function disableInteractions() {
 }
 
 function createDetalleContent() {
+    const textSizes = getTextSizes();
+    const letterSpacing = getLetterSpacing();
     const container = document.getElementById('grid-container');
     const primaryColor = CONFIG.COLORS.primary;
     const secondaryColor = CONFIG.COLORS.secondary;
@@ -173,8 +211,8 @@ function createDetalleContent() {
             justify-content: center;
             color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            font-size: 18px;
-            letter-spacing: 6px;
+            font-size: ${textSizes.subTitle + 2}px;
+            letter-spacing: ${letterSpacing.subTitle}px;
             text-transform: uppercase;
             text-shadow: 0 0 20px rgba(${primaryRGB}, 1),
                          0 0 40px rgba(${primaryRGB}, 0.6),
@@ -183,7 +221,7 @@ function createDetalleContent() {
             z-index: 20;
             user-select: none;
         `;
-        title.textContent = proyectoActual.name || 'PROYECTO';
+        title.textContent = proyectoActual.name;
         titleCell.appendChild(title);
     }
     
@@ -209,9 +247,9 @@ function createDetalleContent() {
         contentInner.style.cssText = `
             color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            font-size: 11px;
+            font-size: ${textSizes.small + 1}px;
             line-height: 1.8;
-            letter-spacing: 0.5px;
+            letter-spacing: ${letterSpacing.medium}px;
             text-shadow: 0 0 10px rgba(${primaryRGB}, 1);
             padding-right: 4px;
             display: flex;
@@ -222,50 +260,46 @@ function createDetalleContent() {
         const meta = document.createElement('div');
         meta.style.cssText = `
             text-align: center;
-            font-size: 11x;
-            letter-spacing: 3px;
+            font-size: ${textSizes.small + 1}px;
+            letter-spacing: ${letterSpacing.small + 1.5}px;
             color: ${secondaryColor};
-            text-shadow: 0 0 20px rgba(${secondaryRGB}, 15);
-            border-bottom: 1px solid rgba(${secondaryRGB}, 15);
+            text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
+            border-bottom: 1px solid rgba(${secondaryRGB}, 0.15);
             padding-bottom: 6px;
         `;
-        meta.textContent = `${proyectoActual.category || 'CATEGORÍA'}  ·  ${proyectoActual.year || '2024'}`;
+        meta.textContent = `${proyectoActual.category}  ·  ${proyectoActual.year}`;
         contentInner.appendChild(meta);
         
-        if (proyectoActual.description) {
-            const desc = document.createElement('div');
-            desc.style.cssText = `
-                text-align: justify;
-                font-size: 11px;
-                line-height: 1.8;
-                color: ${primaryColor};
-                text-shadow: 0 0 10px rgba(${primaryRGB}, 1);
-                padding: 4px 0;
-            `;
-            desc.textContent = proyectoActual.description;
-            contentInner.appendChild(desc);
-        }
+        const desc = document.createElement('div');
+        desc.style.cssText = `
+            text-align: justify;
+            font-size: ${textSizes.small + 1}px;
+            line-height: 1.8;
+            color: ${primaryColor};
+            text-shadow: 0 0 10px rgba(${primaryRGB}, 1);
+            padding: 4px 0;
+        `;
+        desc.textContent = proyectoActual.description;
+        contentInner.appendChild(desc);
         
         if (proyectoActual.pages && proyectoActual.pages.length > 0) {
             const currentPage = proyectoActual.pages[paginaActual] || proyectoActual.pages[0];
             
             if (currentPage) {
-                if (currentPage.title) {
-                    const pageTitle = document.createElement('div');
-                    pageTitle.style.cssText = `
-                        text-align: center;
-                        font-size: 11px;
-                        letter-spacing: 4px;
-                        font-weight: bold;
-                        color: ${secondaryColor};
-                        text-shadow: 0 0 20px rgba(${secondaryRGB}, 15);
-                        border-top: 1px solid rgba(${secondaryRGB}, 15);
-                        padding-top: 6px;
-                        margin-top: 4px;
-                    `;
-                    pageTitle.textContent = currentPage.title;
-                    contentInner.appendChild(pageTitle);
-                }
+                const pageTitle = document.createElement('div');
+                pageTitle.style.cssText = `
+                    text-align: center;
+                    font-size: ${textSizes.small + 1}px;
+                    letter-spacing: ${letterSpacing.small + 1.5}px;
+                    font-weight: bold;
+                    color: ${secondaryColor};
+                    text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
+                    border-top: 1px solid rgba(${secondaryRGB}, 0.15);
+                    padding-top: 6px;
+                    margin-top: 4px;
+                `;
+                pageTitle.textContent = currentPage.title;
+                contentInner.appendChild(pageTitle);
                 
                 if (currentPage.content) {
                     if (Array.isArray(currentPage.content)) {
@@ -276,7 +310,7 @@ function createDetalleContent() {
                     } else if (typeof currentPage.content === 'string') {
                         const textEl = document.createElement('div');
                         textEl.style.cssText = `
-                            font-size: 11px;
+                            font-size: ${textSizes.small + 1}px;
                             line-height: 1.8;
                             text-align: justify;
                             color: ${primaryColor};
@@ -286,13 +320,11 @@ function createDetalleContent() {
                         contentInner.appendChild(textEl);
                     }
                 }
-                
-
             }
         } else if (proyectoActual.details) {
             const details = document.createElement('div');
             details.style.cssText = `
-                font-size: 11px;
+                font-size: ${textSizes.small + 1}px;
                 line-height: 1.8;
                 text-align: justify;
                 color: ${primaryColor};
@@ -335,8 +367,8 @@ function createDetalleContent() {
             justify-content: center;
             color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            font-size: 12px;
-            letter-spacing: 4px;
+            font-size: ${textSizes.small + 2}px;
+            letter-spacing: ${letterSpacing.small + 1.5}px;
             text-transform: uppercase;
             cursor: pointer;
             pointer-events: auto;
@@ -347,7 +379,8 @@ function createDetalleContent() {
             transition: all 0.3s ease;
             text-shadow: 0 0 20px rgba(${primaryRGB}, 0.3);
         `;
-        back.textContent = '◀ VOLVER';
+        const d = dicc || { mobile: { detalle: {} } };
+        back.textContent = d.mobile.detalle?.volver;
         
         back.addEventListener('mouseenter', () => {
             back.style.borderColor = secondaryColor;
@@ -381,16 +414,19 @@ function renderContentItem(item) {
         gap: 4px;
         width: 100%;
     `;
+    const primaryColor = CONFIG.COLORS.primary;
+    const primaryRGB = CONFIG.COLORS.primaryRGB;
+    const secondaryColor = CONFIG.COLORS.secondary;
     
     switch (item.type) {
         case 'text':
             const textEl = document.createElement('div');
             textEl.style.cssText = `
-                font-size: 10px;
+                font-size: 11px;
                 letter-spacing: 0.5px;
                 line-height: 1.8;
-                color: ${CONFIG.COLORS.primary};
-                text-shadow: 0 0 10px rgba(${CONFIG.COLORS.primaryRGB}, 1);
+                color: ${primaryColor};
+                text-shadow: 0 0 10px rgba(${primaryRGB}, 1);
                 text-align: justify;
             `;
             textEl.textContent = item.value;
@@ -403,11 +439,11 @@ function renderContentItem(item) {
             linkEl.textContent = item.label || item.value;
             linkEl.target = '_blank';
             linkEl.style.cssText = `
-                color: ${CONFIG.COLORS.primary};
-                font-size: 10px;
+                color: ${primaryColor};
+                font-size: 11px;
                 letter-spacing: 1px;
                 text-decoration: none;
-                border-bottom: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+                border-bottom: 1px solid rgba(${primaryRGB}, 0.3);
                 padding: 2px 0;
                 transition: all 0.3s ease;
                 display: inline-block;
@@ -416,12 +452,12 @@ function renderContentItem(item) {
                 pointer-events: auto;
             `;
             linkEl.addEventListener('mouseenter', () => {
-                linkEl.style.borderBottomColor = CONFIG.COLORS.secondary;
-                linkEl.style.color = CONFIG.COLORS.secondary;
+                linkEl.style.borderBottomColor = secondaryColor;
+                linkEl.style.color = secondaryColor;
             });
             linkEl.addEventListener('mouseleave', () => {
-                linkEl.style.borderBottomColor = `rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
-                linkEl.style.color = CONFIG.COLORS.primary;
+                linkEl.style.borderBottomColor = `rgba(${primaryRGB}, 0.3)`;
+                linkEl.style.color = primaryColor;
             });
             container.appendChild(linkEl);
             break;
@@ -432,7 +468,7 @@ function renderContentItem(item) {
                 width: 100%;
                 border-radius: 4px;
                 overflow: hidden;
-                border: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 1);
+                border: 1px solid rgba(${primaryRGB}, 1);
             `;
             const imgEl = document.createElement('img');
             imgEl.src = item.value;
@@ -473,7 +509,7 @@ function renderContentItem(item) {
                     imgContainer.style.cssText = `
                         border-radius: 4px;
                         overflow: hidden;
-                        border: 1px solid rgba(${CONFIG.COLORS.primaryRGB}, 1);
+                        border: 1px solid rgba(${primaryRGB}, 1);
                         aspect-ratio: 1;
                         cursor: pointer;
                         transition: all 0.3s ease;
@@ -551,6 +587,12 @@ function createArrow(cell, direction, isActive, onClick) {
     const oldArrow = cell.querySelector('.mobile-flecha');
     if (oldArrow) oldArrow.remove();
     
+    const textSizes = getTextSizes();
+    const primaryColor = CONFIG.COLORS.primary;
+    const primaryRGB = CONFIG.COLORS.primaryRGB;
+    const secondaryColor = CONFIG.COLORS.secondary;
+    const secondaryRGB = CONFIG.COLORS.secondaryRGB;
+    
     const arrow = document.createElement('div');
     arrow.className = 'mobile-flecha';
     arrow.style.cssText = `
@@ -563,9 +605,9 @@ function createArrow(cell, direction, isActive, onClick) {
         align-items: center;
         justify-content: center;
         font-family: 'Courier New', monospace;
-        font-size: 32px;
-        color: ${isActive ? CONFIG.COLORS.primary : `rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`};
-        text-shadow: ${isActive ? `0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)` : 'none'};
+        font-size: ${textSizes.arrows + 4}px;
+        color: ${isActive ? secondaryColor : `rgba(${secondaryRGB}, 0.2)`};
+        text-shadow: ${isActive ? `0 0 20px rgba(${secondaryRGB}, 0.3)` : 'none'};
         cursor: ${isActive ? 'pointer' : 'default'};
         pointer-events: ${isActive ? 'auto' : 'none'};
         z-index: 25;
@@ -584,8 +626,8 @@ function createArrow(cell, direction, isActive, onClick) {
         });
         arrow.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            arrow.style.color = CONFIG.COLORS.secondary;
-            arrow.style.textShadow = `0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.4)`;
+            arrow.style.color = secondaryColor;
+            arrow.style.textShadow = `0 0 30px rgba(${secondaryRGB}, 0.4)`;
         }, { passive: false });
         arrow.addEventListener('touchend', (e) => {
             e.preventDefault();

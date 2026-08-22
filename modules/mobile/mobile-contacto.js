@@ -1,9 +1,12 @@
-
 import { CONFIG } from '../config.js';
 import { importDesignFromJSON } from '../logo.js';
 import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations } from '../animations.js';
 import { createMobileNavButtons } from './mobile-nav.js';
+
+let dicc = null;
+let contactoData = null;
+let gridReady = false;
 
 const CONTACTO_DESIGN = {
   "0,0": {
@@ -96,35 +99,51 @@ const CONTACTO_DESIGN = {
   }
 };
 
-let contactoData = null;
-let gridReady = false;
+async function loadDicc() {
+    if (dicc) return dicc;
+    try {
+        const response = await fetch('./modules/dicc.json');
+        dicc = await response.json();
+        return dicc;
+    } catch (e) {
+        console.error('Error loading dicc:', e);
+        return null;
+    }
+}
 
 async function loadContactoData() {
+    if (contactoData) return contactoData;
     try {
         const response = await fetch('./modules/sidebar/data/contacto.json');
-        if (!response.ok) throw new Error('No se pudo cargar');
         contactoData = await response.json();
-        return true;
-    } catch (err) {
-        contactoData = {
-            title: "CONTACTO",
-            content: {
-                social: [
-                    { id: 'gmail', name: 'GMAIL', value: 'hola@emnlvega.com', link: 'mailto:hola@emnlvega.com' },
-                    { id: 'phone', name: 'TELÉFONO', value: '+52 664 123 4567', link: 'tel:+526641234567' },
-                    { id: 'github', name: 'GITHUB', value: '@emnlvega', link: 'https://github.com/emnlvega' },
-                    { id: 'facebook', name: 'FACEBOOK', value: '/emnlvega', link: 'https://facebook.com/emnlvega' },
-                    { id: 'instagram', name: 'INSTAGRAM', value: '@emnlvega', link: 'https://instagram.com/emnlvega' },
-                    { id: 'steam', name: 'STEAM', value: 'emnlvega', link: 'https://steamcommunity.com/id/emnlvega' }
-                ],
-                availability: "DISPONIBLE PARA PROYECTOS REMOTOS",
-                availabilitySub: "EN CUALQUIER HORARIO, ME ADAPTO AL QUE NECESITE",
-                location: "TIJUANA, BAJA CALIFORNIA, MÉXICO",
-                quote: "RESPONDO MÁS RÁPIDO POR GMAIL Y WHATSAPP"
-            }
-        };
-        return false;
+        return contactoData;
+    } catch (e) {
+        console.error('Error loading contacto data:', e);
+        return null;
     }
+}
+
+function getTextSizes() {
+    return CONFIG.TEXT_SIZES || {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 14,
+        small: 10,
+        tiny: 8
+    };
+}
+
+function getLetterSpacing() {
+    return CONFIG.LETTER_SPACING || {
+        title: 12,
+        subTitle: 6,
+        medium: 0.5,
+        small: 1.5,
+        tiny: 2
+    };
 }
 
 function getSocialSVG(id, color) {
@@ -157,12 +176,11 @@ function getSocialSVG(id, color) {
 }
 
 export async function renderMobileContacto() {
+    await loadDicc();
+    await loadContactoData();
+    
     const container = document.getElementById('grid-container');
     if (!container) return;
-    
-    if (!contactoData) {
-        await loadContactoData();
-    }
     
     document.querySelectorAll('.mobile-contacto-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-contacto-social-item, .mobile-contacto-info').forEach(el => el.remove());
     
@@ -191,11 +209,15 @@ function disableInteractions() {
 }
 
 function createContactoContent() {
+    const textSizes = getTextSizes();
+    const letterSpacing = getLetterSpacing();
     const container = document.getElementById('grid-container');
     const primaryColor = CONFIG.COLORS.primary;
     const secondaryColor = CONFIG.COLORS.secondary;
     const primaryRGB = CONFIG.COLORS.primaryRGB;
     const secondaryRGB = CONFIG.COLORS.secondaryRGB;
+    const content = contactoData?.content || {};
+    const socialData = content.social || [];
     
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
     
@@ -223,7 +245,6 @@ function createContactoContent() {
     
     socialCells.sort((a, b) => a.index - b.index);
     
-
     if (titleCell) {
         const oldTitle = titleCell.querySelector('.mobile-contacto-content');
         if (oldTitle) oldTitle.remove();
@@ -241,8 +262,8 @@ function createContactoContent() {
             justify-content: center;
             color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            font-size: 20px;
-            letter-spacing: 8px;
+            font-size: ${textSizes.normalTitle}px;
+            letter-spacing: ${letterSpacing.subTitle + 2}px;
             text-transform: uppercase;
             text-shadow: 0 0 20px rgba(${primaryRGB}, 1),
                          0 0 40px rgba(${primaryRGB}, 0.6),
@@ -251,12 +272,9 @@ function createContactoContent() {
             z-index: 20;
             user-select: none;
         `;
-        title.textContent = contactoData?.title || 'CONTACTO';
+        title.textContent = contactoData?.title;
         titleCell.appendChild(title);
     }
-    
-
-    const socialData = contactoData?.content?.social || [];
     
     socialCells.forEach(({ cell }, index) => {
         if (index >= socialData.length) return;
@@ -295,7 +313,7 @@ function createContactoContent() {
             width: 60px;
             height: 60px;
             transition: all 0.3s ease;
-            filter: drop-shadow(0 0 10px rgba(${primaryRGB}, 0.2));
+            filter: drop-shadow(0 0 10px rgba(${primaryRGB}, 0.7));
         `;
         iconContainer.innerHTML = getSocialSVG(item.id, primaryColor);
         wrapper.appendChild(iconContainer);
@@ -303,12 +321,12 @@ function createContactoContent() {
         const name = document.createElement('div');
         name.textContent = item.name;
         name.style.cssText = `
-            font-size: 8px;
-            letter-spacing: 2px;
+            font-size: ${textSizes.tiny}px;
+            letter-spacing: ${letterSpacing.tiny}px;
             text-transform: uppercase;
             transition: all 0.3s ease;
-            color: ${primaryColor};
-            text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
+            color: ${secondaryColor};
+            text-shadow: 0 0 10px rgba(${secondaryRGB}, 0.1);
             text-align: center;
         `;
         wrapper.appendChild(name);
@@ -349,7 +367,6 @@ function createContactoContent() {
         cell.appendChild(wrapper);
     });
     
-
     if (availabilityCell) {
         const availability = document.createElement('div');
         availability.className = 'mobile-contacto-info';
@@ -377,7 +394,7 @@ function createContactoContent() {
         const icon = document.createElement('div');
         icon.textContent = '◆';
         icon.style.cssText = `
-            font-size: 24px;
+            font-size: ${textSizes.subTitle + 8}px;
             color: ${secondaryColor};
             text-shadow: 0 0 30px rgba(${secondaryRGB}, 0.3);
             margin-bottom: 2px;
@@ -385,10 +402,10 @@ function createContactoContent() {
         availability.appendChild(icon);
         
         const mainText = document.createElement('div');
-        mainText.textContent = contactoData?.content?.availability || 'DISPONIBLE PARA PROYECTOS REMOTOS';
+        mainText.textContent = content.availability;
         mainText.style.cssText = `
-            font-size: 16px;
-            letter-spacing: 4px;
+            font-size: ${textSizes.subTitle}px;
+            letter-spacing: ${letterSpacing.subTitle - 2}px;
             font-weight: bold;
             color: ${secondaryColor};
             text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
@@ -407,10 +424,10 @@ function createContactoContent() {
         availability.appendChild(sep);
         
         const subText = document.createElement('div');
-        subText.textContent = contactoData?.content?.availabilitySub || 'EN CUALQUIER HORARIO, ME ADAPTO AL QUE NECESITE';
+        subText.textContent = content.availabilitySub;
         subText.style.cssText = `
-            font-size: 9px;
-            letter-spacing: 2px;
+            font-size: ${textSizes.tiny + 1}px;
+            letter-spacing: ${letterSpacing.tiny}px;
             opacity: 0.8;
             text-align: center;
         `;
@@ -419,7 +436,6 @@ function createContactoContent() {
         availabilityCell.appendChild(availability);
     }
     
-
     if (infoCell) {
         const info = document.createElement('div');
         info.className = 'mobile-contacto-info';
@@ -442,10 +458,10 @@ function createContactoContent() {
         `;
         
         const location = document.createElement('div');
-        location.textContent = contactoData?.content?.location || 'TIJUANA, BAJA CALIFORNIA, MÉXICO';
+        location.textContent = content.location;
         location.style.cssText = `
-            font-size: 13px;
-            letter-spacing: 3px;
+            font-size: ${textSizes.small + 3}px;
+            letter-spacing: ${letterSpacing.small + 1.5}px;
             font-weight: bold;
             color: ${secondaryColor};
             text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
@@ -464,10 +480,10 @@ function createContactoContent() {
         info.appendChild(sep2);
         
         const quote = document.createElement('div');
-        quote.textContent = contactoData?.content?.quote || 'RESPONDO MÁS RÁPIDO POR GMAIL Y WHATSAPP';
+        quote.textContent = content.quote;
         quote.style.cssText = `
-            font-size: 9px;
-            letter-spacing: 2px;
+            font-size: ${textSizes.tiny + 1}px;
+            letter-spacing: ${letterSpacing.tiny}px;
             opacity: 0.7;
             text-align: center;
         `;

@@ -39,13 +39,7 @@ function getCellsInArea(left, top, width, height) {
     return cells;
 }
 
-
-
-
-
-
 function applyDesignDirectly(jsonData, onComplete) {
-
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
         if (cell.dataset.isSidebar === 'true') return;
@@ -80,7 +74,6 @@ function applyDesignDirectly(jsonData, onComplete) {
             delete cell.dataset.originalCombinedOffsetY;
         }
     });
-    
 
     const container = document.getElementById('grid-container');
     const currentOffsetX = parseFloat(container.dataset.originalOffsetX) || 0;
@@ -98,17 +91,36 @@ function applyDesignDirectly(jsonData, onComplete) {
             parseInt(c.dataset.designCol) === col
         );
         if (!cell) return;
-        
 
         if (typeof value === 'object' && value.combined) {
             const { type, left, top, width, height } = value;
-            
             const basePos = getCellPosition(col + sidebarWidth, row, cellSize, currentOffsetX, currentOffsetY);
+            
+            let combinedCols = 1;
+            let combinedRows = 1;
+            if (width && height) {
+                if (window.innerWidth < 768) {
+                    combinedCols = Math.round((width + gap) / (cellSize + gap));
+                    combinedRows = Math.round((height + gap) / (cellSize + gap));
+                    if (combinedCols < 1) combinedCols = 1;
+                    if (combinedRows < 1) combinedRows = 1;
+                } else {
+                    const originalCellSize = 38;
+                    const originalGap = 15;
+                    const originalCombinedCols = Math.round((width + originalGap) / (originalCellSize + originalGap));
+                    const originalCombinedRows = Math.round((height + originalGap) / (originalCellSize + originalGap));
+                    combinedCols = Math.max(1, originalCombinedCols);
+                    combinedRows = Math.max(1, originalCombinedRows);
+                }
+            }
+            
+            const newWidth = combinedCols * (cellSize + gap) - gap;
+            const newHeight = combinedRows * (cellSize + gap) - gap;
             
             cell.style.left = `${basePos.x}px`;
             cell.style.top = `${basePos.y}px`;
-            cell.style.width = `${width}px`;
-            cell.style.height = `${height}px`;
+            cell.style.width = `${newWidth}px`;
+            cell.style.height = `${newHeight}px`;
             cell.style.zIndex = '10';
             cell.style.pointerEvents = 'auto';
             cell.style.opacity = '1';
@@ -117,11 +129,10 @@ function applyDesignDirectly(jsonData, onComplete) {
             cell.dataset.combinedId = 'direct_' + Date.now() + '_' + row + '_' + col;
             cell.dataset.combinedLeft = basePos.x;
             cell.dataset.combinedTop = basePos.y;
-            cell.dataset.combinedWidth = width;
-            cell.dataset.combinedHeight = height;
+            cell.dataset.combinedWidth = newWidth;
+            cell.dataset.combinedHeight = newHeight;
             cell.dataset.originalCombinedOffsetX = currentOffsetX;
             cell.dataset.originalCombinedOffsetY = currentOffsetY;
-            
 
             const isRed = type === 'combined_red' || type === 'h_red' || type === 'v_red' || type === 'hh_red';
             const isLogo = type === 'combined_logo' || type === 'h_logo' || type === 'v_logo' || type === 'hh_logo';
@@ -144,9 +155,8 @@ function applyDesignDirectly(jsonData, onComplete) {
                 cell.style.boxShadow = 'none';
                 cell.dataset.state = 'combined_normal';
             }
-            
 
-            const cellsInArea = getCellsInArea(basePos.x, basePos.y, width, height);
+            const cellsInArea = getCellsInArea(basePos.x, basePos.y, newWidth, newHeight);
             cellsInArea.forEach(c => {
                 if (c !== cell) {
                     c.style.opacity = '0';
@@ -188,7 +198,6 @@ function applyDesignDirectly(jsonData, onComplete) {
             cell.classList.add('off');
         }
     });
-    
 
     setTimeout(() => {
         restartRandomAnimations();
@@ -382,10 +391,19 @@ export function importDesignFromJSON(jsonData, onComplete, reset = true) {
                     let combinedCols = 1;
                     let combinedRows = 1;
                     if (data && data.width && data.height) {
-                        combinedCols = Math.round((data.width + gap) / (cellSize + gap));
-                        combinedRows = Math.round((data.height + gap) / (cellSize + gap));
-                        if (combinedCols < 1) combinedCols = 1;
-                        if (combinedRows < 1) combinedRows = 1;
+                        if (window.innerWidth < 768) {
+                            combinedCols = Math.round((data.width + gap) / (cellSize + gap));
+                            combinedRows = Math.round((data.height + gap) / (cellSize + gap));
+                            if (combinedCols < 1) combinedCols = 1;
+                            if (combinedRows < 1) combinedRows = 1;
+                        } else {
+                            const originalCellSize = 38;
+                            const originalGap = 15;
+                            const originalCombinedCols = Math.round((data.width + originalGap) / (originalCellSize + originalGap));
+                            const originalCombinedRows = Math.round((data.height + originalGap) / (originalCellSize + originalGap));
+                            combinedCols = Math.max(1, originalCombinedCols);
+                            combinedRows = Math.max(1, originalCombinedRows);
+                        }
                     } else {
                         const isH = type === 'h_red' || type === 'h_logo' || type === 'h_normal';
                         const isV = type === 'v_red' || type === 'v_logo' || type === 'v_normal';

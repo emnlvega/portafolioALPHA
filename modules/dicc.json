@@ -1,0 +1,103 @@
+{
+  "script": {
+    "bienvenido": "BIENVENIDO A MI PORTAFOLIO :)",
+    "verMas": "▶",
+    "mobileExportBtn": "EXPORTAR MÓVIL",
+    "colorPickerLabel": "COLOR",
+    "colorPickerApply": "APLICAR",
+    "colorPickerReset": "⟳",
+    "colorPickerResetTitle": "Resetear color a #00FF9B",
+    "settingsTitle": "◆ CONFIGURACIÓN",
+    "enableAll": "◈ HABILITAR TODO",
+    "disableAll": "◈ DESHABILITAR TODO",
+    "commandsTitle": "◆ COMANDOS",
+    "commands": {
+      "export": "EXPORTAR",
+      "import": "IMPORTAR",
+      "proyectos": "PROYECTOS",
+      "sobreMi": "SOBRE MI",
+      "contacto": "CONTACTO",
+      "menu": "MENU",
+      "reset": "RESET",
+      "coordenadas": "COORDENADAS",
+      "cerrar": "CERRAR / INICIO"
+    },
+    "closeBtn": "[ CERRAR ]",
+    "switchLabels": {
+      "grain": "GRANO",
+      "bloom": "BLOOM",
+      "burnBlur": "BURN BLUR",
+      "textura": "TEXTURA",
+      "animations": "ANIMACIONES",
+      "scanlines": "SCANLINES",
+      "vignette": "VIGNETTE",
+      "flicker": "FLICKER",
+      "glow": "GLOW"
+    },
+    "switchIcons": {
+      "grain": "◈",
+      "bloom": "◊",
+      "burnBlur": "◆",
+      "textura": "▣",
+      "animations": "◍",
+      "scanlines": "▤",
+      "vignette": "▥",
+      "flicker": "▦",
+      "glow": "◐"
+    }
+  },
+  "sidebar": {
+    "menuItems": ["INICIO", "PROYECTOS", "SOBRE MI", "CONTACTO", "MENÚ"]
+  },
+  "mobile": {
+    "nav": {
+      "proyectosDest": "PROYECTOS DESTACADOS",
+      "sobreMi": "SOBRE MI",
+      "proyectos": "PROYECTOS",
+      "contacto": "CONTACTO",
+      "inicioActive": "◀ INICIO",
+      "errorLoading": "No se pudo cargar sidebar-movil.json"
+    },
+    "icons": {
+      "sobreMi": "◍",
+      "proyectos": "◈",
+      "contacto": "△"
+    },
+    "detalle": {
+      "volver": "◀ VOLVER"
+    },
+    "sobremi": {
+      "skillsTitle": "◆ HABILIDADES",
+      "toolsTitle": "◆ HERRAMIENTAS Y TECNOLOGIAS",
+      "defineTitle": "◆ LO QUE ME DEFINE"
+    }
+  },
+  "dialogs": {
+    "projectsTitle": "▲ PROYECTOS",
+    "projectDialogTitle": "PROYECTO",
+    "projectDialogMessage": "Detalles de %s\n\nPróximamente...",
+    "exportTitle": "DISEÑO EXPORTADO",
+    "exportMessage": "El diseño ha sido copiado al portapapeles como JSON.",
+    "exportMessageManual": "Copia el siguiente JSON manualmente:\n\n",
+    "projectsList": [
+      { "name": "Branding", "icon": "◆" },
+      { "name": "UI/UX", "icon": "◈" },
+      { "name": "Ilustración", "icon": "◉" },
+      { "name": "Motion", "icon": "◊" },
+      { "name": "Web Design", "icon": "◇" },
+      { "name": "App Design", "icon": "○" },
+      { "name": "Logo", "icon": "□" },
+      { "name": "Packaging", "icon": "△" },
+      { "name": "Fotografía", "icon": "▽" },
+      { "name": "3D", "icon": "◍" }
+    ],
+    "importTitle": "◆ IMPORTAR DISEÑO",
+    "importDesc": "Pega el JSON del diseño en el área de abajo:",
+    "importPlaceholder": "Pega aquí el JSON...",
+    "importNoReset": "NO resetear grid",
+    "importBtn": "✓ IMPORTAR",
+    "errorTitle": "ERROR",
+    "errorEmpty": "El campo está vacío. Pega un JSON válido.",
+    "errorInvalid": "JSON inválido. Verifica el formato.\n\n%s"
+  }
+}

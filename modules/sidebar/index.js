@@ -1,4 +1,3 @@
-
 import { CONFIG, LOGO_DESIGN, updateColors } from '../config.js';
 import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations, restartRandomAnimations } from '../animations.js';
@@ -13,19 +12,52 @@ import { isMobile } from '../mobile.js';
 import { renderMobileHome } from '../mobile/mobile-home.js';
 import { renderMobileSobreMi } from '../mobile/mobile-sobremi.js';
 
-
+let dicc = null;
 let isSpecialPageActive = false;
 let currentPage = null;
 let isProgrammaticLoad = false;
 let isTransitioning = false;
 
+async function loadDicc() {
+    if (dicc) return dicc;
+    try {
+        const response = await fetch('./modules/dicc.json');
+        dicc = await response.json();
+        return dicc;
+    } catch (e) {
+        console.error('Error loading dicc:', e);
+        return null;
+    }
+}
+
+function getTextSizes() {
+    return CONFIG.TEXT_SIZES || {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 14,
+        small: 10,
+        tiny: 8
+    };
+}
+
+function getLetterSpacing() {
+    return CONFIG.LETTER_SPACING || {
+        title: 12,
+        subTitle: 6,
+        medium: 0.5,
+        small: 1.5,
+        tiny: 2
+    };
+}
 
 const PAGE_HANDLERS = {
     'proyectos': { getDesign: getProyectosDesign, render: renderProyectosContent },
     'sobre-mi': { getDesign: getSobreMiDesign, render: renderSobreMiContent },
     'contacto': { getDesign: getContactoDesign, render: renderContactoContent }
 };
-
 
 const SVG_OUTLINE = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -60,7 +92,6 @@ const SVG_HOVER = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
     </g>
 </svg>`;
 
-
 function updateURL(page, projectId = null) {
     let url = window.location.pathname;
     if (url.includes('#')) {
@@ -76,7 +107,6 @@ function updateURL(page, projectId = null) {
         window.history.pushState({}, '', `${url}#${page}`);
     }
 }
-
 
 export function animateSidebar(sidebarCells, rows, cellSize, offsetX, offsetY) {
     if (!sidebarCells?.length) return;
@@ -159,17 +189,21 @@ export function animateSidebar(sidebarCells, rows, cellSize, offsetX, offsetY) {
     }, CONFIG.ANIMATION_DURATION + 100);
 }
 
-
 export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth, sidebarHeight, container) {
+    const textSizes = getTextSizes();
+    const letterSpacing = getLetterSpacing();
+    const d = dicc || { sidebar: {} };
+    const sidebarTexts = d.sidebar || {};
+    const menuLabels = sidebarTexts.menuItems || ['INICIO', 'PROYECTOS', 'SOBRE MI', 'CONTACTO', 'MENÚ'];
+    
     document.querySelectorAll('.sidebar-text, .sidebar-logo-svg, .sidebar-logo-text, #settings-cog-btn, #color-picker-container').forEach(el => el.remove());
     
     const menuItems = [
-
-        { text: 'INICIO', action: 'inicio' },
-        { text: 'PROYECTOS', action: 'proyectos' },
-        { text: 'SOBRE MI', action: 'sobre-mi' },
-        { text: 'CONTACTO', action: 'contacto' },
-        { text: 'MENÚ', action: 'configuracion' }
+        { text: menuLabels[0], action: 'inicio' },
+        { text: menuLabels[1], action: 'proyectos' },
+        { text: menuLabels[2], action: 'sobre-mi' },
+        { text: menuLabels[3], action: 'contacto' },
+        { text: menuLabels[4], action: 'configuracion' }
     ];
     
     const totalItems = menuItems.length + 1;
@@ -191,19 +225,15 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         div.className = 'sidebar-text';
         div.dataset.action = item.action;
         div.dataset.index = index;
-        div.dataset.isLogoText = item.isLogo ? 'true' : 'false';
+        div.dataset.isLogoText = 'false';
         
         const textSpan = document.createElement('span');
         textSpan.className = 'text-content';
         textSpan.textContent = item.text;
         div.appendChild(textSpan);
         
-        const isLogoText = item.isLogo;
-        
         let isActive = false;
-        if (isLogoText) {
-            isActive = false;
-        } else if (item.action === 'inicio') {
+        if (item.action === 'inicio') {
             isActive = !isSpecialPageActive;
         } else if (item.action !== 'configuracion') {
             isActive = isSpecialPageActive && currentPage === item.action;
@@ -212,10 +242,7 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         let textColor = CONFIG.COLORS.primary;
         let textShadow = 'var(--text-shadow-normal)';
         
-        if (isLogoText) {
-            textColor = CONFIG.COLORS.primary;
-            textShadow = 'var(--text-shadow-normal)';
-        } else if (isActive) {
+        if (isActive) {
             textColor = CONFIG.COLORS.secondary;
             textShadow = 'var(--text-shadow-active)';
         }
@@ -229,9 +256,9 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
             color: ${textColor};
             transition: opacity 0.5s ease, color 0.3s ease, text-shadow 0.3s ease;
             z-index: 21;
-            font-size: ${isLogoText ? '14px' : '13px'};
+            font-size: ${textSizes.small}px;
             font-weight: bold;
-            letter-spacing: ${isLogoText ? '6px' : '3px'};
+            letter-spacing: ${letterSpacing.small + 1.5}px;
             cursor: pointer;
             font-family: 'Courier New', monospace;
             text-transform: uppercase;
@@ -245,10 +272,6 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
             align-items: center;
         `;
         
-        if (isLogoText) {
-            div.classList.add('logo-text-item');
-            div.dataset.isLogoText = 'true';
-        }
         if (isActive) {
             div.classList.add('active');
         }
@@ -256,19 +279,13 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         setTimeout(() => { div.style.opacity = '1'; }, 200 + (index + 1) * 100);
         
         div.addEventListener('mouseenter', () => {
-            if (isLogoText) {
-                div.style.color = CONFIG.COLORS.secondary;
-                div.style.textShadow = 'var(--text-shadow-hover)';
-            } else if (!div.classList.contains('active')) {
+            if (!div.classList.contains('active')) {
                 div.style.color = CONFIG.COLORS.secondary;
                 div.style.textShadow = 'var(--text-shadow-hover)';
             }
         });
         div.addEventListener('mouseleave', () => {
-            if (isLogoText) {
-                div.style.color = CONFIG.COLORS.primary;
-                div.style.textShadow = 'var(--text-shadow-normal)';
-            } else if (!div.classList.contains('active')) {
+            if (!div.classList.contains('active')) {
                 div.style.color = CONFIG.COLORS.primary;
                 div.style.textShadow = 'var(--text-shadow-normal)';
             }
@@ -290,7 +307,6 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         container.appendChild(div);
     });
 }
-
 
 function createLogo(container, x, y) {
     const wrapper = document.createElement('div');
@@ -397,7 +413,6 @@ function createLogo(container, x, y) {
     return wrapper;
 }
 
-
 function updateSidebarActiveStateMobile(activeAction) {
     const buttons = document.querySelectorAll('.mobile-btn-overlay');
     buttons.forEach(btn => {
@@ -433,7 +448,6 @@ function updateSidebarActiveStateMobile(activeAction) {
         }
     });
 }
-
 
 export function handleSidebarAction(action) {
     if (isTransitioning) return;
@@ -501,7 +515,6 @@ export function handleSidebarAction(action) {
                 currentText.style.textShadow = 'var(--text-shadow-active)';
             }
             
-
             const hasProject = !!window.selectedProjectId;
             updateURL(action);
             loadSidebarPage(action, hasProject);
@@ -509,7 +522,6 @@ export function handleSidebarAction(action) {
         return;
     }
     
-
     if (action === 'sobre-mi') {
         if (mobile) {
             renderMobileSobreMi();
@@ -538,7 +550,6 @@ export function handleSidebarAction(action) {
         return;
     }
     
-
     if (action === 'contacto') {
         if (mobile) {
             import('../mobile/mobile-nav.js').then(module => {
@@ -566,14 +577,11 @@ export function handleSidebarAction(action) {
         return;
     }
     
-
     if (action === 'configuracion') {
         toggleSettings();
         return;
     }
 }
-
-
 
 function loadSidebarPage(pageKey, hasProjectId = false) {
     if (isTransitioning) return;
@@ -696,7 +704,6 @@ function loadSidebarPage(pageKey, hasProjectId = false) {
     }, 200);
 }
 
-
 export function returnToMainLogo() {
     if (isTransitioning) return;
     if (!isSpecialPageActive) return;
@@ -713,7 +720,6 @@ export function returnToMainLogo() {
 
     clearProjectSelection();
     
-
     const selectors = [
         '.proyectos-content', '.proyectos-category', '.proyectos-item', 
         '.proyectos-detail', '.proyectos-nav', '.proyectos-filter', 
@@ -722,16 +728,12 @@ export function returnToMainLogo() {
         '.expand-btn'
     ];
     
-
     document.querySelectorAll(selectors.join(',')).forEach(el => el.remove());
     
-
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
     allCells.forEach(cell => {
-
         const children = Array.from(cell.children);
         children.forEach(child => {
-
             const hasPageContent = selectors.some(selector => 
                 child.matches && child.matches(selector)
             );
@@ -740,7 +742,6 @@ export function returnToMainLogo() {
             }
         });
         
-
         cell.style.pointerEvents = '';
         cell.style.cursor = '';
         cell.style.boxShadow = 'none';
@@ -751,13 +752,11 @@ export function returnToMainLogo() {
         cell.style.transform = 'scale(1)';
     });
     
-
     const textureOverlay = document.getElementById('overlay-container');
     if (textureOverlay) {
         textureOverlay.style.display = 'block';
     }
     
-
     document.querySelectorAll('.mobile-proyectos-content, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator').forEach(el => el.remove());
     
     setGridInteractionsEnabled(false);
@@ -785,7 +784,6 @@ export function returnToMainLogo() {
     }, 200);
 }
 
-
 export function handleURLOnLoad() {
     const hash = window.location.hash;
     if (!hash || hash === '' || hash === '#') return 'inicio';
@@ -803,7 +801,6 @@ export function handleURLOnLoad() {
     
     return 'inicio';
 }
-
 
 function setGridInteractionsEnabled(enabled) {
     const cells = document.querySelectorAll('.grid-cell, .logo-cell');
@@ -858,9 +855,11 @@ export function updateSidebarActiveState() {
     });
 }
 
-
 export function isSpecialPageActiveCheck() { return isSpecialPageActive; }
 export function isProgrammaticLoadCheck() { return isProgrammaticLoad; }
 export function getCurrentPage() { return currentPage; }
 export function isTransitioningCheck() { return isTransitioning; }
 export { updateURL };
+
+loadDicc().then(() => {
+});

@@ -1,57 +1,96 @@
 {
   "title": "SOBRE MI",
   "design": {
-  "0,0": {
-    "type": "combined_normal",
-    "left": 199,
-    "top": 23,
-    "width": 1681,
-    "height": 91,
-    "combined": true
+    "0,0": {
+      "type": "combined_normal",
+      "left": 199,
+      "top": 23,
+      "width": 1681,
+      "height": 91,
+      "combined": true
+    },
+    "2,0": {
+      "type": "combined_logo",
+      "left": 199,
+      "top": 129,
+      "width": 250,
+      "height": 409,
+      "combined": true
+    },
+    "2,5": {
+      "type": "combined_normal",
+      "left": 464,
+      "top": 129,
+      "width": 1416,
+      "height": 409,
+      "combined": true
+    },
+    "10,0": {
+      "type": "combined_normal",
+      "left": 199,
+      "top": 553,
+      "width": 833,
+      "height": 197,
+      "combined": true
+    },
+    "10,16": {
+      "type": "combined_normal",
+      "left": 1047,
+      "top": 553,
+      "width": 833,
+      "height": 197,
+      "combined": true
+    },
+    "14,0": {
+      "type": "combined_logo",
+      "left": 199,
+      "top": 765,
+      "width": 1681,
+      "height": 144,
+      "combined": true
+    }
   },
-  "2,0": {
-    "type": "combined_logo",
-    "left": 199,
-    "top": 129,
-    "width": 250,
-    "height": 409,
-    "combined": true
-  },
-  "2,5": {
-    "type": "combined_normal",
-    "left": 464,
-    "top": 129,
-    "width": 1416,
-    "height": 409,
-    "combined": true
-  },
-  "10,0": {
-    "type": "combined_normal",
-    "left": 199,
-    "top": 553,
-    "width": 833,
-    "height": 197,
-    "combined": true
-  },
-  "10,16": {
-    "type": "combined_normal",
-    "left": 1047,
-    "top": 553,
-    "width": 833,
-    "height": 197,
-    "combined": true
-  },
-  "14,0": {
-    "type": "combined_logo",
-    "left": 199,
-    "top": 765,
-    "width": 1681,
-    "height": 144,
-    "combined": true
-  }
-},
   "content": {
     "photo1": "assets/photo/yoedit.png",
-    "photo2": "assets/photo/yo.png"
+    "photo2": "assets/photo/yo.png",
+    "bioTitle": "BIOGRAFIA",
+    "bioName": "GERARDO EMANUEL IRIBE VEGA · %age% AÑOS",
+    "bioText": "Desde los 6 años cuando tuve mi primera computadora, supe que la tecnología sería lo mío, la usaba, la desarmaba, la entendía, la personalizaba, mis padres me bloqueaban la computadora y yo encontraba la forma de desbloquearla.\n\nA los 12 años me harté de los fondos de pantalla genéricos, así que descargué Photoshop e Illustrator y empecé a crear los míos, Daft Punk y TRON: El Legado fueron mis mayores inspiraciones.\n\nEn la preparatoria mientras otros hacían calculadoras en Visual Basic 6.0, yo recreé Space Invaders, sin IA, sin tutoriales, puro escribir mi lógica y con mi obsesión por entender cómo funcionan las cosas, curiosamente, la IA de los enemigos la programé con una barra invisible que cambiaba de tamaño y velocidad aleatoriamente.\n\nHe sido diseñador, programador, editor de video, y todo lo que se necesite, he trabajado en proyectos de branding, desarrollo web completo, sistemas internos y material promocional, soy un One Man Army.\n\nDespués de años de aprendizaje autodidacta y una carrera en Ingeniería de Desarrollo de Software, sigo teniendo el deseo y la curiosidad de entender todo y poder responder el \"Por qué?\" de las cosas.\n\nTengo la idea de que mientras algo sea posible, si depende de mí, lo conseguiré, No importa el obstáculo, siempre encuentro la forma. Mis mayores inspiraciones: Daft Punk, TRON y Gundam.",
+    "skillsTitle": "HABILIDADES",
+    "skills": [
+      { "icon": "◆", "name": "DISEÑO GRAFICO" },
+      { "icon": "◉", "name": "DESARROLLO WEB" },
+      { "icon": "◊", "name": "FOTOGRAFIA" },
+      { "icon": "◇", "name": "UI/UX" },
+      { "icon": "□", "name": "FRONTEND" },
+      { "icon": "△", "name": "BRANDING" },
+      { "icon": "▽", "name": "BACKEND" },
+      { "icon": "◍", "name": "CREATIVIDAD" },
+      { "icon": "◈", "name": "ADAPTABILIDAD" },
+      { "icon": "◉", "name": "AUTODIDACTA" },
+      { "icon": "◊", "name": "RESOLUCIÓN DE PROBLEMAS" }
+    ],
+    "toolsTitle": "HERRAMIENTAS Y TECNOLOGIAS",
+    "toolsContent": [
+      { "label": "DISEÑO:", "items": "Photoshop · Illustrator · Lightroom" },
+      { "label": "DESARROLLO:", "items": "HTML · CSS · JavaScript · React · Node.js · Python · SQL" },
+      { "note": "Tengo excelente intuición para aprender cualquier herramienta o tecnología, incluso las más complejas, no me enfoco en listar todas las herramientas que ya sé, solo unas, porque lo importante es la forma de pensar creativa y la capacidad para resolver problemas, puedo usar cualquier herramienta y cualquier lenguaje." }
+    ],
+    "defineTitle": "LO QUE ME DEFINE",
+    "defineItems": [
+      "◆ Autodidacta desde los 6 años",
+      "◆ Creativo por naturaleza",
+      "◆ Resuelvo problemas que otros evitan",
+      "◆ Aprendo cualquier cosa y tema en poco tiempo",
+      "◆ Humilde pero consciente de mi valor",
+      "◆ Siempre en busca de mejorar",
+      "◆ Si algo es posible y depende de mí, lo conseguiré",
+      "◆ Mi necesidad de proveer momentos y cosas buenas al mundo",
+      "◆ Mi genial gusto musical"
+    ],
+    "playlistLink": "https://open.spotify.com/playlist/6rjGBL7CWlpC2FXOZhTAQE?si=151b3d02bb00400e",
+    "playlistPrefix": "◆ Mi genial gusto musical, ",
+    "playlistText": "checa mi playlist",
+    "frase": "RANDOM ACCESS MEMORIES"
   }
 }

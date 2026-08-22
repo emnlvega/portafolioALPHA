@@ -10,6 +10,39 @@ let retryCountContacto = 0;
 const MAX_RETRIES_CONTACTO = 5;
 let textureWasVisibleBefore = true;
 
+function getTextSizes() {
+    return CONFIG.TEXT_SIZES || {
+        title: 32,
+        arrows: 28,
+        projectIcon: 24,
+        normalTitle: 20,
+        subTitle: 16,
+        medium: 14,
+        small: 10,
+        tiny: 8
+    };
+}
+
+function getLetterSpacing() {
+    return CONFIG.LETTER_SPACING || {
+        title: 12,
+        subTitle: 6,
+        medium: 0.5,
+        small: 1.5,
+        tiny: 2
+    };
+}
+
+function getLineHeight() {
+    return CONFIG.LINE_HEIGHT || {
+        title: 1.2,
+        subTitle: 1.4,
+        medium: 1.6,
+        small: 1.5,
+        tiny: 1.3
+    };
+}
+
 function getSocialSVG(id, color) {
     const svgs = {
         'gmail': `<svg viewBox="30 35 130 90" style="width:100px;height:100px;" xmlns="http://www.w3.org/2000/svg">
@@ -65,10 +98,6 @@ export async function loadContactoData() {
     return contactoData;
 }
 
-async function loadContactoDataInternal() {
-    return loadContactoData();
-}
-
 export function getContactoDesign() {
     return loadContactoData().then(data => data.design);
 }
@@ -86,6 +115,15 @@ export async function renderContactoContent() {
     const data = await loadContactoData();
     const container = document.getElementById('grid-container');
     if (!container) return;
+    
+    const textSizes = getTextSizes();
+    const letterSpacing = getLetterSpacing();
+    const lineHeight = getLineHeight();
+    const primaryColor = CONFIG.COLORS.primary;
+    const secondaryColor = CONFIG.COLORS.secondary;
+    const primaryRGB = CONFIG.COLORS.primaryRGB;
+    const secondaryRGB = CONFIG.COLORS.secondaryRGB;
+    const content = data.content;
     
     textureWasVisibleBefore = getTextureVisibilityFromSettings();
     toggleTextureOverlay(false);
@@ -153,11 +191,6 @@ export async function renderContactoContent() {
     }
     retryCountContacto = 0;
     
-    const primaryColor = CONFIG.COLORS.primary;
-    const secondaryColor = CONFIG.COLORS.secondary;
-    const primaryRGB = CONFIG.COLORS.primaryRGB;
-    const secondaryRGB = CONFIG.COLORS.secondaryRGB;
-    
     if (titleCell) {
         const title = document.createElement('div');
         title.className = 'contacto-content';
@@ -172,8 +205,8 @@ export async function renderContactoContent() {
             justify-content: center;
             color: ${primaryColor};
             font-family: 'Courier New', monospace;
-            font-size: 32px;
-            letter-spacing: 12px;
+            font-size: ${textSizes.title}px;
+            letter-spacing: ${letterSpacing.title}px;
             text-transform: uppercase;
             text-shadow: 0 0 40px rgba(${primaryRGB}, 0.3);
             pointer-events: none;
@@ -209,9 +242,9 @@ export async function renderContactoContent() {
         `;
         
         const icon = document.createElement('div');
-        icon.textContent = '◆';
+        icon.textContent = content.availabilityIcon;
         icon.style.cssText = `
-            font-size: 32px;
+            font-size: ${textSizes.subTitle + 16}px;
             color: ${secondaryColor};
             text-shadow: 0 0 40px rgba(${secondaryRGB}, 0.3);
             margin-bottom: 4px;
@@ -219,10 +252,10 @@ export async function renderContactoContent() {
         availability.appendChild(icon);
         
         const mainText = document.createElement('div');
-        mainText.textContent = data.content.availability;
+        mainText.textContent = content.availability;
         mainText.style.cssText = `
-            font-size: 22px;
-            letter-spacing: 8px;
+            font-size: ${textSizes.normalTitle + 2}px;
+            letter-spacing: ${letterSpacing.subTitle + 2}px;
             font-weight: bold;
             color: ${secondaryColor};
             text-shadow: 0 0 30px rgba(${secondaryRGB}, 0.2);
@@ -240,10 +273,10 @@ export async function renderContactoContent() {
         availability.appendChild(sepa);
         
         const subText = document.createElement('div');
-        subText.textContent = data.content.availabilitySub;
+        subText.textContent = content.availabilitySub;
         subText.style.cssText = `
-            font-size: 11px;
-            letter-spacing: 2px;
+            font-size: ${textSizes.small + 1}px;
+            letter-spacing: ${letterSpacing.small}px;
             opacity: 1;
             margin-top: 2px;
         `;
@@ -252,7 +285,7 @@ export async function renderContactoContent() {
         availabilityCell.appendChild(availability);
     }
     
-    const socialData = data.content.social;
+    const socialData = content.social;
     
     socialCells.forEach(({ cell }, index) => {
         if (index >= socialData.length) return;
@@ -293,8 +326,8 @@ export async function renderContactoContent() {
         const name = document.createElement('div');
         name.textContent = item.name;
         name.style.cssText = `
-            font-size: 20px;
-            letter-spacing: 4px;
+            font-size: ${textSizes.subTitle + 4}px;
+            letter-spacing: ${letterSpacing.subTitle - 2}px;
             text-transform: uppercase;
             transition: all 0.3s ease;
             color: ${primaryColor};
@@ -318,8 +351,8 @@ export async function renderContactoContent() {
         const value = document.createElement('div');
         value.textContent = item.value;
         value.style.cssText = `
-            font-size: 15px;
-            letter-spacing: 1px;
+            font-size: ${textSizes.medium + 1}px;
+            letter-spacing: ${letterSpacing.medium}px;
             transition: all 0.3s ease;
             text-align: center;
             word-break: break-all;
@@ -362,13 +395,13 @@ export async function renderContactoContent() {
             
             if (item.id === 'gmail') {
                 navigator.clipboard.writeText(item.value).then(() => {
-                    showDialog('CORREO COPIADO', 'Se ha copiado el correo a portapapeles:\n\n' + item.value);
+                    showDialog(content.gmailCopiedTitle, content.gmailCopiedMessage + '\n\n' + item.value);
                 }).catch(() => {
                     showDialog('CORREO', item.value);
                 });
             } else if (item.id === 'phone') {
                 navigator.clipboard.writeText(item.value).then(() => {
-                    showDialog('TELÉFONO COPIADO', 'Se ha copiado el teléfono a portapapeles:\n\n' + item.value);
+                    showDialog(content.phoneCopiedTitle, content.phoneCopiedMessage + '\n\n' + item.value);
                 }).catch(() => {
                     showDialog('TELÉFONO', item.value);
                 });
@@ -402,10 +435,10 @@ export async function renderContactoContent() {
         `;
         
         const quote = document.createElement('div');
-        quote.textContent = data.content.quote;
+        quote.textContent = content.quote;
         quote.style.cssText = `
-            font-size: 20px;
-            letter-spacing: 6px;
+            font-size: ${textSizes.normalTitle}px;
+            letter-spacing: ${letterSpacing.subTitle}px;
             font-weight: bold;
             color: ${secondaryColor};
             text-shadow: 0 0 30px rgba(${secondaryRGB}, 0.15);
@@ -425,10 +458,10 @@ export async function renderContactoContent() {
         info.appendChild(sep);
         
         const location = document.createElement('div');
-        location.textContent = data.content.location;
+        location.textContent = content.location;
         location.style.cssText = `
-            font-size: 12px;
-            letter-spacing: 3px;
+            font-size: ${textSizes.small + 2}px;
+            letter-spacing: ${letterSpacing.small + 1}px;
             opacity: 1;
             text-transform: uppercase;
         `;

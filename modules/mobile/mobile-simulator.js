@@ -29,7 +29,7 @@ export function toggleMobileSimulator() {
 function enableMobileSimulator() {
     if (isMobileSimulatorActive) return;
     
-    const currentPage = document.body.dataset.mobilePage || 'inicio';
+    const currentPage = document.body.dataset.mobilePage;
     if (currentPage !== 'inicio') return;
     
     originalConfig = {
