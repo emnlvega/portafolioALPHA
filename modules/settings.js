@@ -550,10 +550,8 @@ function createSettingsDialog() {
     const switches = [
         { id: 'setting-grain', label: 'grain', key: 'grain', icon: '◈' },
         { id: 'setting-bloom', label: 'bloom', key: 'bloom', icon: '◊' },
-        //{ id: 'setting-burnBlur', label: 'burnBlur', key: 'burnBlur', icon: '◆' },
         { id: 'setting-textura', label: 'textura', key: 'textura', icon: '▣' },
         { id: 'setting-animations', label: 'animations', key: 'animations', icon: '◍' },
-        //{ id: 'setting-scanlines', label: 'scanlines', key: 'scanlines', icon: '▤' },
         { id: 'setting-vignette', label: 'vignette', key: 'vignette', icon: '▥' },
         { id: 'setting-flicker', label: 'flicker', key: 'flicker', icon: '▦' },
         { id: 'setting-glow', label: 'glow', key: 'glow', icon: '◐' }

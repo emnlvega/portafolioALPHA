@@ -352,7 +352,7 @@ function createLettersImage() {
     
     const img = document.createElement('img');
     img.src = ANIMATION_CONFIG.IMAGE_PATH;
-    img.style.position = 'absolute';
+    img.style.position = 'fixed';
     img.style.left = `${centerX}px`;
     img.style.top = `${centerY}px`;
     img.style.transform = 'translate(-50%, -50%)';

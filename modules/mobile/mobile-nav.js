@@ -237,18 +237,16 @@ function createButtonsFromCells(activePage) {
             z-index: 999 !important;
             font-family: 'Courier New', monospace;
             background: ${bgColor};
-            border: 2px solid ${borderColor};
-            border-radius: 4px;
+            border: 3px solid ${borderColor};
+            border-radius: 2px;
             transition: all 0.3s ease;
             gap: 2px;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-            box-shadow: ${shadow};
-        `;
+            box-shadow: ${isActive ? `inset 0 0 20px rgba(${CONFIG.COLORS.secondaryRGB}, 0.5)` : `inset 0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.5)`};
+`;
         
         const icon = document.createElement('span');
         icon.className = 'btn-icon';

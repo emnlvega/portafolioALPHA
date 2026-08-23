@@ -772,7 +772,7 @@ function applyMobileConfig() {
         CONFIG.ANIMATIONS.GLOW.ENABLED = false;
         CONFIG.ANIMATIONS.ROTATE.ENABLED = false;
         CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = false;
-        CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = false;
+        CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = true;
         
         document.documentElement.style.setProperty('--cell-size', `${grid.CELL_SIZE}px`);
         document.documentElement.style.setProperty('--cell-gap', `${grid.GAP}px`);
