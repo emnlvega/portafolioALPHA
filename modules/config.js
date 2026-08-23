@@ -39,7 +39,7 @@ let currentConfig = {
     ROWS: 17,
     CELL_SIZE: 38,
     BORDER_RADIUS: 4,
-    ANIMATION_DURATION: 700,
+    ANIMATION_DURATION: 10,
     ANIMATION_DURATION_LOGO: 700,
     LOGO_DELAY_COMBINED: 0,
     LOGO_DELAY: 0,
@@ -279,15 +279,6 @@ export const CONFIG = new Proxy(currentConfig, {
         return true;
     }
 });
-
-export const MOBILE_SIMULATOR_CONFIG = {
-    ENABLED: true,
-    TOGGLE_KEY: 'KeyX',
-    SHOW_COORDINATES: true,
-    SHOW_EXPORT: true,
-    SHOW_IMPORT: true,
-    SHOW_NAV_TOGGLE: true
-};
 
 export const LOGO_DESIGN = {
 

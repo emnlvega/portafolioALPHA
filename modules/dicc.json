@@ -47,7 +47,13 @@
     }
   },
   "sidebar": {
-    "menuItems": ["INICIO", "PROYECTOS", "SOBRE MI", "CONTACTO", "MENÚ"]
+    "menuItems": ["INICIO", "PROYECTOS", "SOBRE MI", "CONTACTO", "MENÚ"],
+    "mode": {
+      "simple": "SIMPLE",
+      "artistic": "ART",
+      "lowPerformance": "BAJO RENDIMIENTO",
+      "highPerformance": "ALTO RENDIMIENTO"
+    }
   },
   "mobile": {
     "nav": {
@@ -70,6 +76,15 @@
       "skillsTitle": "◆ HABILIDADES",
       "toolsTitle": "◆ HERRAMIENTAS Y TECNOLOGIAS",
       "defineTitle": "◆ LO QUE ME DEFINE"
+    },
+    "home": {
+      "modoSimple": "MODO SIMPLE",
+      "modoArtistico": "MODO ART",
+      "helpTextMENU": "CONFIGURACIÓN",
+      "bajoRendimiento": "BAJO RENDIMIENTO",
+      "altoRendimiento": "ALTO RENDIMIENTO",
+      "cambiarSimple": "→ CAMBIAR A SIMPLE",
+      "cambiarArtistico": "→ CAMBIAR A ART"
     }
   },
   "dialogs": {

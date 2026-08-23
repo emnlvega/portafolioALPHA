@@ -43,6 +43,15 @@ export function initOverlays() {
         }
     } catch (e) {}
     
+
+    if (!textureEnabled) {
+        const existingOverlay = document.getElementById('overlay-container');
+        if (existingOverlay) {
+            existingOverlay.style.display = 'none';
+        }
+        return;
+    }
+    
     shuffleOrder = [];
     if (config.RANDOM_ORDER && imageCount > 1) {
         shuffleOrder.push(0);
@@ -58,7 +67,14 @@ export function initOverlays() {
         }
     }
     
-    if (!overlayElement) {
+
+    if (!overlayElement || !document.getElementById('overlay-container')) {
+
+        const oldOverlay = document.getElementById('overlay-container');
+        if (oldOverlay) {
+            oldOverlay.remove();
+        }
+        
         overlayElement = document.createElement('div');
         overlayElement.id = 'overlay-container';
         overlayElement.style.cssText = `
@@ -124,7 +140,7 @@ function loadOverlayImage(index) {
 }
 
 
-function startOverlays(interval) {
+export function startOverlays(interval) {
     if (isRunning) return;
     isRunning = true;
     

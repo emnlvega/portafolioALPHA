@@ -42,7 +42,8 @@ function getTextSizes() {
         subTitle: 16,
         medium: 14,
         small: 10,
-        tiny: 8
+        tiny: 8,
+        extraTiny: 6
     };
 }
 
@@ -131,6 +132,25 @@ function removeMobileLettersImage() {
     mobileLettersImage = null;
 }
 
+function toggleMobileSimpleMode() {
+    const currentState = localStorage.getItem('simple_mode_state') === 'true';
+    const newState = !currentState;
+    
+    localStorage.setItem('simple_mode_state', newState ? 'true' : 'false');
+    
+    import('../simpleMode.js').then(module => {
+        if (newState) {
+            module.applySimpleModeMobile();
+        } else {
+            module.applyArtisticModeMobile();
+        }
+    });
+    
+    setTimeout(() => {
+        window.location.reload();
+    }, 200);
+}
+
 export async function renderMobileHome() {
     await loadDicc();
     await loadProyectosData();
@@ -181,7 +201,7 @@ function createHomeContent() {
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
     
     let titleCell = null;
-    let proyectosDestCell = null;
+    let modeButtonCell = null;
     let projectCells = [];
     
     allCells.forEach(cell => {
@@ -193,7 +213,7 @@ function createHomeContent() {
                 titleCell = cell;
             }
             else if (row === 22 && col === 0) {
-                proyectosDestCell = cell;
+                modeButtonCell = cell;
             }
             else if (row === 25 && (col === 0 || col === 6 || col === 14)) {
                 projectCells.push({ cell, row, col, index: projectCells.length });
@@ -238,36 +258,271 @@ function createHomeContent() {
         titleCell.appendChild(title);
     }
     
-    if (proyectosDestCell) {
-        const oldTitle = proyectosDestCell.querySelector('.mobile-home-content');
-        if (oldTitle) oldTitle.remove();
+
+    if (modeButtonCell) {
+        modeButtonCell.dataset.isSidebar = 'true';
+        const oldContent = modeButtonCell.querySelector('.mobile-home-content');
+        if (oldContent) oldContent.remove();
         
-        const title = document.createElement('div');
-        title.className = 'mobile-home-content';
-        title.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: ${secondaryColor};
-            font-family: 'Courier New', monospace;
-            font-size: ${textSizes.subTitle}px;
-            letter-spacing: ${letterSpacing.subTitle}px;
-            text-transform: uppercase;
-            text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
-                         0 0 40px rgba(${secondaryRGB}, 0.6),
-                         0 0 80px rgba(${secondaryRGB}, 0.3);
-            pointer-events: none;
-            z-index: 20;
-            user-select: none;
-        `;
-        title.textContent = mobileNav.proyectosDest;
-        proyectosDestCell.appendChild(title);
+        const isSimpleMode = localStorage.getItem('simple_mode_state') === 'true';
+        const mobileHomeTexts = d.mobile?.home || {};
+        
+        const mainText = isSimpleMode ? mobileHomeTexts.modoArtistico : mobileHomeTexts.modoSimple;
+        const helpText = isSimpleMode ? mobileHomeTexts.altoRendimiento : mobileHomeTexts.bajoRendimiento;
+        
+        const btn = document.createElement('div');
+        btn.className = 'mobile-home-content';
+        btn.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                pointer-events: auto;
+                z-index: 25;
+                font-family: 'Courier New', monospace;
+                color: ${secondaryColor};
+                font-size: ${textSizes.small + 2}px;
+
+                text-transform: uppercase;
+                text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
+                            0 0 40px rgba(${secondaryRGB}, 0.6),
+                            0 0 80px rgba(${secondaryRGB}, 0.3);
+                transition: all 0.3s ease;
+                background: rgba(0,0,0,0.2);
+                border: 1px solid rgba(${secondaryRGB}, 0.2);
+                border-radius: 4px;
+                padding: 4px 8px;
+                user-select: none;
+            `;
+            
+            const mainTextEl = document.createElement('span');
+            mainTextEl.textContent = mainText;
+            mainTextEl.style.cssText = `
+                font-size: ${textSizes.subTitle}px;
+                letter-spacing: (${textSizes.medium})px;
+                font-weight: bold;
+            `;
+            btn.appendChild(mainTextEl);
+            
+            const helpTextEl = document.createElement('span');
+            helpTextEl.textContent = helpText;
+            helpTextEl.style.cssText = `
+                font-size: ${textSizes.small}px;
+                color: ${primaryColor};
+                opacity: 1;
+                margin-top: 0px;
+            `;
+            btn.appendChild(helpTextEl);
+        
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            const overlay = document.getElementById('overlay-container');
+            if (overlay) overlay.style.display = 'none';
+            
+            toggleMobileSimpleMode();
+        });
+        
+        modeButtonCell.appendChild(btn);
     }
+
+    const menuButtonCell = Array.from(allCells).find(cell => {
+    if (cell.dataset.combined === 'true') {
+        const row = parseInt(cell.dataset.designRow);
+        const col = parseInt(cell.dataset.designCol);
+        return row === 22 && col === 10;
+    }
+    return false;
+});
+
+if (menuButtonCell) {
+    menuButtonCell.dataset.isSidebar = 'true';
+    const oldContent = menuButtonCell.querySelector('.mobile-home-content');
+    if (oldContent) oldContent.remove();
+
+    const mobileHomeTexts = d.mobile?.home || {};
+    const helpText = mobileHomeTexts.helpTextMENU || '';
+    
+    const btn = document.createElement('div');
+    btn.className = 'mobile-home-content';
+    btn.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        pointer-events: auto;
+        z-index: 25;
+        font-family: 'Courier New', monospace;
+        color: ${secondaryColor};
+        font-size: ${textSizes.small + 2}px;
+
+        text-transform: uppercase;
+        text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
+                    0 0 40px rgba(${secondaryRGB}, 0.6),
+                    0 0 80px rgba(${secondaryRGB}, 0.3);
+        transition: all 0.3s ease;
+        background: rgba(0,0,0,0.2);
+        border: 1px solid rgba(${secondaryRGB}, 0.2);
+        border-radius: 4px;
+        padding: 4px 8px;
+        user-select: none;
+    `;
+    
+    const mainText = document.createElement('span');
+    mainText.textContent = 'MENÚ';
+    mainText.style.cssText = `
+        font-size: ${textSizes.subTitle}px;
+        letter-spacing: (${textSizes.medium})px;
+        font-weight: bold;
+    `;
+    btn.appendChild(mainText);
+
+    if (helpText) {
+        const helpTextSpan = document.createElement('span');
+        helpTextSpan.textContent = helpText;
+        helpTextSpan.style.cssText = `
+            font-size: ${textSizes.small}px;
+            color: ${primaryColor};
+            opacity: 1;
+            margin-top: 0px;
+        `;
+        btn.appendChild(helpTextSpan);
+    }
+    
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        const overlay = document.getElementById('overlay-container');
+        if (overlay) overlay.style.display = 'none';
+        
+        import('../settings.js').then(module => {
+            if (typeof module.openSettingsMobile === 'function') {
+                module.openSettingsMobile();
+            } else {
+                module.toggleSettings();
+                setTimeout(() => {
+                    const commandsPanel = document.querySelector('#settings-dialog > div:last-child');
+                    if (commandsPanel) {
+                        commandsPanel.style.display = 'none';
+                    }
+                }, 50);
+            }
+        });
+    });
+    
+    menuButtonCell.appendChild(btn);
+}
+
+if (menuButtonCell) {
+    const oldContent = menuButtonCell.querySelector('.mobile-home-content');
+    if (oldContent) oldContent.remove();
+
+    const mobileHomeTexts = d.mobile?.home || {};
+    const helpText = mobileHomeTexts.helpTextMENU || '';
+    
+    const btn = document.createElement('div');
+    btn.className = 'mobile-home-content';
+    btn.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        pointer-events: auto;
+        z-index: 25;
+        font-family: 'Courier New', monospace;
+        color: ${secondaryColor};
+        font-size: ${textSizes.small + 2}px;
+
+        text-transform: uppercase;
+        text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
+                    0 0 40px rgba(${secondaryRGB}, 0.6),
+                    0 0 80px rgba(${secondaryRGB}, 0.3);
+        transition: all 0.3s ease;
+        background: rgba(0,0,0,0.2);
+        border: 1px solid rgba(${secondaryRGB}, 0.2);
+        border-radius: 4px;
+        padding: 4px 8px;
+        user-select: none;
+    `;
+    
+    const mainText = document.createElement('span');
+    mainText.textContent = 'MENÚ';
+    mainText.style.cssText = `
+        font-size: ${textSizes.subTitle}px;
+        letter-spacing: (${textSizes.subTitle})px;
+        font-weight: bold;
+    `;
+    btn.appendChild(mainText);
+
+    if (helpText) {
+        const helpTextSpan = document.createElement('span');
+        helpTextSpan.textContent = helpText;
+        helpTextSpan.style.cssText = `
+            font-size: ${textSizes.small}px;
+            color: ${primaryColor};
+            opacity: 1;
+            margin-top: 0px;
+        `;
+        btn.appendChild(helpTextSpan);
+    }
+
+    
+    btn.addEventListener('mouseenter', () => {
+        btn.style.borderColor = secondaryColor;
+        btn.style.background = `rgba(${secondaryRGB}, 0.08)`;
+        btn.style.boxShadow = `0 0 30px rgba(${secondaryRGB}, 0.1)`;
+    });
+    
+    btn.addEventListener('mouseleave', () => {
+        btn.style.borderColor = `rgba(${secondaryRGB}, 0.2)`;
+        btn.style.background = `rgba(0,0,0,0.2)`;
+        btn.style.boxShadow = 'none';
+    });
+    
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        const overlay = document.getElementById('overlay-container');
+        if (overlay) overlay.style.display = 'none';
+        
+        import('../settings.js').then(module => {
+            if (typeof module.openSettingsMobile === 'function') {
+                module.openSettingsMobile();
+            } else {
+                module.toggleSettings();
+                setTimeout(() => {
+                    const commandsPanel = document.querySelector('#settings-dialog > div:last-child');
+                    if (commandsPanel) {
+                        commandsPanel.style.display = 'none';
+                    }
+                }, 50);
+            }
+        });
+    });
+    
+    menuButtonCell.appendChild(btn);
+}
     
     if (proyectosData && proyectosData.projects) {
     const shuffled = [...proyectosData.projects].sort(() => Math.random() - 0.5).slice(0, 3);

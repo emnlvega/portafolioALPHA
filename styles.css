@@ -30,9 +30,7 @@ body::before {
 
 
 :root {
-    
-    
-    
+
     --text-shadow-white-active: 
         0 0 10px rgba(255, 255, 255, 1),
         0 0 20px rgba(255, 255, 255, 0.8),
@@ -84,6 +82,14 @@ body::before {
     background-size: 256px 256px;
 }
 
+/* En tu archivo CSS o en el head */
+.overlay-hidden {
+    display: none !important;
+}
+
+.overlay-visible {
+    display: block !important;
+}
 
 #bloom-overlay {
     position: fixed;
@@ -107,7 +113,7 @@ body::before {
         );
     
     filter: blur(0px);
-    opacity: 0.85;
+    opacity: 0.5;
     contain: layout style;
 }
 
@@ -216,10 +222,25 @@ body::before {
     mix-blend-mode: screen;
 }
 
-.grid-cell, .logo-cell, .sidebar-cell {
+.grid-cell, .logo-cell {
     position: absolute;
     background-color: var(--color-bg);
     border: 1px solid var(--color-primary);
+    border-radius: var(--cell-radius);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, width, height, left, top;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    user-select: none;
+    -webkit-user-select: none;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.sidebar-cell {
+    position: absolute;
+    background-color: var(--color-bg);
+
     border-radius: var(--cell-radius);
     transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: transform, width, height, left, top;
@@ -998,3 +1019,316 @@ body.no-glow .logo-cell[data-state="logo"]:hover {
     }
 }
 
+/* Estilos para modo simple */
+.simple-mode .grid-cell:not(.off):not([data-state="logo"]):not([data-state="combined_logo"]):hover,
+.simple-mode .logo-cell:not(.off):not([data-state="logo"]):not([data-state="combined_logo"]):hover {
+    border: 3px solid #FFFFFF !important;
+    border-color: #FFFFFF !important;
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: none !important;
+}
+
+.simple-mode .grid-cell[data-state="logo"]:hover,
+.simple-mode .logo-cell[data-state="logo"]:hover,
+.simple-mode .grid-cell[data-state="combined_logo"]:hover,
+.simple-mode .logo-cell[data-state="combined_logo"]:hover {
+    border: 3px solid #CCCCCC !important;
+    border-color: #CCCCCC !important;
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: none !important;
+}
+
+.simple-mode .sidebar-overlay {
+
+    box-shadow: none !important;
+    background-color: #000000 !important;
+}
+
+.simple-mode .grid-cell[data-state="red"],
+.simple-mode .logo-cell[data-state="red"],
+.simple-mode .grid-cell[data-state="combined_red"],
+.simple-mode .logo-cell[data-state="combined_red"],
+.simple-mode .grid-cell[data-state="combined"],
+.simple-mode .logo-cell[data-state="combined"] {
+    box-shadow: none !important;
+}
+
+.simple-mode .grid-cell:not([data-state]):not([data-state="off"]),
+.simple-mode .logo-cell:not([data-state]):not([data-state="off"]),
+.simple-mode .grid-cell[data-state="normal"],
+.simple-mode .logo-cell[data-state="normal"],
+.simple-mode .grid-cell[data-state="combined_normal"],
+.simple-mode .logo-cell[data-state="combined_normal"] {
+    box-shadow: none !important;
+}
+
+.simple-mode .grid-cell[data-state="logo"],
+.simple-mode .logo-cell[data-state="logo"],
+.simple-mode .grid-cell[data-state="combined_logo"],
+.simple-mode .logo-cell[data-state="combined_logo"] {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Estilos para modo simple - quitar glow de todo */
+.simple-mode .sidebar-text,
+.simple-mode .sidebar-text .text-content,
+.simple-mode .sidebar-logo-svg,
+.simple-mode .expand-btn,
+.simple-mode .expand-back-btn,
+.simple-mode .expand-next-btn,
+.simple-mode .proyectos-item,
+.simple-mode .proyectos-category,
+.simple-mode .proyectos-detail,
+.simple-mode .contacto-content,
+.simple-mode .sobre-mi-content,
+.simple-mode .mobile-nav-btn,
+.simple-mode .mobile-proyecto-item,
+.simple-mode .mobile-categoria-item,
+.simple-mode .mobile-flecha,
+.simple-mode .mobile-contacto-social-item,
+.simple-mode .mobile-contacto-info,
+.simple-mode .btn-text,
+.simple-mode .btn-icon,
+.simple-mode .mobile-home-proyecto,
+.simple-mode .mobile-proyecto-detalle-content,
+.simple-mode #dialog-title,
+.simple-mode #dialog-message,
+.simple-mode #dialog-close,
+.simple-mode #projects-content h2,
+.simple-mode .project-item,
+.simple-mode .project-item .name {
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.simple-mode .sidebar-text {
+    color: #FFFFFF !important;
+}
+
+.simple-mode .sidebar-text.active {
+    color: #FFFFFF !important;
+}
+
+.simple-mode .sidebar-text::before {
+    background: #FFFFFF !important;
+    box-shadow: none !important;
+}
+
+.simple-mode .sidebar-text:hover {
+    color: #CCCCCC !important;
+}
+
+.simple-mode #dialog-close {
+    border-color: #FFFFFF !important;
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+}
+
+.simple-mode #dialog-close:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.simple-mode .project-item {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.simple-mode .project-item:hover {
+    border-color: #FFFFFF !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.simple-mode .sobre-mi-content * {
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+
+/* Quitar todos los glows en modo simple */
+.simple-mode * {
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.simple-mode .grid-cell,
+.simple-mode .logo-cell,
+.simple-mode .sidebar-cell {
+
+    box-shadow: none !important;
+    text-shadow: none !important;
+
+}
+
+.simple-mode .sidebar-text,
+.simple-mode .sidebar-text .text-content,
+.simple-mode .sidebar-text::before,
+.simple-mode .sidebar-logo-svg,
+.simple-mode .expand-btn,
+.simple-mode .expand-back-btn,
+.simple-mode .expand-next-btn,
+.simple-mode .proyectos-item,
+.simple-mode .proyectos-category,
+.simple-mode .proyectos-detail,
+.simple-mode .contacto-content,
+.simple-mode .sobre-mi-content,
+.simple-mode .mobile-nav-btn,
+.simple-mode .mobile-proyecto-item,
+.simple-mode .mobile-categoria-item,
+.simple-mode .mobile-flecha,
+.simple-mode .mobile-contacto-social-item,
+.simple-mode .mobile-contacto-info,
+.simple-mode .btn-text,
+.simple-mode .btn-icon,
+.simple-mode .mobile-home-proyecto,
+.simple-mode .mobile-proyecto-detalle-content,
+.simple-mode #dialog-title,
+.simple-mode #dialog-message,
+.simple-mode #dialog-close,
+.simple-mode #projects-content h2,
+.simple-mode .project-item,
+.simple-mode .project-item .name,
+.simple-mode .sobre-mi-content *,
+.simple-mode .inicio-bienvenido,
+.simple-mode .inicio-proyecto,
+.simple-mode .inicio-vermas,
+.simple-mode .proyectos-content,
+.simple-mode .contacto-content,
+.simple-mode .proyectos-select-message,
+.simple-mode .proyectos-nav,
+.simple-mode .proyectos-filter,
+.simple-mode .sidebar-overlay,
+.simple-mode .contacto-content *,
+.simple-mode .contacto-content div,
+.simple-mode .contacto-content span,
+.simple-mode .contacto-content a,
+.simple-mode .contacto-content p,
+.simple-mode .contacto-content h1,
+.simple-mode .contacto-content h2,
+.simple-mode .contacto-content h3,
+.simple-mode .contacto-content h4,
+.simple-mode .contacto-content svg,
+.simple-mode .contacto-content svg *,
+.simple-mode .contacto-content path,
+.simple-mode .contacto-content circle,
+.simple-mode .contacto-content rect,
+.simple-mode .contacto-content polygon,
+.simple-mode .contacto-content polyline,
+.simple-mode .contacto-content line,
+.simple-mode .contacto-content g,
+.simple-mode .contacto-content svg path,
+.simple-mode .contacto-content svg rect,
+.simple-mode .contacto-content svg circle,
+.simple-mode .contacto-content svg g {
+    text-shadow: none !important;
+    box-shadow: none !important;
+
+}
+
+.simple-mode .sidebar-text::before {
+    background: #FFFFFF !important;
+    box-shadow: none !important;
+}
+
+.simple-mode .sidebar-text:hover {
+    color: #CCCCCC !important;
+}
+
+.simple-mode .sidebar-text.active {
+    color: #FFFFFF !important;
+}
+
+.simple-mode #dialog-close,
+.simple-mode .project-item {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.simple-mode #dialog-close:hover,
+.simple-mode .project-item:hover {
+    border-color: #FFFFFF !important;
+}
+
+.simple-mode .contacto-content .btn-text,
+.simple-mode .contacto-content .btn-icon,
+.simple-mode .contacto-content .mobile-btn-overlay {
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+
+/* Forzar el color de los paths SVG que tienen fill en línea */
+.simple-mode .contacto-content svg path[fill],
+.simple-mode .contacto-content svg circle[fill],
+.simple-mode .contacto-content svg rect[fill] {
+    fill: #FFFFFF !important;
+}
+
+/* Si los SVG usan stroke en lugar de fill */
+.simple-mode .contacto-content svg path[stroke],
+.simple-mode .contacto-content svg circle[stroke],
+.simple-mode .contacto-content svg rect[stroke] {
+    stroke: #FFFFFF !important;
+}
+
+/* Quitar el glow/resplandor de los SVG en modo simple */
+.simple-mode .contacto-content svg,
+.simple-mode .contacto-content svg *,
+.simple-mode .contacto-content svg path,
+.simple-mode .contacto-content svg circle,
+.simple-mode .contacto-content svg rect,
+.simple-mode .contacto-content svg polygon,
+.simple-mode .contacto-content svg polyline,
+.simple-mode .contacto-content svg line,
+.simple-mode .contacto-content svg g {
+    filter: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    opacity: 1 !important;
+}
+
+/* Específicamente para el contenedor del icono que tiene filter: drop-shadow */
+.simple-mode .contacto-content div[style*="filter"] {
+    filter: none !important;
+}
+
+/* Quitar el glow del hover también */
+.simple-mode .contacto-content svg:hover,
+.simple-mode .contacto-content svg:hover *,
+.simple-mode .contacto-content svg path:hover,
+.simple-mode .contacto-content svg circle:hover,
+.simple-mode .contacto-content svg rect:hover,
+.simple-mode .contacto-content svg polygon:hover,
+.simple-mode .contacto-content svg polyline:hover,
+.simple-mode .contacto-content svg line:hover,
+.simple-mode .contacto-content svg g:hover {
+    filter: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    opacity: 1 !important;
+}
+
+.sidebar-text[data-action="simple-mode"]::before {
+    display: none !important;
+}
+
+.sidebar-text[data-action="simple-mode"] {
+    color: var(--color-primary) !important;
+    text-shadow: var(--text-shadow-normal) !important;
+}
+
+.sidebar-text[data-action="simple-mode"]:hover {
+    color: var(--color-secondary) !important;
+    text-shadow: var(--text-shadow-hover) !important;
+}
+
+.sidebar-text[data-action="simple-mode"].active {
+    color: var(--color-secondary) !important;
+    text-shadow: var(--text-shadow-active) !important;
+}
+
+.sidebar-text[data-action="simple-mode"] .text-content span {
+    color: var(--color-primary) !important;
+}
+
+.sidebar-text[data-action="simple-mode"]:hover .text-content span {
+    color: var(--color-secondary) !important;
+}

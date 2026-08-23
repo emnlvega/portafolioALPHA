@@ -264,7 +264,7 @@ function createDetalleContent() {
             letter-spacing: ${letterSpacing.small + 1.5}px;
             color: ${secondaryColor};
             text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
-            border-bottom: 1px solid rgba(${secondaryRGB}, 0.15);
+            border-bottom: 1px solid rgba(${secondaryRGB}, 1);
             padding-bottom: 6px;
         `;
         meta.textContent = `${proyectoActual.category}  ·  ${proyectoActual.year}`;
@@ -294,7 +294,7 @@ function createDetalleContent() {
                     font-weight: bold;
                     color: ${secondaryColor};
                     text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.15);
-                    border-top: 1px solid rgba(${secondaryRGB}, 0.15);
+                    border-top: 1px solid rgba(${secondaryRGB}, 1);
                     padding-top: 6px;
                     margin-top: 4px;
                 `;
@@ -443,7 +443,7 @@ function renderContentItem(item) {
                 font-size: 11px;
                 letter-spacing: 1px;
                 text-decoration: none;
-                border-bottom: 1px solid rgba(${primaryRGB}, 0.3);
+                border-bottom: 1px solid rgba(${primaryRGB}, 1);
                 padding: 2px 0;
                 transition: all 0.3s ease;
                 display: inline-block;
@@ -456,7 +456,7 @@ function renderContentItem(item) {
                 linkEl.style.color = secondaryColor;
             });
             linkEl.addEventListener('mouseleave', () => {
-                linkEl.style.borderBottomColor = `rgba(${primaryRGB}, 0.3)`;
+                linkEl.style.borderBottomColor = `rgba(${primaryRGB}, 1)`;
                 linkEl.style.color = primaryColor;
             });
             container.appendChild(linkEl);
@@ -486,7 +486,7 @@ function renderContentItem(item) {
                 captionEl.style.cssText = `
                     font-size: 11px;
                     letter-spacing: 1px;
-                    opacity: 0.5;
+                    opacity: 1;
                     text-align: center;
                     margin-top: 2px;
                 `;
@@ -553,7 +553,7 @@ function showImageLightbox(src) {
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.92);
+        background: rgba(0, 0, 0, 0.70);
         z-index: 99999;
         display: flex;
         align-items: center;
@@ -565,12 +565,10 @@ function showImageLightbox(src) {
     const img = document.createElement('img');
     img.src = src;
     img.style.cssText = `
-        max-width: 90%;
-        max-height: 90%;
+        max-width: 95%;
+        max-height: 95%;
         object-fit: contain;
-        border-radius: 8px;
-        border: 1px solid rgba(var(--color-primary-rgb), 0.2);
-        box-shadow: 0 0 60px rgba(var(--color-primary-rgb), 1);
+
     `;
     
     lightbox.appendChild(img);

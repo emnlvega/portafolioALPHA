@@ -147,17 +147,48 @@ export function applySettings(settings) {
     const burnBlur = document.getElementById(ELEMENTS.burnBlur);
     if (burnBlur) burnBlur.style.display = settings.burnBlur ? 'block' : 'none';
     
-    const overlay = document.getElementById(ELEMENTS.overlay);
-    if (overlay) {
-        overlay.style.display = settings.textura ? 'block' : 'none';
+
+    let overlay = document.getElementById(ELEMENTS.overlay);
+    
+    if (settings.textura) {
+        if (!overlay) {
+
+            import('./overlay.js').then(module => {
+                module.initOverlays();
+                setTimeout(() => {
+                    const newOverlay = document.getElementById('overlay-container');
+                    if (newOverlay) {
+                        newOverlay.classList.remove('overlay-hidden');
+                        newOverlay.classList.add('overlay-visible');
+                        newOverlay.style.display = 'block';
+                    }
+                }, 100);
+            });
+        } else {
+
+            overlay.classList.remove('overlay-hidden');
+            overlay.classList.add('overlay-visible');
+            overlay.style.display = 'block';
+            overlay.style.setProperty('display', 'block', 'important');
+        }
+    } else {
+
+        if (overlay) {
+            overlay.classList.remove('overlay-visible');
+            overlay.classList.add('overlay-hidden');
+            overlay.style.display = 'none';
+            overlay.style.setProperty('display', 'none', 'important');
+        }
     }
     
+
     if (settings.scanlines) {
         document.body.classList.remove('no-scanlines');
     } else {
         document.body.classList.add('no-scanlines');
     }
     
+
     if (settings.vignette) {
         document.body.classList.remove('no-vignette');
     } else {
@@ -232,7 +263,7 @@ function updateSwitchVisualAndFunction(id, checked) {
     currentSettings[key] = checked;
 }
 
-function updateAllSwitches(value) {
+export function updateAllSwitches(value) {
     const switchKeys = ['grain', 'gaussianBlur', 'bloom', 'textura', 'animations', 'vignette', 'flicker', 'glow'];
     
     switchKeys.forEach(key => {
@@ -282,6 +313,9 @@ function createSettingsDialog() {
     const scriptTexts = d.script || {};
     const settingsTexts = d.settings || {};
     
+
+    const isMobileDevice = window.innerWidth <= 768 || /Mobi|Android|iPhone/i.test(navigator.userAgent);
+    
     const dialog = document.createElement('div');
     dialog.id = 'settings-dialog';
     dialog.style.cssText = `
@@ -307,18 +341,18 @@ function createSettingsDialog() {
         background: var(--color-bg);
         border: var(--dialog-border);
         border-radius: 20px;
-        padding: 30px 35px;
-        max-width: 360px;
+        padding: ${isMobileDevice ? '20px 20px' : '30px 35px'};
+        max-width: ${isMobileDevice ? '320px' : '360px'};
         width: 100%;
         box-shadow: var(--dialog-shadow), var(--dialog-inset);
         position: relative;
-        min-height: 630px;
+        min-height: ${isMobileDevice ? 'auto' : '630px'};
         display: flex;
         flex-direction: column;
     `;
     
     const configTitle = document.createElement('h2');
-    configTitle.textContent = scriptTexts.settingsTitle;
+    configTitle.textContent = scriptTexts.settingsTitle || ' ';
     configTitle.style.cssText = `
         color: var(--color-primary);
         font-size: ${textSizes.subTitle + 2}px;
@@ -328,7 +362,7 @@ function createSettingsDialog() {
         text-transform: uppercase;
         text-align: center;
         text-shadow: 0 0 30px rgba(var(--color-primary-rgb), 0.3);
-        border-bottom: 2px solid rgba(var(--color-primary-rgb), 0.15);
+        border-bottom: 2px solid rgba(var(--color-secondary-rgb), 1);
         padding-bottom: 12px;
     `;
     configPanel.appendChild(configTitle);
@@ -340,13 +374,15 @@ function createSettingsDialog() {
         justify-content: space-between;
         padding: 8px 0;
         margin-bottom: 16px;
-        border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.12);
+        border-bottom: 2px solid rgba(var(--color-secondary-rgb), 1);
+        flex-wrap: wrap;
+        gap: 8px;
     `;
     
     const colorLabel = document.createElement('span');
-    colorLabel.textContent = scriptTexts.colorPickerLabel;
+    colorLabel.textContent = scriptTexts.colorPickerLabel || ' ';
     colorLabel.style.cssText = `
-        color: var(--color-primary);
+        color: var(--color-secondary);
         font-family: 'Courier New', monospace;
         font-size: ${textSizes.small + 1}px;
         letter-spacing: ${letterSpacing.small + 0.5}px;
@@ -358,7 +394,8 @@ function createSettingsDialog() {
     colorWrap.style.cssText = `
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
+        flex-wrap: wrap;
     `;
     
     const colorInput = document.createElement('input');
@@ -375,22 +412,22 @@ function createSettingsDialog() {
     `;
     
     const colorHex = document.createElement('span');
-    colorHex.textContent = CONFIG.COLORS.primary.toUpperCase();
+    colorHex.textContent = CONFIG.COLORS.secondary.toUpperCase();
     colorHex.style.cssText = `
         font-family: 'Courier New', monospace;
         font-size: ${textSizes.small + 1}px;
         letter-spacing: ${letterSpacing.small + 0.5}px;
-        color: var(--color-primary);
+        color: var(--color-secondary);
         min-width: 50px;
         font-weight: bold;
     `;
     
     const applyColorBtn = document.createElement('button');
-    applyColorBtn.textContent = scriptTexts.colorPickerApply;
+    applyColorBtn.textContent = scriptTexts.colorPickerApply || ' ';
     applyColorBtn.style.cssText = `
         background: transparent;
-        border: 1px solid rgba(var(--color-primary-rgb), 0.4);
-        color: var(--color-primary);
+        border: 1px solid rgba(var(--color-primary-rgb), 1);
+        color: var(--color-secondary);
         padding: 4px 14px;
         font-family: 'Courier New', monospace;
         font-size: ${textSizes.small}px;
@@ -402,10 +439,10 @@ function createSettingsDialog() {
     `;
     
     const resetColorBtn = document.createElement('button');
-    resetColorBtn.textContent = scriptTexts.colorPickerReset;
+    resetColorBtn.textContent = scriptTexts.colorPickerReset || '⟳';
     resetColorBtn.style.cssText = `
         background: transparent;
-        border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+        border: 1px solid rgba(var(--color-primary-rgb), 1);
         color: var(--color-primary);
         padding: 4px 8px;
         font-family: 'Courier New', monospace;
@@ -416,7 +453,7 @@ function createSettingsDialog() {
         text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
         line-height: 1;
     `;
-    resetColorBtn.title = scriptTexts.colorPickerResetTitle;
+    resetColorBtn.title = scriptTexts.colorPickerResetTitle || ' ';
     
     resetColorBtn.addEventListener('mouseenter', () => {
         resetColorBtn.style.borderColor = 'var(--color-secondary)';
@@ -439,11 +476,6 @@ function createSettingsDialog() {
     colorInput.addEventListener('input', function(e) {
         tempColor = e.target.value;
         colorHex.textContent = tempColor.toUpperCase();
-        colorHex.style.color = tempColor;
-        applyColorBtn.style.borderColor = tempColor;
-        applyColorBtn.style.color = tempColor;
-        resetColorBtn.style.borderColor = tempColor;
-        resetColorBtn.style.color = tempColor;
     });
     
     applyColorBtn.addEventListener('click', function() {
@@ -462,6 +494,12 @@ function createSettingsDialog() {
         
         currentSettings.primaryColor = tempColor;
         saveSettings(currentSettings);
+        
+
+        const overlay = document.getElementById('overlay-container');
+        if (overlay) {
+            overlay.style.display = currentSettings.textura ? 'block' : 'none';
+        }
         
         closeSettings();
         window.location.reload();
@@ -483,11 +521,11 @@ function createSettingsDialog() {
     `;
     
     const enableAllBtn = document.createElement('button');
-    enableAllBtn.textContent = scriptTexts.enableAll;
+    enableAllBtn.textContent = scriptTexts.enableAll || ' ';
     enableAllBtn.style.cssText = `
-        background: transparent;
+        background: var(--color-primary);
         border: 1px solid rgba(var(--color-primary-rgb), 0.4);
-        color: var(--color-primary);
+        color: var(--color-background);
         padding: 6px 10px;
         font-family: 'Courier New', monospace;
         font-size: ${textSizes.tiny + 1}px;
@@ -502,7 +540,7 @@ function createSettingsDialog() {
     `;
     
     const disableAllBtn = document.createElement('button');
-    disableAllBtn.textContent = scriptTexts.disableAll;
+    disableAllBtn.textContent = scriptTexts.disableAll || ' ';
     disableAllBtn.style.cssText = `
         background: transparent;
         border: 1px solid rgba(var(--color-primary-rgb), 0.4);
@@ -516,22 +554,20 @@ function createSettingsDialog() {
         transition: all 0.3s ease;
         border-radius: 6px;
         flex: 1;
-        text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
+        text-shadow: 0 0 10px rgba(var(--color-background-rgb), 0.2);
         font-weight: bold;
     `;
     
     [enableAllBtn, disableAllBtn].forEach(btn => {
         btn.addEventListener('mouseenter', () => {
             btn.style.borderColor = 'var(--color-secondary)';
-            btn.style.color = 'var(--color-secondary)';
             btn.style.boxShadow = '0 0 30px rgba(var(--color-primary-rgb), 0.2)';
             btn.style.textShadow = '0 0 20px rgba(var(--color-primary-rgb), 0.4)';
         });
         btn.addEventListener('mouseleave', () => {
             btn.style.borderColor = `rgba(var(--color-primary-rgb), 0.4)`;
-            btn.style.color = 'var(--color-primary)';
             btn.style.boxShadow = 'none';
-            btn.style.textShadow = '0 0 10px rgba(var(--color-primary-rgb), 0.2)';
+            btn.style.textShadow = '0 0 10px rgba(var(--color-background-rgb), 0.2)';
         });
     });
     
@@ -583,7 +619,7 @@ function createSettingsDialog() {
         label.htmlFor = sw.id;
         label.innerHTML = `<span style="font-size:${textSizes.projectIcon - 8}px;margin-right:5px;display:inline-block;">${iconText}</span> ${labelText}`;
         label.style.cssText = `
-            color: var(--color-primary);
+            color: var(--color-secondary);
             font-family: 'Courier New', monospace;
             font-size: ${textSizes.small + 1}px;
             letter-spacing: ${letterSpacing.small + 0.5}px;
@@ -645,10 +681,13 @@ function createSettingsDialog() {
             knob.style.transform = 'translateX(20px)';
         }
         
+
         input.addEventListener('change', function(e) {
             e.stopPropagation();
             const checked = this.checked;
+            const key = this.id.replace('setting-', '');
             
+
             if (checked) {
                 slider.style.background = `rgba(var(--color-primary-rgb), 0.4)`;
                 knob.style.transform = 'translateX(20px)';
@@ -657,9 +696,29 @@ function createSettingsDialog() {
                 knob.style.transform = 'translateX(0)';
             }
             
-            currentSettings[sw.key] = checked;
+            currentSettings[key] = checked;
+            
+
             applySettings(currentSettings);
             saveSettings(currentSettings);
+            
+
+            if (key === 'textura') {
+                const overlay = document.getElementById('overlay-container');
+                if (overlay) {
+                    if (checked) {
+                        overlay.classList.remove('overlay-hidden');
+                        overlay.classList.add('overlay-visible');
+                        overlay.style.display = 'block';
+                        overlay.style.setProperty('display', 'block', 'important');
+                    } else {
+                        overlay.classList.remove('overlay-visible');
+                        overlay.classList.add('overlay-hidden');
+                        overlay.style.display = 'none';
+                        overlay.style.setProperty('display', 'none', 'important');
+                    }
+                }
+            }
         });
         
         switchWrap.addEventListener('click', function(e) {
@@ -676,6 +735,7 @@ function createSettingsDialog() {
     });
     configPanel.appendChild(switchContainer);
     
+
     const commandsPanel = document.createElement('div');
     commandsPanel.style.cssText = `
         background: var(--color-bg);
@@ -686,13 +746,13 @@ function createSettingsDialog() {
         width: 100%;
         box-shadow: var(--dialog-shadow), var(--dialog-inset);
         position: relative;
-        min-height: 630px;
-        display: flex;
+        min-height: ${isMobileDevice ? '0' : '630px'};
+        display: ${isMobileDevice ? 'none' : 'flex'};
         flex-direction: column;
     `;
     
     const commandsTitle = document.createElement('h2');
-    commandsTitle.textContent = scriptTexts.commandsTitle;
+    commandsTitle.textContent = scriptTexts.commandsTitle || ' ';
     commandsTitle.style.cssText = `
         color: var(--color-primary);
         font-size: ${textSizes.subTitle + 2}px;
@@ -702,22 +762,22 @@ function createSettingsDialog() {
         text-transform: uppercase;
         text-align: center;
         text-shadow: 0 0 30px rgba(var(--color-primary-rgb), 0.3);
-        border-bottom: 2px solid rgba(var(--color-primary-rgb), 0.15);
+        border-bottom: 2px solid rgba(var(--color-secondary-rgb), 1);
         padding-bottom: 12px;
     `;
     commandsPanel.appendChild(commandsTitle);
     
     const cmdTexts = scriptTexts.commands || {};
     const commandList = [
-        { key: 'E', desc: cmdTexts.export },
-        { key: 'I', desc: cmdTexts.import },
-        { key: 'P', desc: cmdTexts.proyectos },
-        { key: 'S', desc: cmdTexts.sobreMi },
-        { key: 'C', desc: cmdTexts.contacto },
-        { key: 'M', desc: cmdTexts.menu },
-        { key: '␣', desc: cmdTexts.reset },
-        { key: 'A', desc: cmdTexts.coordenadas },
-        { key: 'ESC', desc: cmdTexts.cerrar }
+        { key: 'E', desc: cmdTexts.export || ' ' },
+        { key: 'I', desc: cmdTexts.import || ' ' },
+        { key: 'P', desc: cmdTexts.proyectos || ' ' },
+        { key: 'S', desc: cmdTexts.sobreMi || '   ' },
+        { key: 'C', desc: cmdTexts.contacto || ' ' },
+        { key: 'M', desc: cmdTexts.menu || ' ' },
+        { key: '␣', desc: cmdTexts.reset || ' ' },
+        { key: 'A', desc: cmdTexts.coordenadas || ' ' },
+        { key: 'ESC', desc: cmdTexts.cerrar || ' ' }
     ];
     
     const commandsContainer = document.createElement('div');
@@ -735,7 +795,6 @@ function createSettingsDialog() {
             align-items: center;
             gap: 10px;
             padding: 5px 0;
-            border-bottom: 1px solid rgba(var(--color-primary-rgb), 0.04);
         `;
         
         const keyIcon = document.createElement('span');
@@ -747,15 +806,15 @@ function createSettingsDialog() {
             min-width: 28px;
             height: 26px;
             padding: 0 6px;
-            border: 1px solid rgba(var(--color-primary-rgb), 0.25);
+            border: 1px solid rgba(var(--color-primary-rgb), 0.7);
             border-radius: 4px;
             font-family: 'Courier New', monospace;
             font-size: ${textSizes.small + 1}px;
             font-weight: bold;
-            color: var(--color-primary);
-            background: rgba(var(--color-primary-rgb), 0.05);
+            color: var(--color-secondary);
+            background: rgba(var(--color-background-rgb), 1);
             flex-shrink: 0;
-            text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.15);
+            text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 1);
         `;
         
         const desc = document.createElement('span');
@@ -775,41 +834,50 @@ function createSettingsDialog() {
     });
     commandsPanel.appendChild(commandsContainer);
     
-    const closeBtn = document.createElement('button');
-    closeBtn.textContent = scriptTexts.closeBtn;
-    closeBtn.style.cssText = `
-        background: transparent;
-        border: 1px solid rgba(var(--color-primary-rgb), 0.4);
-        color: var(--color-primary);
-        padding: 8px 16px;
-        font-family: 'Courier New', monospace;
-        font-size: ${textSizes.small + 1}px;
-        letter-spacing: ${letterSpacing.subTitle - 2}px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border-radius: 6px;
-        text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
-        width: 100%;
-        margin-top: auto;
-        font-weight: bold;
-    `;
-    
-    closeBtn.addEventListener('mouseenter', () => {
-        closeBtn.style.borderColor = 'var(--color-secondary)';
-        closeBtn.style.color = 'var(--color-secondary)';
-        closeBtn.style.boxShadow = '0 0 30px rgba(var(--color-primary-rgb), 0.2)';
-        closeBtn.style.textShadow = '0 0 20px rgba(var(--color-primary-rgb), 0.4)';
-    });
-    closeBtn.addEventListener('mouseleave', () => {
-        closeBtn.style.borderColor = `rgba(var(--color-primary-rgb), 0.4)`;
-        closeBtn.style.color = 'var(--color-primary)';
-        closeBtn.style.boxShadow = 'none';
-        closeBtn.style.textShadow = '0 0 10px rgba(var(--color-primary-rgb), 0.2)';
-    });
-    
-    closeBtn.addEventListener('click', closeSettings);
-    commandsPanel.appendChild(closeBtn);
+
+const closeBtn = document.createElement('button');
+closeBtn.textContent = scriptTexts.closeBtn || '   ';
+closeBtn.style.cssText = `
+    background: transparent;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.4);
+    color: var(--color-secondary);
+    padding: 8px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: ${textSizes.small + 1}px;
+    letter-spacing: ${letterSpacing.subTitle - 2}px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
+    width: 100%;
+    margin-top: auto;
+    font-weight: bold;
+`;
+
+closeBtn.addEventListener('mouseenter', () => {
+    closeBtn.style.borderColor = 'var(--color-secondary)';
+    closeBtn.style.boxShadow = '0 0 30px rgba(var(--color-primary-rgb), 0.2)';
+    closeBtn.style.textShadow = '0 0 20px rgba(var(--color-primary-rgb), 0.4)';
+});
+closeBtn.addEventListener('mouseleave', () => {
+    closeBtn.style.borderColor = `rgba(var(--color-primary-rgb), 0.4)`;
+    closeBtn.style.boxShadow = 'none';
+    closeBtn.style.textShadow = '0 0 10px rgba(var(--color-primary-rgb), 0.2)';
+});
+
+closeBtn.addEventListener('click', closeSettings);
+
+
+if (isMobileDevice) {
+    configPanel.appendChild(closeBtn);
+    closeBtn.style.marginTop = '16px';
+    closeBtn.style.width = '100%';
+    closeBtn.style.padding = '10px';
+    closeBtn.style.fontSize = '12px';
+} else {
+    configPanel.appendChild(closeBtn);
+}
     
     dialog.appendChild(configPanel);
     dialog.appendChild(commandsPanel);
@@ -858,6 +926,78 @@ export function openSettings() {
                     slider.style.background = `rgba(var(--color-primary-rgb), 0.15)`;
                     knob.style.transform = 'translateX(0)';
                     knob.style.top = '4px';
+                }
+            }
+        }
+    });
+    
+    settingsDialog.style.display = 'flex';
+    settingsDialog.focus();
+}
+
+
+export function openSettingsMobile() {
+    if (!settingsDialog) createSettingsDialog();
+    
+
+    const switchIds = ['grain', 'bloom', 'textura', 'animations', 'vignette', 'flicker', 'glow'];
+    switchIds.forEach(key => {
+        const el = document.getElementById(`setting-${key}`);
+        if (el) {
+            el.checked = currentSettings[key] || false;
+            const switchWrap = el.parentElement;
+            const children = switchWrap.children;
+            let slider = null;
+            let knob = null;
+            
+            for (let child of children) {
+                if (child.tagName === 'DIV' && child.style.borderRadius === '12px') {
+                    slider = child;
+                }
+                if (child.tagName === 'DIV' && child.style.borderRadius === '50%') {
+                    knob = child;
+                }
+            }
+            
+            if (slider && knob) {
+                if (el.checked) {
+                    slider.style.background = `rgba(var(--color-primary-rgb), 0.4)`;
+                    knob.style.transform = 'translateX(20px)';
+                    knob.style.top = '4px';
+                } else {
+                    slider.style.background = `rgba(var(--color-primary-rgb), 0.15)`;
+                    knob.style.transform = 'translateX(0)';
+                    knob.style.top = '4px';
+                }
+            }
+            
+
+            if (key === 'textura') {
+                const overlay = document.getElementById('overlay-container');
+                if (overlay) {
+                    if (el.checked) {
+                        overlay.classList.remove('overlay-hidden');
+                        overlay.classList.add('overlay-visible');
+                        overlay.style.display = 'block';
+                        overlay.style.setProperty('display', 'block', 'important');
+                    } else {
+                        overlay.classList.remove('overlay-visible');
+                        overlay.classList.add('overlay-hidden');
+                        overlay.style.display = 'none';
+                        overlay.style.setProperty('display', 'none', 'important');
+                    }
+                } else if (el.checked) {
+                    import('./overlay.js').then(module => {
+                        module.initOverlays();
+                        setTimeout(() => {
+                            const newOverlay = document.getElementById('overlay-container');
+                            if (newOverlay) {
+                                newOverlay.classList.remove('overlay-hidden');
+                                newOverlay.classList.add('overlay-visible');
+                                newOverlay.style.display = 'block';
+                            }
+                        }, 100);
+                    });
                 }
             }
         }

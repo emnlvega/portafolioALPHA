@@ -51,6 +51,13 @@ export function volverAProyectos() {
 }
 
 export function navigateMobileTo(page, projectId = null) {
+
+    if (page === 'proyectos' && currentMobilePage === 'proyectos' && !projectId) {
+
+        renderMobileProyectos();
+        return;
+    }
+    
     if (page !== 'inicio') {
         removeMobileHomeLetters();
     }
@@ -179,7 +186,6 @@ function createButtonsFromCells(activePage) {
     const mobileTexts = d.mobile.nav || {};
     const mobileIcons = d.mobile.icons || {};
     
-    // Si es proyecto-detalle, usar 'proyectos' como activePage para resaltar ese botón
     const displayPage = activePage === 'proyecto-detalle' ? 'proyectos' : activePage;
     
     const buttons = [
@@ -211,7 +217,7 @@ function createButtonsFromCells(activePage) {
         targetCell.style.touchAction = 'none';
         
         const isActive = btnConfig.action === displayPage;
-        const displayText = isActive ? (mobileTexts.inicioActive || '◀ INICIO') : btnConfig.text;
+        const displayText = isActive ? (mobileTexts.inicioActive || '') : btnConfig.text;
         
         const borderColor = isActive ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary;
         const textColor = isActive ? CONFIG.COLORS.secondary : CONFIG.COLORS.primary;
@@ -246,7 +252,7 @@ function createButtonsFromCells(activePage) {
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             box-shadow: ${isActive ? `inset 0 0 20px rgba(${CONFIG.COLORS.secondaryRGB}, 0.5)` : `inset 0 0 20px rgba(${CONFIG.COLORS.primaryRGB}, 0.5)`};
-`;
+        `;
         
         const icon = document.createElement('span');
         icon.className = 'btn-icon';

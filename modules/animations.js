@@ -592,6 +592,25 @@ function clearAllTimeouts() {
 
 export function startRandomAnimations() {
     if (IS_MOBILE) {
+        if (CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED) {
+            if (isRunning) return;
+            isRunning = true;
+            
+            clearAllTimeouts();
+            
+            activeScaleAnimations.clear();
+            activeColorAnimations.clear();
+            activeGlowAnimations.clear();
+            activeRotateAnimations.clear();
+            activeBorderShiftAnimations.clear();
+            activeOpacityWaveAnimations.clear();
+            
+            setTimeout(() => {
+                if (isRunning) {
+                    scheduleNextOpacityWave();
+                }
+            }, 500);
+        }
         return;
     }
     
@@ -620,10 +639,10 @@ export function startRandomAnimations() {
 }
 
 export function stopRandomAnimations() {
-
     if (IS_MOBILE) {
         clearAllTimeouts();
         isRunning = false;
+        activeOpacityWaveAnimations.clear();
         return;
     }
     isRunning = false;
@@ -636,20 +655,20 @@ export function stopRandomAnimations() {
 }
 
 export function restartRandomAnimations() {
-
     if (IS_MOBILE) {
+
         stopRandomAnimations();
+        activeOpacityWaveAnimations.clear();
+        setTimeout(() => startRandomAnimations(), 200);
         return;
     }
     stopRandomAnimations();
-
     activeScaleAnimations.clear();
     activeColorAnimations.clear();
     activeGlowAnimations.clear();
     activeRotateAnimations.clear();
     activeBorderShiftAnimations.clear();
     activeOpacityWaveAnimations.clear();
-
     setTimeout(() => startRandomAnimations(), 200);
 }
 

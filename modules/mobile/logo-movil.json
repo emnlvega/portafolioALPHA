@@ -219,7 +219,15 @@
     "type": "combined_normal",
     "left": 772.5,
     "top": 544.5,
-    "width": 375,
+    "width": 185,
+    "height": 52,
+    "combined": true
+  },
+  "22,10": {
+    "type": "combined_normal",
+    "left": 962.5,
+    "top": 544.5,
+    "width": 185,
     "height": 52,
     "combined": true
   },

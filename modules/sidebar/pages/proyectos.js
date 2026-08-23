@@ -254,16 +254,16 @@ function addExpandButton(cell) {
         z-index: 25;
         cursor: pointer;
         pointer-events: auto;
-        color: ${CONFIG.COLORS.primary};
+        color: ${CONFIG.COLORS.secondary};
         font-size: ${textSizes.arrows + 22}px;
         transition: all 0.3s ease;
         opacity: 0.8;
         user-select: none;
         font-family: 'Courier New', monospace;
         line-height: 1;
-        text-shadow: 0 0 15px rgba(${CONFIG.COLORS.primaryRGB}, 1),
-                     0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.6),
-                     0 0 60px rgba(${CONFIG.COLORS.primaryRGB}, 0.3);
+        text-shadow: 0 0 15px rgba(${CONFIG.COLORS.secondaryRGB}, 1),
+                     0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.6),
+                     0 0 60px rgba(${CONFIG.COLORS.secondaryRGB}, 0.3);
     `;
     
     btn.textContent = isDetailExpanded ? '−' : '+';
@@ -271,19 +271,19 @@ function addExpandButton(cell) {
     btn.addEventListener('mouseenter', () => {
         btn.style.opacity = '1';
         btn.style.transform = 'scale(1.15)';
-        btn.style.color = CONFIG.COLORS.secondary;
-        btn.style.textShadow = `0 0 15px rgba(${CONFIG.COLORS.secondaryRGB}, 1),
-                                0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.6),
-                                0 0 60px rgba(${CONFIG.COLORS.secondaryRGB}, 0.3)`;
+        btn.style.color = CONFIG.COLORS.primary;
+        btn.style.textShadow = `0 0 15px rgba(${CONFIG.COLORS.primaryRGB}, 1),
+                                0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.6),
+                                0 0 60px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
     });
     
     btn.addEventListener('mouseleave', () => {
         btn.style.opacity = '0.8';
         btn.style.transform = 'scale(1)';
-        btn.style.color = CONFIG.COLORS.primary;
-        btn.style.textShadow = `0 0 15px rgba(${CONFIG.COLORS.primaryRGB}, 1),
-                                0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.6),
-                                0 0 60px rgba(${CONFIG.COLORS.primaryRGB}, 0.3)`;
+        btn.style.color = CONFIG.COLORS.secondary;
+        btn.style.textShadow = `0 0 15px rgba(${CONFIG.COLORS.secondaryRGB}, 1),
+                                0 0 30px rgba(${CONFIG.COLORS.secondaryRGB}, 0.6),
+                                0 0 60px rgba(${CONFIG.COLORS.secondaryRGB}, 0.3)`;
     });
     
     btn.addEventListener('click', (e) => {
@@ -405,7 +405,7 @@ export async function renderProyectosContent() {
         return;
     }
     
-    if (titleCell && !isDetailExpanded) {
+     if (titleCell && !isDetailExpanded) {
         const title = document.createElement('div');
         title.className = 'proyectos-content';
         title.style.cssText = `
@@ -472,11 +472,11 @@ export async function renderProyectosContent() {
                 z-index: 20;
                 padding: 8px;
                 text-align: center;
-                border: 1px solid ${isSelected ? secondaryColor : `rgba(${primaryRGB}, 0.1)`};
+                border: ${isSelected ? '3px' : '0px'} solid ${isSelected ? secondaryColor : primaryColor};
                 border-radius: 4px;
                 transition: all 0.3s ease;
                 background: transparent;
-                text-shadow: ${isSelected ? 'var(--text-shadow-active)' : 'var(--text-shadow-normal)'};
+                text-shadow: ${isSelected ? 'var(--text-shadow-normal)' : 'var(--text-shadow-active)'};
             `;
             
             const icon = document.createElement('span');
@@ -484,8 +484,8 @@ export async function renderProyectosContent() {
             icon.style.cssText = `
                 font-size: ${textSizes.projectIcon}px;
                 margin-bottom: 4px;
-                color: ${isSelected ? secondaryColor : primaryColor};
-                text-shadow: ${isSelected ? `0 0 30px rgba(${secondaryRGB}, 1)` : `0 0 20px rgba(${primaryRGB}, 1)`};
+                color: ${isSelected ? secondaryColor : secondaryColor};
+                text-shadow: ${isSelected ? `0 0 30px rgba(${primaryRGB}, 1)` : `0 0 20px rgba(${secondaryRGB}, 1)`};
                 transition: all 0.3s ease;
             `;
             
@@ -502,21 +502,21 @@ export async function renderProyectosContent() {
             
             item.addEventListener('mouseenter', () => {
                 if (!isSelected) {
-                    item.style.borderColor = secondaryColor;
-                    item.style.color = secondaryColor;
+                    item.style.borderColor = primaryColor;
+                    item.style.color = primaryColor;
                     item.style.textShadow = 'var(--text-shadow-hover)';
-                    icon.style.color = secondaryColor;
-                    icon.style.textShadow = `0 0 30px rgba(${secondaryRGB}, 0.4)`;
+                    icon.style.color = primaryColor;
+                    icon.style.textShadow = `0 0 30px rgba(${primaryRGB}, 0.4)`;
                 }
             });
             
             item.addEventListener('mouseleave', () => {
                 if (!isSelected) {
-                    item.style.borderColor = `rgba(${primaryRGB}, 0.1)`;
-                    item.style.color = primaryColor;
+                    item.style.borderColor = `rgba(${secondaryRGB}, 0.1)`;
+                    item.style.color = secondaryColor;
                     item.style.textShadow = 'var(--text-shadow-normal)';
-                    icon.style.color = primaryColor;
-                    icon.style.textShadow = `0 0 20px rgba(${primaryRGB}, 0.2)`;
+                    icon.style.color = secondaryColor;
+                    icon.style.textShadow = `0 0 20px rgba(${secondaryRGB}, 0.2)`;
                 }
             });
             
@@ -567,12 +567,12 @@ export async function renderProyectosContent() {
                 transition: color 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
                 background: transparent;
                 color: ${CONFIG.COLORS.background};
-                -webkit-text-stroke: 2px ${primaryColor};
-                text-stroke: 2px ${primaryColor};
+                -webkit-text-stroke: 2px ${secondaryColor};
+                text-stroke: 2px ${secondaryColor};
             `;
             el.textContent = '◀';
             if (isActive) {
-                el.style.textShadow = `0 0 10px rgba(${primaryRGB}, 1), 0 0 20px rgba(${primaryRGB}, 0.8), 0 0 40px rgba(${primaryRGB}, 0.4), 0 0 80px rgba(${primaryRGB}, 0.2)`;
+                el.style.textShadow = `0 0 10px rgba(${secondaryRGB}, 1), 0 0 20px rgba(${secondaryRGB}, 0.8), 0 0 40px rgba(${secondaryRGB}, 0.4), 0 0 80px rgba(${secondaryRGB}, 0.2)`;
                 el.style.animation = 'blinkArrow 1.2s ease-in-out infinite';
                 el.addEventListener('click', () => {
                     if (currentPage > 0) {
@@ -606,12 +606,12 @@ export async function renderProyectosContent() {
                 transition: color 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
                 background: transparent;
                 color: ${CONFIG.COLORS.background};
-                -webkit-text-stroke: 2px ${primaryColor};
-                text-stroke: 2px ${primaryColor};
+                -webkit-text-stroke: 2px ${secondaryColor};
+                text-stroke: 2px ${secondaryColor};
             `;
             el.textContent = '▶';
             if (isActive) {
-                el.style.textShadow = `0 0 10px rgba(${primaryRGB}, 1), 0 0 20px rgba(${primaryRGB}, 0.8), 0 0 40px rgba(${primaryRGB}, 0.4), 0 0 80px rgba(${primaryRGB}, 0.2)`;
+                el.style.textShadow = `0 0 10px rgba(${secondaryRGB}, 1), 0 0 20px rgba(${secondaryRGB}, 0.8), 0 0 40px rgba(${secondaryRGB}, 0.4), 0 0 80px rgba(${secondaryRGB}, 0.2)`;
                 el.style.animation = 'blinkArrow 1.2s ease-in-out infinite';
                 el.addEventListener('click', () => {
                     if (currentPage < totalPages - 1) {
@@ -665,7 +665,7 @@ export async function renderProyectosContent() {
                 font-size: ${textSizes.arrows}px;
                 letter-spacing: ${textSizes.arrows * 0.4}px;
                 animation: blinkArrows 1.2s ease-in-out infinite;
-                text-shadow: 0 0 20px rgba(${primaryRGB}, 0.3);
+                text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.3);
             `;
             message.appendChild(arrows);
             message.appendChild(text);
@@ -739,12 +739,12 @@ export async function renderProyectosContent() {
         el.textContent = arrow.direction;
         
         if (arrow.isActive) {
-            el.style.color = primaryColor;
+            el.style.color = secondaryColor;
             el.style.textShadow = `
-                0 0 10px rgba(${primaryRGB}, 1),
-                0 0 20px rgba(${primaryRGB}, 0.8),
-                0 0 40px rgba(${primaryRGB}, 0.4),
-                0 0 80px rgba(${primaryRGB}, 0.2)
+                0 0 10px rgba(${secondaryRGB}, 1),
+                0 0 20px rgba(${secondaryRGB}, 0.8),
+                0 0 40px rgba(${secondaryRGB}, 0.4),
+                0 0 80px rgba(${secondaryRGB}, 0.2)
             `;
             el.style.animation = 'blinkArrow 1.2s ease-in-out infinite';
             el.addEventListener('click', (e) => {
@@ -752,7 +752,7 @@ export async function renderProyectosContent() {
                 arrow.onClick();
             });
         } else {
-            el.style.color = primaryColor;
+            el.style.color = secondaryColor;
             el.style.textShadow = 'var(--text-shadow-normal)';
             el.style.opacity = '0.2';
         }
@@ -784,7 +784,7 @@ export async function renderProyectosContent() {
                 pointer-events: auto;
                 z-index: 25;
                 font-family: 'Courier New', monospace;
-                color: ${primaryColor};
+                color: ${secondaryColor};
                 transition: all 0.3s ease;
                 gap: 4px;
             `;
@@ -793,7 +793,7 @@ export async function renderProyectosContent() {
             arrowIcon.textContent = '◀';
             arrowIcon.style.cssText = `
                 font-size: ${textSizes.arrows}px;
-                text-shadow: 0 0 20px rgba(${primaryRGB}, 0.3);
+                text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.3);
                 transition: all 0.3s ease;
             `;
             backBtn.appendChild(arrowIcon);
@@ -812,14 +812,14 @@ export async function renderProyectosContent() {
             backBtn.appendChild(backText);
             
             backBtn.addEventListener('mouseenter', () => {
-                backBtn.style.color = secondaryColor;
-                arrowIcon.style.textShadow = `0 0 30px rgba(${secondaryRGB}, 0.4)`;
+                backBtn.style.color = primaryColor;
+                arrowIcon.style.textShadow = `0 0 30px rgba(${primaryRGB}, 0.4)`;
                 backText.style.opacity = '1';
             });
             
             backBtn.addEventListener('mouseleave', () => {
-                backBtn.style.color = primaryColor;
-                arrowIcon.style.textShadow = `0 0 20px rgba(${primaryRGB}, 0.3)`;
+                backBtn.style.color = secondaryColor;
+                arrowIcon.style.textShadow = `0 0 20px rgba(${secondaryRGB}, 0.3)`;
                 backText.style.opacity = '1';
             });
             
@@ -851,7 +851,7 @@ export async function renderProyectosContent() {
                 pointer-events: auto;
                 z-index: 25;
                 font-family: 'Courier New', monospace;
-                color: ${primaryColor};
+                color: ${secondaryColor};
                 transition: all 0.3s ease;
                 gap: 4px;
             `;
@@ -860,7 +860,7 @@ export async function renderProyectosContent() {
             arrowIcon.textContent = '▶';
             arrowIcon.style.cssText = `
                 font-size: ${textSizes.arrows}px;
-                text-shadow: 0 0 20px rgba(${primaryRGB}, 0.3);
+                text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.3);
                 transition: all 0.3s ease;
             `;
             nextBtn.appendChild(arrowIcon);
@@ -879,14 +879,14 @@ export async function renderProyectosContent() {
             nextBtn.appendChild(nextText);
             
             nextBtn.addEventListener('mouseenter', () => {
-                nextBtn.style.color = secondaryColor;
-                arrowIcon.style.textShadow = `0 0 30px rgba(${secondaryRGB}, 0.4)`;
+                nextBtn.style.color = primaryColor;
+                arrowIcon.style.textShadow = `0 0 30px rgba(${primaryRGB}, 0.4)`;
                 nextText.style.opacity = '1';
             });
             
             nextBtn.addEventListener('mouseleave', () => {
-                nextBtn.style.color = primaryColor;
-                arrowIcon.style.textShadow = `0 0 20px rgba(${primaryRGB}, 0.3)`;
+                nextBtn.style.color = secondaryColor;
+                arrowIcon.style.textShadow = `0 0 20px rgba(${secondaryRGB}, 0.3)`;
                 nextText.style.opacity = '1';
             });
             
@@ -929,7 +929,7 @@ function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHe
         width: 100%;
         height: 100%;
         padding: ${isExpanded ? '30px 40px' : '20px 30px'};
-        color: ${primaryColor};
+        color: ${secondaryColor};
         font-family: 'Courier New', monospace;
         pointer-events: auto;
         z-index: 20;
@@ -964,7 +964,7 @@ function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHe
         pageIndicator2.style.cssText = `
             font-size: ${content.pageIndicatorExpandedSize || 20}px;
             letter-spacing: ${letterSpacing.subTitle}px;
-            color: white;
+            color: ${primaryColor};
             opacity: 1;
             margin-top: 6px;
             text-transform: uppercase;
@@ -977,8 +977,8 @@ function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHe
     icon.textContent = project.icon || '◆';
     icon.style.cssText = `
         font-size: ${isExpanded ? textSizes.title : textSizes.arrows}px;
-        color: ${primaryColor};
-        text-shadow: 0 0 40px rgba(${primaryRGB}, 0.3);
+        color: ${secondaryColor};
+        text-shadow: 0 0 40px rgba(${secondaryRGB}, 0.3);
         text-align: center;
         flex-shrink: 0;
     `;
@@ -1002,8 +1002,8 @@ function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHe
         font-size: ${isExpanded ? textSizes.title : textSizes.normalTitle}px;
         letter-spacing: ${isExpanded ? letterSpacing.title : letterSpacing.subTitle}px;
         font-weight: bold;
-        text-shadow: 0 0 30px rgba(${primaryRGB}, 0.2);
-        color: ${secondaryColor};
+        text-shadow: 0 0 30px rgba(${secondaryRGB}, 0.2);
+        color: ${primaryColor};
         text-align: center;
         flex-shrink: 0;
     `;
@@ -1026,7 +1026,7 @@ function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHe
     separator.style.cssText = `
         width: 30%;
         height: 1px;
-        background: rgba(${secondaryRGB}, 0.2);
+        background: rgba(${primaryRGB}, 0.2);
         margin: 4px 0;
         flex-shrink: 0;
     `;
@@ -1039,7 +1039,7 @@ function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHe
             font-size: ${isExpanded ? textSizes.subTitle : textSizes.medium}px;
             letter-spacing: ${letterSpacing.subTitle}px;
             font-weight: bold;
-            color: ${secondaryColor};
+            color: ${primaryColor};
             text-align: center;
             flex-shrink: 0;
         `;
@@ -1070,6 +1070,7 @@ function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHe
             textEl.style.cssText = `
                 font-size: ${isExpanded ? textSizes.medium : textSizes.small}px;
                 letter-spacing: ${letterSpacing.medium}px;
+                color: ${primaryColor};
                 line-height: ${lineHeight.medium};
                 opacity: 1;
                 text-align: center;
@@ -1084,7 +1085,7 @@ function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHe
         pageIndicator.style.cssText = `
             font-size: ${content.pageIndicatorNormalSize || 11}px;
             letter-spacing: ${letterSpacing.small}px;
-            color: white;
+            color: ${primaryColor};
             opacity: 1;
             margin-top: 6px;
             text-transform: uppercase;
@@ -1146,11 +1147,11 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
             linkEl.textContent = item.label || item.value || '';
             linkEl.target = '_blank';
             linkEl.style.cssText = `
-                color: ${primaryColor};
+                color: ${secondaryColor};
                 font-size: ${isExpanded ? textSizes.medium : textSizes.small}px;
                 letter-spacing: ${letterSpacing.medium}px;
                 text-decoration: none;
-                border-bottom: 1px solid rgba(${primaryRGB}, 0.3);
+                border-bottom: 1px solid rgba(${secondaryRGB}, 0.3);
                 padding: 2px 0;
                 transition: all 0.3s ease;
                 display: inline-block;
@@ -1159,12 +1160,12 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
                 pointer-events: auto;
             `;
             linkEl.addEventListener('mouseenter', () => {
-                linkEl.style.borderBottomColor = secondaryColor;
-                linkEl.style.color = secondaryColor;
+                linkEl.style.borderBottomColor = primaryColor;
+                linkEl.style.color = primaryColor;
             });
             linkEl.addEventListener('mouseleave', () => {
-                linkEl.style.borderBottomColor = `rgba(${primaryRGB}, 0.3)`;
-                linkEl.style.color = primaryColor;
+                linkEl.style.borderBottomColor = `rgba(${secondaryRGB}, 0.3)`;
+                linkEl.style.color = secondaryColor;
             });
             container.appendChild(linkEl);
             break;
@@ -1175,7 +1176,7 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
                 width: 100%;
                 border-radius: 4px;
                 overflow: hidden;
-                border: 1px solid rgba(${primaryRGB}, 0.1);
+                border: 1px solid rgba(${secondaryRGB}, 0.1);
             `;
             
             const imgEl = document.createElement('img');
@@ -1196,6 +1197,7 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
                     font-size: ${textSizes.small}px;
                     letter-spacing: ${letterSpacing.small}px;
                     opacity: 1;
+                    color: ${primaryColor};
                     text-align: center;
                     margin-top: 2px;
                 `;
@@ -1219,7 +1221,7 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
                     imgContainer.style.cssText = `
                         border-radius: 4px;
                         overflow: hidden;
-                        border: 1px solid rgba(${primaryRGB}, 0.1);
+                        border: 1px solid rgba(${secondaryRGB}, 0.1);
                         aspect-ratio: 1;
                         cursor: pointer;
                         transition: all 0.3s ease;
@@ -1240,11 +1242,11 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
                     
                     imgContainer.addEventListener('mouseenter', () => {
                         thumb.style.transform = 'scale(1.05)';
-                        imgContainer.style.borderColor = secondaryColor;
+                        imgContainer.style.borderColor = primaryColor;
                     });
                     imgContainer.addEventListener('mouseleave', () => {
                         thumb.style.transform = 'scale(1)';
-                        imgContainer.style.borderColor = `rgba(${primaryRGB}, 0.1)`;
+                        imgContainer.style.borderColor = `rgba(${secondaryRGB}, 0.1)`;
                     });
                     
                     imgContainer.addEventListener('click', () => {
@@ -1263,7 +1265,7 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
                 width: 100%;
                 border-radius: 4px;
                 overflow: hidden;
-                border: 1px solid rgba(${primaryRGB}, 0.1);
+                border: 1px solid rgba(${secondaryRGB}, 0.1);
                 background: #000;
             `;
             
@@ -1345,8 +1347,8 @@ function showImageLightbox(src) {
         max-height: 90%;
         object-fit: contain;
         border-radius: 8px;
-        border: 1px solid rgba(var(--color-primary-rgb), 0.2);
-        box-shadow: 0 0 60px rgba(var(--color-primary-rgb), 0.1);
+        border: 1px solid rgba(var(--color-secondary-rgb), 0.2);
+        box-shadow: 0 0 60px rgba(var(--color-secondary-rgb), 0.1);
     `;
     
     lightbox.appendChild(img);

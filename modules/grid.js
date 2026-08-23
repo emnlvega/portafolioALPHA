@@ -16,10 +16,10 @@ export function createCell(className, x, y, size, dataset = {}) {
     cell.style.left = `${x}px`;
     cell.style.top = `${y}px`;
 
-    cell.style.borderRadius = 'var(--cell-radius, 4px)';
-    cell.style.backgroundColor = CONFIG.COLORS.background;
-    cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
-    cell.style.borderColor = CONFIG.COLORS.primary;
+
+
+
+
     
     cell.dataset.originalX = x;
     cell.dataset.originalY = y;

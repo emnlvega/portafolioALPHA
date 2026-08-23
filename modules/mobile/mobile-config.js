@@ -39,6 +39,6 @@ export const MOBILE_CONFIG = {
         GLOW: { ENABLED: false },
         ROTATE: { ENABLED: false },
         BORDER_SHIFT: { ENABLED: false },
-        OPACITY_WAVE: { ENABLED: false }
+        OPACITY_WAVE: { ENABLED: true }
     }
 };

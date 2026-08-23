@@ -1,7 +1,7 @@
 import { CONFIG, LOGO_DESIGN, updateColors } from '../config.js';
 import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations, restartRandomAnimations } from '../animations.js';
-import { importDesignFromJSON } from '../logo.js';
+import { importDesignFromJSON , importDesignFromJSONlogo } from '../logo.js';
 import { toggleSettings } from '../settings.js';
 import { showDialog } from '../dialogs.js';
 import { getSobreMiDesign, renderSobreMiContent, clearSobreMiState } from './pages/sobre-mi.js';
@@ -11,6 +11,7 @@ import { setHashLoad } from '../logo.js';
 import { isMobile } from '../mobile.js';
 import { renderMobileHome } from '../mobile/mobile-home.js';
 import { renderMobileSobreMi } from '../mobile/mobile-sobremi.js';
+import { initSimpleMode , toggleSimpleMode } from '../simpleMode.js';
 
 let dicc = null;
 let isSpecialPageActive = false;
@@ -127,7 +128,7 @@ export function animateSidebar(sidebarCells, rows, cellSize, offsetX, offsetY) {
         background-color: ${CONFIG.COLORS.background};
         border: 1px solid ${CONFIG.COLORS.primary};
         opacity: 0;
-        transition: opacity 0.5s ease;
+        transition: opacity 3s ease;
         z-index: 15;
         pointer-events: none;
     `;
@@ -162,7 +163,7 @@ export function animateSidebar(sidebarCells, rows, cellSize, offsetX, offsetY) {
     firstCell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
     
     setTimeout(() => {
-        firstCell.style.transition = `all ${CONFIG.ANIMATION_DURATION}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+        firstCell.style.transition = `all ${CONFIG.ANIMATION_DURATION_LOGO}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
         firstCell.style.left = `${origX}px`;
         firstCell.style.top = `${origY}px`;
         firstCell.style.width = `${sidebarWidth}px`;
@@ -194,32 +195,33 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
     const letterSpacing = getLetterSpacing();
     const d = dicc || { sidebar: {} };
     const sidebarTexts = d.sidebar || {};
-    const menuLabels = sidebarTexts.menuItems || ['INICIO', 'PROYECTOS', 'SOBRE MI', 'CONTACTO', 'MENÚ'];
+    const menuLabels = sidebarTexts.menuItems;
     
     document.querySelectorAll('.sidebar-text, .sidebar-logo-svg, .sidebar-logo-text, #settings-cog-btn, #color-picker-container').forEach(el => el.remove());
     
-    const menuItems = [
+    const menuItemsFinal = [
         { text: menuLabels[0], action: 'inicio' },
         { text: menuLabels[1], action: 'proyectos' },
         { text: menuLabels[2], action: 'sobre-mi' },
         { text: menuLabels[3], action: 'contacto' },
-        { text: menuLabels[4], action: 'configuracion' }
+        { text: menuLabels[4], action: 'configuracion' },
+        { text: 'MODO', action: 'simple-mode' }
     ];
     
-    const totalItems = menuItems.length + 1;
+    const totalItems = menuItemsFinal.length;
     const padding = 30;
     const availableHeight = sidebarHeight - (padding * 2);
     const spacing = availableHeight / (totalItems + 1);
     
     const x = offsetX + sidebarWidth / 2;
-    let currentY = offsetY + padding;
+    let currentY = offsetY + padding + 15;
     
-    const logoY = currentY + 15;
+    const logoY = currentY + 5;
     const logoSVG = createLogo(container, x, logoY);
     container.appendChild(logoSVG);
     setTimeout(() => { logoSVG.style.opacity = '1'; }, 300);
     
-    menuItems.forEach((item, index) => {
+    menuItemsFinal.forEach((item, index) => {
         currentY += spacing;
         const div = document.createElement('div');
         div.className = 'sidebar-text';
@@ -229,15 +231,48 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
         
         const textSpan = document.createElement('span');
         textSpan.className = 'text-content';
-        textSpan.textContent = item.text;
-        div.appendChild(textSpan);
         
         let isActive = false;
         if (item.action === 'inicio') {
             isActive = !isSpecialPageActive;
-        } else if (item.action !== 'configuracion') {
+        } else if (item.action !== 'configuracion' && item.action !== 'simple-mode') {
             isActive = isSpecialPageActive && currentPage === item.action;
         }
+        
+        if (item.action === 'simple-mode') {
+            const isSimpleMode = localStorage.getItem('simple_mode_state') === 'true';
+            const d = dicc || { sidebar: {} };
+            const sidebarTexts = d.sidebar || {};
+            const modeTexts = sidebarTexts.mode || {};
+            const modeText = isSimpleMode ? modeTexts.artistic : modeTexts.simple;
+            
+            const line1 = document.createElement('span');
+            line1.textContent = 'MODO';
+            line1.style.display = 'block';
+            line1.style.lineHeight = '1.2';
+            
+            const line2 = document.createElement('span');
+            line2.textContent = modeText;
+            line2.style.display = 'block';
+            line2.style.lineHeight = '1.2';
+            line2.style.fontWeight = 'bold';
+            
+            textSpan.appendChild(line1);
+            textSpan.appendChild(line2);
+            
+            textSpan.style.display = 'flex';
+            textSpan.style.flexDirection = 'column';
+            textSpan.style.alignItems = 'center';
+            textSpan.style.justifyContent = 'center';
+            textSpan.style.lineHeight = '1.2';
+            textSpan.style.whiteSpace = 'normal';
+            textSpan.style.textAlign = 'center';
+            textSpan.style.gap = '0px';
+        } else {
+            textSpan.textContent = item.text;
+        }
+        
+        div.appendChild(textSpan);
         
         let textColor = CONFIG.COLORS.primary;
         let textShadow = 'var(--text-shadow-normal)';
@@ -272,6 +307,13 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
             align-items: center;
         `;
         
+        if (item.action === 'simple-mode') {
+            const currentTop = parseFloat(div.style.top) || 0;
+            div.style.top = `${currentTop + 2}px`;
+            div.style.setProperty('--before-display', 'none');
+            div.style.color = 'var(--color-primary)';
+        }
+        
         if (isActive) {
             div.classList.add('active');
         }
@@ -299,6 +341,10 @@ export function setupSidebarTexts(rows, cellSize, offsetX, offsetY, sidebarWidth
             }
             if (item.action === 'inicio') {
                 handleSidebarAction('inicio');
+                return;
+            }
+            if (item.action === 'simple-mode') {
+                toggleSimpleMode();
                 return;
             }
             handleSidebarAction(item.action);

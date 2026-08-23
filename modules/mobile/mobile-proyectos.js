@@ -173,18 +173,26 @@ function getLetterSpacing() {
 
 async function loadProyectosData() {
     if (proyectosData) return proyectosData;
-    const response = await fetch('./modules/sidebar/data/proyectos.json');
-    proyectosData = await response.json();
-    return proyectosData;
+    try {
+        const response = await fetch('./modules/sidebar/data/proyectos.json');
+        if (!response.ok) throw new Error('Failed to load proyectos data');
+        proyectosData = await response.json();
+        return proyectosData;
+    } catch (e) {
+        console.error('Error loading proyectos data:', e);
+        return null;
+    }
 }
 
 function getProyectosPagina() {
+    if (!proyectosData || !proyectosData.projects) return [];
     const allProjects = proyectosData.projects;
     const start = paginaProyectos * PROYECTOS_POR_PAGINA;
     return allProjects.slice(start, start + PROYECTOS_POR_PAGINA);
 }
 
 function getTotalPaginas() {
+    if (!proyectosData || !proyectosData.projects) return 1;
     return Math.ceil(proyectosData.projects.length / PROYECTOS_POR_PAGINA);
 }
 
@@ -192,9 +200,16 @@ export async function renderMobileProyectos() {
     const container = document.getElementById('grid-container');
     if (!container) return;
     
+
+    document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-flecha, .mobile-page-indicator').forEach(el => el.remove());
+    
+
     await loadProyectosData();
     
-    document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-flecha, .mobile-page-indicator').forEach(el => el.remove());
+    if (!proyectosData) {
+        console.error('No se pudieron cargar los proyectos');
+        return;
+    }
     
     stopRandomAnimations();
     resetGrid(false);
@@ -241,7 +256,6 @@ function createProyectosContent() {
     let projLeftArrow = null;
     let projRightArrow = null;
     let projCells = [];
-    let extraCells = [];
     
     allCells.forEach(cell => {
         if (cell.dataset.combined === 'true') {
@@ -257,10 +271,7 @@ function createProyectosContent() {
             else if (row === 27 && col === 10) {
                 projRightArrow = cell;
             }
-            else if (row === 3 && (col === 1 || col === 7 || col === 13)) {
-                extraCells.push({ cell, col, index: Math.floor((col - 1) / 6) });
-            }
-            else if ((row === 9 || row === 15 || row === 21) && [1, 7, 13].includes(col)) {
+            else if ((row === 3 || row === 9 || row === 15 || row === 21) && [1, 7, 13].includes(col)) {
                 projCells.push({ cell, row, col, index: projCells.length });
             }
         }
@@ -295,7 +306,7 @@ function createProyectosContent() {
             z-index: 20;
             user-select: none;
         `;
-        title.textContent = proyectosData.title;
+        title.textContent = proyectosData ? proyectosData.title : 'PROYECTOS';
         titleCell.appendChild(title);
     }
     
@@ -306,92 +317,34 @@ function createProyectosContent() {
         paginaProyectos = totalPaginas - 1;
     }
     
-    const allProjects = proyectosData.projects;
-    
-    extraCells.forEach(({ cell }, index) => {
-        const project = allProjects[index];
-        
-        const item = document.createElement('div');
-        item.className = 'mobile-proyecto-item mobile-proyecto-destacado';
-        item.dataset.projectId = project.id;
-        item.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: ${primaryColor};
-            font-family: 'Courier New', monospace;
-            border: 1px solid rgba(${primaryRGB}, 0.15);
-            border-radius: 4px;
-            background: rgba(${primaryRGB}, 0.05);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            pointer-events: auto;
-            z-index: 20;
-            gap: 2px;
-            padding: 8px;
-        `;
-        
-        const icon = document.createElement('span');
-        icon.textContent = project.icon;
-        icon.style.cssText = `
-            font-size: ${textSizes.projectIcon + 4}px;
-            color: ${primaryColor};
-            text-shadow: 0 0 20px rgba(${primaryRGB}, 0.2);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        `;
-        item.appendChild(icon);
-        
-        const name = document.createElement('span');
-        name.textContent = project.name;
-        name.style.cssText = `
-            font-size: ${textSizes.small}px;
-            letter-spacing: ${letterSpacing.small}px;
-            color: ${primaryColor};
-            text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
-            transition: all 0.3s ease;
-            pointer-events: none;
-            text-align: center;
-        `;
-        item.appendChild(name);
-        
-        item.addEventListener('mouseenter', () => {
-            item.style.borderColor = secondaryColor;
-            item.style.background = `rgba(${secondaryRGB}, 0.08)`;
-            item.style.boxShadow = `0 0 30px rgba(${secondaryRGB}, 0.08)`;
-            icon.style.color = secondaryColor;
-            icon.style.textShadow = `0 0 30px rgba(${secondaryRGB}, 0.3)`;
-            name.style.color = secondaryColor;
-        });
-        
-        item.addEventListener('mouseleave', () => {
-            item.style.borderColor = `rgba(${primaryRGB}, 0.15)`;
-            item.style.background = `rgba(${primaryRGB}, 0.05)`;
-            item.style.boxShadow = 'none';
-            icon.style.color = primaryColor;
-            icon.style.textShadow = `0 0 20px rgba(${primaryRGB}, 0.2)`;
-            name.style.color = primaryColor;
-        });
-        
-        item.addEventListener('click', (e) => {
-            e.stopPropagation();
-            import('./mobile-nav.js').then(module => {
-                module.openProyectoDetalle(project.id);
-            });
-        });
-        
-        cell.appendChild(item);
-    });
-    
     projCells.forEach(({ cell }, index) => {
         const project = proyectos[index];
         
+        if (!project) {
+            const empty = document.createElement('div');
+            empty.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: rgba(${secondaryRGB}, 0.1);
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
+                pointer-events: none;
+                z-index: 10;
+            `;
+            empty.textContent = '·';
+            cell.appendChild(empty);
+            cell.style.opacity = '0.20';
+            return;
+        }
+        
+        cell.style.opacity = '1';
+
         const projItem = document.createElement('div');
         projItem.className = 'mobile-proyecto-item';
         projItem.dataset.projectId = project.id;
@@ -405,7 +358,7 @@ function createProyectosContent() {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: ${primaryColor};
+            color: ${secondaryColor};
             font-family: 'Courier New', monospace;
             border: 1px solid rgba(${primaryRGB}, 0.1);
             border-radius: 4px;
@@ -418,12 +371,13 @@ function createProyectosContent() {
             padding: 8px;
         `;
         
+        
         const icon = document.createElement('span');
         icon.textContent = project.icon;
         icon.style.cssText = `
             font-size: ${textSizes.projectIcon + 4}px;
             color: ${primaryColor};
-            text-shadow: 0 0 20px rgba(${primaryRGB}, 0.2);
+            text-shadow: 0 0 20px rgba(${primaryRGB}, 1);
             transition: all 0.3s ease;
             pointer-events: none;
         `;
@@ -435,7 +389,7 @@ function createProyectosContent() {
             font-size: ${textSizes.small}px;
             letter-spacing: ${letterSpacing.small}px;
             color: ${secondaryColor};
-            text-shadow: 0 0 10px rgba(${secondaryRGB}, 0.1);
+            text-shadow: 0 0 10px rgba(${secondaryRGB}, 1);
             transition: all 0.3s ease;
             pointer-events: none;
             text-align: center;

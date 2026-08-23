@@ -145,8 +145,8 @@ function createSobreMiContent() {
     const sobremiTexts = d.mobile.sobremi || {};
     
     const LIGHT_TEXT_SHADOW = `0 0 7px rgba(${primaryRGB}, 1)`;
-    const LIGHT_TEXT_SHADOW_ACTIVE = `0 0 15px rgba(${secondaryRGB}, 1)`;
-    const LIGHT_TEXT_SHADOW_HOVER = `0 0 15px rgba(${secondaryRGB}, 1)`;
+    const LIGHT_TEXT_SHADOW_ACTIVE = `0 0 15px rgba(${primaryRGB}, 1)`;
+    const LIGHT_TEXT_SHADOW_HOVER = `0 0 15px rgba(${primaryRGB}, 1)`;
     
     const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
     
@@ -186,9 +186,7 @@ function createSobreMiContent() {
             font-size: ${textSizes.normalTitle}px;
             letter-spacing: ${letterSpacing.subTitle + 2}px;
             text-transform: uppercase;
-            text-shadow: 0 0 20px rgba(${primaryRGB}, 1),
-                        0 0 40px rgba(${primaryRGB}, 0.6),
-                        0 0 80px rgba(${primaryRGB}, 0.3);
+            text-shadow: ${LIGHT_TEXT_SHADOW};
             pointer-events: none;
             z-index: 20;
             user-select: none;
@@ -397,7 +395,7 @@ function createSobreMiContent() {
     const nameLine = document.createElement('div');
     nameLine.textContent = bioName;
     nameLine.style.cssText = `
-        color: ${secondaryColor};
+        color: ${primaryColor};
         font-family: 'Courier New', monospace;
         font-size: ${textSizes.medium}px;
         letter-spacing: ${letterSpacing.medium + 1}px;
@@ -410,13 +408,13 @@ function createSobreMiContent() {
 
     const bioText = document.createElement('div');
     bioText.style.cssText = `
-        color: ${primaryColor};
+        color: ${secondaryColor};
         font-family: 'Courier New', monospace;
         font-size: ${textSizes.medium}px;
         line-height: 1.3;
         letter-spacing: ${letterSpacing.medium}px;
         text-align: justify;
-        text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
+        text-shadow: ${LIGHT_TEXT_SHADOW};
         padding-right: 4px;
     `;
     bioText.textContent = content.bioText;
@@ -445,12 +443,12 @@ function createSobreMiContent() {
         
         const infoContent = document.createElement('div');
         infoContent.style.cssText = `
-            color: ${primaryColor};
+            color: ${secondaryColor};
             font-family: 'Courier New', monospace;
             font-size: ${textSizes.small}px;
             line-height: 1.6;
             letter-spacing: ${letterSpacing.medium}px;
-            text-shadow: 0 0 10px rgba(${primaryRGB}, 0.1);
+            text-shadow: ${LIGHT_TEXT_SHADOW};
             padding-right: 4px;
             display: flex;
             flex-direction: column;
@@ -458,129 +456,129 @@ function createSobreMiContent() {
         `;
         
         const habilidadesTitle = document.createElement('div');
-        habilidadesTitle.textContent = sobremiTexts.skillsTitle || '◆ HABILIDADES';
+        habilidadesTitle.textContent = sobremiTexts.skillsTitle || ' ';
         habilidadesTitle.style.cssText = `
-            color: ${secondaryColor};
+            color: ${primaryColor};
             font-size: ${textSizes.small + 1}px;
             letter-spacing: ${letterSpacing.small + 1.5}px;
             font-weight: bold;
             text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
             text-align: center;
-            border-bottom: 1px solid rgba(${secondaryRGB}, 1);
+            border-bottom: 1px solid rgba(${primaryRGB}, 1);
             padding-bottom: 4px;
         `;
         infoContent.appendChild(habilidadesTitle);
         
         const habilidadesGrid = document.createElement('div');
-        habilidadesGrid.style.cssText = `
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px 8px;
-            margin-bottom: 6px;
-            width: 100%;
-        `;
+habilidadesGrid.style.cssText = `
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 8px;
+    margin-bottom: 6px;
+    width: 100%;
+`;
 
-        const skills = content.skills || [];
-        skills.forEach((h) => {
-            const item = document.createElement('div');
-            const isLong = h.name && h.name.length > 18;
-            
-            item.style.cssText = `
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0;
-                font-size: ${isLong ? textSizes.tiny : textSizes.tiny + 1}px;
-                letter-spacing: ${isLong ? letterSpacing.tiny - 0.5 : letterSpacing.tiny}px;
-                color: ${secondaryColor};
-                text-shadow: ${LIGHT_TEXT_SHADOW};
-                transition: all 0.2s ease;
-                cursor: default;
-                font-family: 'Courier New', monospace;
-                text-transform: uppercase;
-                position: relative;
-                grid-column: ${isLong ? '1 / -1' : 'auto'};
-                width: 100%;
-            `;
-            
-            const iconBox = document.createElement('div');
-            iconBox.style.cssText = `
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 24px;
-                height: 20px;
-                background: rgba(${primaryRGB}, 1);
-                border-radius: 4px 0 0 4px;
-                color: ${CONFIG.COLORS.background};
-                text-shadow: none;
-                font-size: ${textSizes.small + 2}px;
-                flex-shrink: 0;
-                transition: all 0.2s ease;
-                border: 1px solid rgba(${primaryRGB}, 0.5);
-                box-shadow: 0 0 20px rgba(${primaryRGB}, 0.5);
-            `;
-            iconBox.textContent = h.icon || '◆';
-            
-            const nameBox = document.createElement('div');
-            nameBox.style.cssText = `
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 0 6px;
-                height: 20px;
-                background: rgba(${primaryRGB}, 0.1);
-                border-radius: 0 4px 4px 0;
-                color: ${secondaryColor};
-                text-shadow: ${LIGHT_TEXT_SHADOW};
-                font-size: ${isLong ? textSizes.tiny : textSizes.tiny + 1}px;
-                letter-spacing: ${letterSpacing.tiny}px;
-                flex: 1;
-                transition: all 0.2s ease;
-                border: 1px solid rgba(${primaryRGB}, 0.5);
-                box-shadow: 0 0 20px rgba(${primaryRGB}, 0.2);
-                text-align: center;
-            `;
-            nameBox.textContent = h.name || h;
-            item.appendChild(iconBox);
-            item.appendChild(nameBox);
-            
-            item.addEventListener('mouseenter', () => {
-                iconBox.style.background = `rgba(${secondaryRGB}, 0.7)`;
-                iconBox.style.borderColor = secondaryColor;
-                iconBox.style.color = CONFIG.COLORS.background;
-                iconBox.style.textShadow = `0 0 10px ${secondaryColor}`;
-                nameBox.style.background = `rgba(${secondaryRGB}, 0.1)`;
-                nameBox.style.borderColor = secondaryColor;
-                nameBox.style.color = secondaryColor;
-                nameBox.style.textShadow = LIGHT_TEXT_SHADOW_HOVER;
-            });
-            
-            item.addEventListener('mouseleave', () => {
-                iconBox.style.background = `rgba(${primaryRGB}, 0.7)`;
-                iconBox.style.borderColor = primaryColor;
-                iconBox.style.color = CONFIG.COLORS.background;
-                iconBox.style.textShadow = 'none';
-                nameBox.style.background = `rgba(${primaryRGB}, 0.1)`;
-                nameBox.style.borderColor = primaryColor;
-                nameBox.style.color = primaryColor;
-                nameBox.style.textShadow = LIGHT_TEXT_SHADOW;
-            });
-            
-            habilidadesGrid.appendChild(item);
-        });
-        infoContent.appendChild(habilidadesGrid);
+const skills = content.skills || [];
+skills.forEach((h) => {
+    const item = document.createElement('div');
+    const isLong = h.name && h.name.length > 18;
+    
+    item.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        font-size: ${isLong ? textSizes.tiny : textSizes.tiny + 1}px;
+        letter-spacing: ${isLong ? letterSpacing.tiny - 0.5 : letterSpacing.tiny}px;
+        color: ${secondaryColor};
+        text-shadow: ${LIGHT_TEXT_SHADOW};
+        transition: all 0.2s ease;
+        cursor: default;
+        font-family: 'Courier New', monospace;
+        text-transform: uppercase;
+        position: relative;
+        grid-column: ${isLong ? '1 / -1' : 'auto'};
+        width: 100%;
+    `;
+    
+    const iconBox = document.createElement('div');
+    iconBox.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 20px;
+        background: rgba(${primaryRGB}, 1);
+        border-radius: 4px 0 0 4px;
+        color: ${CONFIG.COLORS.background};
+        text-shadow: none;
+        font-size: ${textSizes.small + 2}px;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(${primaryRGB}, 0.5);
+        box-shadow: 0 0 20px rgba(${primaryRGB}, 0.5);
+    `;
+    iconBox.textContent = h.icon || '◆';
+    
+    const nameBox = document.createElement('div');
+    nameBox.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 6px;
+        height: 20px;
+        background: rgba(${primaryRGB}, 0.1);
+        border-radius: 0 4px 4px 0;
+        color: ${secondaryColor};
+        text-shadow: ${LIGHT_TEXT_SHADOW};
+        font-size: ${isLong ? textSizes.tiny : textSizes.tiny + 1}px;
+        letter-spacing: ${letterSpacing.tiny}px;
+        flex: 1;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(${primaryRGB}, 0.5);
+        box-shadow: 0 0 20px rgba(${primaryRGB}, 0.2);
+        text-align: center;
+    `;
+    nameBox.textContent = h.name || h;
+    item.appendChild(iconBox);
+    item.appendChild(nameBox);
+    
+    item.addEventListener('mouseenter', () => {
+        iconBox.style.background = `rgba(${secondaryRGB}, 0.7)`;
+        iconBox.style.borderColor = secondaryColor;
+        iconBox.style.color = CONFIG.COLORS.background;
+        iconBox.style.textShadow = `0 0 10px ${secondaryColor}`;
+        nameBox.style.background = `rgba(${secondaryRGB}, 0.1)`;
+        nameBox.style.borderColor = secondaryColor;
+        nameBox.style.color = primaryColor;
+        nameBox.style.textShadow = LIGHT_TEXT_SHADOW_HOVER;
+    });
+    
+    item.addEventListener('mouseleave', () => {
+        iconBox.style.background = `rgba(${primaryRGB}, 0.7)`;
+        iconBox.style.borderColor = primaryColor;
+        iconBox.style.color = CONFIG.COLORS.background;
+        iconBox.style.textShadow = 'none';
+        nameBox.style.background = `rgba(${primaryRGB}, 0.1)`;
+        nameBox.style.borderColor = primaryColor;
+        nameBox.style.color = secondaryColor;
+        nameBox.style.textShadow = LIGHT_TEXT_SHADOW;
+    });
+    
+    habilidadesGrid.appendChild(item);
+});
+infoContent.appendChild(habilidadesGrid);
         
         const herramientasTitle = document.createElement('div');
-        herramientasTitle.textContent = sobremiTexts.toolsTitle || '◆ HERRAMIENTAS Y TECNOLOGIAS';
+        herramientasTitle.textContent = sobremiTexts.toolsTitle || ' ';
         herramientasTitle.style.cssText = `
-            color: ${secondaryColor};
+            color: ${primaryColor};
             font-size: ${textSizes.small + 1}px;
             letter-spacing: ${letterSpacing.small + 1.5}px;
             font-weight: bold;
             text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
             text-align: center;
-            border-bottom: 1px solid rgba(${secondaryRGB}, 1);
+            border-bottom: 1px solid rgba(${primaryRGB}, 1);
             padding-bottom: 4px;
             margin-top: 4px;
         `;
@@ -592,7 +590,7 @@ function createSobreMiContent() {
             letter-spacing: ${letterSpacing.medium}px;
             text-align: center;
             padding: 4px 0;
-            color: ${primaryColor};
+            color: ${secondaryColor};
             text-shadow: ${LIGHT_TEXT_SHADOW};
             line-height: 1.8;
         `;
@@ -600,24 +598,24 @@ function createSobreMiContent() {
         let toolsHTML = '';
         herramientasContent.forEach(item => {
             if (item.label) {
-                toolsHTML += `<div><span style="color:${secondaryColor};">${item.label}</span> ${item.items}</div>`;
+                toolsHTML += `<div><span style="color:${primaryColor};">${item.label}</span> ${item.items}</div>`;
             } else if (item.note) {
-                toolsHTML += `<div style="margin-top:4px; padding-top:6px; border-top:1px solid ${secondaryColor}; font-style:italic; font-size:${textSizes.tiny + 1}px; letter-spacing:${letterSpacing.tiny}px; color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW};">${item.note}</div>`;
+                toolsHTML += `<div style="margin-top:4px; padding-top:6px; border-top:1px solid ${primaryColor}; font-style:italic; font-size:${textSizes.tiny + 1}px; letter-spacing:${letterSpacing.tiny}px; color:${secondaryColor}; text-shadow:${LIGHT_TEXT_SHADOW};">${item.note}</div>`;
             }
         });
         toolsText.innerHTML = toolsHTML;
         infoContent.appendChild(toolsText);
         
         const defineTitle = document.createElement('div');
-        defineTitle.textContent = sobremiTexts.defineTitle || '◆ LO QUE ME DEFINE';
+        defineTitle.textContent = sobremiTexts.defineTitle || ' ';
         defineTitle.style.cssText = `
-            color: ${secondaryColor};
+            color: ${primaryColor};
             font-size: ${textSizes.small + 1}px;
             letter-spacing: ${letterSpacing.small + 1.5}px;
             font-weight: bold;
             text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
             text-align: center;
-            border-bottom: 1px solid rgba(${secondaryRGB}, 1);
+            border-bottom: 1px solid rgba(${primaryRGB}, 1);
             padding-bottom: 4px;
             margin-top: 4px;
         `;
@@ -638,7 +636,7 @@ function createSobreMiContent() {
                 font-size: ${textSizes.small + 2}px;
                 letter-spacing: ${letterSpacing.medium}px;
                 padding: 2px 0;
-                color: ${primaryColor};
+                color: ${secondaryColor};
                 text-shadow: ${LIGHT_TEXT_SHADOW};
                 display: flex;
                 align-items: center;
@@ -648,9 +646,9 @@ function createSobreMiContent() {
             
             if (typeof item === 'string' && item.includes('gusto musical')) {
                 el.style.gridColumn = '1 / -1';
-                const playlistLink = content.playlistLink || '#';
-                const playlistText = content.playlistText || 'checa mi playlist';
-                el.innerHTML = `◆ Mi genial gusto musical, <a href="${playlistLink}" target="_blank" style="color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW}; text-decoration:underline; text-underline-offset:2px; transition:all 0.3s ease; cursor:pointer; pointer-events:auto;" onmouseenter="this.style.color='${secondaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW_HOVER}';" onmouseleave="this.style.color='${primaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW}';">${playlistText}</a>`;
+                const playlistLink = content.playlistLink || ' ';
+                const playlistText = content.playlistText || ' ';
+                el.innerHTML = `◆ Mi genial gusto musical, <a href="${playlistLink}" target="_blank" style="color:${secondaryColor}; text-shadow:${LIGHT_TEXT_SHADOW}; text-decoration:underline; text-underline-offset:2px; transition:all 0.3s ease; cursor:pointer; pointer-events:auto;" onmouseenter="this.style.color='${primaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW_HOVER}';" onmouseleave="this.style.color='${secondaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW}';">${playlistText}</a>`;
             } else if (typeof item === 'string') {
                 el.textContent = item;
             } else {
@@ -661,21 +659,6 @@ function createSobreMiContent() {
         });
         infoContent.appendChild(defineGrid);
         
-        const fraseDiv = document.createElement('div');
-        fraseDiv.textContent = content.frase;
-        fraseDiv.style.cssText = `
-            color: ${secondaryColor};
-            font-size: ${textSizes.small + 1}px;
-            letter-spacing: ${letterSpacing.small + 1.5}px;
-            font-weight: bold;
-            text-align: center;
-            text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
-            border-top: 1px solid rgba(${secondaryRGB}, 1);
-            padding-top: 6px;
-            margin-top: 4px;
-            line-height: 1.6;
-        `;
-        infoContent.appendChild(fraseDiv);
         
         infoWrapper.appendChild(infoContent);
         infoCell.appendChild(infoWrapper);

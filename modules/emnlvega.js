@@ -1,5 +1,5 @@
 import { CONFIG } from './config.js';
-import { importDesignFromJSON } from './logo.js';
+import { importDesignFromJSON , importDesignFromJSONlogo  } from './logo.js';
 import { designCells } from './interactions.js';
 
 const ANIMATION_CONFIG = {
@@ -617,7 +617,7 @@ export function startLogoAnimation(onComplete = null, instant = false) {
         
         if (instant) {
             letterDesigns.forEach((letterDesign) => {
-                importDesignFromJSON(letterDesign, () => {}, false);
+                importDesignFromJSONlogo(letterDesign, () => {}, false);
             });
             
             if (alwaysVisibleOnInicio) {
@@ -643,7 +643,7 @@ export function startLogoAnimation(onComplete = null, instant = false) {
                 const timeout = setTimeout(() => {
                     if (!lettersImage && index > 0) return;
                     
-                    importDesignFromJSON(letterDesign, () => {
+                    importDesignFromJSONlogo(letterDesign, () => {
                         if (index === letterDesigns.length - 1) {
                             const finalTimeout = setTimeout(() => {
                                 if (alwaysVisibleOnInicio) {

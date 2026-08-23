@@ -12,8 +12,8 @@ let textureWasVisibleBefore = true;
 let isRendering = false;
 
 const LIGHT_TEXT_SHADOW = `0 0 7px rgba(var(--color-primary-rgb), 1)`;
-const LIGHT_TEXT_SHADOW_ACTIVE = `0 0 15px rgba(var(--color-secondary-rgb), 1)`;
-const LIGHT_TEXT_SHADOW_HOVER = `0 0 15px rgba(var(--color-secondary-rgb), 1)`;
+const LIGHT_TEXT_SHADOW_ACTIVE = `0 0 15px rgba(var(--color-primary-rgb), 1)`;
+const LIGHT_TEXT_SHADOW_HOVER = `0 0 15px rgba(var(--color-primary-rgb), 1)`;
 
 function getTextSizes() {
     return CONFIG.TEXT_SIZES || {
@@ -384,7 +384,7 @@ export async function renderSobreMiContent() {
                 justify-content: center;
                 align-items: center;
                 padding: 25px 40px;
-                color: ${primaryColor};
+                color: ${secondaryColor};
                 font-family: 'Courier New', monospace;
                 pointer-events: none;
                 z-index: 20;
@@ -395,7 +395,7 @@ export async function renderSobreMiContent() {
             const bioTitle = document.createElement('div');
             bioTitle.textContent = data.content.bioTitle;
             bioTitle.style.cssText = `
-                color: ${secondaryColor};
+                color: ${primaryColor};
                 font-size: ${textSizes.subTitle}px;
                 letter-spacing: ${letterSpacing.subTitle}px;
                 font-weight: bold;
@@ -408,7 +408,7 @@ export async function renderSobreMiContent() {
             const nameLine = document.createElement('div');
             nameLine.textContent = data.content.bioName.replace('%age%', age);
             nameLine.style.cssText = `
-                color: ${secondaryColor};
+                color: ${primaryColor};
                 font-size: ${textSizes.subTitle}px;
                 letter-spacing: ${letterSpacing.subTitle * 0.5}px;
                 font-weight: bold;
@@ -424,7 +424,7 @@ export async function renderSobreMiContent() {
                 letter-spacing: ${letterSpacing.big}px;
                 max-width: 90%;
                 text-align: justify;
-                color: ${primaryColor};
+                color: ${secondaryColor};
                 text-shadow: ${LIGHT_TEXT_SHADOW};
             `;
             bioText.textContent = data.content.bioText;
@@ -439,11 +439,11 @@ export async function renderSobreMiContent() {
                     background: transparent;
                 }
                 .sobre-mi-content::-webkit-scrollbar-thumb {
-                    background: rgba(${primaryRGB}, 0.3);
+                    background: rgba(${secondaryRGB}, 0.3);
                     border-radius: 2px;
                 }
                 .sobre-mi-content::-webkit-scrollbar-thumb:hover {
-                    background: rgba(${primaryRGB}, 0.6);
+                    background: rgba(${secondaryRGB}, 0.6);
                 }
             `;
             document.head.appendChild(styleScroll);
@@ -472,7 +472,7 @@ export async function renderSobreMiContent() {
             const skillsTitle = document.createElement('div');
             skillsTitle.textContent = data.content.skillsTitle;
             skillsTitle.style.cssText = `
-                color: ${secondaryColor};
+                color: ${primaryColor};
                 font-size: ${textSizes.subTitle}px;
                 letter-spacing: ${letterSpacing.subTitle}px;
                 font-weight: bold;
@@ -497,7 +497,7 @@ export async function renderSobreMiContent() {
                     gap: 0;
                     font-size: ${textSizes.small}px;
                     letter-spacing: ${letterSpacing.small}px;
-                    color: ${secondaryColor};
+                    color: ${primaryColor};
                     text-shadow: ${LIGHT_TEXT_SHADOW};
                     transition: all 0.2s ease;
                     cursor: default;
@@ -517,7 +517,7 @@ export async function renderSobreMiContent() {
                     border-radius: 4px 0 0 4px;
                     color: ${CONFIG.COLORS.background};
                     text-shadow: none;
-                    font-size: ${textSizes.projectIcon}px;
+                    font-size: ${textSizes.subTitle}px;
                     flex-shrink: 0;
                     transition: all 0.2s ease;
                     border: 1px solid rgba(${primaryRGB}, 0.5);
@@ -548,24 +548,24 @@ export async function renderSobreMiContent() {
                 item.appendChild(nameBox);
                 
                 item.addEventListener('mouseenter', () => {
-                    iconBox.style.background = `rgba(${secondaryRGB}, 0.7)`;
-                    iconBox.style.borderColor = secondaryColor;
+                    iconBox.style.background = `rgba(${primaryRGB}, 0.7)`;
+                    iconBox.style.borderColor = primaryColor;
                     iconBox.style.color = CONFIG.COLORS.background;
-                    iconBox.style.textShadow = `0 0 10px ${secondaryColor}`;
-                    nameBox.style.background = `rgba(${secondaryRGB}, 0.1)`;
-                    nameBox.style.borderColor = secondaryColor;
-                    nameBox.style.color = secondaryColor;
+                    iconBox.style.textShadow = `0 0 10px ${primaryColor}`;
+                    nameBox.style.background = `rgba(${primaryRGB}, 0.1)`;
+                    nameBox.style.borderColor = primaryColor;
+                    nameBox.style.color = primaryColor;
                     nameBox.style.textShadow = LIGHT_TEXT_SHADOW_HOVER;
                 });
 
                 item.addEventListener('mouseleave', () => {
-                    iconBox.style.background = `rgba(${primaryRGB}, 0.7)`;
-                    iconBox.style.borderColor = primaryColor;
+                    iconBox.style.background = `rgba(${secondaryRGB}, 0.7)`;
+                    iconBox.style.borderColor = secondaryColor;
                     iconBox.style.color = CONFIG.COLORS.background;
                     iconBox.style.textShadow = 'none';
-                    nameBox.style.background = `rgba(${primaryRGB}, 0.1)`;
-                    nameBox.style.borderColor = primaryColor;
-                    nameBox.style.color = primaryColor;
+                    nameBox.style.background = `rgba(${secondaryRGB}, 0.1)`;
+                    nameBox.style.borderColor = secondaryColor;
+                    nameBox.style.color = secondaryColor;
                     nameBox.style.textShadow = LIGHT_TEXT_SHADOW;
                 });
                 
@@ -597,7 +597,7 @@ export async function renderSobreMiContent() {
             const toolsTitle = document.createElement('div');
             toolsTitle.textContent = data.content.toolsTitle;
             toolsTitle.style.cssText = `
-                color: ${secondaryColor};
+                color: ${primaryColor};
                 font-size: ${textSizes.subTitle}px;
                 letter-spacing: ${letterSpacing.subTitle}px;
                 font-weight: bold;
@@ -611,7 +611,7 @@ export async function renderSobreMiContent() {
                 font-size: ${textSizes.medium}px;
                 line-height: ${lineHeight.medium};
                 letter-spacing: ${letterSpacing.medium}px;
-                color: ${primaryColor};
+                color: ${secondaryColor};
                 text-shadow: ${LIGHT_TEXT_SHADOW};
                 max-width: 90%;
                 text-align: center;
@@ -620,9 +620,9 @@ export async function renderSobreMiContent() {
             let toolsHTML = '';
             data.content.toolsContent.forEach(item => {
                 if (item.label) {
-                    toolsHTML += `<div><span style="color:${secondaryColor};">${item.label}</span> ${item.items}</div>`;
+                    toolsHTML += `<div><span style="color:${primaryColor};">${item.label}</span> ${item.items}</div>`;
                 } else if (item.note) {
-                    toolsHTML += `<div style="margin-top:4px; padding-top:6px; border-top:1px solid ${secondaryColor}; font-style:italic; font-size:${textSizes.small}px; letter-spacing:${letterSpacing.small}px; line-height:${lineHeight.small}; color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW};">${item.note}</div>`;
+                    toolsHTML += `<div style="margin-top:4px; padding-top:6px; border-top:1px solid ${primaryColor}; font-style:italic; font-size:${textSizes.small}px; letter-spacing:${letterSpacing.small}px; line-height:${lineHeight.small}; color:${secondaryColor}; text-shadow:${LIGHT_TEXT_SHADOW};">${item.note}</div>`;
                 }
             });
             toolsContent.innerHTML = toolsHTML;
@@ -653,7 +653,7 @@ export async function renderSobreMiContent() {
             const defineTitle = document.createElement('div');
             defineTitle.textContent = data.content.defineTitle;
             defineTitle.style.cssText = `
-                color: ${secondaryColor};
+                color: ${primaryColor};
                 font-size: ${textSizes.subTitle}px;
                 letter-spacing: ${letterSpacing.subTitle}px;
                 font-weight: bold;
@@ -678,13 +678,13 @@ export async function renderSobreMiContent() {
                     letter-spacing: ${letterSpacing.small}px;
                     line-height: ${lineHeight.small};
                     padding: 1px 0;
-                    color: ${primaryColor};
+                    color: ${secondaryColor};
                     text-shadow: ${LIGHT_TEXT_SHADOW};
                     text-align: center;
                 `;
                 
                 if (index === playlistItem) {
-                    el.innerHTML = `${data.content.playlistPrefix}<a href="${data.content.playlistLink}" target="_blank" style="color:${primaryColor}; text-shadow:${LIGHT_TEXT_SHADOW}; text-decoration:underline; text-underline-offset:2px; transition:all 0.3s ease; cursor:pointer; pointer-events:auto;" onmouseenter="this.style.color='${secondaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW_HOVER}';" onmouseleave="this.style.color='${primaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW}';">${data.content.playlistText}</a>`;
+                    el.innerHTML = `${data.content.playlistPrefix}<a href="${data.content.playlistLink}" target="_blank" style="color:${secondaryColor}; text-shadow:${LIGHT_TEXT_SHADOW}; text-decoration:underline; text-underline-offset:2px; transition:all 0.3s ease; cursor:pointer; pointer-events:auto;" onmouseenter="this.style.color='${primaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW_HOVER}';" onmouseleave="this.style.color='${secondaryColor}'; this.style.textShadow='${LIGHT_TEXT_SHADOW}';">${data.content.playlistText}</a>`;
                 } else {
                     el.textContent = item;
                 }
@@ -694,21 +694,7 @@ export async function renderSobreMiContent() {
             
             define.appendChild(defineGrid);
             
-            const frase = document.createElement('div');
-            frase.textContent = data.content.frase;
-            frase.style.cssText = `
-                color: ${secondaryColor};
-                font-size: ${textSizes.subTitle}px;
-                letter-spacing: ${letterSpacing.subTitle}px;
 
-                text-shadow: ${LIGHT_TEXT_SHADOW_ACTIVE};
-
-
-                width: 80%;
-                text-align: center;
-                font-weight: bold;
-            `;
-            define.appendChild(frase);
             
             defineCell.appendChild(define);
         }

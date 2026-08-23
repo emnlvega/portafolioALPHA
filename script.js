@@ -1,4 +1,4 @@
-import { CONFIG, LOGO_DESIGN, updateColors, getCurrentColors, createColors, MOBILE_SIMULATOR_CONFIG, getResponsiveConfig } from './modules/config.js';
+import { CONFIG, LOGO_DESIGN, updateColors, getCurrentColors, createColors, getResponsiveConfig } from './modules/config.js';
 import { createGrid, repositionGrid, repositionSidebarOverlay, repositionSidebarTexts, repositionCombinedCells, getCellPosition } from './modules/grid.js';
 import { resetGrid, exportDesignToJSON, designCells, setupCellEvents, toggleCellOff, cleanInicioContent } from './modules/interactions.js';
 import { importDesignFromJSON } from './modules/logo.js';
@@ -15,10 +15,10 @@ import { loadContactoData } from './modules/sidebar/pages/contacto.js';
 import { isMobile, getDeviceType } from './modules/mobile.js';
 import { MOBILE_CONFIG } from './modules/mobile/mobile-config.js';
 import { renderMobileHome } from './modules/mobile/mobile-home.js';
-import { toggleMobileSimulator } from './modules/mobile/mobile-simulator.js';
 import { navigateMobileTo } from './modules/mobile/mobile-nav.js';
 import { getCurrentMobilePage } from './modules/mobile/mobile-nav.js';
 import { startLogoAnimation, stopLogoAnimation, enableLogoAnimation, disableLogoAnimation, startFlickerOnInicio, setOnInicio, stopFlickerOnInicio } from './modules/emnlvega.js';
+import { initSimpleMode } from './modules/simpleMode.js';
 
 let dicc = null;
 let gridData = null;
@@ -507,17 +507,16 @@ function loadSpecialPage(page, projectId = null) {
         }
         
         if (isMobile()) {
-            if (projectId) {
-                import('./modules/mobile/mobile-nav.js').then(module => {
-                    module.openProyectoDetalle(projectId);
-                });
-                return;
-            } else {
-                import('./modules/mobile/mobile-nav.js').then(module => {
+            import('./modules/mobile/mobile-nav.js').then(module => {
+                if (projectId) {
+                    setTimeout(() => {
+                        module.openProyectoDetalle(projectId);
+                    }, 500);
+                } else {
                     module.navigateMobileTo('proyectos');
-                });
-                return;
-            }
+                }
+            });
+            return;
         }
         
         handleSidebarAction('proyectos');
@@ -629,13 +628,15 @@ function loadInicio(instant = false) {
     if (gridData) {
         const existingOverlay = document.querySelector('.sidebar-overlay');
         if (!existingOverlay) {
-            animateSidebar(
-                gridData.sidebarCells,
+            setTimeout(() => {
+                animateSidebar(
+                    gridData.sidebarCells,
                 gridData.rows,
                 gridData.cellSize,
                 gridData.offsetX || 0,
                 gridData.offsetY || 0
-            );
+                );
+            }, 2700);
         }
     }
     
@@ -662,87 +663,10 @@ document.addEventListener('loadInicioInstant', function() {
     loadInicio(true);
 });
 
-function initMobileSimulatorFeature() {
-    if (isMobile()) return;
-    
-    const exportBtnText = dicc.script.mobileExportBtn;
-    
-    const exportBtn = document.createElement('button');
-    exportBtn.id = 'mobile-export-btn';
-    exportBtn.textContent = exportBtnText;
-    exportBtn.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 99999;
-        background: rgba(0, 0, 0, 0.8);
-        border: 1px solid ${CONFIG.COLORS.primary};
-        color: ${CONFIG.COLORS.primary};
-        padding: 8px 16px;
-        font-family: 'Courier New', monospace;
-        font-size: 10px;
-        letter-spacing: 2px;
-        cursor: pointer;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-        display: none;
-    `;
-    
-    exportBtn.addEventListener('mouseenter', () => {
-        exportBtn.style.borderColor = CONFIG.COLORS.secondary;
-        exportBtn.style.color = CONFIG.COLORS.secondary;
-        exportBtn.style.boxShadow = `0 0 30px rgba(${CONFIG.COLORS.primaryRGB}, 0.2)`;
-    });
-    exportBtn.addEventListener('mouseleave', () => {
-        exportBtn.style.borderColor = CONFIG.COLORS.primary;
-        exportBtn.style.color = CONFIG.COLORS.primary;
-        exportBtn.style.boxShadow = '0 0 30px rgba(0, 0, 0, 0.5)';
-    });
-    
-    exportBtn.addEventListener('click', () => {
-        if (document.body.classList.contains('mobile-simulator')) {
-            if (window.exportMobileDesign) {
-                window.exportMobileDesign();
-            }
-        } else {
-            toggleMobileSimulator();
-            setTimeout(() => {
-                if (window.exportMobileDesign) {
-                    window.exportMobileDesign();
-                }
-            }, 300);
-        }
-    });
-    
-    document.body.appendChild(exportBtn);
-    
-    const observer = new MutationObserver(() => {
-        const isActive = document.body.classList.contains('mobile-simulator');
-        exportBtn.style.display = isActive ? 'block' : 'none';
-    });
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-}
 
 document.addEventListener('keydown', (e) => {
     if (isMobile()) return;
     
-    if (e.key === 'x' || e.key === 'X') {
-        const target = e.target;
-        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-            return;
-        }
-        e.preventDefault();
-        
-        if (MOBILE_SIMULATOR_CONFIG.ENABLED) {
-            import('./modules/mobile/mobile-simulator.js').then(module => {
-                module.toggleMobileSimulator();
-            });
-        }
-        return;
-    }
     
     if ((e.key === 'e' || e.key === 'E') && document.body.classList.contains('mobile-simulator')) {
         const target = e.target;
@@ -774,6 +698,13 @@ function applyMobileConfig() {
         CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = false;
         CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = true;
         
+        CONFIG.ANIMATIONS.OPACITY_WAVE.DURATION = 2000;
+        CONFIG.ANIMATIONS.OPACITY_WAVE.MIN_INTERVAL = 100;
+        CONFIG.ANIMATIONS.OPACITY_WAVE.MAX_INTERVAL = 100;
+        CONFIG.ANIMATIONS.OPACITY_WAVE.MAX_SIMULTANEOUS = 8;
+        CONFIG.ANIMATIONS.OPACITY_WAVE.MIN_OPACITY = 0.2;
+        CONFIG.ANIMATIONS.OPACITY_WAVE.MAX_OPACITY = 0.9;
+        
         document.documentElement.style.setProperty('--cell-size', `${grid.CELL_SIZE}px`);
         document.documentElement.style.setProperty('--cell-gap', `${grid.GAP}px`);
         document.documentElement.style.setProperty('--cell-radius', `${grid.BORDER_RADIUS}px`);
@@ -790,39 +721,78 @@ function applyMobileConfig() {
             }
         }, 50);
         
-        applyMobileOverlays();
+
     }
 }
 
 function applyMobileOverlays() {
+
+    let savedSettings = null;
+    try {
+        const saved = localStorage.getItem('edesign_settings');
+        if (saved) {
+            savedSettings = JSON.parse(saved);
+        }
+    } catch (e) {}
+    
     const show = MOBILE_CONFIG.SHOW || {};
     
     const grain = document.getElementById('grain-overlay');
     if (grain) {
-        grain.style.display = show.grain !== undefined ? (show.grain ? 'block' : 'none') : 'block';
+
+        if (savedSettings && savedSettings.grain !== undefined) {
+            grain.style.display = savedSettings.grain ? 'block' : 'none';
+        } else {
+            grain.style.display = show.grain !== undefined ? (show.grain ? 'block' : 'none') : 'block';
+        }
     }
     
     const gaussian = document.getElementById('gaussian-blur');
     if (gaussian) {
-        gaussian.style.display = show.gaussianBlur !== undefined ? (show.gaussianBlur ? 'block' : 'none') : 'none';
+        if (savedSettings && savedSettings.gaussianBlur !== undefined) {
+            gaussian.style.display = savedSettings.gaussianBlur ? 'block' : 'none';
+        } else {
+            gaussian.style.display = show.gaussianBlur !== undefined ? (show.gaussianBlur ? 'block' : 'none') : 'none';
+        }
     }
     
     const bloom = document.getElementById('bloom-overlay');
     if (bloom) {
-        bloom.style.display = show.bloom !== undefined ? (show.bloom ? 'block' : 'none') : 'block';
+        if (savedSettings && savedSettings.bloom !== undefined) {
+            bloom.style.display = savedSettings.bloom ? 'block' : 'none';
+        } else {
+            bloom.style.display = show.bloom !== undefined ? (show.bloom ? 'block' : 'none') : 'block';
+        }
     }
     
     const burnBlur = document.getElementById('burn-blur');
     if (burnBlur) {
-        burnBlur.style.display = show.burnBlur !== undefined ? (show.burnBlur ? 'block' : 'none') : 'block';
+        if (savedSettings && savedSettings.burnBlur !== undefined) {
+            burnBlur.style.display = savedSettings.burnBlur ? 'block' : 'none';
+        } else {
+            burnBlur.style.display = show.burnBlur !== undefined ? (show.burnBlur ? 'block' : 'none') : 'block';
+        }
     }
     
+
     const texture = document.getElementById('overlay-container');
     if (texture) {
-        texture.style.display = show.texture !== undefined ? (show.texture ? 'block' : 'none') : 'block';
+
+        if (savedSettings && savedSettings.textura !== undefined) {
+            texture.style.display = savedSettings.textura ? 'block' : 'none';
+        } else {
+            texture.style.display = show.texture !== undefined ? (show.texture ? 'block' : 'none') : 'block';
+        }
     }
     
-    if (show.scanlines !== undefined) {
+
+    if (savedSettings && savedSettings.scanlines !== undefined) {
+        if (savedSettings.scanlines) {
+            document.body.classList.remove('no-scanlines');
+        } else {
+            document.body.classList.add('no-scanlines');
+        }
+    } else if (show.scanlines !== undefined) {
         if (show.scanlines) {
             document.body.classList.remove('no-scanlines');
         } else {
@@ -832,7 +802,14 @@ function applyMobileOverlays() {
         document.body.classList.add('no-scanlines');
     }
     
-    if (show.vignette !== undefined) {
+
+    if (savedSettings && savedSettings.vignette !== undefined) {
+        if (savedSettings.vignette) {
+            document.body.classList.remove('no-vignette');
+        } else {
+            document.body.classList.add('no-vignette');
+        }
+    } else if (show.vignette !== undefined) {
         if (show.vignette) {
             document.body.classList.remove('no-vignette');
         } else {
@@ -844,7 +821,13 @@ function applyMobileOverlays() {
     
     const gridContainer = document.getElementById('grid-container');
     if (gridContainer) {
-        if (show.flicker !== undefined) {
+        if (savedSettings && savedSettings.flicker !== undefined) {
+            if (savedSettings.flicker) {
+                gridContainer.classList.remove('no-flicker');
+            } else {
+                gridContainer.classList.add('no-flicker');
+            }
+        } else if (show.flicker !== undefined) {
             if (show.flicker) {
                 gridContainer.classList.remove('no-flicker');
             } else {
@@ -855,7 +838,13 @@ function applyMobileOverlays() {
         }
     }
     
-    if (show.glow !== undefined) {
+    if (savedSettings && savedSettings.glow !== undefined) {
+        if (savedSettings.glow) {
+            document.body.classList.remove('no-glow');
+        } else {
+            document.body.classList.add('no-glow');
+        }
+    } else if (show.glow !== undefined) {
         if (show.glow) {
             document.body.classList.remove('no-glow');
         } else {
@@ -1039,13 +1028,15 @@ function regenerateEverything() {
     repositionSidebarTexts(offsetX, offsetY);
     repositionCombinedCells(offsetX, offsetY);
     
-    animateSidebar(
-        gridData.sidebarCells,
-        gridData.rows,
-        gridData.cellSize,
-        offsetX,
-        offsetY
-    );
+    setTimeout(() => {
+        animateSidebar(
+            gridData.sidebarCells,
+            gridData.rows,
+            gridData.cellSize,
+            offsetX,
+            offsetY
+        );
+    }, 30000);
     
     setTimeout(() => {
         restartRandomAnimations();
@@ -1063,10 +1054,15 @@ document.addEventListener('colorsUpdated', function(e) {
         cell.style.backgroundColor = colors.background;
     });
 
-    const overlay = document.querySelector('.sidebar-overlay');
+    const overlay = document.getElementById('overlay-container');
     if (overlay) {
-        overlay.style.borderColor = colors.primary;
-        overlay.style.backgroundColor = colors.background;
+        try {
+            const saved = localStorage.getItem('edesign_settings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                overlay.style.display = settings.textura !== undefined ? (settings.textura ? 'block' : 'none') : 'block';
+            }
+        } catch (e) {}
     }
     
     const colorPicker = document.getElementById('colorPicker');
@@ -1331,6 +1327,39 @@ function init() {
     loadDicc().then(() => {
         initSettings();
         
+        const isSimpleMode = localStorage.getItem('simple_mode_state') === 'true';
+        if (isSimpleMode) {
+            const SIMPLE_PRIMARY = '#00FF9B';
+            const SIMPLE_SECONDARY = '#CCCCCC';
+            updateColors(SIMPLE_PRIMARY, SIMPLE_SECONDARY, '#000000');
+            document.body.classList.add('simple-mode');
+
+            try {
+                const settings = {
+                    grain: false,
+                    gaussianBlur: false,
+                    bloom: false,
+                    burnBlur: false,
+                    textura: false,
+                    animations: false,
+                    scanlines: false,
+                    vignette: false,
+                    flicker: false,
+                    glow: false
+                };
+                localStorage.setItem('edesign_settings', JSON.stringify(settings));
+            } catch (e) {}
+            
+            CONFIG.BORDER_RADIUS = 0;
+            document.documentElement.style.setProperty('--cell-radius', '0px');
+            CONFIG.ANIMATION_DURATION = 0;
+            CONFIG.ANIMATION_DURATION_LOGO = 0;
+            CONFIG.LOGO_DELAY = 0;
+            CONFIG.LOGO_DELAY_COMBINED = 0;
+        }
+        
+        initSimpleMode();
+        
         const mobile = isMobile();
         
         if (mobile) {
@@ -1372,35 +1401,64 @@ function init() {
             }
         }, true);
         
-        initOverlays();
-        
-        if (!mobile) {
-            initMobileSimulatorFeature();
+        if (!isMobile()) {
+            initOverlays();
+        } else {
+
+            try {
+                const saved = localStorage.getItem('edesign_settings');
+                if (saved) {
+                    const settings = JSON.parse(saved);
+                    if (settings.textura !== false) {
+                        initOverlays();
+                    }
+                } else {
+                    initOverlays();
+                }
+            } catch (e) {
+                initOverlays();
+            }
         }
-        
+
         const hash = window.location.hash;
         
         disableLogoAnimation();
         
         if (mobile) {
             if (hash && hash !== '#inicio' && hash !== '#') {
-                setTimeout(() => {
-                    const result = handleURLOnLoad();
-                    if (result.page === 'proyectos' && result.projectId) {
-                        window.selectedProjectId = result.projectId;
+                const result = handleURLOnLoad();
+                
+                if (result === 'inicio') {
+                    setTimeout(() => {
+                        renderMobileHome();
+                    }, 300);
+                } else if (result.page === 'proyectos' && result.projectId) {
+                    window.selectedProjectId = result.projectId;
+                    setTimeout(() => {
                         import('./modules/mobile/mobile-nav.js').then(module => {
                             module.openProyectoDetalle(result.projectId);
                         });
-                    } else if (result.page === 'sobre-mi') {
+                    }, 500);
+                } else if (result.page === 'proyectos') {
+
+                    setTimeout(() => {
+                        import('./modules/mobile/mobile-nav.js').then(module => {
+                            module.navigateMobileTo('proyectos');
+                        });
+                    }, 300);
+                } else if (result.page === 'sobre-mi') {
+                    setTimeout(() => {
                         import('./modules/mobile/mobile-nav.js').then(module => {
                             module.navigateMobileTo('sobre-mi');
                         });
-                    } else if (result.page === 'contacto') {
+                    }, 300);
+                } else if (result.page === 'contacto') {
+                    setTimeout(() => {
                         import('./modules/mobile/mobile-nav.js').then(module => {
                             module.navigateMobileTo('contacto');
                         });
-                    }
-                }, 100);
+                    }, 300);
+                }
             } else {
                 setTimeout(() => {
                     renderMobileHome();
