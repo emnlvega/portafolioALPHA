@@ -147,17 +147,48 @@ export function applySettings(settings) {
     const burnBlur = document.getElementById(ELEMENTS.burnBlur);
     if (burnBlur) burnBlur.style.display = settings.burnBlur ? 'block' : 'none';
     
-    const overlay = document.getElementById(ELEMENTS.overlay);
-    if (overlay) {
-        overlay.style.display = settings.textura ? 'block' : 'none';
+
+    let overlay = document.getElementById(ELEMENTS.overlay);
+    
+    if (settings.textura) {
+        if (!overlay) {
+
+            import('./overlay.js').then(module => {
+                module.initOverlays();
+                setTimeout(() => {
+                    const newOverlay = document.getElementById('overlay-container');
+                    if (newOverlay) {
+                        newOverlay.classList.remove('overlay-hidden');
+                        newOverlay.classList.add('overlay-visible');
+                        newOverlay.style.display = 'block';
+                    }
+                }, 100);
+            });
+        } else {
+
+            overlay.classList.remove('overlay-hidden');
+            overlay.classList.add('overlay-visible');
+            overlay.style.display = 'block';
+            overlay.style.setProperty('display', 'block', 'important');
+        }
+    } else {
+
+        if (overlay) {
+            overlay.classList.remove('overlay-visible');
+            overlay.classList.add('overlay-hidden');
+            overlay.style.display = 'none';
+            overlay.style.setProperty('display', 'none', 'important');
+        }
     }
     
+
     if (settings.scanlines) {
         document.body.classList.remove('no-scanlines');
     } else {
         document.body.classList.add('no-scanlines');
     }
     
+
     if (settings.vignette) {
         document.body.classList.remove('no-vignette');
     } else {
@@ -656,6 +687,7 @@ function createSettingsDialog() {
             const checked = this.checked;
             const key = this.id.replace('setting-', '');
             
+
             if (checked) {
                 slider.style.background = `rgba(var(--color-primary-rgb), 0.4)`;
                 knob.style.transform = 'translateX(20px)';
@@ -666,35 +698,24 @@ function createSettingsDialog() {
             
             currentSettings[key] = checked;
             
+
             applySettings(currentSettings);
             saveSettings(currentSettings);
             
+
             if (key === 'textura') {
                 const overlay = document.getElementById('overlay-container');
-                if (checked && !overlay) {
-                    import('./overlay.js').then(module => {
-                        module.initOverlays();
-                        setTimeout(() => {
-                            const newOverlay = document.getElementById('overlay-container');
-                            if (newOverlay) {
-                                newOverlay.style.display = 'block';
-                            }
-                        }, 100);
-                    });
-                } else if (overlay) {
-                    overlay.style.display = checked ? 'block' : 'none';
-                }
-            }
-            
-            if (key === 'flicker') {
-                const gridContainer = document.getElementById('grid-container');
-                if (gridContainer) {
+                if (overlay) {
                     if (checked) {
-                        gridContainer.classList.remove('no-flicker');
-                        console.log('🔥 Flicker activado - clase no-flicker removida');
+                        overlay.classList.remove('overlay-hidden');
+                        overlay.classList.add('overlay-visible');
+                        overlay.style.display = 'block';
+                        overlay.style.setProperty('display', 'block', 'important');
                     } else {
-                        gridContainer.classList.add('no-flicker');
-                        console.log('🔥 Flicker desactivado - clase no-flicker agregada');
+                        overlay.classList.remove('overlay-visible');
+                        overlay.classList.add('overlay-hidden');
+                        overlay.style.display = 'none';
+                        overlay.style.setProperty('display', 'none', 'important');
                     }
                 }
             }
