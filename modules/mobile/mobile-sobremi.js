@@ -410,12 +410,12 @@ function createSobreMiContent() {
     bioText.style.cssText = `
         color: ${secondaryColor};
         font-family: 'Courier New', monospace;
-        font-size: ${textSizes.medium}px;
-        line-height: 1.3;
+        font-size: ${textSizes.small + 2}px;
+        line-height: 1;
         letter-spacing: ${letterSpacing.medium}px;
         text-align: justify;
         text-shadow: ${LIGHT_TEXT_SHADOW};
-        padding-right: 4px;
+        padding-right: 0px;
     `;
     bioText.textContent = content.bioText;
     bioWrapper.appendChild(bioText);
@@ -446,7 +446,7 @@ function createSobreMiContent() {
             color: ${secondaryColor};
             font-family: 'Courier New', monospace;
             font-size: ${textSizes.small}px;
-            line-height: 1.6;
+            line-height: 1;
             letter-spacing: ${letterSpacing.medium}px;
             text-shadow: ${LIGHT_TEXT_SHADOW};
             padding-right: 4px;
@@ -600,7 +600,7 @@ infoContent.appendChild(habilidadesGrid);
             if (item.label) {
                 toolsHTML += `<div><span style="color:${primaryColor};">${item.label}</span> ${item.items}</div>`;
             } else if (item.note) {
-                toolsHTML += `<div style="margin-top:4px; padding-top:6px; border-top:1px solid ${primaryColor}; font-style:italic; font-size:${textSizes.tiny + 1}px; letter-spacing:${letterSpacing.tiny}px; color:${secondaryColor}; text-shadow:${LIGHT_TEXT_SHADOW};">${item.note}</div>`;
+                toolsHTML += `<div style="margin-top:4px; padding-top:6px;line-height: 1; border-top:1px solid ${primaryColor}; font-size: ${textSizes.small + 2}px; letter-spacing:${letterSpacing.tiny}px; color:${secondaryColor}; text-shadow:${LIGHT_TEXT_SHADOW};">${item.note}</div>`;
             }
         });
         toolsText.innerHTML = toolsHTML;

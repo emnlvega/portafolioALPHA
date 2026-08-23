@@ -721,7 +721,6 @@ function applyMobileConfig() {
             }
         }, 50);
         
-
     }
 }
 
