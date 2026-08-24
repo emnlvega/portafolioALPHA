@@ -147,12 +147,10 @@ export function applySettings(settings) {
     const burnBlur = document.getElementById(ELEMENTS.burnBlur);
     if (burnBlur) burnBlur.style.display = settings.burnBlur ? 'block' : 'none';
     
-
     let overlay = document.getElementById(ELEMENTS.overlay);
     
     if (settings.textura) {
         if (!overlay) {
-
             import('./overlay.js').then(module => {
                 module.initOverlays();
                 setTimeout(() => {
@@ -165,14 +163,12 @@ export function applySettings(settings) {
                 }, 100);
             });
         } else {
-
             overlay.classList.remove('overlay-hidden');
             overlay.classList.add('overlay-visible');
             overlay.style.display = 'block';
             overlay.style.setProperty('display', 'block', 'important');
         }
     } else {
-
         if (overlay) {
             overlay.classList.remove('overlay-visible');
             overlay.classList.add('overlay-hidden');
@@ -181,14 +177,12 @@ export function applySettings(settings) {
         }
     }
     
-
     if (settings.scanlines) {
         document.body.classList.remove('no-scanlines');
     } else {
         document.body.classList.add('no-scanlines');
     }
     
-
     if (settings.vignette) {
         document.body.classList.remove('no-vignette');
     } else {
@@ -210,22 +204,27 @@ export function applySettings(settings) {
         document.body.classList.add('no-glow');
     }
     
-    if (settings.animations) {
-        CONFIG.ANIMATIONS.SCALE.ENABLED = true;
-        CONFIG.ANIMATIONS.GLOW.ENABLED = false;
-        CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = true;
-        CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = true;
-        CONFIG.ANIMATIONS.COLOR.ENABLED = false;
-        CONFIG.ANIMATIONS.ROTATE.ENABLED = false;
-        restartRandomAnimations();
-    } else {
-        CONFIG.ANIMATIONS.SCALE.ENABLED = false;
-        CONFIG.ANIMATIONS.GLOW.ENABLED = false;
-        CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = false;
-        CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = false;
-        CONFIG.ANIMATIONS.COLOR.ENABLED = false;
-        CONFIG.ANIMATIONS.ROTATE.ENABLED = false;
-        stopRandomAnimations();
+    const currentAnimState = CONFIG.ANIMATIONS.SCALE.ENABLED;
+    const newAnimState = settings.animations;
+    
+    if (currentAnimState !== newAnimState) {
+        if (settings.animations) {
+            CONFIG.ANIMATIONS.SCALE.ENABLED = true;
+            CONFIG.ANIMATIONS.GLOW.ENABLED = false;
+            CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = true;
+            CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = true;
+            CONFIG.ANIMATIONS.COLOR.ENABLED = false;
+            CONFIG.ANIMATIONS.ROTATE.ENABLED = false;
+            restartRandomAnimations();
+        } else {
+            CONFIG.ANIMATIONS.SCALE.ENABLED = false;
+            CONFIG.ANIMATIONS.GLOW.ENABLED = false;
+            CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = false;
+            CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = false;
+            CONFIG.ANIMATIONS.COLOR.ENABLED = false;
+            CONFIG.ANIMATIONS.ROTATE.ENABLED = false;
+            stopRandomAnimations();
+        }
     }
 }
 

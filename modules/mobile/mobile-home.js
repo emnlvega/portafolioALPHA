@@ -8,6 +8,7 @@ import { designCells } from '../interactions.js';
 let dicc = null;
 let proyectosData = null;
 let mobileLettersImage = null;
+let isMobileHomeRendered = false;
 
 async function loadDicc() {
     if (dicc) return dicc;
@@ -152,6 +153,14 @@ function toggleMobileSimpleMode() {
 }
 
 export async function renderMobileHome() {
+    if (isMobileHomeRendered) {
+        const existingNav = document.querySelector('.mobile-nav-btn');
+        if (!existingNav) {
+            createMobileNavButtons('inicio');
+        }
+        return;
+    }
+    
     await loadDicc();
     await loadProyectosData();
     
@@ -160,7 +169,11 @@ export async function renderMobileHome() {
     
     document.querySelectorAll('.mobile-home-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-home-proyecto').forEach(el => el.remove());
     
-    mobileLettersImage = createMobileLettersImage();
+    if (!document.getElementById('mobile-letters-image')) {
+        mobileLettersImage = createMobileLettersImage();
+    } else {
+        mobileLettersImage = document.getElementById('mobile-letters-image');
+    }
     
     fetch('./modules/mobile/logo-movil.json')
         .then(response => {
@@ -174,6 +187,7 @@ export async function renderMobileHome() {
             importDesignFromJSON(design, () => {
                 createHomeContent();
                 createMobileNavButtons('inicio');
+                isMobileHomeRendered = true;
             }, true);
         })
         .catch(() => {
@@ -182,6 +196,7 @@ export async function renderMobileHome() {
             importDesignFromJSON({}, () => {
                 createHomeContent();
                 createMobileNavButtons('inicio');
+                isMobileHomeRendered = true;
             }, true);
         });
 }

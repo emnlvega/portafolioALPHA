@@ -26,6 +26,9 @@ let isLogoAnimationRunning = false;
 let isInicioContentClickable = false;
 let isInitialized = false;
 let proyectosData = null;
+let isGridCreated = false;
+let isOverlaysInitialized = false;
+let isMobileConfigApplied = false;
 
 async function loadDicc() {
     if (dicc) return dicc;
@@ -682,6 +685,8 @@ document.addEventListener('keydown', (e) => {
 
 function applyMobileConfig() {
     if (isMobile()) {
+        if (isMobileConfigApplied) return;
+        
         const grid = MOBILE_CONFIG.GRID || MOBILE_CONFIG;
         
         CONFIG.CELL_SIZE = grid.CELL_SIZE;
@@ -721,6 +726,7 @@ function applyMobileConfig() {
             }
         }, 50);
         
+        isMobileConfigApplied = true;
     }
 }
 
@@ -1374,11 +1380,14 @@ function init() {
             loadContactoData().catch(() => {}),
         ]).then(() => {});
         
-        gridData = createGrid();
-        
-        designCells.forEach(cell => {
-            setupCellEvents(cell);
-        });
+        if (!isGridCreated) {
+            gridData = createGrid();
+            isGridCreated = true;
+            
+            designCells.forEach(cell => {
+                setupCellEvents(cell);
+            });
+        }
         
         const container = document.getElementById('grid-container');
         container.addEventListener('contextmenu', function(e) {
@@ -1400,23 +1409,25 @@ function init() {
             }
         }, true);
         
-        if (!isMobile()) {
-            initOverlays();
-        } else {
-
-            try {
-                const saved = localStorage.getItem('edesign_settings');
-                if (saved) {
-                    const settings = JSON.parse(saved);
-                    if (settings.textura !== false) {
+        if (!isOverlaysInitialized) {
+            if (!isMobile()) {
+                initOverlays();
+            } else {
+                try {
+                    const saved = localStorage.getItem('edesign_settings');
+                    if (saved) {
+                        const settings = JSON.parse(saved);
+                        if (settings.textura !== false) {
+                            initOverlays();
+                        }
+                    } else {
                         initOverlays();
                     }
-                } else {
+                } catch (e) {
                     initOverlays();
                 }
-            } catch (e) {
-                initOverlays();
             }
+            isOverlaysInitialized = true;
         }
 
         const hash = window.location.hash;
@@ -1439,7 +1450,6 @@ function init() {
                         });
                     }, 500);
                 } else if (result.page === 'proyectos') {
-
                     setTimeout(() => {
                         import('./modules/mobile/mobile-nav.js').then(module => {
                             module.navigateMobileTo('proyectos');
