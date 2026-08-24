@@ -360,7 +360,7 @@ function createLettersImage() {
     img.style.height = `${areaHeight}px`;
     img.style.objectFit = 'contain';
     img.style.zIndex = 9999;
-    img.style.opacity = '0';
+    img.style.opacity = '1';
     img.style.pointerEvents = 'none';
     img.style.transition = `opacity ${ANIMATION_CONFIG.FLICKER_FADE_DURATION}ms ease`;
     img.style.mixBlendMode = 'color-burn';

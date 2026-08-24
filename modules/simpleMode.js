@@ -64,7 +64,7 @@ function applySimpleMode() {
     
     document.body.classList.add('simple-mode');
     
-    updateColors(SIMPLE_PRIMARY, SIMPLE_SECONDARY, '#000000');
+
     
     updateAllSwitches(false);
     
@@ -86,21 +86,25 @@ function applySimpleMode() {
     }
     
     document.querySelectorAll('.grid-cell, .logo-cell, .sidebar-cell').forEach(cell => {
-        cell.style.border = 'none';
-        cell.style.borderColor = 'transparent';
         cell.style.boxShadow = 'none';
         cell.style.textShadow = 'none';
-        cell.style.backgroundColor = '#000000';
         cell.style.transition = 'none';
         cell.style.borderRadius = '0px';
+        cell.style.backgroundColor = '#000000';
     });
     
     document.querySelectorAll('.sidebar-overlay').forEach(el => {
-        el.style.border = 'none';
         el.style.boxShadow = 'none';
         el.style.backgroundColor = '#000000';
         el.style.borderRadius = '0px';
     });
+    
+    const sidebarOverlay = document.querySelector('.sidebar-overlay');
+    if (sidebarOverlay) {
+        sidebarOverlay.style.boxShadow = 'none';
+        sidebarOverlay.style.backgroundColor = '#000000';
+        sidebarOverlay.style.borderRadius = '0px';
+    }
     
     stopRandomAnimations();
     stopLogoAnimation();
@@ -280,7 +284,6 @@ export function applySimpleModeEarly() {
         gridContainer.style.boxShadow = 'none';
         gridContainer.style.animation = 'none';
         gridContainer.style.borderRadius = '0px';
-        gridContainer.style.border = 'none';
     }
     
     const overlay = document.getElementById('overlay-container');
@@ -297,6 +300,21 @@ export function applySimpleModeEarly() {
     
     const burnBlur = document.getElementById('burn-blur');
     if (burnBlur) burnBlur.style.display = 'none';
+    
+    const sidebarOverlay = document.querySelector('.sidebar-overlay');
+    if (sidebarOverlay) {
+        sidebarOverlay.style.border = '1px solid #FFFFFF';
+        sidebarOverlay.style.boxShadow = 'none';
+        sidebarOverlay.style.backgroundColor = '#000000';
+        sidebarOverlay.style.borderRadius = '0px';
+    }
+    
+    document.querySelectorAll('.sidebar-overlay').forEach(el => {
+        el.style.border = '1px solid #FFFFFF';
+        el.style.boxShadow = 'none';
+        el.style.backgroundColor = '#000000';
+        el.style.borderRadius = '0px';
+    });
     
     stopRandomAnimations();
     stopLogoAnimation();

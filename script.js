@@ -1068,15 +1068,6 @@ function regenerateEverything() {
     repositionSidebarTexts(offsetX, offsetY);
     repositionCombinedCells(offsetX, offsetY);
     
-    setTimeout(() => {
-        animateSidebar(
-            gridData.sidebarCells,
-            gridData.rows,
-            gridData.cellSize,
-            offsetX,
-            offsetY
-        );
-    }, 30000);
     
     setTimeout(() => {
         restartRandomAnimations();
@@ -1370,7 +1361,7 @@ function init() {
         const isSimpleMode = localStorage.getItem('simple_mode_state') === 'true';
         if (isSimpleMode) {
             const SIMPLE_PRIMARY = '#00FF9B';
-            const SIMPLE_SECONDARY = '#CCCCCC';
+            const SIMPLE_SECONDARY = '#FFFFFF';
             updateColors(SIMPLE_PRIMARY, SIMPLE_SECONDARY, '#000000');
             document.body.classList.add('simple-mode');
 
