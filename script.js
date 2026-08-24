@@ -685,9 +685,7 @@ document.addEventListener('keydown', (e) => {
 
 function applyMobileConfig() {
     if (isMobile()) {
-        if (isMobileConfigApplied) return;
-        
-        const grid = MOBILE_CONFIG.GRID || MOBILE_CONFIG;
+        const grid = MOBILE_CONFIG.GRID;
         
         CONFIG.CELL_SIZE = grid.CELL_SIZE;
         CONFIG.GAP = grid.GAP;
@@ -696,19 +694,25 @@ function applyMobileConfig() {
         CONFIG.SIDEBAR_WIDTH = grid.SIDEBAR_WIDTH;
         CONFIG.BORDER_RADIUS = grid.BORDER_RADIUS;
         
-        CONFIG.ANIMATIONS.SCALE.ENABLED = false;
-        CONFIG.ANIMATIONS.COLOR.ENABLED = false;
-        CONFIG.ANIMATIONS.GLOW.ENABLED = false;
-        CONFIG.ANIMATIONS.ROTATE.ENABLED = false;
-        CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = false;
-        CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = true;
+        CONFIG.TEXT_SIZES = MOBILE_CONFIG.TEXT_SIZES;
+        CONFIG.LETTER_SPACING = MOBILE_CONFIG.LETTER_SPACING;
         
-        CONFIG.ANIMATIONS.OPACITY_WAVE.DURATION = 2000;
-        CONFIG.ANIMATIONS.OPACITY_WAVE.MIN_INTERVAL = 100;
-        CONFIG.ANIMATIONS.OPACITY_WAVE.MAX_INTERVAL = 100;
-        CONFIG.ANIMATIONS.OPACITY_WAVE.MAX_SIMULTANEOUS = 8;
-        CONFIG.ANIMATIONS.OPACITY_WAVE.MIN_OPACITY = 0.2;
-        CONFIG.ANIMATIONS.OPACITY_WAVE.MAX_OPACITY = 0.9;
+        const anims = MOBILE_CONFIG.ANIMATIONS;
+        CONFIG.ANIMATIONS.SCALE.ENABLED = anims.SCALE.ENABLED;
+        CONFIG.ANIMATIONS.COLOR.ENABLED = anims.COLOR.ENABLED;
+        CONFIG.ANIMATIONS.GLOW.ENABLED = anims.GLOW.ENABLED;
+        CONFIG.ANIMATIONS.ROTATE.ENABLED = anims.ROTATE.ENABLED;
+        CONFIG.ANIMATIONS.BORDER_SHIFT.ENABLED = anims.BORDER_SHIFT.ENABLED;
+        CONFIG.ANIMATIONS.OPACITY_WAVE.ENABLED = anims.OPACITY_WAVE.ENABLED;
+        
+        if (anims.OPACITY_WAVE.ENABLED) {
+            CONFIG.ANIMATIONS.OPACITY_WAVE.DURATION = anims.OPACITY_WAVE.DURATION || 2000;
+            CONFIG.ANIMATIONS.OPACITY_WAVE.MIN_INTERVAL = anims.OPACITY_WAVE.MIN_INTERVAL || 100;
+            CONFIG.ANIMATIONS.OPACITY_WAVE.MAX_INTERVAL = anims.OPACITY_WAVE.MAX_INTERVAL || 100;
+            CONFIG.ANIMATIONS.OPACITY_WAVE.MAX_SIMULTANEOUS = anims.OPACITY_WAVE.MAX_SIMULTANEOUS || 8;
+            CONFIG.ANIMATIONS.OPACITY_WAVE.MIN_OPACITY = anims.OPACITY_WAVE.MIN_OPACITY || 0.2;
+            CONFIG.ANIMATIONS.OPACITY_WAVE.MAX_OPACITY = anims.OPACITY_WAVE.MAX_OPACITY || 0.9;
+        }
         
         document.documentElement.style.setProperty('--cell-size', `${grid.CELL_SIZE}px`);
         document.documentElement.style.setProperty('--cell-gap', `${grid.GAP}px`);
@@ -726,7 +730,38 @@ function applyMobileConfig() {
             }
         }, 50);
         
-        isMobileConfigApplied = true;
+        forceMobileSettings();
+        
+        applyMobileOverlays();
+    }
+}
+
+function forceMobileSettings() {
+    try {
+        const saved = localStorage.getItem('edesign_settings');
+        if (saved) {
+            const settings = JSON.parse(saved);
+            let changed = false;
+            
+            if (settings.textura === true) {
+                settings.textura = false;
+                changed = true;
+            }
+            if (settings.animations === true) {
+                settings.animations = false;
+                changed = true;
+            }
+            if (settings.flicker === true) {
+                settings.flicker = false;
+                changed = true;
+            }
+            
+            if (changed) {
+                localStorage.setItem('edesign_settings', JSON.stringify(settings));
+            }
+        }
+    } catch (e) {
+        console.error('Error forcing mobile settings:', e);
     }
 }
 

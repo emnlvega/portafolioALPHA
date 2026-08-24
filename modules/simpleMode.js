@@ -2,6 +2,7 @@ import { CONFIG, updateColors, createColors } from './config.js';
 import { stopRandomAnimations, restartRandomAnimations } from './animations.js';
 import { stopOverlays, initOverlays } from './overlay.js';
 import { stopLogoAnimation } from './emnlvega.js';
+import { updateAllSwitches } from './settings.js';
 
 let isApplying = false;
 let dicc = null;
@@ -20,24 +21,6 @@ async function loadDicc() {
         console.error('Error loading dicc:', e);
         return null;
     }
-}
-
-function resetSettingsToTrue() {
-    try {
-        const settings = {
-            grain: true,
-            gaussianBlur: true,
-            bloom: true,
-            burnBlur: false,
-            textura: true,
-            animations: true,
-            scanlines: false,
-            vignette: true,
-            flicker: true,
-            glow: true
-        };
-        localStorage.setItem('edesign_settings', JSON.stringify(settings));
-    } catch (e) {}
 }
 
 function resetColorsToDefault() {
@@ -83,21 +66,7 @@ function applySimpleMode() {
     
     updateColors(SIMPLE_PRIMARY, SIMPLE_SECONDARY, '#000000');
     
-    try {
-        const settings = {
-            grain: false,
-            gaussianBlur: false,
-            bloom: false,
-            burnBlur: false,
-            textura: false,
-            animations: false,
-            scanlines: false,
-            vignette: false,
-            flicker: false,
-            glow: false
-        };
-        localStorage.setItem('edesign_settings', JSON.stringify(settings));
-    } catch (e) {}
+    updateAllSwitches(false);
     
     CONFIG.BORDER_RADIUS = 0;
     document.documentElement.style.setProperty('--cell-radius', '0px');
@@ -133,21 +102,6 @@ function applySimpleMode() {
         el.style.borderRadius = '0px';
     });
     
-    const overlay = document.getElementById('overlay-container');
-    if (overlay) overlay.style.display = 'none';
-    
-    const bloom = document.getElementById('bloom-overlay');
-    if (bloom) bloom.style.display = 'none';
-    
-    const grain = document.getElementById('grain-overlay');
-    if (grain) grain.style.display = 'none';
-    
-    const gaussian = document.getElementById('gaussian-blur');
-    if (gaussian) gaussian.style.display = 'none';
-    
-    const burnBlur = document.getElementById('burn-blur');
-    if (burnBlur) burnBlur.style.display = 'none';
-    
     stopRandomAnimations();
     stopLogoAnimation();
     stopOverlays();
@@ -161,7 +115,8 @@ function applyArtisticMode() {
     
     document.body.classList.remove('simple-mode');
     
-    resetSettingsToTrue();
+    updateAllSwitches(true);
+    
     resetColorsToDefault();
     
     CONFIG.BORDER_RADIUS = 4;
@@ -197,21 +152,6 @@ function applyArtisticMode() {
         el.style.backgroundColor = '';
         el.style.borderRadius = '';
     });
-    
-    const overlay = document.getElementById('overlay-container');
-    if (overlay) overlay.style.display = '';
-    
-    const bloom = document.getElementById('bloom-overlay');
-    if (bloom) bloom.style.display = '';
-    
-    const grain = document.getElementById('grain-overlay');
-    if (grain) grain.style.display = '';
-    
-    const gaussian = document.getElementById('gaussian-blur');
-    if (gaussian) gaussian.style.display = '';
-    
-    const burnBlur = document.getElementById('burn-blur');
-    if (burnBlur) burnBlur.style.display = '';
     
     restartRandomAnimations();
     initOverlays();
@@ -296,37 +236,12 @@ export function getSimpleModeState() {
     return localStorage.getItem('simple_mode_state') === 'true';
 }
 
-
-
 export function applySimpleModeMobile() {
     document.body.classList.add('simple-mode');
     
     updateColors(SIMPLE_PRIMARY, SIMPLE_SECONDARY, '#000000');
     
-    try {
-        const settings = {
-            grain: false,
-            gaussianBlur: false,
-            bloom: false,
-            burnBlur: false,
-            textura: false,
-            animations: false,
-            scanlines: false,
-            vignette: false,
-            flicker: false,
-            glow: false
-        };
-        localStorage.setItem('edesign_settings', JSON.stringify(settings));
-    } catch (e) {}
-    
-    const overlay = document.getElementById('overlay-container');
-    if (overlay) overlay.style.display = 'none';
-    
-    const bloom = document.getElementById('bloom-overlay');
-    if (bloom) bloom.style.display = 'none';
-    
-    const grain = document.getElementById('grain-overlay');
-    if (grain) grain.style.display = 'none';
+    updateAllSwitches(false);
     
     stopRandomAnimations();
     stopLogoAnimation();
@@ -336,17 +251,9 @@ export function applySimpleModeMobile() {
 export function applyArtisticModeMobile() {
     document.body.classList.remove('simple-mode');
     
-    resetSettingsToTrue();
+    updateAllSwitches(true);
+    
     resetColorsToDefault();
-    
-    const overlay = document.getElementById('overlay-container');
-    if (overlay) overlay.style.display = '';
-    
-    const bloom = document.getElementById('bloom-overlay');
-    if (bloom) bloom.style.display = '';
-    
-    const grain = document.getElementById('grain-overlay');
-    if (grain) grain.style.display = '';
     
     restartRandomAnimations();
     initOverlays();
@@ -357,21 +264,7 @@ export function applySimpleModeEarly() {
     
     updateColors(SIMPLE_PRIMARY, SIMPLE_SECONDARY, '#000000');
     
-    try {
-        const settings = {
-            grain: false,
-            gaussianBlur: false,
-            bloom: false,
-            burnBlur: false,
-            textura: false,
-            animations: false,
-            scanlines: false,
-            vignette: false,
-            flicker: false,
-            glow: false
-        };
-        localStorage.setItem('edesign_settings', JSON.stringify(settings));
-    } catch (e) {}
+    updateAllSwitches(false);
     
     CONFIG.BORDER_RADIUS = 0;
     document.documentElement.style.setProperty('--cell-radius', '0px');
@@ -414,8 +307,6 @@ export function initSimpleMode() {
     loadDicc().then(() => {
         const saved = localStorage.getItem('simple_mode_state');
         if (saved === 'true') {
-
-
             setTimeout(() => {
                 applySimpleMode();
             }, 50);

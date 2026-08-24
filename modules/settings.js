@@ -263,7 +263,13 @@ function updateSwitchVisualAndFunction(id, checked) {
 }
 
 export function updateAllSwitches(value) {
-    const switchKeys = ['grain', 'gaussianBlur', 'bloom', 'textura', 'animations', 'vignette', 'flicker', 'glow'];
+    const isMobileDevice = window.innerWidth <= 768 || /Mobi|Android|iPhone/i.test(navigator.userAgent);
+    
+    const switchKeys = ['grain', 'gaussianBlur', 'bloom', 'vignette', 'glow'];
+    
+    if (!isMobileDevice) {
+        switchKeys.push('textura', 'animations', 'flicker');
+    }
     
     switchKeys.forEach(key => {
         currentSettings[key] = value;
@@ -312,7 +318,6 @@ function createSettingsDialog() {
     const scriptTexts = d.script || {};
     const settingsTexts = d.settings || {};
     
-
     const isMobileDevice = window.innerWidth <= 768 || /Mobi|Android|iPhone/i.test(navigator.userAgent);
     
     const dialog = document.createElement('div');
@@ -582,7 +587,12 @@ function createSettingsDialog() {
     btnRow.appendChild(disableAllBtn);
     configPanel.appendChild(btnRow);
     
-    const switches = [
+    const switches = isMobileDevice ? [
+        { id: 'setting-grain', label: 'grain', key: 'grain', icon: '◈' },
+        { id: 'setting-bloom', label: 'bloom', key: 'bloom', icon: '◊' },
+        { id: 'setting-vignette', label: 'vignette', key: 'vignette', icon: '▥' },
+        { id: 'setting-glow', label: 'glow', key: 'glow', icon: '◐' }
+    ] : [
         { id: 'setting-grain', label: 'grain', key: 'grain', icon: '◈' },
         { id: 'setting-bloom', label: 'bloom', key: 'bloom', icon: '◊' },
         { id: 'setting-textura', label: 'textura', key: 'textura', icon: '▣' },
@@ -897,7 +907,34 @@ if (isMobileDevice) {
 export function openSettings() {
     if (!settingsDialog) createSettingsDialog();
     
-    const switchIds = ['grain', 'gaussianBlur', 'bloom', 'burnBlur', 'textura', 'animations', 'scanlines', 'vignette', 'flicker', 'glow'];
+    const isMobileDevice = window.innerWidth <= 768 || /Mobi|Android|iPhone/i.test(navigator.userAgent);
+    
+    if (isMobileDevice) {
+        const hiddenKeys = ['textura', 'animations', 'flicker'];
+        hiddenKeys.forEach(key => {
+            const el = document.getElementById(`setting-${key}`);
+            if (el) {
+                const switchWrap = el.closest('.switch-row') || el.parentElement.parentElement;
+                if (switchWrap) {
+                    switchWrap.style.display = 'none';
+                }
+            }
+        });
+    } else {
+        const allKeys = ['grain', 'bloom', 'textura', 'animations', 'vignette', 'flicker', 'glow'];
+        allKeys.forEach(key => {
+            const el = document.getElementById(`setting-${key}`);
+            if (el) {
+                const switchWrap = el.closest('.switch-row') || el.parentElement.parentElement;
+                if (switchWrap) {
+                    switchWrap.style.display = '';
+                }
+            }
+        });
+    }
+    
+    const switchIds = isMobileDevice ? ['grain', 'bloom', 'vignette', 'glow'] : ['grain', 'bloom', 'textura', 'animations', 'vignette', 'flicker', 'glow'];
+    
     switchIds.forEach(key => {
         const el = document.getElementById(`setting-${key}`);
         if (el) {
@@ -938,8 +975,21 @@ export function openSettings() {
 export function openSettingsMobile() {
     if (!settingsDialog) createSettingsDialog();
     
-
-    const switchIds = ['grain', 'bloom', 'textura', 'animations', 'vignette', 'flicker', 'glow'];
+    const isMobileDevice = window.innerWidth <= 768 || /Mobi|Android|iPhone/i.test(navigator.userAgent);
+    
+    const hiddenKeys = ['textura', 'animations', 'flicker'];
+    hiddenKeys.forEach(key => {
+        const el = document.getElementById(`setting-${key}`);
+        if (el) {
+            const switchWrap = el.closest('.switch-row') || el.parentElement.parentElement;
+            if (switchWrap) {
+                switchWrap.style.display = 'none';
+            }
+        }
+    });
+    
+    const switchIds = isMobileDevice ? ['grain', 'bloom', 'vignette', 'glow'] : ['grain', 'bloom', 'textura', 'animations', 'vignette', 'flicker', 'glow'];
+    
     switchIds.forEach(key => {
         const el = document.getElementById(`setting-${key}`);
         if (el) {
@@ -970,33 +1020,10 @@ export function openSettingsMobile() {
                 }
             }
             
-
             if (key === 'textura') {
                 const overlay = document.getElementById('overlay-container');
                 if (overlay) {
-                    if (el.checked) {
-                        overlay.classList.remove('overlay-hidden');
-                        overlay.classList.add('overlay-visible');
-                        overlay.style.display = 'block';
-                        overlay.style.setProperty('display', 'block', 'important');
-                    } else {
-                        overlay.classList.remove('overlay-visible');
-                        overlay.classList.add('overlay-hidden');
-                        overlay.style.display = 'none';
-                        overlay.style.setProperty('display', 'none', 'important');
-                    }
-                } else if (el.checked) {
-                    import('./overlay.js').then(module => {
-                        module.initOverlays();
-                        setTimeout(() => {
-                            const newOverlay = document.getElementById('overlay-container');
-                            if (newOverlay) {
-                                newOverlay.classList.remove('overlay-hidden');
-                                newOverlay.classList.add('overlay-visible');
-                                newOverlay.style.display = 'block';
-                            }
-                        }, 100);
-                    });
+                    overlay.style.display = el.checked ? 'block' : 'none';
                 }
             }
         }

@@ -4,6 +4,7 @@ import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations } from '../animations.js';
 import { createMobileNavButtons } from './mobile-nav.js';
 import { designCells } from '../interactions.js';
+import { MOBILE_CONFIG } from './mobile-config.js';
 
 let dicc = null;
 let proyectosData = null;
@@ -35,7 +36,7 @@ async function loadProyectosData() {
 }
 
 function getTextSizes() {
-    return CONFIG.TEXT_SIZES || {
+    return MOBILE_CONFIG.TEXT_SIZES || CONFIG.TEXT_SIZES || {
         title: 32,
         arrows: 28,
         projectIcon: 24,
@@ -49,7 +50,7 @@ function getTextSizes() {
 }
 
 function getLetterSpacing() {
-    return CONFIG.LETTER_SPACING || {
+    return MOBILE_CONFIG.LETTER_SPACING || CONFIG.LETTER_SPACING || {
         title: 12,
         subTitle: 6,
         medium: 0.5,
@@ -90,14 +91,14 @@ function createMobileLettersImage() {
     removeMobileLettersImage();
     
     const img = document.createElement('img');
-    img.src = './assets/images/lettersM.png';
+    img.src = MOBILE_CONFIG.LETTERS_IMAGE.PATH || './assets/images/lettersM.png';
     img.style.position = 'absolute';
     img.style.width = 'auto';
     img.style.height = 'auto';
     img.style.maxWidth = '100%';
     img.style.maxHeight = '100%';
-    img.style.zIndex = '99999';
-    img.style.opacity = '1';
+    img.style.zIndex = MOBILE_CONFIG.LETTERS_IMAGE.Z_INDEX || '99999';
+    img.style.opacity = MOBILE_CONFIG.LETTERS_IMAGE.OPACITY || '1';
     img.style.pointerEvents = 'none';
     img.id = 'mobile-letters-image';
     
@@ -153,13 +154,24 @@ function toggleMobileSimpleMode() {
 }
 
 export async function renderMobileHome() {
-    if (isMobileHomeRendered) {
-        const existingNav = document.querySelector('.mobile-nav-btn');
-        if (!existingNav) {
-            createMobileNavButtons('inicio');
-        }
-        return;
-    }
+    const cleanSelectors = [
+        '.mobile-proyectos-content', '.mobile-sobremi-content', '.mobile-contacto-content',
+        '.mobile-proyecto-detalle-content', '.mobile-page-content', '.mobile-proyecto-item',
+        '.mobile-categoria-item', '.mobile-flecha', '.mobile-page-indicator',
+        '.mobile-contacto-social-item', '.mobile-contacto-info', '.mobile-proyectos-container',
+        '.mobile-proyecto-card', '.mobile-proyecto-titulo', '.mobile-proyecto-descripcion',
+        '.mobile-proyecto-imagen', '.mobile-proyecto-detalle-container',
+        '.mobile-proyecto-detalle-imagen', '.mobile-proyecto-detalle-info',
+        '.mobile-proyecto-detalle-titulo', '.mobile-proyecto-detalle-descripcion',
+        '.mobile-proyecto-detalle-tecnologias', '.mobile-proyecto-detalle-enlace',
+        '.mobile-proyecto-detalle-volver', '.mobile-sobremi-container', '.mobile-sobremi-texto',
+        '.mobile-sobremi-imagen', '.mobile-sobremi-titulo', '.mobile-contacto-text',
+        '.mobile-contacto-email', '.mobile-contacto-social'
+    ];
+    
+    cleanSelectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => el.remove());
+    });
     
     await loadDicc();
     await loadProyectosData();
@@ -167,7 +179,7 @@ export async function renderMobileHome() {
     const container = document.getElementById('grid-container');
     if (!container) return;
     
-    document.querySelectorAll('.mobile-home-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-home-proyecto').forEach(el => el.remove());
+    document.querySelectorAll('.mobile-home-content, .mobile-btn-overlay, .mobile-home-proyecto').forEach(el => el.remove());
     
     if (!document.getElementById('mobile-letters-image')) {
         mobileLettersImage = createMobileLettersImage();
@@ -175,35 +187,38 @@ export async function renderMobileHome() {
         mobileLettersImage = document.getElementById('mobile-letters-image');
     }
     
-    fetch('./modules/mobile/logo-movil.json')
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.json();
-        })
-        .then(design => {
-            stopRandomAnimations();
-            resetGrid(false);
-            
-            importDesignFromJSON(design, () => {
-                createHomeContent();
+    resetGrid(false);
+    
+    try {
+        const response = await fetch('./modules/mobile/logo-movil.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const design = await response.json();
+        
+        stopRandomAnimations();
+        resetGrid(false);
+        
+        importDesignFromJSON(design, () => {
+            createHomeContent();
+            const existingNav = document.querySelector('.mobile-nav-btn');
+            if (!existingNav) {
                 createMobileNavButtons('inicio');
-                isMobileHomeRendered = true;
-            }, true);
-        })
-        .catch(() => {
-            stopRandomAnimations();
-            resetGrid(false);
-            importDesignFromJSON({}, () => {
-                createHomeContent();
+            }
+        }, true);
+    } catch {
+        stopRandomAnimations();
+        resetGrid(false);
+        importDesignFromJSON({}, () => {
+            createHomeContent();
+            const existingNav = document.querySelector('.mobile-nav-btn');
+            if (!existingNav) {
                 createMobileNavButtons('inicio');
-                isMobileHomeRendered = true;
-            }, true);
-        });
+            }
+        }, true);
+    }
 }
 
 function createHomeContent() {
     const d = dicc || { mobile: { nav: {} } };
-    const mobileNav = d.mobile.nav || {};
     const scriptTexts = d.script || {};
     const textSizes = getTextSizes();
     const letterSpacing = getLetterSpacing();
@@ -273,7 +288,6 @@ function createHomeContent() {
         titleCell.appendChild(title);
     }
     
-
     if (modeButtonCell) {
         modeButtonCell.dataset.isSidebar = 'true';
         const oldContent = modeButtonCell.querySelector('.mobile-home-content');
@@ -288,52 +302,50 @@ function createHomeContent() {
         const btn = document.createElement('div');
         btn.className = 'mobile-home-content';
         btn.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                pointer-events: auto;
-                z-index: 25;
-                font-family: 'Courier New', monospace;
-                color: ${secondaryColor};
-                font-size: ${textSizes.small + 2}px;
-
-                text-transform: uppercase;
-                text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
-                            0 0 40px rgba(${secondaryRGB}, 0.6),
-                            0 0 80px rgba(${secondaryRGB}, 0.3);
-                transition: all 0.3s ease;
-                background: rgba(0,0,0,0.2);
-                border: 1px solid rgba(${secondaryRGB}, 0.2);
-                border-radius: 4px;
-                padding: 4px 8px;
-                user-select: none;
-            `;
-            
-            const mainTextEl = document.createElement('span');
-            mainTextEl.textContent = mainText;
-            mainTextEl.style.cssText = `
-                font-size: ${textSizes.subTitle}px;
-                letter-spacing: (${textSizes.medium})px;
-                font-weight: bold;
-            `;
-            btn.appendChild(mainTextEl);
-            
-            const helpTextEl = document.createElement('span');
-            helpTextEl.textContent = helpText;
-            helpTextEl.style.cssText = `
-                font-size: ${textSizes.small}px;
-                color: ${primaryColor};
-                opacity: 1;
-                margin-top: 0px;
-            `;
-            btn.appendChild(helpTextEl);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 25;
+            font-family: 'Courier New', monospace;
+            color: ${secondaryColor};
+            font-size: ${textSizes.small + 2}px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
+                        0 0 40px rgba(${secondaryRGB}, 0.6),
+                        0 0 80px rgba(${secondaryRGB}, 0.3);
+            transition: all 0.3s ease;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(${secondaryRGB}, 0.2);
+            border-radius: 4px;
+            padding: 4px 8px;
+            user-select: none;
+        `;
+        
+        const mainTextEl = document.createElement('span');
+        mainTextEl.textContent = mainText;
+        mainTextEl.style.cssText = `
+            font-size: ${textSizes.subTitle}px;
+            font-weight: bold;
+        `;
+        btn.appendChild(mainTextEl);
+        
+        const helpTextEl = document.createElement('span');
+        helpTextEl.textContent = helpText;
+        helpTextEl.style.cssText = `
+            font-size: ${textSizes.small}px;
+            color: ${primaryColor};
+            opacity: 1;
+            margin-top: 0px;
+        `;
+        btn.appendChild(helpTextEl);
         
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -347,231 +359,27 @@ function createHomeContent() {
         
         modeButtonCell.appendChild(btn);
     }
-
+    
     const menuButtonCell = Array.from(allCells).find(cell => {
-    if (cell.dataset.combined === 'true') {
-        const row = parseInt(cell.dataset.designRow);
-        const col = parseInt(cell.dataset.designCol);
-        return row === 22 && col === 10;
-    }
-    return false;
-});
-
-if (menuButtonCell) {
-    menuButtonCell.dataset.isSidebar = 'true';
-    const oldContent = menuButtonCell.querySelector('.mobile-home-content');
-    if (oldContent) oldContent.remove();
-
-    const mobileHomeTexts = d.mobile?.home || {};
-    const helpText = mobileHomeTexts.helpTextMENU || '';
-    
-    const btn = document.createElement('div');
-    btn.className = 'mobile-home-content';
-    btn.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        pointer-events: auto;
-        z-index: 25;
-        font-family: 'Courier New', monospace;
-        color: ${secondaryColor};
-        font-size: ${textSizes.small + 2}px;
-
-        text-transform: uppercase;
-        text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
-                    0 0 40px rgba(${secondaryRGB}, 0.6),
-                    0 0 80px rgba(${secondaryRGB}, 0.3);
-        transition: all 0.3s ease;
-        background: rgba(0,0,0,0.2);
-        border: 1px solid rgba(${secondaryRGB}, 0.2);
-        border-radius: 4px;
-        padding: 4px 8px;
-        user-select: none;
-    `;
-    
-    const mainText = document.createElement('span');
-    mainText.textContent = 'MENÚ';
-    mainText.style.cssText = `
-        font-size: ${textSizes.subTitle}px;
-        letter-spacing: (${textSizes.medium})px;
-        font-weight: bold;
-    `;
-    btn.appendChild(mainText);
-
-    if (helpText) {
-        const helpTextSpan = document.createElement('span');
-        helpTextSpan.textContent = helpText;
-        helpTextSpan.style.cssText = `
-            font-size: ${textSizes.small}px;
-            color: ${primaryColor};
-            opacity: 1;
-            margin-top: 0px;
-        `;
-        btn.appendChild(helpTextSpan);
-    }
-    
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        
-        const overlay = document.getElementById('overlay-container');
-        if (overlay) overlay.style.display = 'none';
-        
-        import('../settings.js').then(module => {
-            if (typeof module.openSettingsMobile === 'function') {
-                module.openSettingsMobile();
-            } else {
-                module.toggleSettings();
-                setTimeout(() => {
-                    const commandsPanel = document.querySelector('#settings-dialog > div:last-child');
-                    if (commandsPanel) {
-                        commandsPanel.style.display = 'none';
-                    }
-                }, 50);
-            }
-        });
-    });
-    
-    menuButtonCell.appendChild(btn);
-}
-
-if (menuButtonCell) {
-    const oldContent = menuButtonCell.querySelector('.mobile-home-content');
-    if (oldContent) oldContent.remove();
-
-    const mobileHomeTexts = d.mobile?.home || {};
-    const helpText = mobileHomeTexts.helpTextMENU || '';
-    
-    const btn = document.createElement('div');
-    btn.className = 'mobile-home-content';
-    btn.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        pointer-events: auto;
-        z-index: 25;
-        font-family: 'Courier New', monospace;
-        color: ${secondaryColor};
-        font-size: ${textSizes.small + 2}px;
-
-        text-transform: uppercase;
-        text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
-                    0 0 40px rgba(${secondaryRGB}, 0.6),
-                    0 0 80px rgba(${secondaryRGB}, 0.3);
-        transition: all 0.3s ease;
-        background: rgba(0,0,0,0.2);
-        border: 1px solid rgba(${secondaryRGB}, 0.2);
-        border-radius: 4px;
-        padding: 4px 8px;
-        user-select: none;
-    `;
-    
-    const mainText = document.createElement('span');
-    mainText.textContent = 'MENÚ';
-    mainText.style.cssText = `
-        font-size: ${textSizes.subTitle}px;
-        letter-spacing: (${textSizes.subTitle})px;
-        font-weight: bold;
-    `;
-    btn.appendChild(mainText);
-
-    if (helpText) {
-        const helpTextSpan = document.createElement('span');
-        helpTextSpan.textContent = helpText;
-        helpTextSpan.style.cssText = `
-            font-size: ${textSizes.small}px;
-            color: ${primaryColor};
-            opacity: 1;
-            margin-top: 0px;
-        `;
-        btn.appendChild(helpTextSpan);
-    }
-
-    
-    btn.addEventListener('mouseenter', () => {
-        btn.style.borderColor = secondaryColor;
-        btn.style.background = `rgba(${secondaryRGB}, 0.08)`;
-        btn.style.boxShadow = `0 0 30px rgba(${secondaryRGB}, 0.1)`;
-    });
-    
-    btn.addEventListener('mouseleave', () => {
-        btn.style.borderColor = `rgba(${secondaryRGB}, 0.2)`;
-        btn.style.background = `rgba(0,0,0,0.2)`;
-        btn.style.boxShadow = 'none';
-    });
-    
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        
-        const overlay = document.getElementById('overlay-container');
-        if (overlay) overlay.style.display = 'none';
-        
-        import('../settings.js').then(module => {
-            if (typeof module.openSettingsMobile === 'function') {
-                module.openSettingsMobile();
-            } else {
-                module.toggleSettings();
-                setTimeout(() => {
-                    const commandsPanel = document.querySelector('#settings-dialog > div:last-child');
-                    if (commandsPanel) {
-                        commandsPanel.style.display = 'none';
-                    }
-                }, 50);
-            }
-        });
-    });
-    
-    menuButtonCell.appendChild(btn);
-}
-    
-    if (proyectosData && proyectosData.projects) {
-    const shuffled = [...proyectosData.projects].sort(() => Math.random() - 0.5).slice(0, 3);
-    
-    projectCells.forEach(({ cell }, index) => {
-        const project = shuffled[index];
-        
-        if (!project) {
-            const empty = document.createElement('div');
-            empty.className = 'mobile-home-proyecto';
-            empty.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: rgba(${primaryRGB}, 0.1);
-                font-family: 'Courier New', monospace;
-                font-size: 12px;
-                pointer-events: none;
-                z-index: 10;
-            `;
-            empty.textContent = '·';
-            cell.appendChild(empty);
-            return;
+        if (cell.dataset.combined === 'true') {
+            const row = parseInt(cell.dataset.designRow);
+            const col = parseInt(cell.dataset.designCol);
+            return row === 22 && col === 10;
         }
+        return false;
+    });
+    
+    if (menuButtonCell) {
+        menuButtonCell.dataset.isSidebar = 'true';
+        const oldContent = menuButtonCell.querySelector('.mobile-home-content');
+        if (oldContent) oldContent.remove();
         
-        const wrapper = document.createElement('div');
-        wrapper.className = 'mobile-home-proyecto';
-        wrapper.dataset.projectId = project.id;
-        wrapper.style.cssText = `
+        const mobileHomeTexts = d.mobile?.home || {};
+        const helpText = mobileHomeTexts.helpTextMENU || '';
+        
+        const btn = document.createElement('div');
+        btn.className = 'mobile-home-content';
+        btn.style.cssText = `
             position: absolute;
             top: 0;
             left: 0;
@@ -583,104 +391,211 @@ if (menuButtonCell) {
             justify-content: center;
             cursor: pointer;
             pointer-events: auto;
-            z-index: 20;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            background: rgba(0, 0, 0, 0.3);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-        `;
-        
-        const bgImg = document.createElement('img');
-        bgImg.src = `https://picsum.photos/seed/${project.name.replace(/\s/g, '')}/600/400`;
-        bgImg.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.6;
-            filter: grayscale(1);
-            transition: all 0.3s ease;
-        `;
-        wrapper.appendChild(bgImg);
-        
-        const overlay = document.createElement('div');
-        overlay.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: ${primaryColor};
-            mix-blend-mode: color;
-            opacity: 0.3;
-            transition: all 0.3s ease;
-        `;
-        wrapper.appendChild(overlay);
-        
-        const title = document.createElement('div');
-        title.style.cssText = `
-            position: relative;
-            z-index: 2;
-            color: #ffffff;
+            z-index: 25;
             font-family: 'Courier New', monospace;
+            color: ${secondaryColor};
             font-size: ${textSizes.small + 2}px;
-            letter-spacing: ${letterSpacing.small + 1}px;
-            font-weight: bold;
             text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 1),
-                         0 0 20px rgba(255, 255, 255, 0.8),
-                         0 0 40px rgba(255, 255, 255, 0.5),
-                         0 0 60px rgba(255, 255, 255, 0.3),
-                         0 0 80px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            padding: 10px;
-            pointer-events: none;
+            text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
+                        0 0 40px rgba(${secondaryRGB}, 0.6),
+                        0 0 80px rgba(${secondaryRGB}, 0.3);
+            transition: all 0.3s ease;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(${secondaryRGB}, 0.2);
+            border-radius: 4px;
+            padding: 4px 8px;
             user-select: none;
         `;
-        title.textContent = project.name;
-        wrapper.appendChild(title);
         
-        wrapper.addEventListener('mouseenter', () => {
-            wrapper.style.boxShadow = `0 0 30px rgba(${primaryRGB}, 0.3)`;
-            wrapper.style.borderColor = `rgba(255, 255, 255, 0.4)`;
-            bgImg.style.opacity = '0.8';
-            bgImg.style.transform = 'scale(1.05)';
-            title.style.textShadow = `0 0 15px rgba(255, 255, 255, 1),
-                                      0 0 30px rgba(255, 255, 255, 0.8),
-                                      0 0 60px rgba(255, 255, 255, 0.5),
-                                      0 0 80px rgba(0, 0, 0, 0.6)`;
-        });
+        const mainText = document.createElement('span');
+        mainText.textContent = 'MENÚ';
+        mainText.style.cssText = `
+            font-size: ${textSizes.subTitle}px;
+            font-weight: bold;
+        `;
+        btn.appendChild(mainText);
         
-        wrapper.addEventListener('mouseleave', () => {
-            wrapper.style.boxShadow = `0 0 20px rgba(0, 0, 0, 0.2)`;
-            wrapper.style.borderColor = `rgba(255, 255, 255, 0.15)`;
-            bgImg.style.opacity = '0.6';
-            bgImg.style.transform = 'scale(1)';
-            title.style.textShadow = `0 0 10px rgba(255, 255, 255, 1),
-                                      0 0 20px rgba(255, 255, 255, 0.8),
-                                      0 0 40px rgba(255, 255, 255, 0.5),
-                                      0 0 60px rgba(255, 255, 255, 0.3),
-                                      0 0 80px rgba(0, 0, 0, 0.5)`;
-        });
+        if (helpText) {
+            const helpTextSpan = document.createElement('span');
+            helpTextSpan.textContent = helpText;
+            helpTextSpan.style.cssText = `
+                font-size: ${textSizes.small}px;
+                color: ${primaryColor};
+                opacity: 1;
+                margin-top: 0px;
+            `;
+            btn.appendChild(helpTextSpan);
+        }
         
-        wrapper.addEventListener('click', (e) => {
+        btn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (typeof window.openProyectoDetalle === 'function') {
-                window.openProyectoDetalle(project.id);
-            } else {
-                import('./mobile-nav.js').then(module => {
-                    module.openProyectoDetalle(project.id);
-                });
-            }
+            e.preventDefault();
+            
+            const overlay = document.getElementById('overlay-container');
+            if (overlay) overlay.style.display = 'none';
+            
+            import('../settings.js').then(module => {
+                if (typeof module.openSettingsMobile === 'function') {
+                    module.openSettingsMobile();
+                } else {
+                    module.toggleSettings();
+                    setTimeout(() => {
+                        const commandsPanel = document.querySelector('#settings-dialog > div:last-child');
+                        if (commandsPanel) {
+                            commandsPanel.style.display = 'none';
+                        }
+                    }, 50);
+                }
+            });
         });
         
-        cell.appendChild(wrapper);
-    });
-}
+        menuButtonCell.appendChild(btn);
+    }
+    
+    if (proyectosData && proyectosData.projects) {
+        const shuffled = [...proyectosData.projects].sort(() => Math.random() - 0.5).slice(0, 3);
+        
+        projectCells.forEach(({ cell }, index) => {
+            const project = shuffled[index];
+            
+            if (!project) {
+                const empty = document.createElement('div');
+                empty.className = 'mobile-home-proyecto';
+                empty.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: rgba(${primaryRGB}, 0.1);
+                    font-family: 'Courier New', monospace;
+                    font-size: 12px;
+                    pointer-events: none;
+                    z-index: 10;
+                `;
+                empty.textContent = '·';
+                cell.appendChild(empty);
+                return;
+            }
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'mobile-home-proyecto';
+            wrapper.dataset.projectId = project.id;
+            wrapper.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                pointer-events: auto;
+                z-index: 20;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                border-radius: 4px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                background: rgba(0, 0, 0, 0.3);
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            `;
+            
+            const bgImg = document.createElement('img');
+            bgImg.loading = 'lazy';
+            bgImg.decoding = 'async';
+            bgImg.src = `https://picsum.photos/seed/${project.name.replace(/\s/g, '')}/600/400`;
+            bgImg.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                opacity: 0.6;
+                filter: grayscale(1);
+                transition: all 0.3s ease;
+            `;
+            wrapper.appendChild(bgImg);
+            
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: ${primaryColor};
+                mix-blend-mode: color;
+                opacity: 0.3;
+                transition: all 0.3s ease;
+            `;
+            wrapper.appendChild(overlay);
+            
+            const title = document.createElement('div');
+            title.style.cssText = `
+                position: relative;
+                z-index: 2;
+                color: #ffffff;
+                font-family: 'Courier New', monospace;
+                font-size: ${textSizes.small + 2}px;
+                letter-spacing: ${letterSpacing.small + 1}px;
+                font-weight: bold;
+                text-transform: uppercase;
+                text-shadow: 0 0 10px rgba(255, 255, 255, 1),
+                             0 0 20px rgba(255, 255, 255, 0.8),
+                             0 0 40px rgba(255, 255, 255, 0.5),
+                             0 0 60px rgba(255, 255, 255, 0.3),
+                             0 0 80px rgba(0, 0, 0, 0.5);
+                text-align: center;
+                padding: 10px;
+                pointer-events: none;
+                user-select: none;
+            `;
+            title.textContent = project.name;
+            wrapper.appendChild(title);
+            
+            wrapper.addEventListener('mouseenter', () => {
+                wrapper.style.boxShadow = `0 0 30px rgba(${primaryRGB}, 0.3)`;
+                wrapper.style.borderColor = `rgba(255, 255, 255, 0.4)`;
+                bgImg.style.opacity = '0.8';
+                bgImg.style.transform = 'scale(1.05)';
+                title.style.textShadow = `0 0 15px rgba(255, 255, 255, 1),
+                                          0 0 30px rgba(255, 255, 255, 0.8),
+                                          0 0 60px rgba(255, 255, 255, 0.5),
+                                          0 0 80px rgba(0, 0, 0, 0.6)`;
+            });
+            
+            wrapper.addEventListener('mouseleave', () => {
+                wrapper.style.boxShadow = `0 0 20px rgba(0, 0, 0, 0.2)`;
+                wrapper.style.borderColor = `rgba(255, 255, 255, 0.15)`;
+                bgImg.style.opacity = '0.6';
+                bgImg.style.transform = 'scale(1)';
+                title.style.textShadow = `0 0 10px rgba(255, 255, 255, 1),
+                                          0 0 20px rgba(255, 255, 255, 0.8),
+                                          0 0 40px rgba(255, 255, 255, 0.5),
+                                          0 0 60px rgba(255, 255, 255, 0.3),
+                                          0 0 80px rgba(0, 0, 0, 0.5)`;
+            });
+            
+            wrapper.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (typeof window.openProyectoDetalle === 'function') {
+                    window.openProyectoDetalle(project.id);
+                } else {
+                    import('./mobile-nav.js').then(module => {
+                        module.openProyectoDetalle(project.id);
+                    });
+                }
+            });
+            
+            cell.appendChild(wrapper);
+        });
+    }
 }
 
 export function removeMobileHomeLetters() {

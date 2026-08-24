@@ -51,13 +51,46 @@ export function volverAProyectos() {
 }
 
 export function navigateMobileTo(page, projectId = null) {
+    if (page === 'inicio') {
 
-    if (page === 'proyectos' && currentMobilePage === 'proyectos' && !projectId) {
+        removeMobileHomeLetters();
+        
 
-        renderMobileProyectos();
+        document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator, .mobile-sobremi-content, .mobile-home-content, .mobile-proyecto-detalle-content, .mobile-contacto-content, .mobile-contacto-social-item, .mobile-contacto-info, .mobile-contacto-text, .mobile-contacto-email, .mobile-contacto-social, .mobile-proyectos-container, .mobile-proyecto-card, .mobile-categoria-item, .mobile-proyecto-titulo, .mobile-proyecto-descripcion, .mobile-proyecto-imagen, .mobile-proyecto-detalle-container, .mobile-proyecto-detalle-imagen, .mobile-proyecto-detalle-info, .mobile-proyecto-detalle-titulo, .mobile-proyecto-detalle-descripcion, .mobile-proyecto-detalle-tecnologias, .mobile-proyecto-detalle-enlace, .mobile-proyecto-detalle-volver, .mobile-sobremi-container, .mobile-sobremi-texto, .mobile-sobremi-imagen, .mobile-sobremi-titulo').forEach(el => {
+            if (el) el.remove();
+        });
+        
+
+        const container = document.getElementById('grid-container');
+        if (container) {
+            const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
+            allCells.forEach(cell => {
+                const children = Array.from(cell.children);
+                children.forEach(child => {
+                    if (!child.classList.contains('grid-cell') && 
+                        !child.classList.contains('logo-cell') && 
+                        !child.classList.contains('sidebar-cell') &&
+                        child.id !== 'mobile-letters-image' &&
+                        !child.classList.contains('mobile-nav-btn')) {
+                        child.remove();
+                    }
+                });
+            });
+        }
+        
+
+        currentMobilePage = 'inicio';
+        currentProjectId = null;
+        
+
+        window.history.pushState({}, '', window.location.pathname);
+        
+
+        renderMobileHome();
         return;
     }
     
+
     if (page !== 'inicio') {
         removeMobileHomeLetters();
     }
@@ -66,17 +99,22 @@ export function navigateMobileTo(page, projectId = null) {
         currentProjectId = projectId;
     }
     
-    document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator, .mobile-sobremi-content, .mobile-home-content, .mobile-proyecto-detalle-content, .mobile-contacto-content, .mobile-contacto-social-item, .mobile-contacto-info').forEach(el => el.remove());
+
+    document.querySelectorAll('.mobile-proyectos-content, .mobile-nav-btn, .mobile-btn-overlay, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator, .mobile-sobremi-content, .mobile-home-content, .mobile-proyecto-detalle-content, .mobile-contacto-content, .mobile-contacto-social-item, .mobile-contacto-info, .mobile-contacto-text, .mobile-contacto-email, .mobile-contacto-social, .mobile-proyectos-container, .mobile-proyecto-card, .mobile-categoria-item, .mobile-proyecto-titulo, .mobile-proyecto-descripcion, .mobile-proyecto-imagen, .mobile-proyecto-detalle-container, .mobile-proyecto-detalle-imagen, .mobile-proyecto-detalle-info, .mobile-proyecto-detalle-titulo, .mobile-proyecto-detalle-descripcion, .mobile-proyecto-detalle-tecnologias, .mobile-proyecto-detalle-enlace, .mobile-proyecto-detalle-volver, .mobile-sobremi-container, .mobile-sobremi-texto, .mobile-sobremi-imagen, .mobile-sobremi-titulo').forEach(el => {
+        if (el) el.remove();
+    });
     
     const container = document.getElementById('grid-container');
     if (container) {
         const allCells = container.querySelectorAll('.grid-cell, .logo-cell');
         allCells.forEach(cell => {
-            const children = cell.querySelectorAll('div:not(.grid-cell):not(.logo-cell):not(.sidebar-cell)');
+            const children = Array.from(cell.children);
             children.forEach(child => {
                 if (!child.classList.contains('grid-cell') && 
                     !child.classList.contains('logo-cell') && 
-                    !child.classList.contains('sidebar-cell')) {
+                    !child.classList.contains('sidebar-cell') &&
+                    child.id !== 'mobile-letters-image' &&
+                    !child.classList.contains('mobile-nav-btn')) {
                     child.remove();
                 }
             });
@@ -85,9 +123,8 @@ export function navigateMobileTo(page, projectId = null) {
     
     currentMobilePage = page;
     
-    if (page === 'inicio') {
-        window.history.pushState({}, '', window.location.pathname);
-    } else if (page === 'proyecto-detalle' && projectId) {
+
+    if (page === 'proyecto-detalle' && projectId) {
         window.history.pushState({}, '', `#${projectId}`);
     } else {
         window.history.pushState({}, '', `#${page}`);
@@ -96,7 +133,9 @@ export function navigateMobileTo(page, projectId = null) {
     const renderFn = MOBILE_PAGES[page];
     if (!renderFn) {
         currentMobilePage = 'inicio';
-        renderFn = MOBILE_PAGES['inicio'];
+        window.history.pushState({}, '', window.location.pathname);
+        renderMobileHome();
+        return;
     }
     
     renderFn();
@@ -140,6 +179,13 @@ export function updateMobileNavButtons(activePage) {
 }
 
 export function createMobileNavButtons(activePage = 'inicio') {
+
+    const existingButtons = document.querySelectorAll('.mobile-nav-btn');
+    if (existingButtons.length > 0) {
+        updateMobileNavButtons(activePage);
+        return;
+    }
+    
     loadDicc().then(() => {
         document.querySelectorAll('.mobile-nav-btn').forEach(el => el.remove());
         navButtonsCreated = false;
@@ -298,7 +344,8 @@ function createButtonsFromCells(activePage) {
         
         targetCell.appendChild(btn);
         
-        function doNavigate(action) {
+        function doNavigate() {
+            const action = btn.dataset.action;
             const target = isActive ? 'inicio' : action;
             if (typeof window.navigateMobileTo === 'function') {
                 window.navigateMobileTo(target);
@@ -312,7 +359,7 @@ function createButtonsFromCells(activePage) {
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            doNavigate(this.dataset.action);
+            doNavigate();
         });
         
         btn.addEventListener('touchend', function(e) {
@@ -328,7 +375,7 @@ function createButtonsFromCells(activePage) {
                 if (iconEl) iconEl.style.color = CONFIG.COLORS.primary;
                 if (textEl) textEl.style.color = CONFIG.COLORS.primary;
             }
-            doNavigate(action);
+            doNavigate();
         }, { passive: false });
         
         btn.addEventListener('touchstart', function(e) {
