@@ -1,79 +1,111 @@
 {
   "title": "CONTACTO",
   "design": {
-    "0,0": {
-      "type": "combined_normal",
-      "left": 199,
-      "top": 23,
-      "width": 1681,
-      "height": 91,
-      "combined": true
-    },
-    "3,1": {
-      "type": "combined_logo",
-      "left": 252,
-      "top": 182,
-      "width": 1575,
-      "height": 197,
-      "combined": true
-    },
-    "7,1": {
-      "type": "combined_normal",
-      "left": 252,
-      "top": 394,
-      "width": 250,
-      "height": 250,
-      "combined": true
-    },
-    "7,6": {
-      "type": "combined_normal",
-      "left": 517,
-      "top": 394,
-      "width": 250,
-      "height": 250,
-      "combined": true
-    },
-    "7,11": {
-      "type": "combined_normal",
-      "left": 782,
-      "top": 394,
-      "width": 250,
-      "height": 250,
-      "combined": true
-    },
-    "7,16": {
-      "type": "combined_normal",
-      "left": 1047,
-      "top": 394,
-      "width": 250,
-      "height": 250,
-      "combined": true
-    },
-    "7,21": {
-      "type": "combined_normal",
-      "left": 1312,
-      "top": 394,
-      "width": 250,
-      "height": 250,
-      "combined": true
-    },
-    "7,26": {
-      "type": "combined_normal",
-      "left": 1577,
-      "top": 394,
-      "width": 250,
-      "height": 250,
-      "combined": true
-    },
-    "12,1": {
-      "type": "combined_normal",
-      "left": 252,
-      "top": 659,
-      "width": 1575,
-      "height": 197,
-      "combined": true
-    }
+  "0,0": {
+    "type": "combined_normal",
+    "left": 199,
+    "top": 23,
+    "width": 1681,
+    "height": 91,
+    "combined": true
   },
+  "2,0": {
+    "type": "combined_normal",
+    "left": 199,
+    "top": 129,
+    "width": 38,
+    "height": 780,
+    "combined": true
+  },
+  "2,1": {
+    "type": "combined_normal",
+    "left": 252,
+    "top": 129,
+    "width": 1575,
+    "height": 38,
+    "combined": true
+  },
+  "2,31": {
+    "type": "combined_normal",
+    "left": 1842,
+    "top": 129,
+    "width": 38,
+    "height": 780,
+    "combined": true
+  },
+  "3,1": {
+    "type": "combined_logo",
+    "left": 252,
+    "top": 182,
+    "width": 1575,
+    "height": 197,
+    "combined": true
+  },
+  "7,1": {
+    "type": "combined_normal",
+    "left": 252,
+    "top": 394,
+    "width": 250,
+    "height": 250,
+    "combined": true
+  },
+  "7,6": {
+    "type": "combined_normal",
+    "left": 517,
+    "top": 394,
+    "width": 250,
+    "height": 250,
+    "combined": true
+  },
+  "7,11": {
+    "type": "combined_normal",
+    "left": 782,
+    "top": 394,
+    "width": 250,
+    "height": 250,
+    "combined": true
+  },
+  "7,16": {
+    "type": "combined_normal",
+    "left": 1047,
+    "top": 394,
+    "width": 250,
+    "height": 250,
+    "combined": true
+  },
+  "7,21": {
+    "type": "combined_normal",
+    "left": 1312,
+    "top": 394,
+    "width": 250,
+    "height": 250,
+    "combined": true
+  },
+  "7,26": {
+    "type": "combined_normal",
+    "left": 1577,
+    "top": 394,
+    "width": 250,
+    "height": 250,
+    "combined": true
+  },
+  "12,1": {
+    "type": "combined_normal",
+    "left": 252,
+    "top": 659,
+    "width": 1575,
+    "height": 197,
+    "combined": true
+  },
+  "16,1": {
+    "type": "combined_normal",
+    "left": 252,
+    "top": 871,
+    "width": 1575,
+    "height": 38,
+    "combined": true
+  }
+},
   "content": {
     "availabilityIcon": "◆",
     "availability": "DISPONIBLE PARA PROYECTOS REMOTOS",

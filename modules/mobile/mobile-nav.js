@@ -1,5 +1,5 @@
 import { CONFIG } from '../config.js';
-import { importDesignFromJSON } from '../logo.js';
+import { importDesignFromJSONmovil } from '../logo.js';
 import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations } from '../animations.js';
 import { renderMobileHome } from './mobile-home.js';
@@ -210,7 +210,7 @@ export function createMobileNavButtons(activePage = 'inicio') {
                 });
                 
                 if (!hasSidebarCells) {
-                    importDesignFromJSON(sidebarDesign, () => {
+                    importDesignFromJSONmovil(sidebarDesign, () => {
                         createButtonsFromCells(activePage);
                     }, false);
                 } else {
