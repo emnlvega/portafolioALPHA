@@ -416,7 +416,7 @@ function createSettingsDialog() {
     `;
     
     const colorHex = document.createElement('span');
-    colorHex.textContent = CONFIG.COLORS.secondary.toUpperCase();
+    colorHex.textContent = CONFIG.COLORS.primary.toUpperCase();
     colorHex.style.cssText = `
         font-family: 'Courier New', monospace;
         font-size: ${textSizes.small + 1}px;

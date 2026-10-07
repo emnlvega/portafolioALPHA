@@ -174,25 +174,25 @@
   "projects": [
     {
       "id": 1,
-      "name": "REBRAND ID",
+      "name": "EN CONSTRUCCION",
       "icon": "○",
-      "category": "BRANDING",
-      "type": "TRABAJO",
-      "year": "2025",
-      "description": "Identidad corporativa completa para una empresa de tecnologia.",
-      "details": "Investigacion profunda de la marca, definicion de valores y creacion de un sistema visual coherente.",
+      "category": "EN CONSTRUCCION",
+      "type": "EN CONSTRUCCION",
+      "year": "EN CONSTRUCCION",
+      "description": "EN CONSTRUCCION",
+      "details": "EN CONSTRUCCION",
       "pages": [
         {
-          "title": "INVESTIGACION",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Analisis de competencia, entrevistas con stakeholders, definicion de arquetipos de marca y mapa de posicionamiento." },
-            { "type": "image", "value": "https://picsum.photos/seed/branding1/800/400", "caption": "Mapa de posicionamiento de marca" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "image", "value": "https://picsum.photos/seed/branding1/800/400", "caption": "EN CONSTRUCCION" }
           ]
         },
         {
-          "title": "CONCEPTUALIZACION",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Brainstorming, moodboards, exploracion de direcciones creativas y seleccion de concepto principal." },
+            { "type": "text", "value": "EN CONSTRUCCION" },
             { "type": "gallery", "value": [
               "https://picsum.photos/seed/mood1/600/400",
               "https://picsum.photos/seed/mood2/600/400",
@@ -201,43 +201,43 @@
           ]
         },
         {
-          "title": "DESARROLLO",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Creacion de logotipo, tipografia corporativa, paleta de colores, sistema de iconografia." },
-            { "type": "image", "value": "https://picsum.photos/seed/logo1/800/400", "caption": "Logotipo final" },
-            { "type": "link", "value": "https://ejemplo.com/rebrand", "label": "Ver proyecto completo" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "image", "value": "https://picsum.photos/seed/logo1/800/400", "caption": "EN CONSTRUCCION" },
+            { "type": "link", "value": "https://ejemplo.com/rebrand", "label": "EN CONSTRUCCION" }
           ]
         },
         {
-          "title": "APLICACIONES",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Aplicacion en papelería, señaletica, empaques, merchandising y presencia digital." },
-            { "type": "video", "value": "https://www.w3schools.com/html/mov_bbb.mp4", "caption": "Video presentacion del proyecto" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "video", "value": "https://www.w3schools.com/html/mov_bbb.mp4", "caption": "EN CONSTRUCCION" }
           ]
         }
       ]
     },
     {
       "id": 2,
-      "name": "E-COMMERCE UX",
+      "name": "EN CONSTRUCCION",
       "icon": "◈",
-      "category": "DISENO WEB",
-      "type": "PERSONAL",
-      "year": "2025",
-      "description": "Rediseno completo de experiencia de usuario para e-commerce.",
-      "details": "Pruebas de usabilidad, mapas de calor y prototipado interactivo.",
+      "category": "EN CONSTRUCCION",
+      "type": "EN CONSTRUCCION",
+      "year": "EN CONSTRUCCION",
+      "description": "EN CONSTRUCCION",
+      "details": "EN CONSTRUCCION",
       "pages": [
         {
-          "title": "INVESTIGACION UX",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Analisis de usuarios, customer journey mapping, identificacion de puntos de friccion." },
-            { "type": "image", "value": "https://picsum.photos/seed/ux1/800/400", "caption": "Customer journey map" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "image", "value": "https://picsum.photos/seed/ux1/800/400", "caption": "EN CONSTRUCCION" }
           ]
         },
         {
-          "title": "PROTOTIPADO",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Wireframes de baja y alta fidelidad, prototipo interactivo en Figma." },
+            { "type": "text", "value": "EN CONSTRUCCION" },
             { "type": "gallery", "value": [
               "https://picsum.photos/seed/wire1/600/400",
               "https://picsum.photos/seed/wire2/600/400",
@@ -246,35 +246,35 @@
           ]
         },
         {
-          "title": "IMPLEMENTACION",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Desarrollo front-end con React, integracion con backend, optimizacion de rendimiento." },
-            { "type": "link", "value": "https://ejemplo.com/ecommerce", "label": "Ver demo en vivo" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "link", "value": "https://ejemplo.com/ecommerce", "label": "EN CONSTRUCCION" }
           ]
         }
       ]
     },
     {
       "id": 3,
-      "name": "DASHBOARD PRO",
+      "name": "EN CONSTRUCCION",
       "icon": "◉",
-      "category": "FRONTEND",
-      "type": "ESCOLAR",
-      "year": "2024",
-      "description": "Panel de control interactivo para visualizacion de datos.",
-      "details": "Desarrollado con React y D3.js, graficos dinamicos y filtros avanzados.",
+      "category": "EN CONSTRUCCION",
+      "type": "EN CONSTRUCCION",
+      "year": "EN CONSTRUCCION",
+      "description": "EN CONSTRUCCION",
+      "details": "EN CONSTRUCCION",
       "pages": [
         {
-          "title": "ARQUITECTURA",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Diseño de la arquitectura de componentes, gestion de estado con Redux." },
-            { "type": "image", "value": "https://picsum.photos/seed/arch1/800/400", "caption": "Diagrama de arquitectura" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "image", "value": "https://picsum.photos/seed/arch1/800/400", "caption": "EN CONSTRUCCION" }
           ]
         },
         {
-          "title": "VISUALIZACIONES",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Graficos de barras, lineas, areas y scatter plots con D3.js." },
+            { "type": "text", "value": "EN CONSTRUCCION" },
             { "type": "gallery", "value": [
               "https://picsum.photos/seed/chart1/600/400",
               "https://picsum.photos/seed/chart2/600/400",
@@ -283,410 +283,76 @@
           ]
         },
         {
-          "title": "FILTROS Y ANALISIS",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Sistema de filtros avanzados, busqueda en tiempo real, exportacion de datos." },
-            { "type": "link", "value": "https://ejemplo.com/dashboard", "label": "Ver dashboard en vivo" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "link", "value": "https://ejemplo.com/dashboard", "label": "EN CONSTRUCCION" }
           ]
         }
       ]
     },
     {
       "id": 4,
-      "name": "API GATEWAY",
+      "name": "EN CONSTRUCCION",
       "icon": "◊",
-      "category": "BACKEND",
-      "type": "TRABAJO",
-      "year": "2025",
-      "description": "Sistema de integracion de APIs con autenticacion OAuth2.",
-      "details": "Implementado con Node.js, Express y Redis, 10,000+ peticiones por segundo.",
+      "category": "EN CONSTRUCCION",
+      "type": "EN CONSTRUCCION",
+      "year": "EN CONSTRUCCION",
+      "description": "EN CONSTRUCCION",
+      "details": "EN CONSTRUCCION",
       "pages": [
         {
-          "title": "ARQUITECTURA",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Diseño de microservicios, gateway de API, balanceo de carga y caching distribuido." },
-            { "type": "image", "value": "https://picsum.photos/seed/apiarch/800/400", "caption": "Arquitectura del sistema" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "image", "value": "https://picsum.photos/seed/apiarch/800/400", "caption": "EN CONSTRUCCION" }
           ]
         },
         {
-          "title": "SEGURIDAD",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Implementacion de OAuth2, JWT, rate limiting, CORS policies." },
-            { "type": "image", "value": "https://picsum.photos/seed/security1/800/400", "caption": "Diagrama de autenticacion" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "image", "value": "https://picsum.photos/seed/security1/800/400", "caption": "EN CONSTRUCCION" }
           ]
         },
         {
-          "title": "MONITOREO",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Logging centralizado, metricas con Prometheus, alertas en tiempo real." },
-            { "type": "link", "value": "https://ejemplo.com/apigateway", "label": "Documentacion completa" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "link", "value": "https://ejemplo.com/apigateway", "label": "EN CONSTRUCCION" }
           ]
         }
       ]
     },
     {
       "id": 5,
-      "name": "LOGOTIPO MARCA",
-      "icon": "◇",
-      "category": "LOGOS",
-      "type": "PERSONAL",
-      "year": "2024",
-      "description": "Logotipo minimalista para startup de IA.",
-      "details": "Basado en geometria y el concepto de conexion humano-maquina.",
-      "pages": [
-        {
-          "title": "CONCEPTO",
-          "content": [
-            { "type": "text", "value": "Investigacion de formas geometricas, simbolismo de la IA, creacion de multiples versiones." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/logo2/600/400",
-              "https://picsum.photos/seed/logo3/600/400",
-              "https://picsum.photos/seed/logo4/600/400"
-            ]}
-          ]
-        },
-        {
-          "title": "TIPOGRAFIA",
-          "content": [
-            { "type": "text", "value": "Seleccion de tipografia, ajustes de kerning y tracking, logotipo tipografico personalizado." },
-            { "type": "image", "value": "https://picsum.photos/seed/typo1/800/400", "caption": "Estudio tipografico" }
-          ]
-        },
-        {
-          "title": "VARIACIONES",
-          "content": [
-            { "type": "text", "value": "Versiones horizontal, vertical, monocromatica, sobre fondos claros y oscuros." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/var1/600/400",
-              "https://picsum.photos/seed/var2/600/400",
-              "https://picsum.photos/seed/var3/600/400"
-            ]}
-          ]
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "name": "PACKAGING LUXE",
+      "name": "EN CONSTRUCCION",
       "icon": "○",
-      "category": "BRANDING",
-      "type": "TRABAJO",
-      "year": "2025",
-      "description": "Empaque premium para linea de productos organicos.",
-      "details": "Materiales sustentables y sistema de colores tierra.",
+      "category": "EN CONSTRUCCION",
+      "type": "EN CONSTRUCCION",
+      "year": "EN CONSTRUCCION",
+      "description": "EN CONSTRUCCION",
+      "details": "EN CONSTRUCCION",
       "pages": [
         {
-          "title": "ESTRUCTURA",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Diseño de packaging estructural, seleccion de materiales sustentables." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/pack1/600/400",
-              "https://picsum.photos/seed/pack2/600/400"
-            ]}
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "image", "value": "https://picsum.photos/seed/apiarch/800/400", "caption": "EN CONSTRUCCION" }
           ]
         },
         {
-          "title": "GRAFICA",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Diseño de ilustraciones, tipografia, sistema de colores y jerarquia de informacion." },
-            { "type": "image", "value": "https://picsum.photos/seed/pack3/800/400", "caption": "Propuesta grafica final" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "image", "value": "https://picsum.photos/seed/security1/800/400", "caption": "EN CONSTRUCCION" }
           ]
         },
         {
-          "title": "PRODUCCION",
+          "title": "EN CONSTRUCCION",
           "content": [
-            { "type": "text", "value": "Preparacion de archivos para impresion, seleccion de acabados, control de calidad." },
-            { "type": "video", "value": "https://www.w3schools.com/html/mov_bbb.mp4", "caption": "Proceso de produccion" }
-          ]
-        }
-      ]
-    },
-    {
-      "id": 7,
-      "name": "GALERIA ARTE",
-      "icon": "□",
-      "category": "ARTE",
-      "type": "ESCOLAR",
-      "year": "2024",
-      "description": "Exposicion virtual interactiva de arte digital.",
-      "details": "Realidad aumentada, exploracion 3D e informacion detallada.",
-      "pages": [
-        {
-          "title": "CONCEPTO",
-          "content": [
-            { "type": "text", "value": "Definicion de la experiencia, curaduria de obras, diseño de la narrativa." },
-            { "type": "image", "value": "https://picsum.photos/seed/art1/800/400", "caption": "Concepto de la exposicion" }
-          ]
-        },
-        {
-          "title": "TECNOLOGIA",
-          "content": [
-            { "type": "text", "value": "Implementacion con Three.js, WebXR para realidad aumentada." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/tech1/600/400",
-              "https://picsum.photos/seed/tech2/600/400",
-              "https://picsum.photos/seed/tech3/600/400"
-            ]}
-          ]
-        },
-        {
-          "title": "EXPERIENCIA",
-          "content": [
-            { "type": "text", "value": "Diseño de interfaz, navegacion 3D, interacciones con las obras." },
-            { "type": "link", "value": "https://ejemplo.com/galeria", "label": "Visitar exposicion virtual" }
-          ]
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "name": "LANDING PAGE",
-      "icon": "◈",
-      "category": "DISENO WEB",
-      "type": "TRABAJO",
-      "year": "2025",
-      "description": "Landing page de alta conversion para producto tecnologico.",
-      "details": "Microinteracciones y copy persuasivo. A/B testing.",
-      "pages": [
-        {
-          "title": "ESTRATEGIA",
-          "content": [
-            { "type": "text", "value": "Definicion de publico objetivo, propuesta de valor, copywriting persuasivo." },
-            { "type": "image", "value": "https://picsum.photos/seed/land1/800/400", "caption": "Estrategia de contenido" }
-          ]
-        },
-        {
-          "title": "DISEÑO",
-          "content": [
-            { "type": "text", "value": "Wireframes, prototipo visual, sistema de componentes, animaciones." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/land2/600/400",
-              "https://picsum.photos/seed/land3/600/400"
-            ]}
-          ]
-        },
-        {
-          "title": "OPTIMIZACION",
-          "content": [
-            { "type": "text", "value": "A/B testing, analisis de comportamiento, optimizacion de carga." },
-            { "type": "link", "value": "https://ejemplo.com/landing", "label": "Ver landing page" }
-          ]
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "name": "APP FITNESS",
-      "icon": "◉",
-      "category": "FRONTEND",
-      "type": "PERSONAL",
-      "year": "2024",
-      "description": "App movil para seguimiento de rutinas de ejercicio.",
-      "details": "React Native, seguimiento de progreso y desafios semanales.",
-      "pages": [
-        {
-          "title": "UX/UI",
-          "content": [
-            { "type": "text", "value": "Diseño de experiencia de usuario, arquitectura de informacion." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/fit1/600/400",
-              "https://picsum.photos/seed/fit2/600/400",
-              "https://picsum.photos/seed/fit3/600/400"
-            ]}
-          ]
-        },
-        {
-          "title": "DESARROLLO",
-          "content": [
-            { "type": "text", "value": "Implementacion con React Native, gestion de estado, componentes nativos." },
-            { "type": "image", "value": "https://picsum.photos/seed/fit4/800/400", "caption": "Estructura del codigo" }
-          ]
-        },
-        {
-          "title": "INTEGRACIONES",
-          "content": [
-            { "type": "text", "value": "Conexion con HealthKit, notificaciones push, sincronizacion en tiempo real." },
-            { "type": "link", "value": "https://ejemplo.com/fitness", "label": "Descargar app" }
-          ]
-        }
-      ]
-    },
-    {
-      "id": 10,
-      "name": "SISTEMA ERP",
-      "icon": "◊",
-      "category": "BACKEND",
-      "type": "TRABAJO",
-      "year": "2025",
-      "description": "Sistema de planificacion de recursos empresariales.",
-      "details": "Modulos de inventario, facturacion, RRHH y reportes en tiempo real.",
-      "pages": [
-        {
-          "title": "ARQUITECTURA",
-          "content": [
-            { "type": "text", "value": "Diseño de microservicios, bases de datos distribuidas." },
-            { "type": "image", "value": "https://picsum.photos/seed/erp1/800/400", "caption": "Arquitectura del sistema" }
-          ]
-        },
-        {
-          "title": "MODULOS",
-          "content": [
-            { "type": "text", "value": "Implementacion de modulos de inventario, facturacion, RRHH, compras y ventas." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/erp2/600/400",
-              "https://picsum.photos/seed/erp3/600/400"
-            ]}
-          ]
-        },
-        {
-          "title": "REPORTES",
-          "content": [
-            { "type": "text", "value": "Sistema de reportes personalizados, dashboards ejecutivos." },
-            { "type": "link", "value": "https://ejemplo.com/erp", "label": "Documentacion completa" }
-          ]
-        }
-      ]
-    },
-    {
-      "id": 11,
-      "name": "IDENTIDAD MUSEO",
-      "icon": "○",
-      "category": "BRANDING",
-      "type": "ESCOLAR",
-      "year": "2024",
-      "description": "Identidad visual para museo de arte contemporaneo.",
-      "details": "Logotipo, señaletica, material promocional y presencia digital.",
-      "pages": [
-        {
-          "title": "CONCEPTO",
-          "content": [
-            { "type": "text", "value": "Investigacion del museo, definicion de personalidad, sistema visual unico." },
-            { "type": "image", "value": "https://picsum.photos/seed/museum1/800/400", "caption": "Concepto creativo" }
-          ]
-        },
-        {
-          "title": "DESARROLLO",
-          "content": [
-            { "type": "text", "value": "Diseño de logotipo, tipografia, paleta de colores, sistema de graficos." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/museum2/600/400",
-              "https://picsum.photos/seed/museum3/600/400"
-            ]}
-          ]
-        },
-        {
-          "title": "APLICACIONES",
-          "content": [
-            { "type": "text", "value": "Señaletica, material promocional, sitio web, redes sociales." },
-            { "type": "video", "value": "https://www.w3schools.com/html/mov_bbb.mp4", "caption": "Video de la identidad" }
-          ]
-        }
-      ]
-    },
-    {
-      "id": 12,
-      "name": "TIENDA ONLINE",
-      "icon": "◈",
-      "category": "DISENO WEB",
-      "type": "PERSONAL",
-      "year": "2025",
-      "description": "Tienda online con experiencia de compra fluida.",
-      "details": "Pasarelas de pago, sistema de recomendaciones.",
-      "pages": [
-        {
-          "title": "ESTRATEGIA",
-          "content": [
-            { "type": "text", "value": "Definicion de modelo de negocio, catalogo de productos, estrategia de precios." },
-            { "type": "image", "value": "https://picsum.photos/seed/shop1/800/400", "caption": "Estrategia comercial" }
-          ]
-        },
-        {
-          "title": "DESARROLLO",
-          "content": [
-            { "type": "text", "value": "Implementacion de frontend y backend, pasarelas de pago." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/shop2/600/400",
-              "https://picsum.photos/seed/shop3/600/400"
-            ]}
-          ]
-        },
-        {
-          "title": "EXPERIENCIA",
-          "content": [
-            { "type": "text", "value": "Sistema de recomendaciones, seguimiento de envios, notificaciones." },
-            { "type": "link", "value": "https://ejemplo.com/tienda", "label": "Visitar tienda" }
-          ]
-        }
-      ]
-    },
-    {
-      "id": 13,
-      "name": "STUDIO IDENTITY",
-      "icon": "◆",
-      "category": "DISEÑO GRAFICO",
-      "type": "TRABAJO",
-      "year": "2025",
-      "description": "Identidad completa para estudio de arquitectura.",
-      "details": "Sistema modular basado en la geometria y la luz.",
-      "pages": [
-        {
-          "title": "CONCEPTO",
-          "content": [
-            { "type": "text", "value": "Investigacion de la arquitectura, definicion de identidad, sistema modular." },
-            { "type": "image", "value": "https://picsum.photos/seed/studio1/800/400", "caption": "Concepto modular" }
-          ]
-        },
-        {
-          "title": "DESARROLLO",
-          "content": [
-            { "type": "text", "value": "Diseño de logotipo, tipografia, sistema de colores, patrones." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/studio2/600/400",
-              "https://picsum.photos/seed/studio3/600/400"
-            ]}
-          ]
-        },
-        {
-          "title": "APLICACIONES",
-          "content": [
-            { "type": "text", "value": "Papelería, señaletica, presentaciones, sitio web." },
-            { "type": "link", "value": "https://ejemplo.com/studio", "label": "Ver proyecto completo" }
-          ]
-        }
-      ]
-    },
-    {
-      "id": 14,
-      "name": "ECOMMERCE APP",
-      "icon": "◉",
-      "category": "FRONTEND",
-      "type": "TRABAJO",
-      "year": "2025",
-      "description": "App de compras con experiencia personalizada.",
-      "details": "React Native, sincronizacion en tiempo real.",
-      "pages": [
-        {
-          "title": "UX/UI",
-          "content": [
-            { "type": "text", "value": "Diseño centrado en el usuario, experiencia de compra personalizada." },
-            { "type": "gallery", "value": [
-              "https://picsum.photos/seed/ecom1/600/400",
-              "https://picsum.photos/seed/ecom2/600/400"
-            ]}
-          ]
-        },
-        {
-          "title": "DESARROLLO",
-          "content": [
-            { "type": "text", "value": "React Native, gestion de estado, navegacion, integracion con APIs." },
-            { "type": "image", "value": "https://picsum.photos/seed/ecom3/800/400", "caption": "Estructura del proyecto" }
-          ]
-        },
-        {
-          "title": "NOTIFICACIONES",
-          "content": [
-            { "type": "text", "value": "Sistema de notificaciones push, seguimiento de pedidos." },
-            { "type": "link", "value": "https://ejemplo.com/ecommerceapp", "label": "Descargar app" }
+            { "type": "text", "value": "EN CONSTRUCCION" },
+            { "type": "link", "value": "https://ejemplo.com/apigateway", "label": "EN CONSTRUCCION" }
           ]
         }
       ]
