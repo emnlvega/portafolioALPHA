@@ -149,12 +149,14 @@ export function toggleCellOff(cell) {
                 c.dataset.combined = 'false';
                 c.classList.remove('off');
                 delete c.dataset.combinedId;
+                delete c.dataset.startRow;
+                delete c.dataset.startCol;
+                delete c.dataset.endRow;
+                delete c.dataset.endCol;
                 delete c.dataset.combinedLeft;
                 delete c.dataset.combinedTop;
                 delete c.dataset.combinedWidth;
                 delete c.dataset.combinedHeight;
-                delete c.dataset.combinedRows;
-                delete c.dataset.combinedCols;
             }
         });
         
@@ -192,12 +194,14 @@ export function restoreCell(cell) {
     cell.dataset.prevState = 'normal';
     cell.dataset.combined = 'false';
     delete cell.dataset.combinedId;
+    delete cell.dataset.startRow;
+    delete cell.dataset.startCol;
+    delete cell.dataset.endRow;
+    delete cell.dataset.endCol;
     delete cell.dataset.combinedLeft;
     delete cell.dataset.combinedTop;
     delete cell.dataset.combinedWidth;
     delete cell.dataset.combinedHeight;
-    delete cell.dataset.combinedRows;
-    delete cell.dataset.combinedCols;
     
     setTimeout(() => {
         refreshAnimationCount();
@@ -289,14 +293,6 @@ export function toggleCombinedStyle(cell) {
     });
 }
 
-function getCellAt(row, col) {
-    return designCells.find(c => {
-        const cRow = parseInt(c.dataset.designRow);
-        const cCol = parseInt(c.dataset.designCol);
-        return cRow === row && cCol === col;
-    });
-}
-
 export function combineCells(cells) {
     if (isSpecialPageActiveCheck()) return;
     if (isMobileSpecialPage()) return;
@@ -359,12 +355,14 @@ export function combineCells(cells) {
     baseCell.dataset.prevState = 'combined_red';
     baseCell.dataset.combined = 'true';
     baseCell.dataset.combinedId = combinedId;
+    baseCell.dataset.startRow = minRow;
+    baseCell.dataset.startCol = minCol;
+    baseCell.dataset.endRow = maxRow;
+    baseCell.dataset.endCol = maxCol;
     baseCell.dataset.combinedLeft = targetX;
     baseCell.dataset.combinedTop = targetY;
     baseCell.dataset.combinedWidth = width;
     baseCell.dataset.combinedHeight = height;
-    baseCell.dataset.originalCombinedOffsetX = currentOffsetX;
-    baseCell.dataset.originalCombinedOffsetY = currentOffsetY;
 
     setTimeout(() => {
         secondaryCells.forEach(c => {
@@ -503,6 +501,28 @@ function handleResizeEnd(e) {
     const height = parseFloat(cell.dataset.combinedHeight) || parseFloat(cell.style.height);
     
     const cellsInArea = getCellsInArea(left, top, width, height);
+    
+    let minRow = Infinity, minCol = Infinity;
+    let maxRow = -Infinity, maxCol = -Infinity;
+    
+    cellsInArea.forEach(c => {
+        const row = parseInt(c.dataset.designRow);
+        const col = parseInt(c.dataset.designCol);
+        if (!isNaN(row) && !isNaN(col)) {
+            minRow = Math.min(minRow, row);
+            minCol = Math.min(minCol, col);
+            maxRow = Math.max(maxRow, row);
+            maxCol = Math.max(maxCol, col);
+        }
+    });
+    
+    if (minRow !== Infinity) {
+        cell.dataset.startRow = minRow;
+        cell.dataset.startCol = minCol;
+        cell.dataset.endRow = maxRow;
+        cell.dataset.endCol = maxCol;
+    }
+
     cellsInArea.forEach(c => {
         if (c !== cell) {
             c.style.transition = 'all 0.3s ease';
@@ -735,14 +755,14 @@ export function resetGrid(keepCombined = false) {
         cell.dataset.combined = 'false';
         cell.classList.remove('off');
         delete cell.dataset.combinedId;
+        delete cell.dataset.startRow;
+        delete cell.dataset.startCol;
+        delete cell.dataset.endRow;
+        delete cell.dataset.endCol;
         delete cell.dataset.combinedLeft;
         delete cell.dataset.combinedTop;
         delete cell.dataset.combinedWidth;
         delete cell.dataset.combinedHeight;
-        delete cell.dataset.combinedRows;
-        delete cell.dataset.combinedCols;
-        delete cell.dataset.originalCombinedOffsetX;
-        delete cell.dataset.originalCombinedOffsetY;
     });
 
     selectedCells = [];
@@ -768,8 +788,6 @@ export function exportDesignToJSON() {
         const dlg = d || { dialogs: {} };
         const dlgTexts = dlg.dialogs || {};
         
-        if (isMobileSpecialPage()) return;
-        
         const result = {};
 
         designCells.forEach(cell => {
@@ -788,10 +806,10 @@ export function exportDesignToJSON() {
             } else if (state === 'red') {
                 result[key] = 'red';
             } else if (cell.dataset.combined === 'true') {
-                const left = parseFloat(cell.dataset.combinedLeft) || parseFloat(cell.style.left);
-                const top = parseFloat(cell.dataset.combinedTop) || parseFloat(cell.style.top);
-                const width = parseFloat(cell.dataset.combinedWidth) || parseFloat(cell.style.width);
-                const height = parseFloat(cell.dataset.combinedHeight) || parseFloat(cell.style.height);
+                const startRow = parseInt(cell.dataset.startRow);
+                const startCol = parseInt(cell.dataset.startCol);
+                const endRow = parseInt(cell.dataset.endRow);
+                const endCol = parseInt(cell.dataset.endCol);
                 
                 let type = 'combined_red';
                 if (state === 'combined_logo') type = 'combined_logo';
@@ -799,26 +817,19 @@ export function exportDesignToJSON() {
                 
                 result[key] = {
                     type: type,
-                    left: left,
-                    top: top,
-                    width: width,
-                    height: height,
+                    start: [isNaN(startRow) ? row : startRow, isNaN(startCol) ? col : startCol],
+                    end: [isNaN(endRow) ? row : endRow, isNaN(endCol) ? col : endCol],
                     combined: true
                 };
             }
         });
 
         const json = JSON.stringify(result, null, 2);
-        console.log(json);
-
-        const title = dlgTexts.exportTitle;
-        const message = dlgTexts.exportMessage;
-        const messageManual = dlgTexts.exportMessageManual;
 
         navigator.clipboard.writeText(json).then(() => {
-            showDialog(title, message);
+            showDialog(dlgTexts.exportTitle, dlgTexts.exportMessage);
         }).catch(() => {
-            showDialog(title, messageManual + json);
+            showDialog(dlgTexts.exportTitle, dlgTexts.exportMessageManual + json);
         });
     });
 }

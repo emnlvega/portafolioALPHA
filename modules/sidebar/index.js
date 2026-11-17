@@ -12,6 +12,8 @@ import { isMobile } from '../mobile.js';
 import { renderMobileHome } from '../mobile/mobile-home.js';
 import { renderMobileSobreMi } from '../mobile/mobile-sobremi.js';
 import { initSimpleMode , toggleSimpleMode } from '../simpleMode.js';
+import { startLogoAnimation, stopLogoAnimation, setOnInicio, startFlickerOnInicio, LOGO_START_DESIGN } from '../emnlvega.js';
+import { handleProyectosTextureLeave } from '../settings.js';
 
 let dicc = null;
 let isSpecialPageActive = false;
@@ -54,7 +56,19 @@ function getLetterSpacing() {
     };
 }
 
+function getInicioDesign() {
+    return LOGO_START_DESIGN;
+}
+
 const PAGE_HANDLERS = {
+    'inicio': { getDesign: getInicioDesign, render: () => {
+        const event = new CustomEvent('renderInicioContent');
+        document.dispatchEvent(event);
+        import('../emnlvega.js').then(module => {
+            module.setOnInicio(true);
+            module.startFlickerOnInicio();
+        });
+    }},
     'proyectos': { getDesign: getProyectosDesign, render: renderProyectosContent },
     'sobre-mi': { getDesign: getSobreMiDesign, render: renderSobreMiContent },
     'contacto': { getDesign: getContactoDesign, render: renderContactoContent }
@@ -527,14 +541,6 @@ export function handleSidebarAction(action) {
                 inicioText.style.textShadow = 'var(--text-shadow-active)';
             }
             updateURL('inicio');
-            
-            import('../emnlvega.js').then(module => {
-                module.setOnInicio(true);
-                module.startFlickerOnInicio();
-            });
-            
-            const event = new CustomEvent('loadInicioInstant');
-            document.dispatchEvent(event);
         }
         return;
     }
@@ -547,6 +553,10 @@ export function handleSidebarAction(action) {
         } else {
             import('../emnlvega.js').then(module => {
                 module.setOnInicio(false);
+            });
+            window.selectedProjectId = null;
+            import('./pages/proyectos.js').then(module => {
+                if (module.clearProjectSelection) module.clearProjectSelection();
             });
             
             document.querySelectorAll('.sidebar-text').forEach(el => {
@@ -561,9 +571,8 @@ export function handleSidebarAction(action) {
                 currentText.style.textShadow = 'var(--text-shadow-active)';
             }
             
-            const hasProject = !!window.selectedProjectId;
-            updateURL(action);
-            loadSidebarPage(action, hasProject);
+            updateURL('proyectos');
+            loadSidebarPage(action, false);
         }
         return;
     }
@@ -661,6 +670,8 @@ function clearAllPageContent() {
 function loadSidebarPage(pageKey, hasProjectId = false) {
     if (isTransitioning) return;
 
+    const leavingProyectos = (currentPage === 'proyectos' && pageKey !== 'proyectos');
+
     const handler = PAGE_HANDLERS[pageKey];
     if (!handler) return;
 
@@ -669,10 +680,21 @@ function loadSidebarPage(pageKey, hasProjectId = false) {
     isTransitioning = true;
     setHashLoad(false);
 
+    if (leavingProyectos) {
+        handleProyectosTextureLeave();
+        import('./pages/proyectos.js').then(module => {
+            if (module.clearProjectSelection) module.clearProjectSelection();
+        });
+    }
+
     clearAllPageContent();
 
     setGridInteractionsEnabled(false);
     stopRandomAnimations();
+
+    if (leavingProyectos) {
+        handleProyectosTextureLeave();
+    }
 
     if (!wasOnSpecialPage) {
         resetGrid(false);
@@ -714,41 +736,31 @@ function loadSidebarPage(pageKey, hasProjectId = false) {
 
                 proyectosModule.toggleTextureOverlay(false);
 
-                importDesignFromJSON(proyectosModule.EXPANDED_DESIGN, () => {
-                    proyectosModule.setDetailExpanded(true);
-
-                    isSpecialPageActive = true;
-                    currentPage = pageKey;
-                    isProgrammaticLoad = false;
-                    updateSidebarActiveState();
-
-                    setTimeout(() => {
-                        handler.render();
-
-                        setTimeout(() => {
-                            import('./pages/proyectos.js').then(module => {
-                                if (module.selectProjectById) {
-                                    module.selectProjectById(projectIdToSelect);
-                                }
-                            });
-                        }, 200);
-
-                        if (pageKey === 'proyectos' && projectIdToSelect) {
-                            updateURL('proyectos', projectIdToSelect);
-                        }
+                setTimeout(async () => {
+                    try {
+                        await proyectosModule.selectProjectById(projectIdToSelect);
+                        isSpecialPageActive = true;
+                        currentPage = pageKey;
+                        isProgrammaticLoad = false;
+                        updateSidebarActiveState();
 
                         setTimeout(() => {
                             restartRandomAnimations();
                             isTransitioning = false;
                         }, 500);
-                    }, 300);
-                }, false);
+                    } catch (error) {
+                        console.error('Error restoring selected project:', error);
+                        isProgrammaticLoad = false;
+                        setGridInteractionsEnabled(true);
+                        isTransitioning = false;
+                    }
+                }, 300);
             } else {
                 const design = await handler.getDesign();
 
                 importDesignFromJSON(design, () => {
-                    isSpecialPageActive = true;
-                    currentPage = pageKey;
+                    isSpecialPageActive = pageKey !== 'inicio';
+                    currentPage = pageKey === 'inicio' ? null : pageKey;
                     isProgrammaticLoad = false;
                     updateSidebarActiveState();
 
@@ -774,14 +786,13 @@ function loadSidebarPage(pageKey, hasProjectId = false) {
         }
     }, 200);
 }
+
 export function returnToMainLogo() {
     if (isTransitioning) return;
     if (!isSpecialPageActive) return;
 
-    isTransitioning = true;
-
     if (currentPage === 'proyectos') {
-        clearProyectosTextureState();
+        handleProyectosTextureLeave();
     } else if (currentPage === 'sobre-mi') {
         clearSobreMiState();
     } else if (currentPage === 'contacto') {
@@ -790,68 +801,23 @@ export function returnToMainLogo() {
 
     clearProjectSelection();
     
-    const selectors = [
-        '.proyectos-content', '.proyectos-category', '.proyectos-item', 
-        '.proyectos-detail', '.proyectos-nav', '.proyectos-filter', 
-        '.proyectos-select-message', '.sobre-mi-content', '.contacto-content',
-        '.inicio-bienvenido', '.inicio-proyecto', '.inicio-vermas',
-        '.expand-btn'
-    ];
+    stopLogoAnimation();
+    window.proyectosCurrentPage = 0;
+    window.proyectosCurrentCategory = 'TODOS';
     
-    document.querySelectorAll(selectors.join(',')).forEach(el => el.remove());
+    isSpecialPageActive = false;
+    currentPage = null;
+    isProgrammaticLoad = false;
+    updateSidebarActiveState();
+    updateURL('inicio');
     
-    const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
-    allCells.forEach(cell => {
-        const children = Array.from(cell.children);
-        children.forEach(child => {
-            const hasPageContent = selectors.some(selector => 
-                child.matches && child.matches(selector)
-            );
-            if (hasPageContent) {
-                child.remove();
-            }
-        });
-        
-        cell.style.pointerEvents = '';
-        cell.style.cursor = '';
-        cell.style.boxShadow = 'none';
-        cell.style.border = `1px solid ${CONFIG.COLORS.primary}`;
-        cell.style.backgroundColor = CONFIG.COLORS.background;
-        cell.style.zIndex = '';
-        cell.style.opacity = '1';
-        cell.style.transform = 'scale(1)';
+    import('../emnlvega.js').then(module => {
+        module.setOnInicio(true);
+        module.startFlickerOnInicio();
     });
     
-    const textureOverlay = document.getElementById('overlay-container');
-    if (textureOverlay) {
-        textureOverlay.style.display = 'block';
-    }
-    
-    document.querySelectorAll('.mobile-proyectos-content, .mobile-proyecto-item, .mobile-categoria-item, .mobile-flecha, .mobile-page-indicator').forEach(el => el.remove());
-    
-    setGridInteractionsEnabled(false);
-    stopRandomAnimations();
-    resetGrid(true);
-    isProgrammaticLoad = true;
-    
-    setTimeout(() => {
-        isSpecialPageActive = false;
-        currentPage = null;
-        isProgrammaticLoad = false;
-        setGridInteractionsEnabled(true);
-        window.proyectosCurrentPage = 0;
-        window.proyectosCurrentCategory = 'TODOS';
-        updateSidebarActiveState();
-        updateURL('inicio');
-        
-        const event = new CustomEvent('loadInicioInstant');
-        document.dispatchEvent(event);
-        
-        setTimeout(() => {
-            restartRandomAnimations();
-            isTransitioning = false;
-        }, 500);
-    }, 200);
+    const event = new CustomEvent('loadInicioInstant');
+    document.dispatchEvent(event);
 }
 
 export function handleURLOnLoad() {
@@ -860,16 +826,12 @@ export function handleURLOnLoad() {
     
     const page = hash.replace('#', '');
     
-    if (/^\d+$/.test(page)) {
-        window.selectedProjectId = parseInt(page);
-        return { page: 'proyectos', projectId: parseInt(page) };
-    }
-    
-    if (['proyectos', 'sobre-mi', 'contacto'].includes(page)) {
+    if (['proyectos', 'sobre-mi', 'contacto', 'inicio'].includes(page)) {
         return { page: page };
     }
     
-    return 'inicio';
+    window.selectedProjectId = page;
+    return { page: 'proyectos', projectId: page, directProject: true };
 }
 
 function setGridInteractionsEnabled(enabled) {
@@ -931,5 +893,21 @@ export function getCurrentPage() { return currentPage; }
 export function isTransitioningCheck() { return isTransitioning; }
 export { updateURL };
 
-loadDicc().then(() => {
+loadDicc().then(async () => {
+    const urlData = handleURLOnLoad();
+
+    if (urlData) {
+        if (typeof urlData === 'object' && urlData.projectId) {
+            window.selectedProjectId = urlData.projectId;
+            loadSidebarPage('proyectos');
+        } else {
+            const pageKey = typeof urlData === 'object' ? urlData.page : urlData;
+
+            if (pageKey && pageKey !== 'inicio') {
+                isSpecialPageActive = true;
+                currentPage = pageKey;
+                loadSidebarPage(pageKey);
+            }
+        }
+    }
 });

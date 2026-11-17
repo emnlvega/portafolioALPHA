@@ -31,7 +31,6 @@ export function initOverlays() {
         return;
     }
     
-
     let textureEnabled = true;
     try {
         const saved = localStorage.getItem('edesign_settings');
@@ -42,34 +41,8 @@ export function initOverlays() {
             }
         }
     } catch (e) {}
-    
-
-    if (!textureEnabled) {
-        const existingOverlay = document.getElementById('overlay-container');
-        if (existingOverlay) {
-            existingOverlay.style.display = 'none';
-        }
-        return;
-    }
-    
-    shuffleOrder = [];
-    if (config.RANDOM_ORDER && imageCount > 1) {
-        shuffleOrder.push(0);
-        const rest = [];
-        for (let i = 1; i < imageCount; i++) {
-            rest.push(i);
-        }
-        const shuffledRest = shuffleArray(rest);
-        shuffleOrder = shuffleOrder.concat(shuffledRest);
-    } else {
-        for (let i = 0; i < imageCount; i++) {
-            shuffleOrder.push(i);
-        }
-    }
-    
 
     if (!overlayElement || !document.getElementById('overlay-container')) {
-
         const oldOverlay = document.getElementById('overlay-container');
         if (oldOverlay) {
             oldOverlay.remove();
@@ -94,14 +67,33 @@ export function initOverlays() {
         `;
         document.body.appendChild(overlayElement);
     }
+
+    if (textureEnabled) {
+        overlayElement.style.display = 'block';
+        overlayElement.style.setProperty('display', 'block', 'important');
+    } else {
+        overlayElement.style.display = 'none';
+        overlayElement.style.setProperty('display', 'none', 'important');
+        return;
+    }
+
+    shuffleOrder = [];
+    if (config.RANDOM_ORDER && imageCount > 1) {
+        shuffleOrder.push(0);
+        const rest = [];
+        for (let i = 1; i < imageCount; i++) {
+            rest.push(i);
+        }
+        const shuffledRest = shuffleArray(rest);
+        shuffleOrder = shuffleOrder.concat(shuffledRest);
+    } else {
+        for (let i = 0; i < imageCount; i++) {
+            shuffleOrder.push(i);
+        }
+    }
     
     currentIndex = 0;
     loadOverlayImage(0);
-    
-
-    if (overlayElement) {
-        overlayElement.style.display = textureEnabled ? 'block' : 'none';
-    }
     
     startOverlays(config.INTERVAL);
 }

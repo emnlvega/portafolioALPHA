@@ -1,5 +1,5 @@
 import { CONFIG } from '../config.js';
-import { importDesignFromJSONmovil } from '../logo.js';
+import { importDesignFromJSON} from '../logo.js';
 import { resetGrid } from '../interactions.js';
 import { stopRandomAnimations } from '../animations.js';
 import { renderMobileHome } from './mobile-home.js';
@@ -210,7 +210,7 @@ export function createMobileNavButtons(activePage = 'inicio') {
                 });
                 
                 if (!hasSidebarCells) {
-                    importDesignFromJSONmovil(sidebarDesign, () => {
+                    importDesignFromJSON(sidebarDesign, () => {
                         createButtonsFromCells(activePage);
                     }, false);
                 } else {
@@ -283,7 +283,7 @@ function createButtonsFromCells(activePage) {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: center; /* Centers everything vertically */
             pointer-events: auto !important;
             cursor: pointer !important;
             z-index: 999 !important;
@@ -292,7 +292,8 @@ function createButtonsFromCells(activePage) {
             border: 3px solid ${borderColor};
             border-radius: 2px;
             transition: all 0.3s ease;
-            gap: 2px;
+            gap: 1px;
+            padding: 2px 0;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -304,7 +305,8 @@ function createButtonsFromCells(activePage) {
         icon.className = 'btn-icon';
         icon.textContent = btnConfig.icon;
         icon.style.cssText = `
-            font-size: 28px;
+            font-size: 50px;
+            line-height: 1;
             color: ${textColor};
             text-shadow: 0 0 20px rgba(${isActive ? CONFIG.COLORS.secondaryRGB : CONFIG.COLORS.primaryRGB}, ${isActive ? '0.4' : '0.2'});
             transition: all 0.3s ease;
@@ -323,8 +325,8 @@ function createButtonsFromCells(activePage) {
             pointer-events: none;
             flex-shrink: 0;
             align-self: center;
-            margin-top: -4px;
-            margin-bottom: 2px;
+            margin-top: -5px;
+            margin-bottom: 7px;
         `;
         btn.appendChild(line);
         
@@ -332,13 +334,14 @@ function createButtonsFromCells(activePage) {
         text.className = 'btn-text';
         text.textContent = displayText;
         text.style.cssText = `
-            font-size: 10px;
+            font-size: 12px;
             letter-spacing: 2px;
             color: ${textColor};
             text-shadow: 0 0 20px rgba(${isActive ? CONFIG.COLORS.secondaryRGB : CONFIG.COLORS.primaryRGB}, ${isActive ? '0.3' : '0.1'});
             transition: all 0.3s ease;
             font-weight: ${isActive ? 'bold' : 'normal'};
             pointer-events: none;
+            text-align: center;
         `;
         btn.appendChild(text);
         

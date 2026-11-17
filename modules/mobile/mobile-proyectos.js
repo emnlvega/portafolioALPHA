@@ -7,138 +7,206 @@ import { createMobileNavButtons } from './mobile-nav.js';
 const PROYECTOS_DESIGN = {
   "0,0": {
     "type": "combined_normal",
-    "left": 452.5,
-    "top": -28.83331298828125,
-    "width": 375,
-    "height": 52,
+    "start": [
+      0,
+      0
+    ],
+    "end": [
+      2,
+      19
+    ],
     "combined": true
   },
   "3,0": {
     "type": "combined_normal",
-    "left": 452.5,
-    "top": 28.16668701171875,
-    "width": 14,
-    "height": 451,
+    "start": [
+      3,
+      0
+    ],
+    "end": [
+      26,
+      0
+    ],
     "combined": true
   },
   "3,1": {
     "type": "combined_normal",
-    "left": 471.5,
-    "top": 28.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      3,
+      1
+    ],
+    "end": [
+      8,
+      6
+    ],
     "combined": true
   },
   "3,7": {
     "type": "combined_normal",
-    "left": 585.5,
-    "top": 28.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      3,
+      7
+    ],
+    "end": [
+      8,
+      12
+    ],
     "combined": true
   },
   "3,13": {
     "type": "combined_normal",
-    "left": 699.5,
-    "top": 28.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      3,
+      13
+    ],
+    "end": [
+      8,
+      18
+    ],
     "combined": true
   },
   "3,19": {
     "type": "combined_normal",
-    "left": 813.5,
-    "top": 28.16668701171875,
-    "width": 14,
-    "height": 451,
+    "start": [
+      3,
+      19
+    ],
+    "end": [
+      26,
+      19
+    ],
     "combined": true
   },
   "9,1": {
     "type": "combined_normal",
-    "left": 471.5,
-    "top": 142.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      9,
+      1
+    ],
+    "end": [
+      14,
+      6
+    ],
     "combined": true
   },
   "9,7": {
     "type": "combined_normal",
-    "left": 585.5,
-    "top": 142.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      9,
+      7
+    ],
+    "end": [
+      14,
+      12
+    ],
     "combined": true
   },
   "9,13": {
     "type": "combined_normal",
-    "left": 699.5,
-    "top": 142.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      9,
+      13
+    ],
+    "end": [
+      14,
+      18
+    ],
     "combined": true
   },
   "15,1": {
     "type": "combined_normal",
-    "left": 471.5,
-    "top": 256.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      15,
+      1
+    ],
+    "end": [
+      20,
+      6
+    ],
     "combined": true
   },
   "15,7": {
     "type": "combined_normal",
-    "left": 585.5,
-    "top": 256.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      15,
+      7
+    ],
+    "end": [
+      20,
+      12
+    ],
     "combined": true
   },
   "15,13": {
     "type": "combined_normal",
-    "left": 699.5,
-    "top": 256.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      15,
+      13
+    ],
+    "end": [
+      20,
+      18
+    ],
     "combined": true
   },
   "21,1": {
     "type": "combined_normal",
-    "left": 471.5,
-    "top": 370.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      21,
+      1
+    ],
+    "end": [
+      26,
+      6
+    ],
     "combined": true
   },
   "21,7": {
     "type": "combined_normal",
-    "left": 585.5,
-    "top": 370.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      21,
+      7
+    ],
+    "end": [
+      26,
+      12
+    ],
     "combined": true
   },
   "21,13": {
     "type": "combined_normal",
-    "left": 699.5,
-    "top": 370.16668701171875,
-    "width": 109,
-    "height": 109,
+    "start": [
+      21,
+      13
+    ],
+    "end": [
+      26,
+      18
+    ],
     "combined": true
   },
   "27,0": {
     "type": "combined_normal",
-    "left": 452.5,
-    "top": 484.16668701171875,
-    "width": 185,
-    "height": 52,
+    "start": [
+      27,
+      0
+    ],
+    "end": [
+      29,
+      9
+    ],
     "combined": true
   },
   "27,10": {
     "type": "combined_normal",
-    "left": 642.5,
-    "top": 484.16668701171875,
-    "width": 185,
-    "height": 52,
+    "start": [
+      27,
+      10
+    ],
+    "end": [
+      29,
+      19
+    ],
     "combined": true
   }
 };

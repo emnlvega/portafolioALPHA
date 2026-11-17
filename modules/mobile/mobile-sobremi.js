@@ -10,34 +10,50 @@ let sobreMiData = null;
 const SOBRE_MI_DESIGN = {
   "0,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 126.5,
-    "width": 375,
-    "height": 52,
+    "start": [
+      0,
+      0
+    ],
+    "end": [
+      2,
+      19
+    ],
     "combined": true
   },
   "3,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 183.5,
-    "width": 109,
-    "height": 261,
+    "start": [
+      3,
+      0
+    ],
+    "end": [
+      16,
+      5
+    ],
     "combined": true
   },
   "3,6": {
     "type": "combined_normal",
-    "left": 886.5,
-    "top": 183.5,
-    "width": 261,
-    "height": 261,
+    "start": [
+      3,
+      6
+    ],
+    "end": [
+      16,
+      19
+    ],
     "combined": true
   },
   "17,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 449.5,
-    "width": 375,
-    "height": 242,
+    "start": [
+      17,
+      0
+    ],
+    "end": [
+      29,
+      19
+    ],
     "combined": true
   }
 };

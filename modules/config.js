@@ -281,236 +281,343 @@ export const CONFIG = new Proxy(currentConfig, {
 });
 
 export const LOGO_DESIGN = {
-
   "7,4": "logo",
   "7,5": {
     "type": "combined_red",
-    "left": 464,
-    "top": 394,
-    "width": 91,
-    "height": 38,
+    "start": [
+      7,
+      5
+    ],
+    "end": [
+      7,
+      6
+    ],
     "combined": true
   },
   "7,7": "logo",
   "7,8": {
     "type": "combined_red",
-    "left": 623,
-    "top": 394,
-    "width": 38,
-    "height": 91,
+    "start": [
+      7,
+      8
+    ],
+    "end": [
+      8,
+      8
+    ],
     "combined": true
   },
   "7,9": "logo",
   "7,10": "logo",
   "7,12": {
     "type": "combined_red",
-    "left": 835,
-    "top": 394,
-    "width": 38,
-    "height": 91,
+    "start": [
+      7,
+      12
+    ],
+    "end": [
+      8,
+      12
+    ],
     "combined": true
   },
   "7,13": {
     "type": "combined_red",
-    "left": 888,
-    "top": 394,
-    "width": 38,
-    "height": 91,
+    "start": [
+      7,
+      13
+    ],
+    "end": [
+      8,
+      13
+    ],
     "combined": true
   },
   "7,16": {
     "type": "combined_red",
-    "left": 1047,
-    "top": 394,
-    "width": 38,
-    "height": 91,
+    "start": [
+      7,
+      16
+    ],
+    "end": [
+      8,
+      16
+    ],
     "combined": true
   },
   "7,18": "logo",
   "7,19": "logo",
   "7,20": {
     "type": "combined_red",
-    "left": 1259,
-    "top": 394,
-    "width": 91,
-    "height": 38,
+    "start": [
+      7,
+      20
+    ],
+    "end": [
+      7,
+      21
+    ],
     "combined": true
   },
   "7,22": "logo",
   "7,23": {
     "type": "combined_red",
-    "left": 1418,
-    "top": 394,
-    "width": 91,
-    "height": 38,
+    "start": [
+      7,
+      23
+    ],
+    "end": [
+      7,
+      24
+    ],
     "combined": true
   },
   "7,25": {
     "type": "combined_red",
-    "left": 1524,
-    "top": 394,
-    "width": 144,
-    "height": 38,
+    "start": [
+      7,
+      25
+    ],
+    "end": [
+      7,
+      27
+    ],
     "combined": true
   },
   "8,4": {
     "type": "combined_red",
-    "left": 411,
-    "top": 447,
-    "width": 91,
-    "height": 38,
+    "start": [
+      8,
+      4
+    ],
+    "end": [
+      8,
+      5
+    ],
     "combined": true
   },
   "8,7": {
     "type": "combined_red",
-    "left": 570,
-    "top": 447,
-    "width": 38,
-    "height": 91,
+    "start": [
+      8,
+      7
+    ],
+    "end": [
+      9,
+      7
+    ],
     "combined": true
   },
   "8,9": {
     "type": "combined_red",
-    "left": 676,
-    "top": 447,
-    "width": 38,
-    "height": 91,
+    "start": [
+      8,
+      9
+    ],
+    "end": [
+      9,
+      9
+    ],
     "combined": true
   },
   "8,10": {
     "type": "combined_red",
-    "left": 729,
-    "top": 447,
-    "width": 38,
-    "height": 91,
+    "start": [
+      8,
+      10
+    ],
+    "end": [
+      9,
+      10
+    ],
     "combined": true
   },
   "8,11": "logo",
   "8,18": "logo",
   "8,19": {
     "type": "combined_red",
-    "left": 1206,
-    "top": 447,
-    "width": 91,
-    "height": 38,
+    "start": [
+      8,
+      19
+    ],
+    "end": [
+      8,
+      20
+    ],
     "combined": true
   },
   "8,22": {
     "type": "combined_red",
-    "left": 1365,
-    "top": 447,
-    "width": 38,
-    "height": 91,
+    "start": [
+      8,
+      22
+    ],
+    "end": [
+      9,
+      22
+    ],
     "combined": true
   },
   "8,24": "logo",
   "8,25": {
     "type": "combined_red",
-    "left": 1524,
-    "top": 447,
-    "width": 38,
-    "height": 91,
+    "start": [
+      8,
+      25
+    ],
+    "end": [
+      9,
+      25
+    ],
     "combined": true
   },
   "8,26": "logo",
   "8,27": {
     "type": "combined_red",
-    "left": 1630,
-    "top": 447,
-    "width": 38,
-    "height": 91,
+    "start": [
+      8,
+      27
+    ],
+    "end": [
+      9,
+      27
+    ],
     "combined": true
   },
   "9,4": "logo",
   "9,5": {
     "type": "combined_red",
-    "left": 464,
-    "top": 500,
-    "width": 91,
-    "height": 38,
+    "start": [
+      9,
+      5
+    ],
+    "end": [
+      9,
+      6
+    ],
     "combined": true
   },
   "9,12": "logo",
   "9,13": "logo",
   "9,14": {
     "type": "combined_red",
-    "left": 941,
-    "top": 500,
-    "width": 91,
-    "height": 38,
+    "start": [
+      9,
+      14
+    ],
+    "end": [
+      9,
+      15
+    ],
     "combined": true
   },
   "9,16": {
     "type": "combined_red",
-    "left": 1047,
-    "top": 500,
-    "width": 91,
-    "height": 38,
+    "start": [
+      9,
+      16
+    ],
+    "end": [
+      9,
+      17
+    ],
     "combined": true
   },
   "9,19": "logo",
   "9,20": {
     "type": "combined_red",
-    "left": 1259,
-    "top": 500,
-    "width": 91,
-    "height": 38,
+    "start": [
+      9,
+      20
+    ],
+    "end": [
+      9,
+      21
+    ],
     "combined": true
   },
   "9,23": {
     "type": "combined_red",
-    "left": 1418,
-    "top": 500,
-    "width": 91,
-    "height": 38,
+    "start": [
+      9,
+      23
+    ],
+    "end": [
+      9,
+      24
+    ],
     "combined": true
   },
   "14,0": {
     "type": "combined_normal",
-    "left": 199,
-    "top": 765,
-    "width": 303,
-    "height": 144,
+    "start": [
+      14,
+      0
+    ],
+    "end": [
+      16,
+      5
+    ],
     "combined": true
   },
   "14,6": {
     "type": "combined_normal",
-    "left": 517,
-    "top": 765,
-    "width": 303,
-    "height": 144,
+    "start": [
+      14,
+      6
+    ],
+    "end": [
+      16,
+      11
+    ],
     "combined": true
   },
   "14,12": {
     "type": "combined_normal",
-    "left": 835,
-    "top": 765,
-    "width": 303,
-    "height": 144,
+    "start": [
+      14,
+      12
+    ],
+    "end": [
+      16,
+      17
+    ],
     "combined": true
   },
   "14,18": {
     "type": "combined_normal",
-    "left": 1153,
-    "top": 765,
-    "width": 303,
-    "height": 144,
+    "start": [
+      14,
+      18
+    ],
+    "end": [
+      16,
+      23
+    ],
     "combined": true
   },
   "14,24": {
     "type": "combined_normal",
-    "left": 1471,
-    "top": 765,
-    "width": 303,
-    "height": 144,
+    "start": [
+      14,
+      24
+    ],
+    "end": [
+      16,
+      29
+    ],
     "combined": true
   },
   "14,30": {
     "type": "combined_logo",
-    "left": 1789,
-    "top": 765,
-    "width": 91,
-    "height": 144,
+    "start": [
+      14,
+      30
+    ],
+    "end": [
+      16,
+      31
+    ],
     "combined": true
   }
 };

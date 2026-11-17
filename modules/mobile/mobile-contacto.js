@@ -11,90 +11,134 @@ let gridReady = false;
 const CONTACTO_DESIGN = {
   "0,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 126.5,
-    "width": 375,
-    "height": 52,
+    "start": [
+      0,
+      0
+    ],
+    "end": [
+      2,
+      19
+    ],
     "combined": true
   },
   "3,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 183.5,
-    "width": 14,
-    "height": 508,
+    "start": [
+      3,
+      0
+    ],
+    "end": [
+      29,
+      0
+    ],
     "combined": true
   },
   "3,1": {
     "type": "combined_normal",
-    "left": 791.5,
-    "top": 183.5,
-    "width": 109,
-    "height": 109,
+    "start": [
+      3,
+      1
+    ],
+    "end": [
+      8,
+      6
+    ],
     "combined": true
   },
   "3,7": {
     "type": "combined_normal",
-    "left": 905.5,
-    "top": 183.5,
-    "width": 109,
-    "height": 109,
+    "start": [
+      3,
+      7
+    ],
+    "end": [
+      8,
+      12
+    ],
     "combined": true
   },
   "3,13": {
     "type": "combined_normal",
-    "left": 1019.5,
-    "top": 183.5,
-    "width": 109,
-    "height": 109,
+    "start": [
+      3,
+      13
+    ],
+    "end": [
+      8,
+      18
+    ],
     "combined": true
   },
   "3,19": {
     "type": "combined_normal",
-    "left": 1133.5,
-    "top": 183.5,
-    "width": 14,
-    "height": 508,
+    "start": [
+      3,
+      19
+    ],
+    "end": [
+      29,
+      19
+    ],
     "combined": true
   },
   "9,1": {
     "type": "combined_normal",
-    "left": 791.5,
-    "top": 297.5,
-    "width": 109,
-    "height": 109,
+    "start": [
+      9,
+      1
+    ],
+    "end": [
+      14,
+      6
+    ],
     "combined": true
   },
   "9,7": {
     "type": "combined_normal",
-    "left": 905.5,
-    "top": 297.5,
-    "width": 109,
-    "height": 109,
+    "start": [
+      9,
+      7
+    ],
+    "end": [
+      14,
+      12
+    ],
     "combined": true
   },
   "9,13": {
     "type": "combined_normal",
-    "left": 1019.5,
-    "top": 297.5,
-    "width": 109,
-    "height": 109,
+    "start": [
+      9,
+      13
+    ],
+    "end": [
+      14,
+      18
+    ],
     "combined": true
   },
   "16,1": {
     "type": "combined_normal",
-    "left": 791.5,
-    "top": 430.5,
-    "width": 337,
-    "height": 147,
+    "start": [
+      16,
+      1
+    ],
+    "end": [
+      23,
+      18
+    ],
     "combined": true
   },
   "25,1": {
     "type": "combined_normal",
-    "left": 791.5,
-    "top": 601.5,
-    "width": 337,
-    "height": 71,
+    "start": [
+      25,
+      1
+    ],
+    "end": [
+      28,
+      18
+    ],
     "combined": true
   }
 };

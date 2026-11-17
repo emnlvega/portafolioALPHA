@@ -95,66 +95,36 @@ export function createGrid() {
 
 
 export function repositionCombinedCells(offsetX, offsetY) {
-    const { COLS: cols, ROWS: rows, GAP, SIDEBAR_WIDTH, CELL_SIZE: cellSize } = CONFIG;
+    const { GAP, SIDEBAR_WIDTH, CELL_SIZE: cellSize } = CONFIG;
     const allCells = document.querySelectorAll('.grid-cell, .logo-cell');
     
     allCells.forEach(cell => {
         if (cell.dataset.combined !== 'true') return;
         if (cell.dataset.isSidebar === 'true') return;
         
-
-        const designRow = parseInt(cell.dataset.designRow);
-        const designCol = parseInt(cell.dataset.designCol);
+        const startRow = parseInt(cell.dataset.startRow);
+        const startCol = parseInt(cell.dataset.startCol);
+        const endRow = parseInt(cell.dataset.endRow);
+        const endCol = parseInt(cell.dataset.endCol);
         
-        if (!isNaN(designRow) && !isNaN(designCol)) {
-
-            const basePos = getCellPosition(designCol + SIDEBAR_WIDTH, designRow, cellSize, offsetX, offsetY);
+        if (!isNaN(startRow) && !isNaN(startCol) && !isNaN(endRow) && !isNaN(endCol)) {
+            const basePos = getCellPosition(startCol + SIDEBAR_WIDTH, startRow, cellSize, offsetX, offsetY);
             
-
-            let width = parseFloat(cell.dataset.combinedWidth);
-            let height = parseFloat(cell.dataset.combinedHeight);
-            if (isNaN(width) || isNaN(height)) {
-                width = parseFloat(cell.style.width);
-                height = parseFloat(cell.style.height);
-            }
+            const cols = endCol - startCol + 1;
+            const rows = endRow - startRow + 1;
             
-
-            const combinedCols = Math.round((width + GAP) / (cellSize + GAP));
-            const combinedRows = Math.round((height + GAP) / (cellSize + GAP));
-            const newWidth = combinedCols * (cellSize + GAP) - GAP;
-            const newHeight = combinedRows * (cellSize + GAP) - GAP;
+            const width = cols * (cellSize + GAP) - GAP;
+            const height = rows * (cellSize + GAP) - GAP;
             
             cell.style.left = `${basePos.x}px`;
             cell.style.top = `${basePos.y}px`;
-            cell.style.width = `${newWidth}px`;
-            cell.style.height = `${newHeight}px`;
-            
-
-            cell.dataset.combinedLeft = basePos.x;
-            cell.dataset.combinedTop = basePos.y;
-            cell.dataset.combinedWidth = newWidth;
-            cell.dataset.combinedHeight = newHeight;
-        } else {
-
-
-            const origOffX = parseFloat(cell.dataset.originalCombinedOffsetX) || 0;
-            const origOffY = parseFloat(cell.dataset.originalCombinedOffsetY) || 0;
-            const deltaX = offsetX - origOffX;
-            const deltaY = offsetY - origOffY;
-            
-            let left = parseFloat(cell.dataset.combinedLeft) || parseFloat(cell.style.left);
-            let top = parseFloat(cell.dataset.combinedTop) || parseFloat(cell.style.top);
-            let width = parseFloat(cell.dataset.combinedWidth) || parseFloat(cell.style.width);
-            let height = parseFloat(cell.dataset.combinedHeight) || parseFloat(cell.style.height);
-            
-            cell.style.left = `${left + deltaX}px`;
-            cell.style.top = `${top + deltaY}px`;
             cell.style.width = `${width}px`;
             cell.style.height = `${height}px`;
             
-
-            cell.dataset.combinedLeft = left + deltaX;
-            cell.dataset.combinedTop = top + deltaY;
+            cell.dataset.combinedLeft = basePos.x;
+            cell.dataset.combinedTop = basePos.y;
+            cell.dataset.combinedWidth = width;
+            cell.dataset.combinedHeight = height;
         }
     });
 }

@@ -1,26 +1,38 @@
 {
   "30,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 696.5,
-    "width": 109,
-    "height": 109,
+    "start": [
+      30,
+      0
+    ],
+    "end": [
+      35,
+      5
+    ],
     "combined": true
   },
   "30,6": {
     "type": "combined_normal",
-    "left": 886.5,
-    "top": 696.5,
-    "width": 147,
-    "height": 109,
+    "start": [
+      30,
+      6
+    ],
+    "end": [
+      35,
+      13
+    ],
     "combined": true
   },
   "30,14": {
     "type": "combined_normal",
-    "left": 1038.5,
-    "top": 696.5,
-    "width": 109,
-    "height": 109,
+    "start": [
+      30,
+      14
+    ],
+    "end": [
+      35,
+      19
+    ],
     "combined": true
   }
 }

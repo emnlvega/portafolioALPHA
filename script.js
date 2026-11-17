@@ -19,6 +19,7 @@ import { navigateMobileTo } from './modules/mobile/mobile-nav.js';
 import { getCurrentMobilePage } from './modules/mobile/mobile-nav.js';
 import { startLogoAnimation, stopLogoAnimation, enableLogoAnimation, disableLogoAnimation, startFlickerOnInicio, setOnInicio, stopFlickerOnInicio } from './modules/emnlvega.js';
 import { initSimpleMode } from './modules/simpleMode.js';
+import { toggleMobileDesigner } from './modules/mobile/mobile-designer.js';
 
 let dicc = null;
 let gridData = null;
@@ -668,18 +669,15 @@ document.addEventListener('loadInicioInstant', function() {
 
 
 document.addEventListener('keydown', (e) => {
-    if (isMobile()) return;
-    
-    
-    if ((e.key === 'e' || e.key === 'E') && document.body.classList.contains('mobile-simulator')) {
-        const target = e.target;
-        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-            return;
-        }
+    const target = e.target;
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return;
+    }
+
+    if (e.key === 'z' || e.key === 'Z') {
         e.preventDefault();
-        if (window.exportMobileDesign) {
-            window.exportMobileDesign();
-        }
+        toggleMobileDesigner();
+        return;
     }
 });
 
@@ -1529,9 +1527,17 @@ window.addEventListener('beforeunload', () => {
 
 let resizeTimeout;
 let isResizing = false;
+let lastWindowWidth = window.innerWidth;
+let lastWindowHeight = window.innerHeight;
 
 window.addEventListener('resize', () => {
     if (isMobile()) return;
+
+    if (window.innerWidth === lastWindowWidth && window.innerHeight === lastWindowHeight) {
+        return;
+    }
+    lastWindowWidth = window.innerWidth;
+    lastWindowHeight = window.innerHeight;
 
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {

@@ -3,106 +3,158 @@
   "design": {
   "0,0": {
     "type": "combined_normal",
-    "left": 199,
-    "top": 23,
-    "width": 1681,
-    "height": 91,
+    "start": [
+      0,
+      0
+    ],
+    "end": [
+      1,
+      31
+    ],
     "combined": true
   },
   "2,0": {
     "type": "combined_normal",
-    "left": 199,
-    "top": 129,
-    "width": 38,
-    "height": 780,
+    "start": [
+      2,
+      0
+    ],
+    "end": [
+      16,
+      0
+    ],
     "combined": true
   },
   "2,1": {
     "type": "combined_normal",
-    "left": 252,
-    "top": 129,
-    "width": 1575,
-    "height": 38,
+    "start": [
+      2,
+      1
+    ],
+    "end": [
+      2,
+      30
+    ],
     "combined": true
   },
   "2,31": {
     "type": "combined_normal",
-    "left": 1842,
-    "top": 129,
-    "width": 38,
-    "height": 780,
+    "start": [
+      2,
+      31
+    ],
+    "end": [
+      16,
+      31
+    ],
     "combined": true
   },
   "3,1": {
     "type": "combined_logo",
-    "left": 252,
-    "top": 182,
-    "width": 1575,
-    "height": 197,
+    "start": [
+      3,
+      1
+    ],
+    "end": [
+      6,
+      30
+    ],
     "combined": true
   },
   "7,1": {
     "type": "combined_normal",
-    "left": 252,
-    "top": 394,
-    "width": 250,
-    "height": 250,
+    "start": [
+      7,
+      1
+    ],
+    "end": [
+      11,
+      5
+    ],
     "combined": true
   },
   "7,6": {
     "type": "combined_normal",
-    "left": 517,
-    "top": 394,
-    "width": 250,
-    "height": 250,
+    "start": [
+      7,
+      6
+    ],
+    "end": [
+      11,
+      10
+    ],
     "combined": true
   },
   "7,11": {
     "type": "combined_normal",
-    "left": 782,
-    "top": 394,
-    "width": 250,
-    "height": 250,
+    "start": [
+      7,
+      11
+    ],
+    "end": [
+      11,
+      15
+    ],
     "combined": true
   },
   "7,16": {
     "type": "combined_normal",
-    "left": 1047,
-    "top": 394,
-    "width": 250,
-    "height": 250,
+    "start": [
+      7,
+      16
+    ],
+    "end": [
+      11,
+      20
+    ],
     "combined": true
   },
   "7,21": {
     "type": "combined_normal",
-    "left": 1312,
-    "top": 394,
-    "width": 250,
-    "height": 250,
+    "start": [
+      7,
+      21
+    ],
+    "end": [
+      11,
+      25
+    ],
     "combined": true
   },
   "7,26": {
     "type": "combined_normal",
-    "left": 1577,
-    "top": 394,
-    "width": 250,
-    "height": 250,
+    "start": [
+      7,
+      26
+    ],
+    "end": [
+      11,
+      30
+    ],
     "combined": true
   },
   "12,1": {
     "type": "combined_normal",
-    "left": 252,
-    "top": 659,
-    "width": 1575,
-    "height": 197,
+    "start": [
+      12,
+      1
+    ],
+    "end": [
+      15,
+      30
+    ],
     "combined": true
   },
   "16,1": {
     "type": "combined_normal",
-    "left": 252,
-    "top": 871,
-    "width": 1575,
-    "height": 38,
+    "start": [
+      16,
+      1
+    ],
+    "end": [
+      16,
+      30
+    ],
     "combined": true
   }
 },

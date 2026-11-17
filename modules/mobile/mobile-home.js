@@ -154,65 +154,36 @@ function toggleMobileSimpleMode() {
 }
 
 export async function renderMobileHome() {
-    const cleanSelectors = [
-        '.mobile-proyectos-content', '.mobile-sobremi-content', '.mobile-contacto-content',
-        '.mobile-proyecto-detalle-content', '.mobile-page-content', '.mobile-proyecto-item',
-        '.mobile-categoria-item', '.mobile-flecha', '.mobile-page-indicator',
-        '.mobile-contacto-social-item', '.mobile-contacto-info', '.mobile-proyectos-container',
-        '.mobile-proyecto-card', '.mobile-proyecto-titulo', '.mobile-proyecto-descripcion',
-        '.mobile-proyecto-imagen', '.mobile-proyecto-detalle-container',
-        '.mobile-proyecto-detalle-imagen', '.mobile-proyecto-detalle-info',
-        '.mobile-proyecto-detalle-titulo', '.mobile-proyecto-detalle-descripcion',
-        '.mobile-proyecto-detalle-tecnologias', '.mobile-proyecto-detalle-enlace',
-        '.mobile-proyecto-detalle-volver', '.mobile-sobremi-container', '.mobile-sobremi-texto',
-        '.mobile-sobremi-imagen', '.mobile-sobremi-titulo', '.mobile-contacto-text',
-        '.mobile-contacto-email', '.mobile-contacto-social'
-    ];
-    
-    cleanSelectors.forEach(selector => {
-        document.querySelectorAll(selector).forEach(el => el.remove());
-    });
+    const container = document.getElementById('grid-container');
+    if (!container) return;
+
+    container.querySelectorAll('.mobile-home-content, .mobile-btn-overlay, .mobile-home-proyecto, #mobile-letters-image').forEach(el => el.remove());
     
     await loadDicc();
     await loadProyectosData();
     
-    const container = document.getElementById('grid-container');
-    if (!container) return;
-    
-    document.querySelectorAll('.mobile-home-content, .mobile-btn-overlay, .mobile-home-proyecto').forEach(el => el.remove());
-    
-    if (!document.getElementById('mobile-letters-image')) {
-        mobileLettersImage = createMobileLettersImage();
-    } else {
-        mobileLettersImage = document.getElementById('mobile-letters-image');
-    }
-    
+    mobileLettersImage = createMobileLettersImage();
+    stopRandomAnimations();
     resetGrid(false);
     
     try {
-        const response = await fetch('./modules/mobile/logo-movil.json');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const design = await response.json();
+        const [logoRes, sidebarRes] = await Promise.all([
+            fetch('./modules/mobile/logo-movil.json'),
+            fetch('./modules/mobile/sidebar-movil.json').catch(() => null)
+        ]);
+
+        const logoDesign = logoRes.ok ? await logoRes.json() : {};
+        const sidebarDesign = (sidebarRes && sidebarRes.ok) ? await sidebarRes.json() : {};
+        const combinedDesign = { ...logoDesign, ...sidebarDesign };
         
-        stopRandomAnimations();
-        resetGrid(false);
-        
-        importDesignFromJSON(design, () => {
+        importDesignFromJSON(combinedDesign, () => {
             createHomeContent();
-            const existingNav = document.querySelector('.mobile-nav-btn');
-            if (!existingNav) {
-                createMobileNavButtons('inicio');
-            }
+            createMobileNavButtons('inicio');
         }, true);
-    } catch {
-        stopRandomAnimations();
-        resetGrid(false);
+    } catch (e) {
         importDesignFromJSON({}, () => {
             createHomeContent();
-            const existingNav = document.querySelector('.mobile-nav-btn');
-            if (!existingNav) {
-                createMobileNavButtons('inicio');
-            }
+            createMobileNavButtons('inicio');
         }, true);
     }
 }
@@ -232,20 +203,24 @@ function createHomeContent() {
     
     let titleCell = null;
     let modeButtonCell = null;
+    let menuButtonCell = null;
     let projectCells = [];
     
     allCells.forEach(cell => {
-        if (cell.dataset.combined === 'true') {
-            const row = parseInt(cell.dataset.designRow);
-            const col = parseInt(cell.dataset.designCol);
-            
-            if (row === 0 && col === 0) {
-                titleCell = cell;
-            }
-            else if (row === 22 && col === 0) {
-                modeButtonCell = cell;
-            }
-            else if (row === 25 && (col === 0 || col === 6 || col === 14)) {
+        const row = parseInt(cell.dataset.designRow);
+        const col = parseInt(cell.dataset.designCol);
+        
+        if (row === 0 && col === 0) {
+            titleCell = cell;
+        }
+        else if (row === 22 && col === 0) {
+            modeButtonCell = cell;
+        }
+        else if (row === 22 && col === 10) {
+            menuButtonCell = cell;
+        }
+        else if (row === 25 && (col === 0 || col === 6 || col === 14)) {
+            if (cell.dataset.combined === 'true') {
                 projectCells.push({ cell, row, col, index: projectCells.length });
             }
         }
@@ -289,7 +264,12 @@ function createHomeContent() {
     }
     
     if (modeButtonCell) {
-        modeButtonCell.dataset.isSidebar = 'true';
+
+        modeButtonCell.style.pointerEvents = 'auto';
+        modeButtonCell.addEventListener('click', (e) => e.stopPropagation());
+        modeButtonCell.addEventListener('mousedown', (e) => e.stopPropagation());
+        modeButtonCell.addEventListener('touchstart', (e) => e.stopPropagation());
+        
         const oldContent = modeButtonCell.querySelector('.mobile-home-content');
         if (oldContent) oldContent.remove();
         
@@ -321,7 +301,6 @@ function createHomeContent() {
             text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
                         0 0 40px rgba(${secondaryRGB}, 0.6),
                         0 0 80px rgba(${secondaryRGB}, 0.3);
-            transition: all 0.3s ease;
             background: rgba(0,0,0,0.2);
             border: 1px solid rgba(${secondaryRGB}, 0.2);
             border-radius: 4px;
@@ -359,18 +338,14 @@ function createHomeContent() {
         
         modeButtonCell.appendChild(btn);
     }
-    
-    const menuButtonCell = Array.from(allCells).find(cell => {
-        if (cell.dataset.combined === 'true') {
-            const row = parseInt(cell.dataset.designRow);
-            const col = parseInt(cell.dataset.designCol);
-            return row === 22 && col === 10;
-        }
-        return false;
-    });
+
     
     if (menuButtonCell) {
-        menuButtonCell.dataset.isSidebar = 'true';
+        menuButtonCell.style.pointerEvents = 'auto';
+        menuButtonCell.addEventListener('click', (e) => e.stopPropagation());
+        menuButtonCell.addEventListener('mousedown', (e) => e.stopPropagation());
+        menuButtonCell.addEventListener('touchstart', (e) => e.stopPropagation());
+        
         const oldContent = menuButtonCell.querySelector('.mobile-home-content');
         if (oldContent) oldContent.remove();
         
@@ -399,7 +374,6 @@ function createHomeContent() {
             text-shadow: 0 0 20px rgba(${secondaryRGB}, 1),
                         0 0 40px rgba(${secondaryRGB}, 0.6),
                         0 0 80px rgba(${secondaryRGB}, 0.3);
-            transition: all 0.3s ease;
             background: rgba(0,0,0,0.2);
             border: 1px solid rgba(${secondaryRGB}, 0.2);
             border-radius: 4px;

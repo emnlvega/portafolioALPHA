@@ -13,42 +13,62 @@ let gridReady = false;
 const PROYECTO_DETALLE_DESIGN = {
   "0,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 126.5,
-    "width": 375,
-    "height": 52,
+    "start": [
+      0,
+      0
+    ],
+    "end": [
+      2,
+      19
+    ],
     "combined": true
   },
   "3,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 183.5,
-    "width": 375,
-    "height": 394,
+    "start": [
+      3,
+      0
+    ],
+    "end": [
+      23,
+      19
+    ],
     "combined": true
   },
   "24,0": {
-    "type": "combined_normal",
-    "left": 772.5,
-    "top": 582.5,
-    "width": 185,
-    "height": 52,
+    "type": "combined_logo",
+    "start": [
+      24,
+      0
+    ],
+    "end": [
+      26,
+      9
+    ],
     "combined": true
   },
   "24,10": {
-    "type": "combined_normal",
-    "left": 962.5,
-    "top": 582.5,
-    "width": 185,
-    "height": 52,
+    "type": "combined_logo",
+    "start": [
+      24,
+      10
+    ],
+    "end": [
+      26,
+      19
+    ],
     "combined": true
   },
   "27,0": {
     "type": "combined_normal",
-    "left": 772.5,
-    "top": 639.5,
-    "width": 375,
-    "height": 52,
+    "start": [
+      27,
+      0
+    ],
+    "end": [
+      29,
+      19
+    ],
     "combined": true
   }
 };

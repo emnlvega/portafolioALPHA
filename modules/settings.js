@@ -152,15 +152,7 @@ export function applySettings(settings) {
     if (settings.textura) {
         if (!overlay) {
             import('./overlay.js').then(module => {
-                module.initOverlays();
-                setTimeout(() => {
-                    const newOverlay = document.getElementById('overlay-container');
-                    if (newOverlay) {
-                        newOverlay.classList.remove('overlay-hidden');
-                        newOverlay.classList.add('overlay-visible');
-                        newOverlay.style.display = 'block';
-                    }
-                }, 100);
+                if (module.initOverlays) module.initOverlays();
             });
         } else {
             overlay.classList.remove('overlay-hidden');
@@ -1054,4 +1046,65 @@ export function initSettings() {
         createSettingsDialog();
         isInitialized = true;
     });
+}
+
+let textureStateBeforeProyectos = null;
+
+export function handleProyectosTextureEnter() {
+    if (textureStateBeforeProyectos !== null) return;
+
+    try {
+        const saved = localStorage.getItem('edesign_settings');
+        if (saved) {
+            const settings = JSON.parse(saved);
+            textureStateBeforeProyectos = settings.textura !== undefined ? settings.textura : true;
+            
+            settings.textura = false;
+            currentSettings.textura = false;
+            localStorage.setItem('edesign_settings', JSON.stringify(settings));
+            applySettings(settings);
+        } else {
+            textureStateBeforeProyectos = true;
+            const settings = { textura: false };
+            localStorage.setItem('edesign_settings', JSON.stringify(settings));
+            applySettings(settings);
+        }
+    } catch (e) {
+        textureStateBeforeProyectos = true;
+    }
+}
+
+export function handleProyectosTextureLeave() {
+    if (textureStateBeforeProyectos !== null) {
+        try {
+            const saved = localStorage.getItem('edesign_settings');
+            if (saved) {
+                const settings = JSON.parse(saved);
+                settings.textura = textureStateBeforeProyectos;
+                currentSettings.textura = textureStateBeforeProyectos;
+                localStorage.setItem('edesign_settings', JSON.stringify(settings));
+                
+                let overlay = document.getElementById('overlay-container');
+                if (textureStateBeforeProyectos) {
+                    if (!overlay) {
+                        import('./overlay.js').then(module => {
+                            if (module.initOverlays) module.initOverlays();
+                        });
+                    } else {
+                        overlay.style.display = 'block';
+                        overlay.style.setProperty('display', 'block', 'important');
+                    }
+                } else {
+                    if (overlay) {
+                        overlay.style.display = 'none';
+                        overlay.style.setProperty('display', 'none', 'important');
+                    }
+                }
+                
+                applySettings(settings);
+            }
+        } catch (e) {}
+        
+        textureStateBeforeProyectos = null;
+    }
 }

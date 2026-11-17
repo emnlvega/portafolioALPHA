@@ -3,8 +3,10 @@ import { showDialog } from '../../dialogs.js';
 import { importDesignFromJSON } from '../../logo.js';
 import { resetGrid } from '../../interactions.js';
 import { isTransitioningCheck, updateURL } from '../index.js';
+import { handleProyectosTextureEnter, handleProyectosTextureLeave } from '../../settings.js';
 
-let proyectosData = null;
+let allProjectsCache = null;
+let proyectosDataCache = {};
 let currentPage = 0;
 const PROJECTS_PER_PAGE = 14;
 let projectsCache = null;
@@ -54,46 +56,36 @@ function getLineHeight() {
 }
 
 export const EXPANDED_DESIGN = {
-    "0,0": {
-        "type": "combined_normal",
-        "left": 199,
-        "top": 23,
-        "width": 91,
-        "height": 91,
-        "combined": true
-    },
-    "0,2": {
-        "type": "combined_normal",
-        "left": 305,
-        "top": 23,
-        "width": 1469,
-        "height": 886,
-        "combined": true
-    },
-    "0,30": {
-        "type": "combined_normal",
-        "left": 1789,
-        "top": 23,
-        "width": 91,
-        "height": 91,
-        "combined": true
-    },
-    "2,0": {
-        "type": "combined_normal",
-        "left": 199,
-        "top": 129,
-        "width": 91,
-        "height": 780,
-        "combined": true
-    },
-    "2,30": {
-        "type": "combined_normal",
-        "left": 1789,
-        "top": 129,
-        "width": 91,
-        "height": 780,
-        "combined": true
-    }
+  "0,0": {
+    "type": "combined_normal",
+    "start": [0, 0],
+    "end": [1, 1],
+    "combined": true
+  },
+  "0,2": {
+    "type": "combined_normal",
+    "start": [0, 2],
+    "end": [16, 29],
+    "combined": true
+  },
+  "0,30": {
+    "type": "combined_normal",
+    "start": [0, 30],
+    "end": [1, 31],
+    "combined": true
+  },
+  "2,0": {
+    "type": "combined_normal",
+    "start": [2, 0],
+    "end": [16, 1],
+    "combined": true
+  },
+  "2,30": {
+    "type": "combined_normal",
+    "start": [2, 30],
+    "end": [16, 31],
+    "combined": true
+  }
 };
 
 export function setDetailExpanded(value) {
@@ -119,23 +111,70 @@ function getTextureVisibilityFromSettings() {
 }
 
 export function clearProyectosTextureState() {
-    const textureEnabled = getTextureVisibilityFromSettings();
-    if (textureEnabled) {
-        toggleTextureOverlay(true);
-    } else {
-        toggleTextureOverlay(false);
+    toggleTextureOverlay(false);
+}
+
+async function loadProyectosLayout() {
+    const response = await fetch(new URL('../data/proyectos.json', import.meta.url));
+    return await response.json();
+}
+
+export async function getProyectosDesign() {
+    const data = await loadProyectosLayout();
+    return data.design;
+}
+
+async function loadAllProjects() {
+    if (allProjectsCache) return allProjectsCache;
+    
+    try {
+        const response = await fetch(new URL('../data/proyectos/', import.meta.url));
+        const htmlText = await response.text();
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlText, 'text/html');
+        const links = doc.querySelectorAll('a');
+        
+        const projectIds = new Set();
+        links.forEach(link => {
+            let href = link.getAttribute('href');
+            if (!href) return;
+            
+            href = href.replace(/\/$/, "").split('/').pop();
+            
+            if (href && href !== '..' && href !== '.' && !href.includes('.')) {
+                projectIds.add(href);
+            }
+        });
+
+        const projects = [];
+        for (const id of projectIds) {
+            const data = await loadProjectData(id);
+            if (data) {
+                projects.push(data);
+            }
+        }
+
+        allProjectsCache = projects;
+        return projects;
+    } catch (e) {
+        console.error("Error dynamically scanning project folders:", e);
+        return [];
     }
 }
 
-async function loadProyectosData() {
-    if (proyectosData) return proyectosData;
-    const response = await fetch(new URL('../data/proyectos.json', import.meta.url));
-    proyectosData = await response.json();
-    return proyectosData;
-}
-
-export function getProyectosDesign() {
-    return loadProyectosData().then(data => data.design);
+async function loadProjectData(projectId) {
+    if (proyectosDataCache[projectId]) return proyectosDataCache[projectId];
+    try {
+        const response = await fetch(new URL(`../data/proyectos/${projectId}/${projectId}.json`, import.meta.url));
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        proyectosDataCache[projectId] = data;
+        return data;
+    } catch (e) {
+        console.error(`Error loading project data for ${projectId}:`, e);
+        return null;
+    }
 }
 
 export function clearProjectSelection() {
@@ -151,12 +190,7 @@ export function clearProjectSelection() {
         renderTimeout = null;
     }
 
-    const textureEnabled = getTextureVisibilityFromSettings();
-    if (textureEnabled && textureWasVisibleBeforeExpand) {
-        toggleTextureOverlay(true);
-    } else {
-        toggleTextureOverlay(false);
-    }
+    handleProyectosTextureLeave();
 
     if (window.location.hash.includes('proyectos')) {
         updateURL('proyectos');
@@ -173,20 +207,18 @@ function toggleDetailExpand() {
     
     isExpanding = true;
 
-    textureWasVisibleBeforeExpand = getTextureVisibilityFromSettings();
-
-    loadProyectosData().then(data => {
+    loadProyectosLayout().then(layoutData => {
         const savedProjectId = selectedProjectId;
         const savedProjectData = selectedProjectData;
         const savedDetailPage = detailPage;
 
         const newExpandedState = !isDetailExpanded;
-        const designToImport = newExpandedState ? EXPANDED_DESIGN : data.design;
+        const designToImport = newExpandedState ? EXPANDED_DESIGN : layoutData.design;
 
         if (newExpandedState) {
-            toggleTextureOverlay(false);
+            handleProyectosTextureEnter();
         } else {
-            toggleTextureOverlay(textureWasVisibleBeforeExpand);
+            handleProyectosTextureLeave();
         }
 
         document.querySelectorAll('.proyectos-content, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn').forEach(el => el.remove());
@@ -294,21 +326,43 @@ function addExpandButton(cell) {
     cell.appendChild(btn);
 }
 
-
-
 export async function renderProyectosContent() {
     const textSizes = getTextSizes();
     const letterSpacing = getLetterSpacing();
-    const data = await loadProyectosData();
+    const layoutData = await loadProyectosLayout();
+    const allProjects = await loadAllProjects();
     const container = document.getElementById('grid-container');
     if (!container) return;
+
+    const hashId = window.location.hash ? window.location.hash.replace('#', '').trim() : '';
+    
+    // If we have a selectedProjectId in memory or a valid project hash (not 'proyectos' or empty)
+    if ((hashId && hashId !== 'proyectos') || window.selectedProjectId) {
+        const targetId = hashId && hashId !== 'proyectos' ? hashId : window.selectedProjectId;
+        if (!selectedProjectId || selectedProjectId !== targetId) {
+            await selectProjectById(targetId);
+            return;
+        }
+    } else {
+        // Only reset if truly on the main projects catalog view
+        selectedProjectId = null;
+        selectedProjectData = null;
+        isDetailExpanded = false;
+        window.selectedProjectId = null;
+        handleProyectosTextureEnter();
+    }
+
+    // Force texture overlay off while viewing projects
+    handleProyectosTextureEnter();
 
     const lineHeight = getLineHeight();
     const primaryColor = CONFIG.COLORS.primary;
     const secondaryColor = CONFIG.COLORS.secondary;
     const primaryRGB = CONFIG.COLORS.primaryRGB;
     const secondaryRGB = CONFIG.COLORS.secondaryRGB;
-    const content = data.content || {};
+    const content = layoutData.content || {};
+    
+    handleProyectosTextureEnter();
     
     const titleCellClean = document.querySelector('.grid-cell[data-design-row="0"][data-design-col="0"]');
     if (titleCellClean) {
@@ -328,15 +382,6 @@ export async function renderProyectosContent() {
         nextCellClean.style.border = `1px solid ${CONFIG.COLORS.primary}`;
         nextCellClean.style.borderColor = CONFIG.COLORS.primary;
         nextCellClean.style.boxShadow = 'none';
-    }
-    
-    if (!selectedProjectId || !selectedProjectData) {
-        if (!isDetailExpanded) {
-            const textureEnabled = getTextureVisibilityFromSettings();
-            toggleTextureOverlay(textureEnabled);
-        }
-    } else {
-        toggleTextureOverlay(false);
     }
     
     document.querySelectorAll('.proyectos-content, .proyectos-item, .proyectos-detail, .proyectos-nav, .proyectos-select-message, .expand-btn, .expand-back-btn, .expand-next-btn').forEach(el => el.remove());
@@ -431,14 +476,13 @@ export async function renderProyectosContent() {
         if (selectedProjectId && selectedProjectData) {
             title.textContent = selectedProjectData.name;
         } else {
-            title.textContent = data.title;
+            title.textContent = layoutData.title || 'Proyectos';
         }
         
         titleCell.appendChild(title);
     }
     
     if (!isDetailExpanded) {
-        const allProjects = data.projects || [];
         const totalPages = Math.ceil(allProjects.length / PROJECTS_PER_PAGE);
         const startIndex = currentPage * PROJECTS_PER_PAGE;
         const endIndex = Math.min(startIndex + PROJECTS_PER_PAGE, allProjects.length);
@@ -520,7 +564,7 @@ export async function renderProyectosContent() {
                 }
             });
             
-            item.addEventListener('click', () => {
+            item.addEventListener('click', async () => {
                 if (selectedProjectId === project.id) {
                     selectedProjectId = null;
                     selectedProjectData = null;
@@ -530,8 +574,9 @@ export async function renderProyectosContent() {
                     return;
                 }
                 
+                const fullData = await loadProjectData(project.id);
                 selectedProjectId = project.id;
-                selectedProjectData = project;
+                selectedProjectData = fullData || project;
                 detailPage = 0;
                 window.selectedProjectId = project.id;
                 updateURL('proyectos', project.id);
@@ -540,7 +585,6 @@ export async function renderProyectosContent() {
             
             cell.appendChild(item);
         });
-        
 
         const leftArrowCell = document.querySelector('.grid-cell[data-design-row="2"][data-design-col="0"]');
         const rightArrowCell = document.querySelector('.grid-cell[data-design-row="2"][data-design-col="30"]');
@@ -761,7 +805,6 @@ export async function renderProyectosContent() {
     });
 
     if (isDetailExpanded) {
-        const allProjects = data.projects || [];
         const currentIndex = allProjects.findIndex(p => p.id === selectedProjectId);
         const nextIndex = (currentIndex + 1) % allProjects.length;
         const nextProject = allProjects[nextIndex];
@@ -890,11 +933,12 @@ export async function renderProyectosContent() {
                 nextText.style.opacity = '1';
             });
             
-            nextBtn.addEventListener('click', (e) => {
+            nextBtn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 if (nextProject) {
+                    const fullData = await loadProjectData(nextProject.id);
                     selectedProjectId = nextProject.id;
-                    selectedProjectData = nextProject;
+                    selectedProjectData = fullData || nextProject;
                     detailPage = 0;
                     window.selectedProjectId = nextProject.id;
                     updateURL('proyectos', nextProject.id);
@@ -1059,7 +1103,7 @@ function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHe
         
         if (Array.isArray(currentPageData.content)) {
             currentPageData.content.forEach(item => {
-                const element = renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeight);
+                const element = renderContentItem(item, project.id, isExpanded, textSizes, letterSpacing, lineHeight);
                 if (element) {
                     contentContainer.appendChild(element);
                 }
@@ -1115,7 +1159,15 @@ function showProjectDetail(project, detailCell, textSizes, letterSpacing, lineHe
     }, 50);
 }
 
-function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeight) {
+function resolveAssetPath(projectId, filename) {
+    if (!filename) return '';
+    if (filename.startsWith('http://') || filename.startsWith('https://') || filename.startsWith('/')) {
+        return filename;
+    }
+    return new URL(`../data/proyectos/${projectId}/${filename}`, import.meta.url).href;
+}
+
+function renderContentItem(item, projectId, isExpanded, textSizes, letterSpacing, lineHeight) {
     const container = document.createElement('div');
     container.style.cssText = `
         display: flex;
@@ -1177,10 +1229,13 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
                 border-radius: 4px;
                 overflow: hidden;
                 border: 1px solid rgba(${secondaryRGB}, 0.1);
+                cursor: pointer;
+                pointer-events: auto;
             `;
             
+            const resolvedImgSrc = resolveAssetPath(projectId, item.value);
             const imgEl = document.createElement('img');
-            imgEl.src = item.value || '';
+            imgEl.src = resolvedImgSrc;
             imgEl.alt = item.caption || '';
             imgEl.style.cssText = `
                 width: 100%;
@@ -1188,6 +1243,11 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
                 display: block;
             `;
             imgWrap.appendChild(imgEl);
+            
+            imgWrap.addEventListener('click', () => {
+                showImageLightbox(resolvedImgSrc);
+            });
+            
             container.appendChild(imgWrap);
             
             if (item.caption) {
@@ -1217,6 +1277,7 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
             
             if (Array.isArray(item.value)) {
                 item.value.forEach(imgSrc => {
+                    const resolvedSrc = resolveAssetPath(projectId, imgSrc);
                     const imgContainer = document.createElement('div');
                     imgContainer.style.cssText = `
                         border-radius: 4px;
@@ -1229,7 +1290,7 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
                     `;
                     
                     const thumb = document.createElement('img');
-                    thumb.src = imgSrc || '';
+                    thumb.src = resolvedSrc;
                     thumb.style.cssText = `
                         width: 100%;
                         height: 100%;
@@ -1250,7 +1311,7 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
                     });
                     
                     imgContainer.addEventListener('click', () => {
-                        showImageLightbox(imgSrc);
+                        showImageLightbox(resolvedSrc);
                     });
                     
                     galleryWrap.appendChild(imgContainer);
@@ -1270,7 +1331,7 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
             `;
             
             const videoEl = document.createElement('video');
-            videoEl.src = item.value || '';
+            videoEl.src = resolveAssetPath(projectId, item.value);
             videoEl.controls = true;
             videoEl.style.cssText = `
                 width: 100%;
@@ -1301,21 +1362,27 @@ function renderContentItem(item, isExpanded, textSizes, letterSpacing, lineHeigh
 }
 
 export async function selectProjectById(projectId) {
-    const data = await loadProyectosData();
-    const project = data.projects.find(p => p.id === projectId);
+    const allProjects = await loadAllProjects();
+    const project = allProjects.find(p => p.id === projectId);
     if (project) {
+        const fullData = await loadProjectData(projectId);
         selectedProjectId = project.id;
-        selectedProjectData = project;
+        selectedProjectData = fullData || project;
         detailPage = 0;
         window.selectedProjectId = project.id;
         
-        if (!textureWasVisibleBeforeExpand) {
-            textureWasVisibleBeforeExpand = getTextureVisibilityFromSettings();
+        isDetailExpanded = true;
+        if (typeof handleProyectosTextureEnter === 'function') {
+            handleProyectosTextureEnter();
         }
         
-        toggleTextureOverlay(false);
+        // Lock URL hash immediately on initial load
+        let url = window.location.pathname.split('#')[0];
+        window.history.replaceState({}, '', `${url}#${project.id}`);
         
-        renderProyectosContent();
+        importDesignFromJSON(EXPANDED_DESIGN, () => {
+            renderProyectosContent();
+        }, false);
     }
 }
 
