@@ -1,0 +1,74 @@
+{
+  "id": "meteowatcher",
+  "name": "MeteoWatcher",
+  "icon": "◆",
+  "category": "Frontend Development",
+  "type": "Angular Web Application",
+  "year": "2026",
+  "description": "Proyecto final de la materia Desarrollo de Software Frontend III. Aplicacion web meteorologica desarrollada en Angular con standalone components, integracion de mapas interactivos 3D y consumo de APIs de OpenWeatherMap.",
+  "details": "Proyecto final para la materia de Desarrollo de Software Frontend III. Permite la consulta de clima en tiempo real, busqueda geolocalizada, gestion de favoritos con persistencia local y visualizacion temporal.",
+  "pages": [
+    {
+      "title": "Vista Principal",
+      "content": [
+        {
+          "type": "text",
+          "value": "Interfaz general de MeteoWatcher. Muestra un panel lateral deslizable con informacion detallada y un globo terracota interactivo ocupando el fondo principal de la pantalla."
+        },
+        {
+          "type": "image",
+          "value": "main.jpg",
+          "caption": "Pantalla principal de la aplicacion"
+        }
+      ]
+    },
+    {
+      "title": "Buscador y Geolocalizacion",
+      "content": [
+        {
+          "type": "text",
+          "value": "El sistema permite buscar ciudades mediante texto libre o coordenadas geograficas directas, realizando consultas automatizadas a los servicios de geocodificacion."
+        },
+        {
+          "type": "gallery",
+          "value": [
+            "buscador.jpg",
+            "miubicacion.jpg"
+          ],
+          "caption": "Interfaz de busqueda y seleccion de ubicacion actual"
+        }
+      ]
+    },
+    {
+      "title": "Panel de Informacion y Pronostico",
+      "content": [
+        {
+          "type": "text",
+          "value": "Panel lateral izquierdo que organiza los datos climaticos actuales, indice de calidad del aire y la linea de tiempo para el pronostico extendido."
+        },
+        {
+          "type": "gallery",
+          "value": [
+            "panelinfo.jpg",
+            "lineadetiempo.jpg"
+          ],
+          "caption": "Panel de informacion meteorologica y linea de tiempo temporal"
+        }
+      ]
+    },
+    {
+      "title": "Gestion de Favoritos",
+      "content": [
+        {
+          "type": "text",
+          "value": "Modulo encargado de almacenar ubicaciones preferidas en el almacenamiento local del navegador para un acceso rapido y persistente."
+        },
+        {
+          "type": "image",
+          "value": "favoritos.jpg",
+          "caption": "Lista de ubicaciones favoritas guardadas"
+        }
+      ]
+    }
+  ]
+}

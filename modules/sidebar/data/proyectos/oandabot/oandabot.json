@@ -1,0 +1,88 @@
+{
+  "id": "oandabot",
+  "name": "OandaBot",
+  "icon": "$",
+  "category": "Trading Systems",
+  "type": "Backend Automation",
+  "year": "2026",
+  "description": "Sistema automatizado de trading en Forex construido sobre la API v3 de Oanda, operando con analisis tecnico avanzado, gestion de riesgos, control de sesiones horarias y multiples hilos concurrentes en tiempo real.",
+  "pages": [
+    {
+      "title": "Arquitectura y Funcionamiento",
+      "content": [
+        {
+          "type": "text",
+          "value": "OandaBot implementa una arquitectura robusta y concurrente basada en hilos independientes encargados de la transmision de precios en tiempo real, el procesamiento de velas por temporalidad y la ejecucion automatizada de ordenes. El archivo principal run_bot.py inicializa la coleccion de instrumentos financieros y dispara los flujos principales del sistema."
+        },
+        {
+          "type": "text",
+          "value": "El motor de ejecucion se divide en componentes criticos: PriceStreamer mantiene una conexion persistente con el endpoint de streaming de Oanda para capturar precios bid y ask al instante. PriceProcessor evalua la llegada de nuevos ticks y detecta el cierre de cada vela segun la temporalidad definida. CandleWorker procesa la informacion historica y tecnica para determinar la entrada a mercado."
+        },
+        {
+          "type": "text",
+          "value": "Este es un componente del siguiente proyecto, OandaBotTerminal"
+        },
+        {
+          "type": "text",
+          "value": "Funciones Principales y Su Importancia:"
+        },
+        {
+          "type": "text",
+          "value": "OandaApi.place_trade: Gestiona la apertura de posiciones en mercado enviando los parametros precisos de unidades, direccion, stop loss y take profit calculados de acuerdo con la precision especifica de cada instrumento financiero."
+        },
+        {
+          "type": "text",
+          "value": "AdvancedAnalysis.check_trend_signal: Analiza la fuerza y direccion de la tendencia utilizando indicadores de movimiento direccional (ADX y DI) junto con bandas de Bollinger, permitiendo confirmar señales o aplicar reversiones ante alta volatilidad."
+        },
+        {
+          "type": "text",
+          "value": "TrailingStopManager.check_and_update_trades: Monitorea de forma continua las operaciones abiertas para activar y actualizar dinamicamente los stops de seguimiento conforme el precio se mueve a favor de la posicion."
+        },
+        {
+          "type": "text",
+          "value": "TimeBasedSignalManager.get_trading_session_restrictions: Evalúa restricciones horarias y filtrado de velas para evitar gaps de liquidez durante aperturas de sesiones asiáticas o cierres de mercado."
+        }
+      ]
+    },
+    {
+      "title": "Modulos del Sistema y Analisis",
+      "content": [
+        {
+          "type": "text",
+          "value": "El sistema incluye integraciones de scraping para evaluar noticias en tiempo real mediante reuters.py, analisis de sentimiento de mercado con my_fx_book.py, y seguimiento de indicadores tecnicos avanzados obtenidos desde investing_com.py."
+        },
+        {
+          "type": "text",
+          "value": "La gestion de riesgos se maneja a traves de parametros configurables de take profit, stop loss en pips, proteccion de fines de semana y control de distribucion de unidades por operacion."
+        }
+      ]
+    },
+    {
+      "title": "Configuracion (Settings)",
+      "content": [
+        {
+          "type": "row",
+          "direction": "row",
+          "gap": "20px",
+          "align": "center",
+          "justify": "center",
+          "children": [
+            {
+              "type": "text",
+              "value": "El archivo de configuracion gestiona los parametros operativos globales, tipo de cuenta, temporalidad por defecto, gestion de riesgo y los umbrales especificos de cada par de divisas operado.\n\nVista detallada de la jerarquia de configuracion y ajustes del entorno de ejecucion.",
+              "width": "50%"
+            },
+            {
+              "type": "image",
+              "value": "settings.jpg",
+              "caption": "Estructura de configuracion y parametros.",
+              "width": "50%",
+              "height": "320px",
+              "objectFit": "contain"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

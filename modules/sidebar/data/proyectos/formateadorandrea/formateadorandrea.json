@@ -1,0 +1,125 @@
+{
+  "id": "formateadorandrea",
+  "name": "Formateador Andrea",
+  "icon": "◆",
+  "category": "Herramienta de Productividad",
+  "type": "JavaScript / Web App",
+  "year": "2026",
+  "description": "Herramienta web inteligente desarrollada como solución personal para agilizar tareas operativas en un trabajo anterior. Permite el formateo, procesamiento y gestión avanzada de datos de inventario mediante información extraída manualmente de un programa de la empresa. Dado que ya no se cuenta con acceso a dicho software corporativo, actualmente no es posible demostrar su funcionamiento en vivo; el proyecto fue concebido y pulido en tiempos 'muertos' de la jornada laboral.",
+  "details": "Arquitectura modular en JavaScript vainilla con integración de múltiples pestañas funcionales, soporte para macros de AutoHotkey (AHK), procesamiento asíncrono en lotes para grandes volúmenes de datos, passthrough y sincronización en la nube con Wix.",
+  "pages": [
+    {
+      "title": "Procesar / Operar y Automatización con AHK",
+      "content": [
+        {
+          "type": "text",
+          "value": "Módulo principal de operaciones encargado de unificar, limpiar y formatear entradas de texto masivas y tablas CSV. Cuenta con un motor universal capaz de interpretar diferentes estructuras de inventario y generar automáticamente scripts de AutoHotkey (AHK) optimizados en lotes de 50 códigos con pausas de control (Sleep), permitiendo automatizar la introducción de datos en sistemas externos de forma fluida y segura."
+        },
+        {
+          "type": "image",
+          "value": "modulo1.jpg",
+          "caption": "Vista general del módulo de procesamiento, configuración de rangos y generación de scripts."
+        },
+        {
+          "type": "image",
+          "value": "modulo1enuso.jpg",
+          "caption": "El programa en pleno uso operativo durante las tareas de unificación y validación de datos en campo."
+        }
+      ]
+    },
+    {
+      "title": "Control de Diferencias, Ubicaciones y Arribos",
+      "content": [
+        {
+          "type": "text",
+          "value": "Módulos especializados para auditar la operación diaria:"
+        },
+        {
+          "type": "text",
+          "value": "• Diferencias de Folios (Módulo 2): Permite contrastar cruces de inventario entre distintos folios para detectar faltantes o sobrantes de manera inmediata."
+        },
+        {
+          "type": "text",
+          "value": "• Ubicaciones (Módulo 3): Gestiona el ordenamiento, asignación y filtrado inteligente de las posiciones físicas de la mercancía dentro del almacén."
+        },
+        {
+          "type": "text",
+          "value": "• Arribo / Recibir (Módulo 4): Controla la lectura de códigos de barra y la recepción de nueva mercancía, asegurando la correspondencia con las órdenes de llegada."
+        },
+        {
+          "type": "gallery",
+          "value": [
+            "modulo2.jpg",
+            "modulo3.jpg",
+            "modulo4.jpg"
+          ]
+        },
+        {
+          "type": "text",
+          "value": "Estas herramientas reducen drásticamente los errores manuales al cruzar registros complejos en segundos."
+        }
+      ]
+    },
+    {
+      "title": "Compensación, Stock y Contenedores",
+      "content": [
+        {
+          "type": "text",
+          "value": "Herramientas de soporte logístico avanzado para la cuadratura de inventarios:"
+        },
+        {
+          "type": "text",
+          "value": "• Compensación de Diferencias (Módulo 5): Calcula y balancea los ajustes necesarios para cuadrar las discrepancias detectadas en las auditorías."
+        },
+        {
+          "type": "text",
+          "value": "• Posiciones en Stock (Módulo 6): Analiza de forma detallada las existencias y ubicaciones actuales en el inventario general."
+        },
+        {
+          "type": "text",
+          "value": "• Contenedores (Módulo 7): Administra, controla y distribuye la carga agrupada en contenedores y lotes específicos."
+        },
+        {
+          "type": "gallery",
+          "value": [
+            "modulo5.jpg",
+            "modulo6.jpg",
+            "modulo7.jpg"
+          ]
+        },
+        {
+          "type": "text",
+          "value": "Diseñado para mantener la trazabilidad completa de la mercancía desde su arribo hasta su almacenamiento final."
+        }
+      ]
+    },
+    {
+      "title": "Depurador VR y Seccionador",
+      "content": [
+        {
+          "type": "text",
+          "value": "Utilidades técnicas de alta precisión para el tratamiento de datos complejos:"
+        },
+        {
+          "type": "text",
+          "value": "• Depurador VR (Módulo 9): Realiza una limpieza profunda y filtrado de registros específicos en formato VR, eliminando redundancias y errores de formato."
+        },
+        {
+          "type": "text",
+          "value": "• Seccionador (Módulo 10): Herramienta orientada a fragmentar, seccionar y organizar lotes masivos de datos en porciones manejables y estructuradas según los requerimientos operativos."
+        },
+        {
+          "type": "gallery",
+          "value": [
+            "modulo9.jpg",
+            "modulo8.jpg"
+          ]
+        },
+        {
+          "type": "text",
+          "value": "Módulos indispensables para mantener la integridad y optimización de los flujos de información procesados."
+        }
+      ]
+    }
+  ]
+}

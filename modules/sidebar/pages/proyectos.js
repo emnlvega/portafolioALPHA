@@ -8,7 +8,7 @@ import { handleProyectosTextureEnter, handleProyectosTextureLeave } from '../../
 let allProjectsCache = null;
 let proyectosDataCache = {};
 let currentPage = 0;
-const PROJECTS_PER_PAGE = 14;
+const PROJECTS_PER_PAGE = 21;
 let projectsCache = null;
 let selectedProjectId = null;
 let selectedProjectData = null;
@@ -58,32 +58,62 @@ function getLineHeight() {
 export const EXPANDED_DESIGN = {
   "0,0": {
     "type": "combined_normal",
-    "start": [0, 0],
-    "end": [1, 1],
+    "start": [
+      0,
+      0
+    ],
+    "end": [
+      1,
+      1
+    ],
     "combined": true
   },
   "0,2": {
     "type": "combined_normal",
-    "start": [0, 2],
-    "end": [16, 29],
+    "start": [
+      0,
+      2
+    ],
+    "end": [
+      16,
+      29
+    ],
     "combined": true
   },
   "0,30": {
     "type": "combined_normal",
-    "start": [0, 30],
-    "end": [1, 31],
+    "start": [
+      0,
+      30
+    ],
+    "end": [
+      1,
+      31
+    ],
     "combined": true
   },
   "2,0": {
     "type": "combined_normal",
-    "start": [2, 0],
-    "end": [16, 1],
+    "start": [
+      2,
+      0
+    ],
+    "end": [
+      16,
+      1
+    ],
     "combined": true
   },
   "2,30": {
     "type": "combined_normal",
-    "start": [2, 30],
-    "end": [16, 31],
+    "start": [
+      2,
+      30
+    ],
+    "end": [
+      16,
+      31
+    ],
     "combined": true
   }
 };
@@ -115,8 +145,330 @@ export function clearProyectosTextureState() {
 }
 
 async function loadProyectosLayout() {
-    const response = await fetch(new URL('../data/proyectos.json', import.meta.url));
-    return await response.json();
+    return {
+      "design": {
+        "0,0": {
+          "type": "combined_normal",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            2,
+            31
+          ],
+          "combined": true
+        },
+        "3,2": {
+          "type": "combined_normal",
+          "start": [
+            3,
+            2
+          ],
+          "end": [
+            3,
+            29
+          ],
+          "combined": true
+        },
+        "4,0": {
+          "type": "combined_normal",
+          "start": [
+            3,
+            0
+          ],
+          "end": [
+            16,
+            1
+          ],
+          "combined": true
+        },
+        "4,2": {
+          "type": "combined_normal",
+          "start": [
+            4,
+            2
+          ],
+          "end": [
+            7,
+            5
+          ],
+          "combined": true
+        },
+        "4,6": {
+          "type": "combined_normal",
+          "start": [
+            4,
+            6
+          ],
+          "end": [
+            7,
+            9
+          ],
+          "combined": true
+        },
+        "4,10": {
+          "type": "combined_normal",
+          "start": [
+            4,
+            10
+          ],
+          "end": [
+            7,
+            13
+          ],
+          "combined": true
+        },
+        "4,14": {
+          "type": "combined_normal",
+          "start": [
+            4,
+            14
+          ],
+          "end": [
+            7,
+            17
+          ],
+          "combined": true
+        },
+        "4,18": {
+          "type": "combined_normal",
+          "start": [
+            4,
+            18
+          ],
+          "end": [
+            7,
+            21
+          ],
+          "combined": true
+        },
+        "4,22": {
+          "type": "combined_normal",
+          "start": [
+            4,
+            22
+          ],
+          "end": [
+            7,
+            25
+          ],
+          "combined": true
+        },
+        "4,26": {
+          "type": "combined_normal",
+          "start": [
+            4,
+            26
+          ],
+          "end": [
+            7,
+            29
+          ],
+          "combined": true
+        },
+        "4,30": {
+          "type": "combined_normal",
+          "start": [
+            3,
+            30
+          ],
+          "end": [
+            16,
+            31
+          ],
+          "combined": true
+        },
+        "8,2": {
+          "type": "combined_normal",
+          "start": [
+            8,
+            2
+          ],
+          "end": [
+            11,
+            5
+          ],
+          "combined": true
+        },
+        "8,6": {
+          "type": "combined_normal",
+          "start": [
+            8,
+            6
+          ],
+          "end": [
+            11,
+            9
+          ],
+          "combined": true
+        },
+        "8,10": {
+          "type": "combined_normal",
+          "start": [
+            8,
+            10
+          ],
+          "end": [
+            11,
+            13
+          ],
+          "combined": true
+        },
+        "8,14": {
+          "type": "combined_normal",
+          "start": [
+            8,
+            14
+          ],
+          "end": [
+            11,
+            17
+          ],
+          "combined": true
+        },
+        "8,22": {
+          "type": "combined_normal",
+          "start": [
+            8,
+            22
+          ],
+          "end": [
+            11,
+            25
+          ],
+          "combined": true
+        },
+        "8,26": {
+          "type": "combined_normal",
+          "start": [
+            8,
+            26
+          ],
+          "end": [
+            11,
+            29
+          ],
+          "combined": true
+        },
+        "11,18": {
+          "type": "combined_normal",
+          "start": [
+            8,
+            18
+          ],
+          "end": [
+            11,
+            21
+          ],
+          "combined": true
+        },
+        "12,2": {
+          "type": "combined_normal",
+          "start": [
+            12,
+            2
+          ],
+          "end": [
+            15,
+            5
+          ],
+          "combined": true
+        },
+        "12,6": {
+          "type": "combined_normal",
+          "start": [
+            12,
+            6
+          ],
+          "end": [
+            15,
+            9
+          ],
+          "combined": true
+        },
+        "12,10": {
+          "type": "combined_normal",
+          "start": [
+            12,
+            10
+          ],
+          "end": [
+            15,
+            13
+          ],
+          "combined": true
+        },
+        "12,14": {
+          "type": "combined_normal",
+          "start": [
+            12,
+            14
+          ],
+          "end": [
+            15,
+            17
+          ],
+          "combined": true
+        },
+        "12,18": {
+          "type": "combined_normal",
+          "start": [
+            12,
+            18
+          ],
+          "end": [
+            15,
+            21
+          ],
+          "combined": true
+        },
+        "12,22": {
+          "type": "combined_normal",
+          "start": [
+            12,
+            22
+          ],
+          "end": [
+            15,
+            25
+          ],
+          "combined": true
+        },
+        "12,26": {
+          "type": "combined_normal",
+          "start": [
+            12,
+            26
+          ],
+          "end": [
+            15,
+            29
+          ],
+          "combined": true
+        },
+        "16,2": {
+          "type": "combined_normal",
+          "start": [
+            16,
+            2
+          ],
+          "end": [
+            16,
+            29
+          ],
+          "combined": true
+        }
+      },
+      "title": "PROYECTOS",
+      "content": {
+        "selectMessage": "SELECCIONA TU PROYECTO",
+        "backText": "VOLVER",
+        "nextText": "SIGUIENTE",
+        "pagePrefix": "PÁG",
+        "pageOf": "DE"
+      }
+    };
 }
 
 export async function getProyectosDesign() {
@@ -203,7 +555,7 @@ function toggleDetailExpand() {
     }
     
     if (isExpanding) return;
-    if (!selectedProjectId || !selectedProjectData) return;
+    if (!isDetailExpanded && (!selectedProjectId || !selectedProjectData)) return;
     
     isExpanding = true;
 
@@ -264,12 +616,7 @@ function toggleDetailExpand() {
 }
 
 function updateExpandButton(cell) {
-    const oldBtn = cell.querySelector('.expand-btn');
-    if (oldBtn) oldBtn.remove();
 
-    if (selectedProjectId && selectedProjectData) {
-        addExpandButton(cell);
-    }
 }
 
 function addExpandButton(cell) {
@@ -402,7 +749,11 @@ export async function renderProyectosContent() {
     let backButtonCell = null;
     let nextProjectCell = null;
 
-    const projectCols = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28];
+   const projectCols = [
+        { r: 4, c: 2 }, { r: 4, c: 6 }, { r: 4, c: 10 }, { r: 4, c: 14 }, { r: 4, c: 18 }, { r: 4, c: 22 }, { r: 4, c: 26 },
+        { r: 8, c: 2 }, { r: 8, c: 6 }, { r: 8, c: 10 }, { r: 8, c: 14 }, { r: 11, c: 18 }, { r: 8, c: 22 }, { r: 8, c: 26 },
+        { r: 12, c: 2 }, { r: 12, c: 6 }, { r: 12, c: 10 }, { r: 12, c: 14 }, { r: 12, c: 18 }, { r: 12, c: 22 }, { r: 12, c: 26 }
+    ];
     
     cells.forEach(cell => {
         if (cell.dataset.combined === 'true') {
@@ -413,7 +764,7 @@ export async function renderProyectosContent() {
             if (key === '0,0' && !isDetailExpanded) {
                 titleCell = cell;
             }
-            else if (!isDetailExpanded && row === 2 && projectCols.includes(col)) {
+            else if (!isDetailExpanded && projectCols.some(p => p.r === row && p.c === col)) {
                 projectCells.push(cell);
             }
             else if (isDetailExpanded && row === 2 && col === 0) {
@@ -422,12 +773,12 @@ export async function renderProyectosContent() {
             else if (isDetailExpanded && row === 2 && col === 30) {
                 detailRightArrow = cell;
             }
-            else if (!isDetailExpanded && row === 4 && col === 0) {
-                detailLeftArrow = cell;
-            }
-            else if (!isDetailExpanded && row === 4 && col === 2) {
+            else if (!isDetailExpanded && row === 3 && col === 2) {
                 detailCell = cell;
                 detailCellRef = cell;
+            }
+            else if (!isDetailExpanded && row === 4 && col === 0) {
+                detailLeftArrow = cell;
             }
             else if (!isDetailExpanded && row === 4 && col === 30) {
                 detailRightArrow = cell;
@@ -444,6 +795,10 @@ export async function renderProyectosContent() {
             }
         }
     });
+
+    projectCells = projectCells.filter((cell, index, self) => 
+        index === self.findIndex(c => c.dataset.designRow === cell.dataset.designRow && c.dataset.designCol === cell.dataset.designCol)
+    );
 
     if (!detailCell) {
         setTimeout(() => renderProyectosContent(), 150);
@@ -472,13 +827,7 @@ export async function renderProyectosContent() {
             z-index: 20;
             user-select: none;
         `;
-        
-        if (selectedProjectId && selectedProjectData) {
-            title.textContent = selectedProjectData.name;
-        } else {
-            title.textContent = layoutData.title || 'Proyectos';
-        }
-        
+        title.textContent = layoutData.title || 'Proyectos';
         titleCell.appendChild(title);
     }
     
@@ -491,108 +840,120 @@ export async function renderProyectosContent() {
         projectsCache = { allProjects, totalPages, startIndex, endIndex };
 
         projectCells.forEach((cell, index) => {
-            if (index >= pageProjects.length) return;
-            
-            const project = pageProjects[index];
-            const isSelected = selectedProjectId === project.id;
-            
+            const oldItem = cell.querySelector('.proyectos-item');
+            if (oldItem) oldItem.remove();
+
             const item = document.createElement('div');
             item.className = 'proyectos-item';
-            item.dataset.projectId = project.id;
-            item.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                color: ${isSelected ? secondaryColor : primaryColor};
-                font-family: 'Courier New', monospace;
-                cursor: pointer;
-                pointer-events: auto;
-                z-index: 20;
-                padding: 8px;
-                text-align: center;
-                border: ${isSelected ? '3px' : '0px'} solid ${isSelected ? secondaryColor : primaryColor};
-                border-radius: 4px;
-                transition: all 0.3s ease;
-                background: transparent;
-                text-shadow: ${isSelected ? 'var(--text-shadow-normal)' : 'var(--text-shadow-active)'};
-            `;
             
-            const icon = document.createElement('span');
-            icon.textContent = project.icon || '◆';
-            icon.style.cssText = `
-                font-size: ${textSizes.projectIcon}px;
-                margin-bottom: 4px;
-                color: ${isSelected ? secondaryColor : secondaryColor};
-                text-shadow: ${isSelected ? `0 0 30px rgba(${primaryRGB}, 1)` : `0 0 20px rgba(${secondaryRGB}, 1)`};
-                transition: all 0.3s ease;
-            `;
-            
-            const name = document.createElement('span');
-            name.textContent = project.name;
-            name.style.cssText = `
-                font-size: ${textSizes.small}px;
-                letter-spacing: ${letterSpacing.small}px;
-                opacity: 1;
-            `;
-            
-            item.appendChild(icon);
-            item.appendChild(name);
-            
-            item.addEventListener('mouseenter', () => {
-                if (!isSelected) {
-                    item.style.borderColor = primaryColor;
-                    item.style.color = primaryColor;
-                    item.style.textShadow = 'var(--text-shadow-hover)';
-                    icon.style.color = primaryColor;
-                    icon.style.textShadow = `0 0 30px rgba(${primaryRGB}, 0.4)`;
-                }
-            });
-            
-            item.addEventListener('mouseleave', () => {
-                if (!isSelected) {
-                    item.style.borderColor = `rgba(${secondaryRGB}, 0.1)`;
-                    item.style.color = secondaryColor;
-                    item.style.textShadow = 'var(--text-shadow-normal)';
-                    icon.style.color = secondaryColor;
-                    icon.style.textShadow = `0 0 20px rgba(${secondaryRGB}, 0.2)`;
-                }
-            });
-            
-            item.addEventListener('click', async () => {
-                if (selectedProjectId === project.id) {
-                    selectedProjectId = null;
-                    selectedProjectData = null;
-                    detailPage = 0;
-                    updateURL('proyectos');
-                    renderProyectosContent();
-                    return;
-                }
+            if (index < pageProjects.length) {
+                cell.style.opacity = '1';
+                cell.style.pointerEvents = 'auto';
+                const project = pageProjects[index];
+                const isSelected = selectedProjectId === project.id;
                 
-                const fullData = await loadProjectData(project.id);
-                selectedProjectId = project.id;
-                selectedProjectData = fullData || project;
-                detailPage = 0;
-                window.selectedProjectId = project.id;
-                updateURL('proyectos', project.id);
-                renderProyectosContent();
-            });
+                item.dataset.projectId = project.id;
+                item.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    color: ${isSelected ? secondaryColor : primaryColor};
+                    font-family: 'Courier New', monospace;
+                    cursor: pointer;
+                    pointer-events: auto;
+                    z-index: 20;
+                    padding: 8px;
+                    text-align: center;
+                    border: ${isSelected ? '3px' : '0px'} solid ${isSelected ? secondaryColor : primaryColor};
+                    border-radius: 4px;
+                    transition: all 0.3s ease;
+                    background: transparent;
+                    text-shadow: ${isSelected ? 'var(--text-shadow-normal)' : 'var(--text-shadow-active)'};
+                `;
+                
+                const icon = document.createElement('span');
+                icon.textContent = project.icon || '◆';
+                icon.style.cssText = `
+                    font-size: ${textSizes.projectIcon}px;
+                    margin-bottom: 4px;
+                    color: ${isSelected ? secondaryColor : secondaryColor};
+                    text-shadow: ${isSelected ? `0 0 30px rgba(${primaryRGB}, 1)` : `0 0 20px rgba(${secondaryRGB}, 1)`};
+                    transition: all 0.3s ease;
+                `;
+                
+                const name = document.createElement('span');
+                name.textContent = project.name;
+                name.style.cssText = `
+                    font-size: ${textSizes.small}px;
+                    letter-spacing: ${letterSpacing.small}px;
+                    opacity: 1;
+                `;
+                
+                item.appendChild(icon);
+                item.appendChild(name);
+                
+                item.addEventListener('mouseenter', () => {
+                    if (!isSelected) {
+                        item.style.borderColor = primaryColor;
+                        item.style.color = primaryColor;
+                        item.style.textShadow = 'var(--text-shadow-hover)';
+                        icon.style.color = primaryColor;
+                        icon.style.textShadow = `0 0 30px rgba(${primaryRGB}, 0.4)`;
+                    }
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    if (!isSelected) {
+                        item.style.borderColor = `rgba(${secondaryRGB}, 0.1)`;
+                        item.style.color = secondaryColor;
+                        item.style.textShadow = 'var(--text-shadow-normal)';
+                        icon.style.color = secondaryColor;
+                        icon.style.textShadow = `0 0 20px rgba(${secondaryRGB}, 0.2)`;
+                    }
+                });
+                
+                item.addEventListener('click', async () => {
+                    const fullData = await loadProjectData(project.id);
+                    selectedProjectId = project.id;
+                    selectedProjectData = fullData || project;
+                    detailPage = 0;
+                    window.selectedProjectId = project.id;
+                    updateURL('proyectos', project.id);
+                    toggleDetailExpand();
+                });
+            } else {
+                cell.style.opacity = '0.2';
+                cell.style.pointerEvents = 'none';
+                item.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                `;
+            }
             
             cell.appendChild(item);
         });
 
-        const leftArrowCell = document.querySelector('.grid-cell[data-design-row="2"][data-design-col="0"]');
-        const rightArrowCell = document.querySelector('.grid-cell[data-design-row="2"][data-design-col="30"]');
+        const leftArrowCell = document.querySelector('.logo-cell[data-design-row="3"][data-design-col="0"], .grid-cell[data-design-row="3"][data-design-col="0"]');
+        const rightArrowCell = document.querySelector('.logo-cell[data-design-row="3"][data-design-col="30"], .grid-cell[data-design-row="3"][data-design-col="30"]');
         
         if (leftArrowCell) {
             const el = document.createElement('div');
             el.className = 'proyectos-nav project-arrow';
             const isActive = currentPage > 0;
+            leftArrowCell.style.opacity = isActive ? '1' : '0.2';
+            leftArrowCell.style.pointerEvents = isActive ? 'auto' : 'none';
+            leftArrowCell.style.borderColor = isActive ? CONFIG.COLORS.primary : `rgba(${secondaryRGB}, 0.1)`;
+            leftArrowCell.style.borderStyle = isActive ? 'solid' : 'dashed';
             el.style.cssText = `
                 position: absolute;
                 top: 0;
@@ -607,7 +968,7 @@ export async function renderProyectosContent() {
                 cursor: ${isActive ? 'pointer' : 'default'};
                 pointer-events: ${isActive ? 'auto' : 'none'};
                 z-index: 20;
-                opacity: ${isActive ? '1' : '0.2'};
+                opacity: ${isActive ? '1' : '0.1'};
                 transition: color 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
                 background: transparent;
                 color: ${CONFIG.COLORS.background};
@@ -624,6 +985,8 @@ export async function renderProyectosContent() {
                         renderProyectosContent();
                     }
                 });
+            } else {
+                el.style.opacity = '0.1';
             }
             leftArrowCell.appendChild(el);
         }
@@ -632,6 +995,10 @@ export async function renderProyectosContent() {
             const el = document.createElement('div');
             el.className = 'proyectos-nav project-arrow';
             const isActive = currentPage < totalPages - 1;
+            rightArrowCell.style.opacity = isActive ? '1' : '0.2';
+            rightArrowCell.style.pointerEvents = isActive ? 'auto' : 'none';
+            rightArrowCell.style.borderColor = isActive ? CONFIG.COLORS.primary : `rgba(${secondaryRGB}, 0.1)`;
+            rightArrowCell.style.borderStyle = isActive ? 'solid' : 'dashed';
             el.style.cssText = `
                 position: absolute;
                 top: 0;
@@ -646,7 +1013,7 @@ export async function renderProyectosContent() {
                 cursor: ${isActive ? 'pointer' : 'default'};
                 pointer-events: ${isActive ? 'auto' : 'none'};
                 z-index: 20;
-                opacity: ${isActive ? '1' : '0.2'};
+                opacity: ${isActive ? '1' : '0.1'};
                 transition: color 0.3s ease, opacity 0.3s ease, text-shadow 0.3s ease;
                 background: transparent;
                 color: ${CONFIG.COLORS.background};
@@ -663,72 +1030,17 @@ export async function renderProyectosContent() {
                         renderProyectosContent();
                     }
                 });
+            } else {
+                el.style.opacity = '0.1';
             }
             rightArrowCell.appendChild(el);
         }
     }
     
-    if (detailCell) {
+    if (detailCell && isDetailExpanded) {
         if (selectedProjectId && selectedProjectData) {
             showProjectDetail(selectedProjectData, detailCell, textSizes, letterSpacing, getLineHeight(), content);
-        } else if (!isDetailExpanded) {
-            const message = document.createElement('div');
-            message.className = 'proyectos-select-message';
-            message.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                color: ${primaryColor};
-                font-family: 'Courier New', monospace;
-                pointer-events: none;
-                z-index: 20;
-                gap: 16px;
-                opacity: 1;
-                background: transparent;
-            `;
-            
-            const text = document.createElement('span');
-            text.textContent = content.selectMessage;
-            text.style.cssText = `
-                font-size: ${textSizes.subTitle}px;
-                letter-spacing: ${letterSpacing.subTitle}px;
-                opacity: 1;
-                text-transform: uppercase;
-                text-shadow: var(--text-shadow-normal);
-            `;
-            
-            const arrows = document.createElement('span');
-            arrows.textContent = '▲ ▲ ▲';
-            arrows.style.cssText = `
-                font-size: ${textSizes.arrows}px;
-                letter-spacing: ${textSizes.arrows * 0.4}px;
-                animation: blinkArrows 1.2s ease-in-out infinite;
-                text-shadow: 0 0 20px rgba(${secondaryRGB}, 0.3);
-            `;
-            message.appendChild(arrows);
-            message.appendChild(text);
-
-            detailCell.appendChild(message);
-            
-            if (!document.getElementById('blinkArrowsStyle')) {
-                const style = document.createElement('style');
-                style.id = 'blinkArrowsStyle';
-                style.textContent = `
-                    @keyframes blinkArrows {
-                        0%, 100% { opacity: 0.3; transform: translateY(0); }
-                        50% { opacity: 1; transform: translateY(-4px); }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
         }
-        
         updateExpandButton(detailCell);
     }
     
@@ -868,6 +1180,11 @@ export async function renderProyectosContent() {
             
             backBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
+                selectedProjectId = null;
+                selectedProjectData = null;
+                detailPage = 0;
+                window.selectedProjectId = null;
+                updateURL('proyectos');
                 if (isDetailExpanded) {
                     toggleDetailExpand();
                 }
@@ -1173,7 +1490,10 @@ function renderContentItem(item, projectId, isExpanded, textSizes, letterSpacing
         display: flex;
         flex-direction: column;
         gap: 4px;
-        width: 100%;
+        width: ${item.width || '100%'};
+        align-items: ${item.align === 'left' ? 'flex-start' : item.align === 'right' ? 'flex-end' : 'center'};
+        text-align: ${item.align || 'center'};
+        margin: ${item.align === 'center' ? '0 auto' : item.align === 'right' ? '0 0 0 auto' : '0'};
     `;
     const primaryColor = CONFIG.COLORS.primary;
     const secondaryColor = CONFIG.COLORS.secondary;
@@ -1181,14 +1501,40 @@ function renderContentItem(item, projectId, isExpanded, textSizes, letterSpacing
     const secondaryRGB = CONFIG.COLORS.secondaryRGB;
     
     switch (item.type) {
+        case 'row':
+            const rowWrap = document.createElement('div');
+            rowWrap.style.cssText = `
+                display: flex;
+                flex-direction: ${item.direction || 'row'};
+                gap: ${item.gap || '16px'};
+                width: ${item.width || '100%'};
+                align-items: ${item.align || 'center'};
+                justify-content: ${item.justify || 'space-between'};
+                flex-wrap: ${item.wrap || 'nowrap'};
+            `;
+            if (Array.isArray(item.children)) {
+                item.children.forEach(childItem => {
+                    const childEl = renderContentItem(childItem, projectId, isExpanded, textSizes, letterSpacing, lineHeight);
+                    if (childEl) {
+                        childEl.style.flex = childItem.flex || '1';
+                        childEl.style.width = childItem.width || 'auto';
+                        rowWrap.appendChild(childEl);
+                    }
+                });
+            }
+            container.appendChild(rowWrap);
+            break;
+
         case 'text':
             const textEl = document.createElement('div');
             textEl.textContent = item.value || '';
             textEl.style.cssText = `
-                font-size: ${isExpanded ? textSizes.medium : textSizes.small}px;
+                font-size: ${item.size === 'large' ? textSizes.subTitle : item.size === 'small' ? textSizes.small : (isExpanded ? textSizes.medium : textSizes.small)}px;
                 letter-spacing: ${letterSpacing.medium}px;
                 line-height: ${lineHeight.medium};
                 opacity: 1;
+                text-align: ${item.align || 'center'};
+                width: 100%;
             `;
             container.appendChild(textEl);
             break;
@@ -1225,12 +1571,15 @@ function renderContentItem(item, projectId, isExpanded, textSizes, letterSpacing
         case 'image':
             const imgWrap = document.createElement('div');
             imgWrap.style.cssText = `
-                width: 100%;
+                width: ${item.width || '100%'};
+                max-width: 100%;
                 border-radius: 4px;
                 overflow: hidden;
                 border: 1px solid rgba(${secondaryRGB}, 0.1);
                 cursor: pointer;
                 pointer-events: auto;
+                aspect-ratio: ${item.aspectRatio || 'auto'};
+                height: ${item.height || 'auto'};
             `;
             
             const resolvedImgSrc = resolveAssetPath(projectId, item.value);
@@ -1239,7 +1588,8 @@ function renderContentItem(item, projectId, isExpanded, textSizes, letterSpacing
             imgEl.alt = item.caption || '';
             imgEl.style.cssText = `
                 width: 100%;
-                height: auto;
+                height: 100%;
+                object-fit: ${item.objectFit || 'cover'};
                 display: block;
             `;
             imgWrap.appendChild(imgEl);
@@ -1260,6 +1610,7 @@ function renderContentItem(item, projectId, isExpanded, textSizes, letterSpacing
                     color: ${primaryColor};
                     text-align: center;
                     margin-top: 2px;
+                    width: 100%;
                 `;
                 container.appendChild(captionEl);
             }
@@ -1323,7 +1674,7 @@ function renderContentItem(item, projectId, isExpanded, textSizes, letterSpacing
         case 'video':
             const videoWrap = document.createElement('div');
             videoWrap.style.cssText = `
-                width: 100%;
+                width: ${item.width || '100%'};
                 border-radius: 4px;
                 overflow: hidden;
                 border: 1px solid rgba(${secondaryRGB}, 0.1);
@@ -1349,6 +1700,7 @@ function renderContentItem(item, projectId, isExpanded, textSizes, letterSpacing
                     opacity: 1;
                     text-align: center;
                     margin-top: 2px;
+                    width: 100%;
                 `;
                 container.appendChild(captionEl);
             }
