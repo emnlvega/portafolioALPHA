@@ -479,26 +479,13 @@ export async function getProyectosDesign() {
 async function loadAllProjects() {
     if (allProjectsCache) return allProjectsCache;
     
-    try {
-        const response = await fetch(new URL('../data/proyectos/', import.meta.url));
-        const htmlText = await response.text();
-        
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, 'text/html');
-        const links = doc.querySelectorAll('a');
-        
-        const projectIds = new Set();
-        links.forEach(link => {
-            let href = link.getAttribute('href');
-            if (!href) return;
-            
-            href = href.replace(/\/$/, "").split('/').pop();
-            
-            if (href && href !== '..' && href !== '.' && !href.includes('.')) {
-                projectIds.add(href);
-            }
-        });
+    const projectIds = [
+        "oandabot",
+        "formateadorandrea",
+        "meteowatcher"
+    ];
 
+    try {
         const projects = [];
         for (const id of projectIds) {
             const data = await loadProjectData(id);
@@ -510,7 +497,7 @@ async function loadAllProjects() {
         allProjectsCache = projects;
         return projects;
     } catch (e) {
-        console.error("Error dynamically scanning project folders:", e);
+        console.error("Error loading project folders:", e);
         return [];
     }
 }
